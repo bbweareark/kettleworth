@@ -18,4 +18,5 @@ export * from "./components/segmented";
 export * from "./components/logo";
 export * from "./components/tooltip";
 export * from "./components/coach-pulse";
+export * from "./components/body-shape";
 export { Toaster, toast } from "sonner";

@@ -11,3 +11,4 @@ export * from "./nutrition/targets";
 export * from "./nutrition/mealplan";
 export * from "./readiness";
 export * from "./analytics";
+export * from "./physique";

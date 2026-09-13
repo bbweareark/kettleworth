@@ -2,13 +2,13 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Camera, ScanLine, Sparkles, Trash2, Check } from "lucide-react";
-import { Badge, Button, Card, CardContent, Chip, ChipGroup, CoachPulse, toast, cn } from "@kettleworth/ui";
+import { Badge, Button, Card, CardContent, Chip, ChipGroup, CoachPulse, toast, cn, BodySilhouette, BUILD_ICONS } from "@kettleworth/ui";
 
 type Analysis = { summary: string; build: string; bodyFatRangePct: [number, number] | null; strengths: string[]; focusAreas: { muscle: string; reason: string }[]; posture: string[]; caveats: string[]; analysedAt: string };
 type Photo = { id: string; takenOn: string; pose: string; analysis: Analysis | null };
 const label = (m: string) => m.replace(/_/g, " ");
 
-export function BodyCheck({ initial, ai, priorityMuscles }: { initial: Photo[]; ai: boolean; priorityMuscles: string[] }) {
+export function BodyCheck({ initial, ai, priorityMuscles, sex = "male" }: { initial: Photo[]; ai: boolean; priorityMuscles: string[]; sex?: "male" | "female" | "other" }) {
   const router = useRouter();
   const [photos, setPhotos] = useState(initial);
   const [pose, setPose] = useState<"front" | "side" | "back">("front");
@@ -75,7 +75,7 @@ export function BodyCheck({ initial, ai, priorityMuscles }: { initial: Photo[]; 
       {latest ? (
         <div className="space-y-3 rounded-xl border border-border p-4">
           <CoachPulse label="Read" items={[{ text: latest.summary, tone: "ember" }, ...latest.strengths.map((t) => ({ text: t, tone: "signal" as const })), ...latest.posture.map((t) => ({ text: t, tone: "sky" as const }))]} />
-          <div className="flex flex-wrap gap-2"><Badge tone="ember" className="capitalize">{label(latest.build)} build</Badge>{latest.bodyFatRangePct ? <Badge tone="outline">Body fat ~{latest.bodyFatRangePct[0]} to {latest.bodyFatRangePct[1]}%</Badge> : null}</div>
+          <div className="flex items-center gap-4"><BodySilhouette level={latest.bodyFatRangePct ? Math.min(1, Math.max(0, (((latest.bodyFatRangePct[0] + latest.bodyFatRangePct[1]) / 2) - 8) / 32)) : BUILD_ICONS[latest.build] ?? 0.5} sex={sex} size={88} active /><div className="flex flex-wrap gap-2"><Badge tone="ember" className="capitalize">{label(latest.build)} build</Badge>{latest.bodyFatRangePct ? <Badge tone="outline">Body fat ~{latest.bodyFatRangePct[0]} to {latest.bodyFatRangePct[1]}%</Badge> : null}</div></div>
           <div><div className="eyebrow mb-2">Where to focus</div><ul className="grid gap-2 sm:grid-cols-2">{latest.focusAreas.map((f) => <li key={f.muscle} className="rounded-lg bg-surface-2 p-3 text-sm"><span className="font-medium capitalize">{label(f.muscle)}</span>{priorityMuscles.includes(f.muscle) ? <Check className="ml-1 inline size-3.5 text-signal" /> : null}<p className="text-fg-muted">{f.reason}</p></li>)}</ul></div>
           {latest.caveats.length ? <p className="text-xs text-fg-subtle">{latest.caveats.join(" ")}</p> : null}
           <div className="flex flex-wrap gap-2"><Button size="sm" onClick={() => apply("priorityMuscles")} loading={busy === "priorityMuscles"}>Prioritise these in my programme</Button>{latest.bodyFatRangePct ? <Button size="sm" variant="secondary" onClick={() => apply("bodyFat")} loading={busy === "bodyFat"}>Use this body-fat estimate</Button> : null}</div>

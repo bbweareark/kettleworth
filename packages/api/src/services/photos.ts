@@ -66,3 +66,40 @@ export async function applyAnalysis(userId: string, photoId: string, opts: { pri
   if (opts.bodyFat && row.analysis.bodyFatRangePct) patch.bodyFatPct = Math.round((row.analysis.bodyFatRangePct[0] + row.analysis.bodyFatRangePct[1]) / 2);
   return upsertProfile(userId, patch);
 }
+
+import { physiqueTimeline, growthPoints, trend } from "@kettleworth/core";
+import { bodyMeasurement, trainingSession, personalRecord, exerciseInstance, healthSample } from "@kettleworth/db";
+import { asc, sql } from "drizzle-orm";
+import { weeklyStreak } from "@kettleworth/core";
+
+/** Everything the Progress page needs to show physique change and Growth. */
+export async function physiqueProgress(userId: string) {
+  const photos = await listPhotos(userId);
+  const measurements = await db().select().from(bodyMeasurement).where(eq(bodyMeasurement.userId, userId)).orderBy(asc(bodyMeasurement.measuredOn));
+  const entries = [
+    ...measurements.map((m) => ({ date: m.measuredOn, weightKg: m.weightKg, waistCm: m.waistCm, source: "measurement" as const })),
+    ...photos.filter((p) => p.analysis?.bodyFatRangePct).map((p) => ({ date: p.takenOn, bfLow: p.analysis!.bodyFatRangePct![0], bfHigh: p.analysis!.bodyFatRangePct![1], source: "photo" as const })),
+  ];
+  const timeline = physiqueTimeline(entries);
+  const sessions = await db().select({ d: trainingSession.scheduledOn }).from(trainingSession).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "completed")));
+  const [prs] = await db().select({ n: sql<number>`count(*)::int` }).from(personalRecord).where(eq(personalRecord.userId, userId));
+  const [sets] = await db().select({ n: sql<number>`coalesce(sum(jsonb_array_length(${exerciseInstance.loggedSets})),0)::int` }).from(exerciseInstance).innerJoin(trainingSession, eq(exerciseInstance.sessionId, trainingSession.id)).where(eq(trainingSession.userId, userId));
+  const [acts] = await db().select({ n: sql<number>`count(*)::int` }).from(healthSample).where(and(eq(healthSample.userId, userId), eq(healthSample.metric, "workout"), eq(healthSample.provider, "manual")));
+  const photoSets = new Set(photos.filter((p) => p.analysis).map((p) => p.takenOn)).size;
+  const growth = growthPoints({ sessionsCompleted: sessions.length, prs: prs?.n ?? 0, weighIns: measurements.filter((m) => m.weightKg != null).length, photoSets, streakWeeks: weeklyStreak(sessions.map((s) => s.d)), setsLogged: sets?.n ?? 0, activitiesLogged: acts?.n ?? 0 });
+  const byDate = photos.reduce<Record<string, typeof photos>>((a, p) => { (a[p.takenOn] ??= []).push(p); return a; }, {});
+  const dates = Object.keys(byDate).sort();
+  const compare = dates.length >= 2 ? { before: byDate[dates[0]!]!.find((p) => p.pose === "front") ?? byDate[dates[0]!]![0]!, after: byDate[dates[dates.length - 1]!]!.find((p) => p.pose === "front") ?? byDate[dates[dates.length - 1]!]![0]! } : null;
+  return {
+    timeline,
+    growth,
+    trends: {
+      bodyFat: trend(timeline.filter((t) => t.bodyFatLow != null).map((t) => ({ date: t.date, value: t.bodyFatPct })), "%", true),
+      leanMass: trend(timeline.filter((t) => t.leanMassKg != null).map((t) => ({ date: t.date, value: t.leanMassKg })), " kg"),
+      weight: trend(timeline.filter((t) => t.weightKg != null).map((t) => ({ date: t.date, value: t.weightKg })), " kg"),
+      waist: trend(measurements.filter((m) => m.waistCm != null).map((m) => ({ date: m.measuredOn, value: m.waistCm })), " cm", true),
+    },
+    compare: compare ? { before: { id: compare.before.id, date: compare.before.takenOn }, after: { id: compare.after.id, date: compare.after.takenOn } } : null,
+    photoDates: dates,
+  };
+}

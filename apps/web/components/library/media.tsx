@@ -20,7 +20,8 @@ export function ExerciseMedia({ name, images, video, className, compact }: { nam
       ) : images.length ? (
         <>
           {images.map((src, i) => <img key={src} src={src} alt={i === 0 ? `${name} start position` : `${name} end position`} className={cn("absolute inset-0 size-full object-cover transition-opacity duration-300", i === frame ? "opacity-100" : "opacity-0")} />)}
-          <Badge tone="amber" className="absolute left-3 top-3">Demo footage coming · stills</Badge>
+          <Badge tone="amber" className="absolute left-3 top-3">Stills · video pending</Badge>
+          <a href={`https://www.youtube.com/results?search_query=${encodeURIComponent(name + " exercise proper form")}`} target="_blank" rel="noopener noreferrer" className="absolute bottom-3 right-3 rounded-full bg-black/70 px-3 py-1.5 text-xs font-medium text-white backdrop-blur hover:bg-black/85">Watch on YouTube ↗</a>
         </>
       ) : (
         <div className="grid size-full place-items-center text-sm text-fg-subtle">Demo video coming</div>

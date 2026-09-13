@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, ArrowRight, Check, Search, Sparkles, X } from "lucide-react";
 import { TrainingProfile, type Injury, type BaselineMetrics } from "@kettleworth/types";
-import { Button, Chip, ChipGroup, Field, Input, Textarea, Segmented, Slider, Card, CardContent, Progress, toast, Badge, cn } from "@kettleworth/ui";
+import { Button, Chip, ChipGroup, Field, Input, Textarea, Segmented, Slider, Card, CardContent, Progress, toast, Badge, cn, BodyShapePicker } from "@kettleworth/ui";
 import { computeBaseline, kgToLb, lbToKg, cmToIn, inToCm, round } from "@kettleworth/core";
 import { STEPS, type StepId } from "./steps";
 
@@ -175,8 +175,8 @@ function StepBody({ id, p, set, baseline }: { id: StepId; p: P; set: (x: P) => v
       <div className="grid gap-4 sm:grid-cols-2">
         {imperial ? (<Field label="Height"><div className="grid grid-cols-2 gap-2"><NumberInput value={ft} suffix="ft" onChange={(v) => { setFt(v); set({ heightCm: v != null ? inToCm(v * 12 + (inch ?? 0)) : undefined }); }} /><NumberInput value={inch} suffix="in" onChange={(v) => { setInch(v); set({ heightCm: ft != null ? inToCm(ft * 12 + (v ?? 0)) : undefined }); }} /></div></Field>) : (<Field label="Height"><NumberInput value={p.heightCm ? Math.round(p.heightCm) : undefined} suffix="cm" onChange={(v) => set({ heightCm: v })} placeholder="178" /></Field>)}
         <Field label="Weight"><NumberInput step={0.1} value={p.weightKg ? round(imperial ? kgToLb(p.weightKg) : p.weightKg, 1) : undefined} suffix={imperial ? "lb" : "kg"} onChange={(v) => set({ weightKg: v == null ? undefined : imperial ? lbToKg(v) : v })} placeholder={imperial ? "176" : "80"} /></Field>
-        <Field label="Body fat estimate (optional)" className="sm:col-span-2" hint="Pick the closest description. Photos and measurements refine this later.">
-          <ChipGroup>{[[10, "Very lean, visible abs"], [15, "Lean, some definition"], [20, "Athletic, little definition"], [25, "Average"], [30, "Soft, carrying extra"], [38, "Significantly overweight"]].map(([v, l]) => <Chip key={v} selected={p.bodyFatPct === v} onClick={() => set({ bodyFatPct: p.bodyFatPct === v ? undefined : (v as number) })}>{l as string}</Chip>)}</ChipGroup>
+        <Field label="Which is closest to you right now? (optional)" className="sm:col-span-2" hint="A rough visual is all we need. A body check photo refines it later.">
+          <BodyShapePicker value={p.bodyFatPct} onChange={(v) => set({ bodyFatPct: v })} sex={p.sex ?? "male"} />
         </Field>
       </div>);
     case "experience": return (
