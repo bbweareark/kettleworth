@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kettleworth-postgres
+    environment:
+      POSTGRES_USER: kettleworth
+      POSTGRES_PASSWORD: kettleworth
+      POSTGRES_DB: kettleworth
+    ports:
+      - "5434:5432"
+    volumes:
+      - kettleworth_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kettleworth"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  redis:
+    image: redis:7-alpine
+    container_name: kettleworth-redis
+    ports:
+      - "6380:6379"
+volumes:
+  kettleworth_pg:

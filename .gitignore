@@ -1,0 +1,15 @@
+node_modules
+.next
+dist
+.turbo
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+coverage
+playwright-report
+test-results
+apps/web/public/sw.js
+apps/web/public/swe-worker-*.js
+packages/db/.seed-cache

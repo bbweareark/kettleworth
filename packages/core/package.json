@@ -1,0 +1,23 @@
+{
+  "name": "@kettleworth/core",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@kettleworth/types": "workspace:*",
+    "zod": "^4.6.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.0",
+    "@kettleworth/config": "workspace:*"
+  }
+}

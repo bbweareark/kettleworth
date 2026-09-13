@@ -1,0 +1,32 @@
+name: CI
+on: { push: { branches: [main] }, pull_request: {} }
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env: { POSTGRES_USER: kettleworth, POSTGRES_PASSWORD: kettleworth, POSTGRES_DB: kettleworth }
+        ports: ["5434:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      DATABASE_URL: postgres://kettleworth:kettleworth@localhost:5434/kettleworth
+      BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci-secret
+      BETTER_AUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      HEALTH_DATA_ENCRYPTION_KEY: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 12 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r --filter "./packages/*" typecheck
+      - run: pnpm --filter @kettleworth/web typecheck
+      - run: pnpm -r test
+      - run: pnpm --filter @kettleworth/db migrate && pnpm --filter @kettleworth/db seed
+      - run: pnpm --filter @kettleworth/web exec playwright install --with-deps chromium
+      - run: pnpm --filter @kettleworth/web build
+      - run: pnpm --filter @kettleworth/web test:e2e
+        env: { E2E_BASE_URL: "" }

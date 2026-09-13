@@ -1,0 +1,76 @@
+import { z } from "zod";
+import { TrainingProfile, Injury, type ProgrammePlan, type NutritionTargets, type WeeklyMealPlan, type BaselineMetrics, type Readiness } from "@kettleworth/types";
+import { structured, aiAvailable } from "./client";
+import { COACH_SYSTEM, INTAKE_SYSTEM, EXTRACT_SYSTEM } from "./prompts";
+
+export { aiAvailable };
+
+/** Models occasionally emit HTML entities or half-escaped dashes; normalise before display. */
+export function cleanText(t: string): string {
+  return t.replace(/(?<=\d)\s?(?:&ndash;|&#8211;|ndash;|dash;|\u2013|\u2014)\s?(?=\d)/g, " to ").replace(/\s?(?:&ndash;|&#8211;|&mdash;|&#8212;|\bndash;|\bmdash;|\bdash;|\u2013|\u2014)\s?/g, ", ").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/,\s*,/g, ",").trim();
+}
+
+// ---------- Intake follow-up ----------
+const FollowUp = z.object({ done: z.boolean(), question: z.string().nullable(), reason: z.string().nullable() });
+export async function intakeFollowUp(userId: string, profile: Partial<TrainingProfile>, transcript: { role: string; text: string }[], stage: string): Promise<{ question: string; reason: string } | null> {
+  const out = await structured({
+    task: "intake_followup", userId, system: INTAKE_SYSTEM, schema: FollowUp, effort: "low", maxTokens: 400,
+    user: `Stage just completed: ${stage}\n\nProfile so far:\n${JSON.stringify(profile, null, 1)}\n\nTranscript (last 12 turns):\n${transcript.slice(-12).map((t) => `${t.role}: ${t.text}`).join("\n")}`,
+  });
+  if (!out || out.done || !out.question) return null;
+  return { question: out.question, reason: out.reason ?? "" };
+}
+
+// ---------- Free-text extraction ----------
+const Extraction = z.object({
+  injuries: z.array(Injury),
+  medicalFlags: z.array(z.string()),
+  dislikedFoods: z.array(z.string()),
+  notes: z.string().nullable(),
+  timelineWeeks: z.number().int().min(4).max(52).nullable(),
+  sleepHours: z.number().min(3).max(12).nullable(),
+  stressLevel: z.number().int().min(1).max(5).nullable(),
+});
+export type Extraction = z.infer<typeof Extraction>;
+export async function extractFromAnswer(userId: string, question: string, answer: string): Promise<Extraction | null> {
+  return structured({ task: "intake_extract", userId, system: EXTRACT_SYSTEM, schema: Extraction, effort: "low", maxTokens: 600, user: `Question asked: ${question}\nUser answer: ${answer}` });
+}
+
+// ---------- Profile summary ----------
+const Summary = z.object({ summary: z.string().max(700), headline: z.string().max(80) });
+export async function summariseProfile(userId: string, profile: TrainingProfile, baseline: BaselineMetrics): Promise<{ summary: string; headline: string }> {
+  const out = await structured({ task: "profile_summary", userId, system: COACH_SYSTEM, schema: Summary, effort: "low", maxTokens: 600, user: `Write a 3-sentence training profile the user will review, plus a 6-word headline. Speak to them as "you".\n\nProfile:\n${JSON.stringify(profile, null, 1)}\n\nBaseline metrics:\n${JSON.stringify(baseline, null, 1)}` });
+  return out ? { summary: cleanText(out.summary), headline: cleanText(out.headline) } : fallbackSummary(profile, baseline);
+}
+export function fallbackSummary(p: TrainingProfile, b: BaselineMetrics): { summary: string; headline: string } {
+  const goal = p.primaryGoal.replace("_", " ");
+  const env = p.environment === "home" ? "at home" : p.environment === "both" ? "at the gym and at home" : "at the gym";
+  const s1 = `You're ${p.experience === "beginner" ? "starting out" : `an ${p.experience} lifter`} training ${p.daysPerWeek} days a week for about ${p.sessionMinutes} minutes ${env}, with ${goal} as the main goal over ${p.timelineWeeks} weeks.`;
+  const s2 = p.injuries.length ? `We'll work around your ${p.injuries.map((i) => i.region.replace("_", " ")).join(" and ")} by excluding movements that load it and offering swaps.` : `No injuries to work around, so the full library is open to you.`;
+  const s3 = b.targetCalories ? `Nutrition starts at ${b.targetCalories} kcal and ${b.proteinG} g protein on a ${p.dietType} diet, adjusted weekly from your weight trend.` : `Add your height, weight and age to unlock calorie and macro targets.`;
+  return { summary: `${s1} ${s2} ${s3}`, headline: `${capital(goal)}, ${p.daysPerWeek} days, ${p.timelineWeeks} weeks` };
+}
+
+// ---------- Programme coach note ----------
+const CoachNote = z.object({ note: z.string().max(900), weekOneFocus: z.string().max(200) });
+export async function programmeCoachNote(userId: string, profile: TrainingProfile, plan: ProgrammePlan, exerciseNames: Record<string, string>): Promise<{ note: string; weekOneFocus: string }> {
+  const w1 = plan.mesocycles[0]?.weeks[0];
+  const outline = w1?.sessions.map((s) => `${s.name}: ${s.exercises.map((e) => exerciseNames[e.exerciseId] ?? e.exerciseId).join(", ")}`).join("\n");
+  const out = await structured({ task: "programme_note", userId, system: COACH_SYSTEM, schema: CoachNote, effort: "medium", maxTokens: 900, validate: (o) => (/\b(deadlift|squat|bench|press|row|curl)\b/i.test(o.note) && !Object.values(exerciseNames).some((n) => o.note.toLowerCase().includes(n.toLowerCase().split(" ")[0]!)) ? ["mentions exercises not in the plan"] : []),
+    user: `Write a short coach note (2 paragraphs, under 120 words total) introducing this programme to the user, and a one-line "week one focus". Reference their goal, schedule and one or two named exercises from the outline. Do not list every exercise.\n\nProfile:\n${JSON.stringify({ goal: profile.primaryGoal, experience: profile.experience, days: profile.daysPerWeek, minutes: profile.sessionMinutes, styles: profile.styles, injuries: profile.injuries }, null, 1)}\n\nProgramme: ${plan.name}\nRationale: ${plan.rationale.join(" ")}\nWeek 1 outline:\n${outline}` });
+  if (out) return { note: cleanText(out.note), weekOneFocus: cleanText(out.weekOneFocus).replace(/^week one focus:\s*/i, "") };
+  return { note: `${plan.summary} ${plan.rationale[0] ?? ""} Week one is about finding working weights you can move with good form: leave a couple of reps in reserve and log every set so the plan can progress you.`, weekOneFocus: "Find your working weights and log every set." };
+}
+
+// ---------- Meal plan note ----------
+const MealNote = z.object({ note: z.string().max(500) });
+export async function mealPlanNote(userId: string, profile: TrainingProfile, targets: NutritionTargets, plan: WeeklyMealPlan, recipeNames: Record<string, string>): Promise<string> {
+  const out = await structured({ task: "meal_plan_note", userId, system: COACH_SYSTEM, schema: MealNote, effort: "low", maxTokens: 400, user: `Write a 3-sentence note introducing this week's meal plan: the calorie/protein targets, one practical prep tip, and a reminder they can swap meals. Recipes this week: ${[...new Set(plan.items.map((i) => recipeNames[i.recipeId] ?? i.recipeId))].join(", ")}. Targets: ${targets.calories} kcal, ${targets.proteinG} g protein. Diet: ${profile.dietType}. Cooking limit: ${profile.cookingMinutes} min.` });
+  return out?.note ? cleanText(out.note) : `This week lands around ${targets.calories} kcal a day with ${targets.proteinG} g protein, using ${profile.dietType} recipes that take ${profile.cookingMinutes} minutes or less. Cook the batch recipes once and reuse them across two days. Swap any meal you don't fancy and the totals update.`;
+}
+
+// ---------- Daily readiness message ----------
+export function readinessMessage(r: Readiness): string {
+  return r.reasons.join(" ");
+}
+const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
