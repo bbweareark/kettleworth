@@ -114,6 +114,21 @@ describe("variety", () => {
   });
 });
 
+describe("extension", () => {
+  it("continues from a previous plan: anchors carry over, accessories rotate, loads come from logged e1RM", () => {
+    const p = TrainingProfile.parse({ daysPerWeek: 3, timelineWeeks: 8, goals: ["muscle"], primaryGoal: "muscle" });
+    const first = generateProgramme(p, lib, { seed: "a" });
+    const next = generateProgramme(p, lib, { seed: "b", previousPlan: first, e1rmOverrides: { back_squat: 130 } });
+    const lastPrev = first.mesocycles.at(-1)!.weeks[0]!.sessions;
+    const firstNext = next.mesocycles[0]!.weeks[0]!.sessions;
+    for (let d = 0; d < lastPrev.length; d++) expect(firstNext[d]!.exercises.filter((e) => e.role === "primary").map((e) => e.exerciseId)).toEqual(lastPrev[d]!.exercises.filter((e) => e.role === "primary").map((e) => e.exerciseId));
+    const squat = firstNext.flatMap((s) => s.exercises).find((e) => e.exerciseId === "back_squat");
+    if (squat) expect(squat.sets.find((x) => x.type === "working")!.weightKg).toBeGreaterThan(90);
+    expect(next.mesocycles[0]!.name).toBe("Block 3");
+    expect(next.rationale.join(" ")).toMatch(/continues your last one/);
+  });
+});
+
 describe("substitutes", () => {
   it("offers same-pattern swaps respecting equipment", () => {
     const p = TrainingProfile.parse({ environment: "home", equipment: ["dumbbell", "kettlebell"] });

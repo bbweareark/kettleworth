@@ -18,6 +18,7 @@
   "devDependencies": {
     "typescript": "^5.9.3",
     "vitest": "^5.0.0",
-    "@kettleworth/config": "workspace:*"
+    "@kettleworth/config": "workspace:*",
+    "@types/node": "^24"
   }
 }

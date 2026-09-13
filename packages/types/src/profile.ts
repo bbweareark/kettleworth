@@ -113,6 +113,8 @@ export const TrainingProfile = z.object({
   vibe: z.string().max(200).optional(),
   /** steady = same exercises all block; balanced = anchors fixed, accessories rotate each mesocycle; high = accessories rotate every 2 weeks and main-lift variations change per block */
   varietyPreference: z.enum(["steady", "balanced", "high"]).default("balanced"),
+  /** Muscles the user (or the body-photo analysis, once confirmed) wants prioritised. Muscle ids from the exercise taxonomy. */
+  priorityMuscles: z.array(z.string()).default([]),
   injuries: z.array(Injury).default([]),
   medicalFlags: z.array(z.string()).default([]),
   sleepHours: z.number().min(3).max(12).optional(),

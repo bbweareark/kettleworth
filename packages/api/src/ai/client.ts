@@ -25,6 +25,8 @@ export type StructuredTask<T> = {
   maxTokens?: number;
   /** Post-parse validator: return a list of problems; non-empty => output rejected and logged as invalid. */
   validate?: (out: T) => string[];
+  /** Optional images (base64) sent ahead of the user text. */
+  images?: { data: string; mediaType: "image/jpeg" | "image/png" | "image/webp" }[];
 };
 
 /**
@@ -42,7 +44,7 @@ export async function structured<T>(t: StructuredTask<T>): Promise<T | null> {
       model: AI_MODEL,
       max_tokens: t.maxTokens ?? 4096,
       system: [{ type: "text", text: t.system, cache_control: { type: "ephemeral" } }],
-      messages: [{ role: "user", content: t.user }],
+      messages: [{ role: "user", content: t.images?.length ? [...t.images.map((im) => ({ type: "image" as const, source: { type: "base64" as const, media_type: im.mediaType, data: im.data } })), { type: "text" as const, text: t.user }] : t.user }],
       output_config: { format: zodOutputFormat(t.schema), effort: t.effort ?? "medium" },
     });
     usage = res.usage;
@@ -57,7 +59,7 @@ export async function structured<T>(t: StructuredTask<T>): Promise<T | null> {
     errors.push(e instanceof Anthropic.APIError ? `api ${e.status}: ${e.message}` : String(e));
   }
   try {
-    await db().insert(aiLog).values({ userId: t.userId ?? null, task: t.task, model: AI_MODEL, system: t.system.slice(0, 20000), input: { user: t.user.slice(0, 50000) }, output: output as unknown as Record<string, unknown> | null, valid: errors.length ? 0 : 1, validationErrors: errors.length ? errors : null, inputTokens: usage.input_tokens ?? null, outputTokens: usage.output_tokens ?? null, latencyMs: Date.now() - started });
+    await db().insert(aiLog).values({ userId: t.userId ?? null, task: t.task, model: AI_MODEL, system: t.system.slice(0, 20000), input: { user: t.user.slice(0, 50000), images: t.images?.length ?? 0 }, output: output as unknown as Record<string, unknown> | null, valid: errors.length ? 0 : 1, validationErrors: errors.length ? errors : null, inputTokens: usage.input_tokens ?? null, outputTokens: usage.output_tokens ?? null, latencyMs: Date.now() - started });
   } catch (e) {
     console.warn("ai_log write failed", e);
   }

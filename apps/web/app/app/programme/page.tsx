@@ -23,7 +23,7 @@ export default async function Programme() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div><p className="eyebrow">Programme</p><h1 className="font-display text-3xl font-semibold tracking-tighter md:text-4xl">{p.name}</h1><p className="mt-1 text-fg-muted">{p.summary}</p></div>
-        <Button asChild variant="secondary"><Link href="/app/programme/new">Regenerate <Sparkles /></Link></Button>
+        <div className="flex gap-2"><Button asChild><Link href="/app/programme/new?continue=1">Extend: next block <Sparkles /></Link></Button><Button asChild variant="secondary"><Link href="/app/programme/new">Start over</Link></Button></div>
       </div>
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2"><CardContent className="space-y-4">

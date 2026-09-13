@@ -6,5 +6,6 @@ export * from "./services/progress";
 export * from "./services/nutrition";
 export * from "./services/integrations";
 export * from "./services/account";
+export * from "./services/photos";
 export * from "./services/entitlements";
 export * from "./ai";

@@ -31,6 +31,7 @@ export function scoreCandidate(ex: ExerciseSummary, slot: SlotSpec, profile: Tra
   s += Math.min(10, ex.popularity / 10);
   if (profile.lovedExerciseIds.includes(ex.id)) s += 6;
   if (profile.knownLifts.some((l) => l.exerciseId === ex.id)) s += 3; // user already trains it and we can prescribe a load
+  if (slot.role !== "primary") s += ex.primaryMuscles.filter((m) => profile.priorityMuscles.includes(m)).length * 3; // priority areas win accessory slots
   if (slot.role === "primary" && ex.mechanics === "compound") s += 3;
   if (slot.role === "accessory" && ex.mechanics === "isolation") s += 2;
   if (slot.muscles?.length) {

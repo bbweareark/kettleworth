@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { Flame, Trophy } from "lucide-react";
 import { requireUser } from "@/lib/session";
-import { getProfile, getProgress } from "@kettleworth/api";
+import { getProfile, getProgress, listPhotos, aiAvailable } from "@kettleworth/api";
+import { BodyCheck } from "@/components/progress/body-check";
 import { Badge, Card, CardContent, Stat, EmptyState } from "@kettleworth/ui";
 import { kgToLb, round } from "@kettleworth/core";
 import { E1RMChart, TonnageChart, WeightChart, VolumeCompare } from "@/components/progress/charts";
@@ -14,7 +15,7 @@ export default async function Progress() {
   const user = await requireUser();
   const rec = await getProfile(user.id);
   if (!rec?.onboardingCompletedAt) redirect("/app/onboarding");
-  const p = await getProgress(user.id);
+  const [p, photos] = await Promise.all([getProgress(user.id), listPhotos(user.id)]);
   const units = rec.profile.units;
   const w = (kg: number | null | undefined) => (kg == null ? null : units === "metric" ? round(kg, 1) : round(kgToLb(kg), 1));
   const u = units === "metric" ? "kg" : "lb";
@@ -33,6 +34,7 @@ export default async function Progress() {
         <Card><CardContent><h2 className="mb-1 font-display text-lg font-semibold">Sets per muscle</h2><p className="mb-3 text-xs text-fg-subtle">This week vs last week.</p><VolumeCompare thisWeek={p.volumeThisWeek} lastWeek={p.volumeLastWeek} /></CardContent></Card>
         <Card><CardContent><h2 className="mb-1 font-display text-lg font-semibold">Bodyweight</h2><p className="mb-3 text-xs text-fg-subtle">Weigh in weekly, same time of day.</p>{p.measurements.filter((m) => m.weightKg != null).length ? <WeightChart data={p.measurements.filter((m) => m.weightKg != null).map((m) => ({ date: m.measuredOn, value: w(m.weightKg)! }))} unit={u} /> : <p className="text-sm text-fg-subtle">No weigh-ins yet.</p>}<MeasurementForm units={units} /></CardContent></Card>
       </div>
+      <BodyCheck initial={photos.map((x) => ({ id: x.id, takenOn: x.takenOn, pose: x.pose, analysis: x.analysis ?? null }))} ai={aiAvailable()} priorityMuscles={rec.profile.priorityMuscles} />
       <div className="grid gap-4 lg:grid-cols-2">
         <Card><CardContent><h2 className="mb-3 flex items-center gap-2 font-display text-lg font-semibold"><Trophy className="size-4 text-ember" /> Personal records</h2>{p.prs.length ? <ul className="divide-y divide-border">{p.prs.map((pr) => <li key={pr.id} className="flex items-center justify-between py-2 text-sm"><span>{pr.name}</span><span className="tabular text-fg-muted">{w(pr.weightKg)} {u} × {pr.reps} · e1RM {w(pr.value)} {u}</span></li>)}</ul> : <p className="text-sm text-fg-subtle">Beat your best estimated 1RM on any lift and it lands here.</p>}</CardContent></Card>
         <Card><CardContent><h2 className="mb-3 flex items-center gap-2 font-display text-lg font-semibold"><Flame className="size-4 text-ember" /> Recent sessions</h2>{p.recentSessions.length ? <ul className="divide-y divide-border">{p.recentSessions.map((s, i) => <li key={i} className="flex items-center justify-between py-2 text-sm"><span>{s.name}</span><span className="flex items-center gap-2 text-fg-muted">{s.sessionRpe ? <Badge tone="outline">RPE {s.sessionRpe}</Badge> : null}{new Date(s.scheduledOn).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span></li>)}</ul> : <p className="text-sm text-fg-subtle">No sessions completed yet.</p>}</CardContent></Card>

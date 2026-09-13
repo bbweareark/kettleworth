@@ -7,6 +7,8 @@ export { aiAvailable };
 
 /** Models occasionally emit HTML entities or half-escaped dashes; normalise before display. */
 export function cleanText(t: string): string {
+  // Models sometimes double-escape: decode literal \uXXXX sequences first so the dash rules below can see them.
+  t = t.replace(/\\u([0-9a-fA-F]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16)));
   return t.replace(/(?<=\d)\s?(?:&ndash;|&#8211;|ndash;|dash;|\u2013|\u2014)\s?(?=\d)/g, " to ").replace(/\s?(?:&ndash;|&#8211;|&mdash;|&#8212;|\bndash;|\bmdash;|\bdash;|\u2013|\u2014)\s?/g, ", ").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/,\s*,/g, ",").trim();
 }
 
@@ -74,3 +76,30 @@ export function readinessMessage(r: Readiness): string {
   return r.reasons.join(" ");
 }
 const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+// ---------- Body photo analysis ----------
+import { Muscle } from "@kettleworth/types";
+const BodyRead = z.object({
+  summary: z.string().max(1500),
+  build: z.enum(["lean", "athletic", "average", "carrying_extra", "unclear"]),
+  bodyFatLowPct: z.number().min(3).max(60).nullable(),
+  bodyFatHighPct: z.number().min(3).max(60).nullable(),
+  strengths: z.array(z.string().max(300)).max(4),
+  focusAreas: z.array(z.object({ muscle: Muscle, reason: z.string().max(300) })).max(4),
+  posture: z.array(z.string().max(300)).max(3),
+  caveats: z.array(z.string().max(300)).max(3),
+});
+export type BodyRead = Omit<z.infer<typeof BodyRead>, "bodyFatLowPct" | "bodyFatHighPct"> & { bodyFatRangePct: [number, number] | null };
+export async function analyseBodyPhotos(userId: string, images: { data: string; mediaType: "image/jpeg" | "image/png" | "image/webp"; pose: string }[], profile: TrainingProfile): Promise<BodyRead | null> {
+  const out = await structured({
+    task: "body_photo_analysis", userId, schema: BodyRead, effort: "medium", maxTokens: 1200, images: images.map(({ data, mediaType }) => ({ data, mediaType })),
+    system: `${COACH_SYSTEM}
+
+You are reading progress photos for a coaching client who asked for this. Be respectful, neutral and specific; never comment on attractiveness, never use words like fat, skinny, flabby or weak. Describe build in training terms. Give a body-fat range only if the photos genuinely support one (lighting, clothing and pose limit accuracy; say so in caveats). Focus areas are muscles that, developed, would best serve the client's stated goal and balance, chosen from the taxonomy provided. Posture notes are observations, not diagnoses. If the photos are unclear or not of a person's body, set build to unclear and explain. Summary: at most 70 words. Every list item: one sentence.`,
+    user: `Client goal: ${profile.primaryGoal}. Experience: ${profile.experience}. Height ${profile.heightCm ?? "?"} cm, weight ${profile.weightKg ?? "?"} kg, self-estimated body fat ${profile.bodyFatPct ?? "not given"}%. Photo poses in order: ${images.map((i) => i.pose).join(", ")}. Muscle taxonomy: ${Muscle.options.join(", ")}.`,
+    validate: (o) => (o.focusAreas.some((f) => !Muscle.options.includes(f.muscle)) ? ["unknown muscle"] : []),
+  });
+  if (!out) return null;
+  const { bodyFatLowPct, bodyFatHighPct, ...rest } = out;
+  return { ...rest, bodyFatRangePct: bodyFatLowPct != null && bodyFatHighPct != null ? [Math.min(bodyFatLowPct, bodyFatHighPct), Math.max(bodyFatLowPct, bodyFatHighPct)] : null, summary: cleanText(out.summary), strengths: out.strengths.map(cleanText), posture: out.posture.map(cleanText), caveats: out.caveats.map(cleanText), focusAreas: out.focusAreas.map((f) => ({ ...f, reason: cleanText(f.reason) })) };
+}

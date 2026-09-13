@@ -342,6 +342,9 @@ importers:
       '@kettleworth/config':
         specifier: workspace:*
         version: link:../config
+      '@types/node':
+        specifier: ^24
+        version: 24.13.4
       typescript:
         specifier: ^5.9.3
         version: 5.9.3

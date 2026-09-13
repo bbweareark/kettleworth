@@ -5,7 +5,7 @@ import { prescribe, buildSets, estimateSetMinutes, prescriptionSummary } from ".
 import { seededRandom, hashString } from "../rng";
 import { estimate1RM } from "../metrics";
 
-export type GenerateOptions = { seed?: string; startDate?: string };
+export type GenerateOptions = { seed?: string; startDate?: string; /** Extend: the plan just finished. Anchors carry over, accessories rotate, block numbering continues. */ previousPlan?: ProgrammePlan | null; /** Latest estimated 1RMs from logged sets (exerciseId -> kg); overrides intake numbers. */ e1rmOverrides?: Record<string, number> };
 
 const LOWER_PATTERNS = new Set(["squat", "hinge", "lunge"]);
 const WARMUP_LINES: Record<string, string[]> = {
@@ -32,6 +32,10 @@ export function generateProgramme(profile: TrainingProfile, library: ExerciseSum
   const { split, templates, reason } = chooseSplit(profile);
   const e1rm = new Map<string, number>();
   for (const l of profile.knownLifts) e1rm.set(l.exerciseId, estimate1RM(l.weightKg, l.reps));
+  for (const [id, kg] of Object.entries(opts.e1rmOverrides ?? {})) e1rm.set(id, kg);
+  const prevMeso = opts.previousPlan?.mesocycles.at(-1);
+  const prevSessions = prevMeso ? (prevMeso.weeks.filter((w) => !w.isDeload).at(-1) ?? prevMeso.weeks.at(-1))?.sessions ?? null : null;
+  const blockOffset = opts.previousPlan ? opts.previousPlan.mesocycles.length : 0;
 
   const rationale: string[] = [reason, prescriptionSummary(profile)];
   const volumeBySet: Record<string, number> = {};
@@ -51,7 +55,9 @@ export function generateProgramme(profile: TrainingProfile, library: ExerciseSum
     const weekSets: Record<string, number> = {};
     const avoid = new Set<string>();
     if (previous && variety !== "steady") {
-      for (const s of previous) for (const e of s.exercises) if (e.role !== "primary" || (variety === "high" && blockIndex > 0 && rotation === 0)) avoid.add(e.exerciseId);
+      const anchors = new Set(previous.flatMap((s) => s.exercises.filter((e) => e.role === "primary").map((e) => e.exerciseId)));
+      const rotatePrimaries = variety === "high" && blockIndex > 0 && rotation === 0;
+      for (const s of previous) for (const e of s.exercises) if ((e.role !== "primary" && !anchors.has(e.exerciseId)) || (rotatePrimaries && e.role === "primary")) avoid.add(e.exerciseId);
     }
     const sessions: PlannedSession[] = [];
     templates.forEach((t, dayIndex) => {
@@ -78,19 +84,19 @@ export function generateProgramme(profile: TrainingProfile, library: ExerciseSum
         const working = sets.filter((x) => x.type === "working").length;
         const headroom = Math.min(...ex.primaryMuscles.map((m) => MAX_SETS - (weekSets[m] ?? 0)), working);
         if (headroom < working) {
-          if (slot.optional || headroom < 2) { if (blockIndex === 0 && rotation === 0) rationale.push(`Left out an extra ${ex.primaryMuscles[0]?.replace("_", " ") ?? slot.pattern} exercise in ${t.name}: that muscle already has enough weekly sets for your level.`); return; }
+          if (slot.optional || headroom < 2) { if (blockIndex === blockOffset && rotation === 0) rationale.push(`Left out an extra ${ex.primaryMuscles[0]?.replace("_", " ") ?? slot.pattern} exercise in ${t.name}: that muscle already has enough weekly sets for your level.`); return; }
           let keep = headroom; sets = sets.filter((x) => x.type !== "working" || keep-- > 0);
         }
         const est = estimateSetMinutes(sets);
         if (slot.optional && minutes + est > profile.sessionMinutes) {
-          if (blockIndex === 0) rationale.push(`Skipped an optional ${slot.pattern.replace("_", " ")} slot in ${t.name} to fit your ${profile.sessionMinutes}-minute sessions.`);
+          if (blockIndex === blockOffset) rationale.push(`Skipped an optional ${slot.pattern.replace("_", " ")} slot in ${t.name} to fit your ${profile.sessionMinutes}-minute sessions.`);
           return;
         }
         for (const m of ex.primaryMuscles) weekSets[m] = (weekSets[m] ?? 0) + sets.filter((x) => x.type === "working").length;
         minutes += est;
         usedIds.add(ex.id);
         exercises.push({ exerciseId: ex.id, order: i, role: slot.role === "mobility" ? "mobility" : slot.role, sets, notes: null, rationale: sel.rationale, supersetGroup: null });
-        if (blockIndex === 0 && rotation === 0) for (const m of ex.primaryMuscles) volumeBySet[m] = (volumeBySet[m] ?? 0) + sets.filter((s) => s.type === "working").length;
+        if (blockIndex === blockOffset && rotation === 0) for (const m of ex.primaryMuscles) volumeBySet[m] = (volumeBySet[m] ?? 0) + sets.filter((s) => s.type === "working").length;
       });
       sessions.push({ dayIndex, name: t.name, focus: t.focus as Muscle[], estimatedMinutes: Math.round(minutes), warmup: WARMUP_LINES[isUpper ? "upper" : isLower ? "lower" : "default"]!, exercises });
     });
@@ -100,9 +106,10 @@ export function generateProgramme(profile: TrainingProfile, library: ExerciseSum
   const mesocycles: PlannedMesocycle[] = [];
   let weekNumber = 1;
   const mesoNames = ["Foundation", "Build", "Peak", "Consolidate"];
-  let previous: PlannedSession[] | null = null;
+  let previous: PlannedSession[] | null = prevSessions && prevSessions.length === templates.length ? prevSessions : null;
+  if (opts.previousPlan) rationale.push(previous ? "This block continues your last one: the main lifts carry over with loads set from what you actually lifted, and accessories rotate so nothing goes stale." : "New block after your last programme: the split changed with your schedule, so exercises were re-selected; loads still start from your logged strength.");
   layout.forEach((block, mi) => {
-    let blockSessions = buildBlock(mi, 0, previous);
+    let blockSessions = buildBlock(mi + blockOffset, 0, previous);
     let midSessions = variety === "high" && block.build >= 3 ? buildBlock(mi, 1, blockSessions) : null;
     const weeks: PlannedWeek[] = [];
     for (let w = 0; w < block.build; w++) {
@@ -112,7 +119,7 @@ export function generateProgramme(profile: TrainingProfile, library: ExerciseSum
       weeks.push({ weekNumber: weekNumber++, isDeload: false, intensityScalar: round2(intensityScalar), volumeScalar: round2(volumeScalar), sessions: scaleSessions(base, volumeScalar, intensityScalar, false, e1rm, library, profile) });
     }
     if (block.deload) weeks.push({ weekNumber: weekNumber++, isDeload: true, intensityScalar: 0.9, volumeScalar: 0.5, sessions: scaleSessions(midSessions ?? blockSessions, 0.5, 0.9, true, e1rm, library, profile) });
-    mesocycles.push({ index: mi, name: mesoNames[mi] ?? `Block ${mi + 1}`, focus: mi === 0 ? "Learn the movements and find your working weights." : mi === 1 ? "Add sets and load week over week." : "Push intensity, then consolidate with a deload.", weeks });
+    mesocycles.push({ index: mi, name: opts.previousPlan ? `Block ${mi + 1 + blockOffset}` : (mesoNames[mi] ?? `Block ${mi + 1}`), focus: mi === 0 ? "Learn the movements and find your working weights." : mi === 1 ? "Add sets and load week over week." : "Push intensity, then consolidate with a deload.", weeks });
     previous = midSessions ?? blockSessions;
   });
   if (variety === "steady") rationale.push("You asked for a steady programme, so every exercise stays the same for the whole plan and progress is easy to track.");

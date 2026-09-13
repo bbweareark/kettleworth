@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db, user, profile, bodyMeasurement, programme, trainingSession, exerciseInstance, personalRecord, nutritionPlan, mealPlan, foodLog, connectedProvider, healthSample, auditLog, decryptJson } from "@kettleworth/db";
 import { disconnectProvider } from "./integrations";
+import { deleteAllPhotos } from "./photos";
 import { getProfile } from "./profile";
 
 /** GDPR export: everything we hold about the user, decrypted, as one JSON document. */
@@ -28,6 +29,7 @@ export async function exportAccount(userId: string) {
 export async function deleteAccount(userId: string) {
   const providers = await db().select({ provider: connectedProvider.provider }).from(connectedProvider).where(eq(connectedProvider.userId, userId));
   for (const p of providers) await disconnectProvider(userId, p.provider).catch(() => {});
+  await deleteAllPhotos(userId).catch(() => {});
   await db().insert(auditLog).values({ userId: null, action: "account.deleted", meta: { userHash: userId.slice(0, 6) } });
   await db().delete(user).where(eq(user.id, userId));
 }

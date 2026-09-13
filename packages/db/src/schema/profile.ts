@@ -37,9 +37,14 @@ export const progressPhoto = pgTable("progress_photo", {
   userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
   takenOn: date("taken_on").notNull(),
   storageKey: text("storage_key").notNull(),
+  contentType: text("content_type").notNull().default("image/jpeg"),
+  bytes: integer("bytes").notNull().default(0),
   pose: text("pose").notNull().default("front"),
+  analysis: jsonb("analysis").$type<BodyAnalysis>(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [index("progress_photo_user_idx").on(t.userId)]);
+
+export type BodyAnalysis = { summary: string; build: "lean" | "athletic" | "average" | "carrying_extra" | "unclear"; bodyFatRangePct: [number, number] | null; strengths: string[]; focusAreas: { muscle: string; reason: string }[]; posture: string[]; caveats: string[]; analysedAt: string; model: string };
 
 export const estimatedMax = pgTable("estimated_max", {
   id: uuid("id").primaryKey().defaultRandom(),

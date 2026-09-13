@@ -67,7 +67,7 @@ export default async function Today() {
           </CardContent>
         </Card>
       ) : (
-        <Card><CardContent className="flex items-center justify-between gap-4"><div><h2 className="font-display text-xl font-semibold">Block complete.</h2><p className="text-sm text-fg-muted">Time to build the next one.</p></div><Button asChild><Link href="/app/programme/new">New programme <ArrowRight /></Link></Button></CardContent></Card>
+        <Card><CardContent className="flex items-center justify-between gap-4"><div><h2 className="font-display text-xl font-semibold">Block complete.</h2><p className="text-sm text-fg-muted">Time to build the next one.</p></div><Button asChild><Link href="/app/programme/new?continue=1">Build next block <ArrowRight /></Link></Button></CardContent></Card>
       )}
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

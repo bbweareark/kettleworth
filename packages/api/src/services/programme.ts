@@ -1,5 +1,5 @@
 import { and, asc, desc, eq, inArray } from "drizzle-orm";
-import { db, programme, mesocycle, week, trainingSession, exerciseInstance, auditLog } from "@kettleworth/db";
+import { db, programme, mesocycle, week, trainingSession, exerciseInstance, auditLog, estimatedMax } from "@kettleworth/db";
 import { generateProgramme, validatePlanAgainstLibrary } from "@kettleworth/core";
 import type { ProgrammePlan } from "@kettleworth/types";
 import { getProfile } from "./profile";
@@ -9,15 +9,25 @@ import { programmeCoachNote, aiAvailable } from "../ai/tasks";
 const DAY_OFFSETS: Record<number, number[]> = { 1: [0], 2: [0, 3], 3: [0, 2, 4], 4: [0, 1, 3, 4], 5: [0, 1, 2, 4, 5], 6: [0, 1, 2, 3, 4, 5], 7: [0, 1, 2, 3, 4, 5, 6] };
 const addDays = (d: string, n: number) => { const x = new Date(d + "T00:00:00Z"); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
 
-export async function generateAndSaveProgramme(userId: string, opts: { startDate?: string } = {}) {
+export async function generateAndSaveProgramme(userId: string, opts: { startDate?: string; weeks?: number; continueFrom?: boolean } = {}) {
   const rec = await getProfile(userId);
   if (!rec) throw new Error("Complete onboarding first");
   const library = await libraryForEngine();
   const seed = `${userId}:${Date.now()}`;
-  const plan = generateProgramme(rec.profile, library, { seed });
+  // Latest logged strength per exercise beats the intake numbers.
+  const maxes = await db().select().from(estimatedMax).where(eq(estimatedMax.userId, userId)).orderBy(desc(estimatedMax.recordedAt));
+  const e1rmOverrides: Record<string, number> = {};
+  for (const m of maxes) if (!(m.exerciseId in e1rmOverrides)) e1rmOverrides[m.exerciseId] = m.e1rmKg;
+  const prev = opts.continueFrom ? await getActiveProgramme(userId) ?? (await db().select().from(programme).where(eq(programme.userId, userId)).orderBy(desc(programme.createdAt)).limit(1))[0] ?? null : null;
+  const profileForPlan = opts.weeks ? { ...rec.profile, timelineWeeks: opts.weeks } : rec.profile;
+  const plan = generateProgramme(profileForPlan, library, { seed, previousPlan: prev?.plan ?? null, e1rmOverrides });
   const errors = validatePlanAgainstLibrary(plan, library);
   if (errors.length) throw new Error(`Plan failed validation: ${errors.join("; ")}`);
-  const startDate = opts.startDate ?? new Date().toISOString().slice(0, 10);
+  let startDate = opts.startDate ?? new Date().toISOString().slice(0, 10);
+  if (prev && !opts.startDate) {
+    const [last] = await db().select({ d: trainingSession.scheduledOn }).from(trainingSession).where(eq(trainingSession.programmeId, prev.id)).orderBy(desc(trainingSession.scheduledOn)).limit(1);
+    if (last && last.d >= startDate) startDate = addDays(last.d, 1);
+  }
   const ids = [...new Set(plan.mesocycles.flatMap((m) => m.weeks.flatMap((w) => w.sessions.flatMap((s) => s.exercises.map((e) => e.exerciseId)))))];
   const names = Object.fromEntries((await getExercisesByIds(ids)).map((e) => [e.id, e.name]));
   const note = await programmeCoachNote(userId, rec.profile, plan, names);
@@ -40,7 +50,7 @@ export async function generateAndSaveProgramme(userId: string, opts: { startDate
         weekIdx++;
       }
     }
-    await tx.insert(auditLog).values({ userId, action: "programme.generated", target: p!.id, meta: { seed, generatedBy: aiAvailable() ? "rules+ai" : "rules" } });
+    await tx.insert(auditLog).values({ userId, action: prev ? "programme.extended" : "programme.generated", target: p!.id, meta: { seed, from: prev?.id ?? null, generatedBy: aiAvailable() ? "rules+ai" : "rules" } });
     return p!;
   });
 }
