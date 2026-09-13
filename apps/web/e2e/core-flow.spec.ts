@@ -62,7 +62,7 @@ test("sign up → intake → programme → session logging", async ({ page }) =>
   await page.getByRole("button", { name: /Generate programme/ }).click();
   await page.waitForURL(/\/app\/programme$/, { timeout: 60_000 });
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Muscle");
-  await expect(page.getByText("Week 1")).toBeVisible();
+  await expect(page.getByText("Week 1", { exact: true }).first()).toBeVisible();
 
   // Today → start session → log a set
   await page.goto("/app");
