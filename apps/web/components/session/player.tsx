@@ -112,11 +112,11 @@ export function SessionPlayer({ detail, units }: { detail: Detail; units: "metri
         {showInfo && (<div className="border-t border-border bg-surface-2 p-4 text-sm"><div className="grid gap-4 sm:grid-cols-2"><div><div className="eyebrow mb-1">Cues</div><ul className="space-y-1 text-fg-muted">{(cur.exercise.cues.length ? cur.exercise.cues : cur.exercise.instructions.slice(0, 4)).map((c) => <li key={c}>{c}</li>)}</ul></div><div><div className="eyebrow mb-1">Watch for</div><ul className="space-y-1 text-fg-muted">{cur.exercise.commonMistakes.length ? cur.exercise.commonMistakes.map((c) => <li key={c}>{c}</li>) : <li>Control the eccentric; stop 1–2 reps shy of failure unless told otherwise.</li>}</ul>{cur.cautions.filter((c) => c.level === "info").length ? <><div className="eyebrow mb-1 mt-3">Safety</div><ul className="space-y-1 text-fg-muted">{cur.cautions.filter((c) => c.level === "info").map((c, k) => <li key={k}>{c.text}</li>)}</ul></> : null}<Link href={`/library/${cur.exercise.slug}`} className="mt-2 inline-block text-ember hover:underline">Full exercise page</Link></div></div></div>)}
       </Card>
 
-      {!curDone && <FormCheck key={cur.id} exerciseId={cur.exerciseId} name={cur.exercise.name} cards={cards} image={cur.exercise.imageUrls[0]} />}
+      {!curDone && <FormCheck key={`check-${cur.id}`} exerciseId={cur.exerciseId} name={cur.exercise.name} cards={cards} image={cur.exercise.imageUrls[0]} />}
 
       {rest != null ? <RestTimer key={rest + "-" + doneSets} seconds={rest} onDone={() => setRest(null)} onSkip={() => setRest(null)}><RestTip cards={restCards} /></RestTimer> : null}
 
-      <Card key={cur.id}><CardContent className="space-y-2 p-4">
+      <Card key={`sets-${cur.id}`}><CardContent className="space-y-2 p-4">
         {cur.lastTime?.length ? <div className="mb-2 text-xs text-fg-subtle">Last time: {cur.lastTime.filter((l) => l.completed).map((l) => `${fmtW(l.weightKg, units)}×${l.reps ?? "-"}`).join(", ")}</div> : null}
         {cur.plannedSets.map((s) => <SetRow key={s.setNumber} set={s} logged={cur.loggedSets.find((l) => l.setNumber === s.setNumber) ?? null} units={units} onLog={(v) => logSet(cur, s, v)} />)}
       </CardContent></Card>
