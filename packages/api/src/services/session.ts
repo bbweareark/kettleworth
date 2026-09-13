@@ -1,5 +1,5 @@
 import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
-import { db, trainingSession, exerciseInstance, exercise, exerciseVideo, personalRecord, estimatedMax, substitution, week } from "@kettleworth/db";
+import { db, trainingSession, exerciseInstance, exercise, exerciseVideo, personalRecord, estimatedMax, substitution, week, restActivity } from "@kettleworth/db";
 import { LoggedSet, type PlannedSet } from "@kettleworth/types";
 import { decideProgression, estimate1RM, substitutesFor, isPR, type SetRecord } from "@kettleworth/core";
 import { getProfile } from "./profile";
@@ -30,9 +30,10 @@ export async function getSessionDetail(userId: string, sessionId: string) {
   for (const p of prev) if (!lastById[p.exerciseId] && p.loggedSets.length) lastById[p.exerciseId] = p.loggedSets;
   const wk = s.weekId ? (await db().select().from(week).where(eq(week.id, s.weekId)).limit(1))[0] : null;
   const rec = await getProfile(userId);
+  const seenRest = await seenRestItems(userId);
   const injuries = rec?.profile.injuries ?? [];
   const flags = rec?.profile.medicalFlags ?? [];
-  return { session: s, week: wk, instances: instances.map((i) => { const ex = byId[i.exerciseId]!; return { ...i, exercise: ex, video: videoById[i.exerciseId] ?? null, lastTime: lastById[i.exerciseId] ?? null, cautions: cautionsFor(ex, injuries, flags) }; }) };
+  return { session: s, week: wk, seenRest, instances: instances.map((i) => { const ex = byId[i.exerciseId]!; return { ...i, exercise: ex, video: videoById[i.exerciseId] ?? null, lastTime: lastById[i.exerciseId] ?? null, cautions: cautionsFor(ex, injuries, flags) }; }) };
 }
 
 /** Person-specific cautions for one exercise: which of their injuries it loads, what to do, and general safety notes. */
@@ -169,3 +170,13 @@ export async function upcomingSessions(userId: string, days = 14) {
   return db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "planned"), lte(trainingSession.scheduledOn, until))).orderBy(asc(trainingSession.scheduledOn));
 }
 export { toSummary };
+
+/** Rest Deck: record what the user did during a rest (quiz answer, breathing cycle, prediction) so it counts toward Growth and never repeats. */
+export async function recordRestActivity(userId: string, a: { sessionId?: string | null; kind: "quiz" | "fact" | "breathe" | "predict"; itemId?: string | null; correct?: boolean | null; detail?: Record<string, unknown> | null }) {
+  const [row] = await db().insert(restActivity).values({ userId, sessionId: a.sessionId ?? null, kind: a.kind, itemId: a.itemId ?? null, correct: a.correct ?? null, detail: a.detail ?? null }).returning();
+  return row!;
+}
+export async function seenRestItems(userId: string) {
+  const rows = await db().select({ itemId: restActivity.itemId }).from(restActivity).where(eq(restActivity.userId, userId));
+  return rows.map((r) => r.itemId).filter((x): x is string => !!x);
+}

@@ -68,7 +68,7 @@ export async function applyAnalysis(userId: string, photoId: string, opts: { pri
 }
 
 import { physiqueTimeline, growthPoints, trend } from "@kettleworth/core";
-import { bodyMeasurement, trainingSession, personalRecord, exerciseInstance, healthSample } from "@kettleworth/db";
+import { bodyMeasurement, trainingSession, personalRecord, exerciseInstance, healthSample, restActivity } from "@kettleworth/db";
 import { asc, sql } from "drizzle-orm";
 import { weeklyStreak } from "@kettleworth/core";
 
@@ -86,7 +86,8 @@ export async function physiqueProgress(userId: string) {
   const [sets] = await db().select({ n: sql<number>`coalesce(sum(jsonb_array_length(${exerciseInstance.loggedSets})),0)::int` }).from(exerciseInstance).innerJoin(trainingSession, eq(exerciseInstance.sessionId, trainingSession.id)).where(eq(trainingSession.userId, userId));
   const [acts] = await db().select({ n: sql<number>`count(*)::int` }).from(healthSample).where(and(eq(healthSample.userId, userId), eq(healthSample.metric, "workout"), eq(healthSample.provider, "manual")));
   const photoSets = new Set(photos.filter((p) => p.analysis).map((p) => p.takenOn)).size;
-  const growth = growthPoints({ sessionsCompleted: sessions.length, prs: prs?.n ?? 0, weighIns: measurements.filter((m) => m.weightKg != null).length, photoSets, streakWeeks: weeklyStreak(sessions.map((s) => s.d)), setsLogged: sets?.n ?? 0, activitiesLogged: acts?.n ?? 0 });
+  const [rest] = await db().select({ n: sql<number>`count(*)::int` }).from(restActivity).where(and(eq(restActivity.userId, userId), sql`(${restActivity.kind} <> 'quiz' or ${restActivity.correct} = true)`));
+  const growth = growthPoints({ sessionsCompleted: sessions.length, prs: prs?.n ?? 0, weighIns: measurements.filter((m) => m.weightKg != null).length, photoSets, streakWeeks: weeklyStreak(sessions.map((s) => s.d)), setsLogged: sets?.n ?? 0, activitiesLogged: acts?.n ?? 0, restLearned: rest?.n ?? 0 });
   const byDate = photos.reduce<Record<string, typeof photos>>((a, p) => { (a[p.takenOn] ??= []).push(p); return a; }, {});
   const dates = Object.keys(byDate).sort();
   const compare = dates.length >= 2 ? { before: byDate[dates[0]!]!.find((p) => p.pose === "front") ?? byDate[dates[0]!]![0]!, after: byDate[dates[dates.length - 1]!]!.find((p) => p.pose === "front") ?? byDate[dates[dates.length - 1]!]![0]! } : null;

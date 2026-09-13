@@ -103,3 +103,14 @@ export const personalRecord = pgTable("personal_record", {
   achievedAt: timestamp("achieved_at").notNull().defaultNow(),
   sessionId: uuid("session_id"),
 }, (t) => [index("personal_record_user_ex_idx").on(t.userId, t.exerciseId)]);
+
+export const restActivity = pgTable("rest_activity", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  sessionId: uuid("session_id").references(() => trainingSession.id, { onDelete: "cascade" }),
+  kind: text("kind").$type<"quiz" | "fact" | "breathe" | "predict">().notNull(),
+  itemId: text("item_id"),
+  correct: boolean("correct"),
+  detail: jsonb("detail"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [index("rest_activity_user_idx").on(t.userId, t.createdAt)]);

@@ -8,14 +8,15 @@ import { Badge, Button, Card, CardContent, Progress, Sheet, SheetContent, Segmen
 import { kgToLb, lbToKg, round } from "@kettleworth/core";
 import { ExerciseMedia } from "@/components/library/media";
 import { RestTimer, ElapsedClock } from "./timer";
-import { FormCheck, RestTip, type CheckCard } from "./form-check";
+import { FormCheck, type CheckCard } from "./form-check";
+import { RestDeck } from "./rest-deck";
 import { PRCelebration } from "./celebrate";
 import { postResilient, flush, pending } from "@/lib/offline-queue";
 
 type Exercise = { id: string; slug: string; name: string; primaryMuscles: string[]; equipment: string[]; imageUrls: string[]; cues: string[]; instructions: string[]; commonMistakes: string[]; pattern: string };
 type Caution = { level: "info" | "warn" | "stop"; text: string };
 type Instance = { id: string; exerciseId: string; order: number; role: string; plannedSets: PlannedSet[]; loggedSets: LoggedSet[]; rationale: string; notes: string | null; exercise: Exercise; lastTime: LoggedSet[] | null; swappedReason: string | null; cautions: Caution[]; video: { provider: string; playbackId: string | null; isPlaceholder: boolean; status: string } | null };
-type Detail = { session: { id: string; name: string; status: string; startedAt: string | null; warmup: string[]; estimatedMinutes: number; focus: string[]; readinessScore: number | null; intensityScalar: number }; week: { weekNumber: number; isDeload: boolean } | null; instances: Instance[] };
+type Detail = { session: { id: string; name: string; status: string; startedAt: string | null; warmup: string[]; estimatedMinutes: number; focus: string[]; readinessScore: number | null; intensityScalar: number }; week: { weekNumber: number; isDeload: boolean } | null; instances: Instance[]; seenRest?: string[] };
 
 export function SessionPlayer({ detail, units }: { detail: Detail; units: "metric" | "imperial" }) {
   const router = useRouter();
@@ -30,6 +31,8 @@ export function SessionPlayer({ detail, units }: { detail: Detail; units: "metri
   const [queued, setQueued] = useState(0);
   const [starting, setStarting] = useState(false);
   const [live, setLive] = useState<PulseItem[]>([]);
+  const [seenRest, setSeenRest] = useState<string[]>(detail.seenRest ?? []);
+  const [prediction, setPrediction] = useState<number | null>(null);
   const cur = instances[idx];
   const totalSets = instances.reduce((a, i) => a + i.plannedSets.length, 0);
   const doneSets = instances.reduce((a, i) => a + i.loggedSets.filter((l) => l.completed).length, 0);
@@ -59,6 +62,7 @@ export function SessionPlayer({ detail, units }: { detail: Detail; units: "metri
     const rpeGap = values.rpe != null && set.targetRpe != null ? values.rpe - set.targetRpe : null;
     let read = `Set ${set.setNumber} logged.`;
     if (target && values.reps != null) read = values.reps > target[1] ? `${values.reps} reps beats the ${target[0]}–${target[1]} target. Add load next set if RPE allows.` : values.reps < target[0] ? `${values.reps} reps is under the ${target[0]}–${target[1]} range. Drop 5–7% for the next set.` : `${values.reps} reps, inside the ${target[0]}–${target[1]} range.${rpeGap != null ? (rpeGap <= -1 ? " RPE says you had more: nudge the load up." : rpeGap >= 1.5 ? " RPE ran hot: hold or ease the load." : " Effort on target.") : ""}`;
+    if (prediction != null && values.reps != null) { const hit = Math.abs(prediction - values.reps) <= 1; read += hit ? ` You called ${prediction} and got ${values.reps}: good self-knowledge, +10 Growth.` : ` You called ${prediction}, got ${values.reps}. Calibration improves with every honest set.`; fetch("/api/rest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: session.id, kind: "predict", itemId: `predict-hit-${inst.id}-${set.setNumber}`, correct: hit, detail: { predicted: prediction, actual: values.reps } }) }).catch(() => {}); setPrediction(null); }
     setLive([{ text: read, tone: target && values.reps != null && values.reps < target[0] ? "amber" : "signal" }]);
     const isLast = set.setNumber === inst.plannedSets[inst.plannedSets.length - 1]!.setNumber;
     if (!isLast) setRest(set.restSeconds);
@@ -114,7 +118,7 @@ export function SessionPlayer({ detail, units }: { detail: Detail; units: "metri
 
       {!curDone && <FormCheck key={`check-${cur.id}`} exerciseId={cur.exerciseId} name={cur.exercise.name} cards={cards} image={cur.exercise.imageUrls[0]} />}
 
-      {rest != null ? <RestTimer key={rest + "-" + doneSets} seconds={rest} onDone={() => setRest(null)} onSkip={() => setRest(null)}><RestTip cards={restCards} /></RestTimer> : null}
+      {rest != null ? <RestTimer key={rest + "-" + doneSets} seconds={rest} onDone={() => setRest(null)} onSkip={() => setRest(null)}><RestDeck sessionId={session.id} seedKey={`${session.id}:${cur.id}:${doneSets}`} restSeconds={rest} seen={seenRest} onSeen={(id) => setSeenRest((s) => [...s, id])} tips={restCards} nextSet={(() => { const n = cur.plannedSets.find((ps) => !cur.loggedSets.some((l) => l.setNumber === ps.setNumber && l.completed)); return n ? { repRange: n.repRange, reps: n.reps } : null; })()} onPrediction={setPrediction} /></RestTimer> : null}
 
       <Card key={`sets-${cur.id}`}><CardContent className="space-y-2 p-4">
         {cur.lastTime?.length ? <div className="mb-2 text-xs text-fg-subtle">Last time: {cur.lastTime.filter((l) => l.completed).map((l) => `${fmtW(l.weightKg, units)}×${l.reps ?? "-"}`).join(", ")}</div> : null}

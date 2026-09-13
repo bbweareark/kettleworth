@@ -31,7 +31,7 @@ export function physiqueTimeline(entries: PhysiqueEntry[]): PhysiquePoint[] {
   return out;
 }
 
-export type GrowthInputs = { sessionsCompleted: number; prs: number; weighIns: number; photoSets: number; streakWeeks: number; setsLogged: number; activitiesLogged: number };
+export type GrowthInputs = { sessionsCompleted: number; prs: number; weighIns: number; photoSets: number; streakWeeks: number; setsLogged: number; activitiesLogged: number; restLearned?: number };
 /** Growth points never decrease: every completed action adds. Weighted so consistency (sessions, streak) dominates. */
 export function growthPoints(g: GrowthInputs): { total: number; breakdown: { label: string; points: number }[]; level: number; nextLevelAt: number } {
   const breakdown = [
@@ -42,6 +42,7 @@ export function growthPoints(g: GrowthInputs): { total: number; breakdown: { lab
     { label: "Body checks", points: g.photoSets * 80 },
     { label: "Other activity", points: g.activitiesLogged * 30 },
     { label: "Streak bonus", points: Math.min(10, g.streakWeeks) * 50 },
+    { label: "Rest deck", points: (g.restLearned ?? 0) * 10 },
   ];
   const total = breakdown.reduce((a, b) => a + b.points, 0);
   // Levels widen: 500, 1200, 2100, 3200 ... (n^2 * 100 + 400n)
