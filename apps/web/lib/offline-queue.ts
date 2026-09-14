@@ -7,6 +7,7 @@ const PREFIX = "kw-queue:";
 export async function enqueue(url: string, body: unknown): Promise<string> {
   const id = `${PREFIX}${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   await set(id, { url, body, at: Date.now() } satisfies Job);
+  try { const reg = await navigator.serviceWorker?.ready; await (reg as unknown as { sync?: { register: (t: string) => Promise<void> } }).sync?.register("kw-flush"); } catch {}
   return id;
 }
 export async function flush(): Promise<{ sent: number; failed: number }> {

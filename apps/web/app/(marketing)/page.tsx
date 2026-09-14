@@ -27,9 +27,10 @@ export default function Landing() {
               {["Working weights suggested from your estimated 1RMs", "Rest countdown with haptic-feel transitions", "PR celebrations when you beat your best", "Works offline; syncs when you're back"].map((t) => (<li key={t} className="flex items-start gap-3"><span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-ember" />{t}</li>))}
             </ul>
           </div>
-          <SessionMock />
+          <div className="relative"><img src="/art/grip.jpg" alt="Chalked hands on a barbell" className="aspect-[4/3] w-full rounded-3xl object-cover ring-1 ring-white/[0.06]" /><div className="absolute -bottom-6 left-6 right-6 md:left-auto md:w-[360px]"><SessionMock /></div></div>
         </div>
       </section>
+      <section className="relative overflow-hidden py-28 md:py-40"><img src="/art/upper-f.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_40%,transparent)_50%,var(--color-bg)_100%)]" /><div className="page text-center"><p className="eyebrow">Every week</p><h2 className="font-display mx-auto max-w-3xl text-4xl font-semibold tracking-tightest md:text-6xl">Hit every rep and the bar goes up. Sleep badly and today eases off. Nothing is silent.</h2></div></section>
       <section id="pillars" className="border-y border-border bg-bg-elevated py-20 md:py-28">
         <div className="page">
           <div className="mb-12 max-w-2xl space-y-3"><p className="eyebrow">What's inside</p><h2 className="font-display text-3xl font-semibold md:text-4xl">Everything a great coach does, integrated rather than bolted on.</h2></div>

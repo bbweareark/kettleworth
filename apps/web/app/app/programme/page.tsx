@@ -22,9 +22,12 @@ export default async function Programme() {
   const plan = p.plan;
   return (
     <div className="space-y-6">
+      <div className="relative -mx-4 -mt-6 overflow-hidden px-4 pb-8 pt-10 sm:-mx-6 sm:px-6 lg:-mt-8 lg:rounded-3xl lg:ring-1 lg:ring-white/[0.06]">
+        <img src="/art/programme.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-80" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_80%,transparent)_50%,color-mix(in_oklch,var(--color-bg)_40%,transparent)_100%)]" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,transparent_50%,var(--color-bg)_100%)]" />
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div><p className="eyebrow">Programme</p><h1 className="font-display text-3xl font-semibold tracking-tighter md:text-4xl">{p.name}</h1><p className="mt-1 text-fg-muted">{p.summary}</p></div>
+        <div><p className="eyebrow">Programme</p><h1 className="font-display text-4xl font-semibold tracking-tightest md:text-5xl">{p.name}</h1><p className="mt-1 text-fg-muted">{p.summary}</p></div>
         <div className="flex gap-2"><Button asChild><Link href="/app/programme/new?continue=1">Extend: next block <Sparkles /></Link></Button><Button asChild variant="secondary"><Link href="/app/programme/new">Start over</Link></Button></div>
+      </div>
       </div>
       <div className="grid grid-cols-3 divide-x divide-border rounded-2xl bg-surface/50 ring-1 ring-white/[0.04]">
         <div className="p-4"><div className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">Done</div><div className="font-display mt-1 text-4xl font-semibold tabular tracking-tightest">{o.completedSessions}<span className="text-lg text-fg-subtle">/{o.totalSessions}</span></div></div>

@@ -202,10 +202,11 @@ function FinishForm({ sessionId, onDone }: { sessionId: string; units: "metric" 
   async function submit() {
     setBusy(true);
     await flush();
-    const r = await fetch(`/api/session/${sessionId}/complete`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionRpe: rpe, soreness, fatigue, mood, notes: notes || null }) });
+    const r = await postResilient<{ changes: { name: string; change: string; nextWeightKg: number | null; reason: string }[] }>(`/api/session/${sessionId}/complete`, { sessionRpe: rpe, soreness, fatigue, mood, notes: notes || null }).catch(() => null);
     setBusy(false);
-    if (!r.ok) return toast.error("Couldn't save");
-    setResult(await r.json());
+    if (!r) return toast.error("Couldn't save");
+    if (!r.ok) { toast.message("Saved on this device", { description: "Your session will be completed and the next loads set when you're back online." }); setResult({ changes: [] }); return; }
+    setResult(r.data);
   }
   const Scale = ({ label, value, set, lo, hi }: { label: string; value: number | null; set: (v: number) => void; lo: string; hi: string }) => (
     <div><div className="mb-1.5 flex justify-between text-sm"><span className="font-medium">{label}</span><span className="text-xs text-fg-subtle">{lo} → {hi}</span></div><div className="grid grid-cols-5 gap-1.5">{[1, 2, 3, 4, 5].map((n) => <button key={n} type="button" aria-pressed={value === n} onClick={() => set(n)} className={cn("h-10 rounded-md text-sm font-medium", value === n ? "bg-ember text-ember-fg" : "bg-surface-2 hover:bg-surface-3")}>{n}</button>)}</div></div>

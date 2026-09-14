@@ -42,7 +42,8 @@ export function CoachView({ letters, history, ai, name }: { letters: Letter[]; h
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr]">
       <section className="space-y-4">
-        <div className="flex items-end justify-between gap-3"><div><p className="eyebrow">Sunday letter</p><h1 className="font-display text-3xl font-semibold tracking-tighter">Your week, read back.</h1></div><Button size="sm" variant="secondary" onClick={generate} loading={gen}><Mail /> Write this week's</Button></div>
+        <div className="relative overflow-hidden rounded-3xl p-6 ring-1 ring-white/[0.06]"><img src="/art/coach.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-85" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_75%,transparent)_60%,transparent_100%)]" />
+        <div className="flex items-end justify-between gap-3"><div><p className="eyebrow">Sunday letter</p><h1 className="font-display text-4xl font-semibold tracking-tightest">Your week, read back.</h1></div><Button size="sm" variant="secondary" onClick={generate} loading={gen}><Mail /> Write this week's</Button></div></div>
         {letters.length === 0 ? <p className="rounded-2xl bg-surface/50 p-5 text-sm text-fg-muted ring-1 ring-white/[0.04]">Every Sunday evening the coach writes you a short letter: what moved, what stalled, what changes next week and why. Complete a session and write the first one now.</p> : (
           <div className="space-y-2">{letters.map((l) => (
             <article key={l.id} className={cn("rounded-2xl ring-1 ring-white/[0.04] transition-colors", open === l.id ? "bg-surface/70" : "bg-surface/30 hover:bg-surface/50")}>
