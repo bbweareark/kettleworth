@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Play, ChevronRight, Check } from "lucide-react";
-import { Badge, Ring, CountUp, cn } from "@kettleworth/ui";
+import { Ring, CountUp, cn } from "@kettleworth/ui";
 
 type Ex = { id: string; name: string; sets: number; reps: string; role: string; image?: string; care?: boolean; done?: number; complete?: boolean };
 type Live = { setsDone: number; setsTotal: number; currentIndex: number; elapsedMin: number; lastSet: string | null };
@@ -25,8 +25,10 @@ export function HeroSession({ session, readiness, exercises, cta, href, art, liv
       <div className="relative grid gap-8 p-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:p-8">
         <div className="min-w-0">
           <div className="mb-4 flex flex-wrap items-center gap-2">
-            <Badge tone={session.status === "in_progress" ? "signal" : "ember"}>{live ? <span className="flex items-center gap-1.5"><span className="relative flex size-1.5"><span className="absolute inline-flex size-full animate-ping rounded-full bg-signal opacity-70" /><span className="relative inline-flex size-1.5 rounded-full bg-signal" /></span>Live{live.elapsedMin <= 180 ? ` · ${live.elapsedMin} min` : " · paused"}</span> : session.label}</Badge>
-            <span className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">{session.minutes} min · {session.focus.slice(0, 3).map((m) => m.replace("_", " ")).join(" · ")}</span>
+            <span className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">
+              {live ? <span className={live.elapsedMin <= 180 ? "text-signal" : "text-amber"}>{live.elapsedMin <= 180 ? `In session · ${live.elapsedMin} min` : `Paused · ${live.setsDone} of ${live.setsTotal} sets done`}</span> : <span className="text-ember">{session.label}</span>}
+              <span className="mx-2 opacity-40">|</span>{session.minutes} min · {session.focus.slice(0, 3).map((m) => m.replace("_", " ")).join(" · ")}
+            </span>
           </div>
           <h2 className="font-display text-5xl font-semibold leading-[0.95] tracking-tightest md:text-6xl">{session.name}</h2>
           {live && current ? <p className="mt-3 text-sm text-fg-muted"><span className="text-fg">Now:</span> {current.name}, set {Math.min((current.done ?? 0) + 1, current.sets)} of {current.sets}.{live.lastSet ? ` Last set ${live.lastSet}.` : ""}</p> : readiness.score != null ? <p className="mt-3 max-w-md text-sm text-fg-muted">{readiness.line}</p> : null}

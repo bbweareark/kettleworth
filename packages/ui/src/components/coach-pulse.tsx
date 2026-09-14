@@ -6,26 +6,27 @@ import { cn } from "../lib/cn";
 export type PulseItem = { text: string; tone?: "ember" | "signal" | "amber" | "sky" | "neutral" };
 
 /**
- * The coach's live status line. Cycles through real, computed facts (never fabricated) with a breathing indicator,
- * so the app reads as continuously analysing rather than a static report. Respects reduced motion (no cycling).
+ * The coach's line. Reads like a note from a person: a monogram, one sentence in the display face, and a hairline that
+ * fills over the interval so the reader can feel the cadence without a blinking light. Cycles through real, computed
+ * facts (never fabricated). Respects reduced motion (no cycling, no hairline).
  */
-export function CoachPulse({ items, interval = 4200, className, label = "Coach" }: { items: PulseItem[]; interval?: number; className?: string; label?: string }) {
+export function CoachPulse({ items, interval = 5200, className, label = "Coach" }: { items: PulseItem[]; interval?: number; className?: string; label?: string }) {
   const reduce = useReducedMotion();
   const [i, setI] = React.useState(0);
   React.useEffect(() => { if (reduce || items.length < 2) return; const t = setInterval(() => setI((x) => (x + 1) % items.length), interval); return () => clearInterval(t); }, [items.length, interval, reduce]);
   const cur = items[i % Math.max(1, items.length)];
   if (!cur) return null;
-  const dot = { ember: "bg-ember", signal: "bg-signal", amber: "bg-amber", sky: "bg-sky", neutral: "bg-fg-subtle" }[cur.tone ?? "ember"];
+  const line = { ember: "bg-ember", signal: "bg-signal", amber: "bg-amber", sky: "bg-sky", neutral: "bg-fg-subtle" }[cur.tone ?? "ember"];
   return (
-    <div className={cn("flex items-center gap-3 rounded-full border border-border bg-surface/60 py-2 pl-3 pr-4 text-sm backdrop-blur", className)} role="status" aria-live="polite">
-      <span className="relative flex size-2.5 shrink-0"><span className={cn("absolute inline-flex size-full animate-ping rounded-full opacity-60", dot)} /><span className={cn("relative inline-flex size-2.5 rounded-full", dot)} /></span>
-      <span className="text-2xs font-semibold uppercase tracking-[0.14em] text-fg-subtle">{label}</span>
-      <div className="relative min-h-5 flex-1 overflow-hidden">
+    <div className={cn("relative flex items-center gap-3.5 py-2.5", className)} role="status" aria-live="polite">
+      <span aria-hidden className="grid size-8 shrink-0 place-items-center rounded-full bg-[linear-gradient(145deg,color-mix(in_oklch,var(--color-ember)_55%,var(--color-surface-2)),var(--color-surface-2))] font-display text-sm font-semibold text-fg ring-1 ring-white/[0.08]">{label.slice(0, 1)}</span>
+      <div className="relative min-h-6 min-w-0 flex-1 overflow-hidden">
         <AnimatePresence mode="wait" initial={false}>
-          <motion.span key={i} initial={reduce ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0, y: -6 }} transition={{ duration: 0.28, ease: [0.25, 1, 0.5, 1] }} className="block truncate text-fg">{cur.text}</motion.span>
+          <motion.p key={i} initial={reduce ? false : { opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0, y: -5 }} transition={{ duration: 0.32, ease: [0.25, 1, 0.5, 1] }} className="truncate font-display text-base tracking-tight text-fg md:text-lg"><span className="sr-only">{label}: </span>{cur.text}</motion.p>
         </AnimatePresence>
       </div>
-      {items.length > 1 && <span className="hidden gap-1 sm:flex" aria-hidden>{items.map((_, k) => <span key={k} className={cn("size-1 rounded-full transition-colors", k === i ? "bg-fg" : "bg-surface-3")} />)}</span>}
+      {items.length > 1 ? <span aria-hidden className="shrink-0 text-2xs tabular text-fg-subtle">{i + 1}<span className="mx-0.5 opacity-50">/</span>{items.length}</span> : null}
+      {items.length > 1 && !reduce ? <span aria-hidden className="absolute inset-x-0 bottom-0 left-[2.9rem] h-px overflow-hidden bg-white/[0.06]"><motion.span key={i} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: interval / 1000, ease: "linear" }} className={cn("block h-full origin-left opacity-70", line)} /></span> : null}
     </div>
   );
 }
