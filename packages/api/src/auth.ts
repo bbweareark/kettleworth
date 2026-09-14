@@ -14,6 +14,8 @@ function build() {
   appName: "Kettleworth",
   baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
   secret: process.env.BETTER_AUTH_SECRET,
+  // Every hostname the app is served from: the canonical URL plus Vercel's project aliases and preview URLs.
+  trustedOrigins: [process.env.BETTER_AUTH_URL ?? "http://localhost:3000", process.env.NEXT_PUBLIC_APP_URL ?? "", "https://kettleworth.vercel.app", "https://*.vercel.app"].filter(Boolean),
   database: drizzleAdapter(db(), { provider: "pg", schema: { user, session, account, verification } }),
   emailAndPassword: { enabled: true, minPasswordLength: 10, autoSignIn: true },
   socialProviders,
