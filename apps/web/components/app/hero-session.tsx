@@ -7,13 +7,13 @@ type Ex = { id: string; name: string; sets: number; reps: string; role: string; 
  * Today's session as an instrument, not a card: a darkened still from the first lift as the ground, the readiness ring
  * as the dial, and a session map (numerals, not sentences) for what's ahead.
  */
-export function HeroSession({ session, readiness, exercises, cta, href }: { session: { name: string; label: string; minutes: number; focus: string[]; status: string }; readiness: { score: number | null; band: string; line: string }; exercises: Ex[]; cta: string; href: string }) {
-  const bg = exercises.find((e) => e.image)?.image;
+export function HeroSession({ session, readiness, exercises, cta, href, art }: { session: { name: string; label: string; minutes: number; focus: string[]; status: string }; readiness: { score: number | null; band: string; line: string }; exercises: Ex[]; cta: string; href: string; art?: string }) {
+  const bg = art ?? exercises.find((e) => e.image)?.image;
   const tone = readiness.band === "high" ? "signal" : readiness.band === "moderate" ? "amber" : readiness.band === "low" ? "rose" : "sky";
   return (
     <section className="relative overflow-hidden rounded-3xl ring-1 ring-white/[0.06]" aria-label="Today's session">
-      {bg ? <img src={bg} alt="" aria-hidden className="absolute inset-0 size-full object-cover object-top opacity-[0.28] grayscale" /> : null}
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.15)_0%,var(--color-bg)_78%)]" />
+      {bg ? <img src={bg} alt="" aria-hidden className={art ? "absolute inset-0 size-full object-cover opacity-90" : "absolute inset-0 size-full object-cover object-top opacity-[0.28] grayscale"} /> : null}
+      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(100deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_82%,transparent)_45%,color-mix(in_oklch,var(--color-bg)_35%,transparent)_100%)]" /><div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_40%,var(--color-bg)_100%)]" />
       <div aria-hidden className="absolute inset-0 bg-[radial-gradient(60%_60%_at_85%_30%,color-mix(in_oklch,var(--color-ember)_14%,transparent),transparent_70%)]" />
       <div className="relative grid gap-8 p-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:p-8">
         <div className="min-w-0">

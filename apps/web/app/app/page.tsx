@@ -7,6 +7,7 @@ import { getProfile, getActiveProgramme, getTodaySession, upcomingSessions, getR
 import { kgToLb, ritualNudges } from "@kettleworth/core";
 import { ActivityLog } from "@/components/today/activity-log";
 import { HeroSession } from "@/components/app/hero-session";
+import { sessionArt } from "@/lib/art";
 
 export const dynamic = "force-dynamic";
 
@@ -58,7 +59,7 @@ export default async function Today() {
           session={{ name: today.name, status: today.status, minutes: today.estimatedMinutes, focus: today.focus, label: today.status === "in_progress" ? "In progress" : (today as { isOverdue?: boolean }).isOverdue ? "Overdue" : (today as { isToday?: boolean }).isToday ? "Today" : new Date(today.scheduledOn).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }) }}
           readiness={{ score: readiness.score, band: readiness.band, line: readiness.reasons[readiness.reasons.length - 1] ?? "" }}
           exercises={(detail?.instances ?? []).map((i) => { const w = i.plannedSets.filter((s) => s.type === "working"); const f = w[0]; return { id: i.id, name: i.exercise.name, role: i.role, sets: w.length, reps: f?.repRange ? `${f.repRange[0]}-${f.repRange[1]}` : String(f?.reps ?? ""), image: i.exercise.imageUrls[0], care: i.cautions.some((c) => c.level !== "info") }; })}
-          cta={today.status === "in_progress" ? "Continue" : "Start session"} href={`/app/session/${today.id}`}
+          cta={today.status === "in_progress" ? "Continue" : "Start session"} href={`/app/session/${today.id}`} art={sessionArt(today.name)}
         />
       ) : (
         <Card><CardContent className="flex items-center justify-between gap-4"><div><h2 className="font-display text-xl font-semibold">Block complete.</h2><p className="text-sm text-fg-muted">Time to build the next one.</p></div><Button asChild><Link href="/app/programme/new?continue=1">Build next block <ArrowRight /></Link></Button></CardContent></Card>
