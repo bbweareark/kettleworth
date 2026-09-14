@@ -25,7 +25,7 @@ export function HeroSession({ session, readiness, exercises, cta, href, art, liv
       <div className="relative grid gap-8 p-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:p-8">
         <div className="min-w-0">
           <div className="mb-4 flex flex-wrap items-center gap-2">
-            <Badge tone={session.status === "in_progress" ? "signal" : "ember"}>{live ? <span className="flex items-center gap-1.5"><span className="relative flex size-1.5"><span className="absolute inline-flex size-full animate-ping rounded-full bg-signal opacity-70" /><span className="relative inline-flex size-1.5 rounded-full bg-signal" /></span>Live · {live.elapsedMin} min</span> : session.label}</Badge>
+            <Badge tone={session.status === "in_progress" ? "signal" : "ember"}>{live ? <span className="flex items-center gap-1.5"><span className="relative flex size-1.5"><span className="absolute inline-flex size-full animate-ping rounded-full bg-signal opacity-70" /><span className="relative inline-flex size-1.5 rounded-full bg-signal" /></span>Live{live.elapsedMin <= 180 ? ` · ${live.elapsedMin} min` : " · paused"}</span> : session.label}</Badge>
             <span className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">{session.minutes} min · {session.focus.slice(0, 3).map((m) => m.replace("_", " ")).join(" · ")}</span>
           </div>
           <h2 className="font-display text-5xl font-semibold leading-[0.95] tracking-tightest md:text-6xl">{session.name}</h2>
