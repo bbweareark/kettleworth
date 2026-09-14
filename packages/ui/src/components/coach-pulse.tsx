@@ -6,27 +6,34 @@ import { cn } from "../lib/cn";
 export type PulseItem = { text: string; tone?: "ember" | "signal" | "amber" | "sky" | "neutral" };
 
 /**
- * The coach's line. Reads like a note from a person: a monogram, one sentence in the display face, and a hairline that
- * fills over the interval so the reader can feel the cadence without a blinking light. Cycles through real, computed
- * facts (never fabricated). Respects reduced motion (no cycling, no hairline).
+ * The coach's line. A sculpted mark (or a monogram when no art is given), one sentence in the display face, and a thin
+ * arc around the mark that fills over the interval so the reader feels the cadence without a blinking light. Cycles
+ * through real, computed facts (never fabricated). Respects reduced motion (no cycling, no arc).
  */
-export function CoachPulse({ items, interval = 5200, className, label = "Coach" }: { items: PulseItem[]; interval?: number; className?: string; label?: string }) {
+export function CoachPulse({ items, interval = 5200, className, label = "Coach", avatar }: { items: PulseItem[]; interval?: number; className?: string; label?: string; avatar?: string }) {
   const reduce = useReducedMotion();
   const [i, setI] = React.useState(0);
   React.useEffect(() => { if (reduce || items.length < 2) return; const t = setInterval(() => setI((x) => (x + 1) % items.length), interval); return () => clearInterval(t); }, [items.length, interval, reduce]);
   const cur = items[i % Math.max(1, items.length)];
   if (!cur) return null;
-  const line = { ember: "bg-ember", signal: "bg-signal", amber: "bg-amber", sky: "bg-sky", neutral: "bg-fg-subtle" }[cur.tone ?? "ember"];
+  const stroke = { ember: "var(--color-ember)", signal: "var(--color-signal)", amber: "var(--color-amber)", sky: "var(--color-sky)", neutral: "var(--color-fg-subtle)" }[cur.tone ?? "ember"];
+  const size = 44, r = 20, c = 2 * Math.PI * r;
   return (
-    <div className={cn("relative flex items-center gap-3.5 py-2.5", className)} role="status" aria-live="polite">
-      <span aria-hidden className="grid size-8 shrink-0 place-items-center rounded-full bg-[linear-gradient(145deg,color-mix(in_oklch,var(--color-ember)_55%,var(--color-surface-2)),var(--color-surface-2))] font-display text-sm font-semibold text-fg ring-1 ring-white/[0.08]">{label.slice(0, 1)}</span>
-      <div className="relative min-h-6 min-w-0 flex-1 overflow-hidden">
+    <div className={cn("flex min-w-0 items-center gap-4 py-2", className)} role="status" aria-live="polite">
+      <span aria-hidden className="relative grid shrink-0 place-items-center" style={{ width: size, height: size }}>
+        {avatar ? <img src={avatar} alt="" className="size-9 rounded-full object-cover ring-1 ring-white/[0.08]" /> : <span className="grid size-9 place-items-center rounded-full bg-[linear-gradient(145deg,color-mix(in_oklch,var(--color-ember)_55%,var(--color-surface-2)),var(--color-surface-2))] font-display text-sm font-semibold text-fg ring-1 ring-white/[0.08]">{label.slice(0, 1)}</span>}
+        {items.length > 1 && !reduce ? (
+          <svg className="absolute inset-0 -rotate-90" viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
+            <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="currentColor" strokeWidth="1" className="text-white/[0.07]" />
+            <motion.circle key={i} cx={size / 2} cy={size / 2} r={r} fill="none" stroke={stroke} strokeWidth="1.25" strokeLinecap="round" strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: 0 }} transition={{ duration: interval / 1000, ease: "linear" }} style={{ opacity: 0.85 }} />
+          </svg>
+        ) : null}
+      </span>
+      <div className="relative min-h-6 min-w-0 flex-1">
         <AnimatePresence mode="wait" initial={false}>
-          <motion.p key={i} initial={reduce ? false : { opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0, y: -5 }} transition={{ duration: 0.32, ease: [0.25, 1, 0.5, 1] }} className="truncate font-display text-base tracking-tight text-fg md:text-lg"><span className="sr-only">{label}: </span>{cur.text}</motion.p>
+          <motion.p key={i} initial={reduce ? false : { opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0, y: -5 }} transition={{ duration: 0.32, ease: [0.25, 1, 0.5, 1] }} className="line-clamp-2 font-display text-base leading-snug tracking-tight text-fg md:line-clamp-1 md:text-lg"><span className="sr-only">{label}: </span>{cur.text}</motion.p>
         </AnimatePresence>
       </div>
-      {items.length > 1 ? <span aria-hidden className="shrink-0 text-2xs tabular text-fg-subtle">{i + 1}<span className="mx-0.5 opacity-50">/</span>{items.length}</span> : null}
-      {items.length > 1 && !reduce ? <span aria-hidden className="absolute inset-x-0 bottom-0 left-[2.9rem] h-px overflow-hidden bg-white/[0.06]"><motion.span key={i} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: interval / 1000, ease: "linear" }} className={cn("block h-full origin-left opacity-70", line)} /></span> : null}
     </div>
   );
 }
