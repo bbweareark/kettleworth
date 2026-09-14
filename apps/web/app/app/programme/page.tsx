@@ -5,6 +5,7 @@ import { requireUser } from "@/lib/session";
 import { getProfile, getProgrammeOverview } from "@kettleworth/api";
 import { Badge, Button, Card, CardContent, Progress, cn } from "@kettleworth/ui";
 import { VolumeChart } from "@/components/programme/volume-chart";
+import { ProgrammeCalendar } from "@/components/programme/calendar";
 
 export const metadata = { title: "Programme" };
 export const dynamic = "force-dynamic";
@@ -25,33 +26,18 @@ export default async function Programme() {
         <div><p className="eyebrow">Programme</p><h1 className="font-display text-3xl font-semibold tracking-tighter md:text-4xl">{p.name}</h1><p className="mt-1 text-fg-muted">{p.summary}</p></div>
         <div className="flex gap-2"><Button asChild><Link href="/app/programme/new?continue=1">Extend: next block <Sparkles /></Link></Button><Button asChild variant="secondary"><Link href="/app/programme/new">Start over</Link></Button></div>
       </div>
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2"><CardContent className="space-y-4">
-          <div className="flex items-center justify-between text-sm"><span className="font-medium">{o.completedSessions} of {o.totalSessions} sessions</span><span className="text-fg-subtle">Started {new Date(p.startDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span></div>
-          <Progress value={pct} />
-          {p.coachNote ? <div className="prose-coach rounded-lg bg-surface-2 p-4 text-sm text-fg-muted">{p.coachNote.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}</div> : null}
-          <details className="group"><summary className="cursor-pointer text-sm font-medium text-ember">Why this programme?</summary><ul className="mt-2 space-y-1.5 text-sm text-fg-muted">{p.rationale.map((r) => <li key={r} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-ember" />{r}</li>)}</ul></details>
-        </CardContent></Card>
-        <Card><CardContent><h3 className="mb-3 font-display text-lg font-semibold">Weekly sets per muscle</h3><VolumeChart data={plan.weeklyVolumeBySet} /></CardContent></Card>
+      <div className="grid grid-cols-3 divide-x divide-border rounded-2xl bg-surface/50 ring-1 ring-white/[0.04]">
+        <div className="p-4"><div className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">Done</div><div className="font-display mt-1 text-4xl font-semibold tabular tracking-tightest">{o.completedSessions}<span className="text-lg text-fg-subtle">/{o.totalSessions}</span></div></div>
+        <div className="p-4"><div className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">Week</div><div className="font-display mt-1 text-4xl font-semibold tabular tracking-tightest">{currentWeek?.weekNumber ?? 1}<span className="text-lg text-fg-subtle">/{p.totalWeeks}</span></div></div>
+        <div className="p-4"><div className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">Block</div><div className="font-display mt-1 truncate text-2xl font-semibold tracking-tighter">{mesocycles.find((m) => m.id === currentWeek?.mesocycleId)?.name ?? mesocycles[0]?.name}</div></div>
       </div>
-      <div className="space-y-6">
-        {mesocycles.map((m) => (
-          <section key={m.id} className="space-y-3">
-            <div className="flex items-baseline gap-3"><h2 className="font-display text-xl font-semibold">{m.name}</h2><span className="text-sm text-fg-muted">{m.focus}</span></div>
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-              {weeks.filter((w) => w.mesocycleId === m.id).map((w) => {
-                const ws = byWeek.get(w.id) ?? [];
-                const isCurrent = currentWeek?.id === w.id;
-                return (
-                  <Card key={w.id} className={cn(isCurrent && "border-ember shadow-glow")}><CardContent className="space-y-2 p-4">
-                    <div className="flex items-center justify-between"><span className="font-medium">Week {w.weekNumber}</span><div className="flex gap-1">{w.isDeload && <Badge tone="amber">Deload</Badge>}{isCurrent && <Badge tone="ember">Now</Badge>}</div></div>
-                    <div className="text-2xs text-fg-subtle">Vol ×{w.volumeScalar} · Int ×{w.intensityScalar}</div>
-                    <ul className="space-y-1">{ws.map((s) => (<li key={s.id}><Link href={`/app/session/${s.id}`} className="flex items-center gap-2 rounded-md px-1 py-1 text-sm hover:bg-surface-2">{s.status === "completed" ? <CheckCircle2 className="size-4 text-signal" /> : s.status === "skipped" ? <XCircle className="size-4 text-fg-subtle" /> : s.status === "in_progress" ? <Clock className="size-4 text-ember" /> : <Circle className="size-4 text-fg-subtle" />}<span className="flex-1 truncate">{s.name}</span><span className="text-2xs text-fg-subtle">{new Date(s.scheduledOn).toLocaleDateString("en-GB", { weekday: "short" })}</span></Link></li>))}</ul>
-                  </CardContent></Card>);
-              })}
-            </div>
-          </section>
-        ))}
+      <Progress value={pct} className="h-1" />
+      <section className="rounded-3xl bg-surface/40 p-5 ring-1 ring-white/[0.04]">
+        <ProgrammeCalendar weeks={weeks} sessions={sessions} mesocycles={mesocycles} currentWeekId={currentWeek?.id ?? null} />
+      </section>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <details className="rounded-2xl bg-surface/40 p-5 ring-1 ring-white/[0.04]"><summary className="cursor-pointer font-display text-base font-semibold">Coach note</summary>{p.coachNote ? <div className="prose-coach mt-3 text-sm text-fg-muted">{p.coachNote.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}</div> : null}<h4 className="mt-4 text-2xs uppercase tracking-[0.16em] text-fg-subtle">Why this programme</h4><ul className="mt-2 space-y-1.5 text-sm text-fg-muted">{p.rationale.map((r) => <li key={r} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-ember" />{r}</li>)}</ul></details>
+        <div className="rounded-2xl bg-surface/40 p-5 ring-1 ring-white/[0.04]"><h3 className="mb-3 font-display text-base font-semibold">Weekly sets per muscle</h3><VolumeChart data={plan.weeklyVolumeBySet} /></div>
       </div>
       <details><summary className="cursor-pointer text-sm font-medium text-fg-muted">Exercise index ({Object.keys(exercises).length})</summary><ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{Object.values(exercises).sort((a, b) => a.name.localeCompare(b.name)).map((e) => <li key={e.id}><Link href={`/library/${e.slug}`} className="text-sm text-ember hover:underline">{e.name}</Link><span className="ml-2 text-xs text-fg-subtle capitalize">{e.primaryMuscles.map((m) => m.replace("_", " ")).join(", ")}</span></li>)}</ul></details>
     </div>

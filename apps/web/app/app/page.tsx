@@ -6,6 +6,7 @@ import { requireUser } from "@/lib/session";
 import { getProfile, getActiveProgramme, getTodaySession, upcomingSessions, getReadiness, getProgress, ensureNutritionPlan, connectedProviders, activitiesForDay, getSessionDetail, hasUnreadLetter, listPhotos } from "@kettleworth/api";
 import { kgToLb, ritualNudges } from "@kettleworth/core";
 import { ActivityLog } from "@/components/today/activity-log";
+import { HeroSession } from "@/components/app/hero-session";
 
 export const dynamic = "force-dynamic";
 
@@ -53,31 +54,19 @@ export default async function Today() {
           <Button asChild size="lg"><Link href="/app/programme/new">Generate programme <Sparkles /></Link></Button>
         </CardContent></Card>
       ) : today ? (
-        <Card className="relative animate-fade-up overflow-hidden">
-          <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full opacity-40 blur-3xl" style={{ background: `color-mix(in oklch, var(--color-${tone}) 60%, transparent)` }} />
-          <CardContent className="relative grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2"><Badge tone={today.status === "in_progress" ? "signal" : "ember"}>{today.status === "in_progress" ? "In progress" : (today as { isOverdue?: boolean }).isOverdue ? "Overdue" : (today as { isToday?: boolean }).isToday ? "Today" : new Date(today.scheduledOn).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })}</Badge><span className="text-xs text-fg-subtle">~{today.estimatedMinutes} min · {today.focus.slice(0, 3).map((m) => m.replace("_", " ")).join(" · ")}</span></div>
-              <h2 className="font-display text-3xl font-semibold tracking-tighter md:text-4xl">{today.name}</h2>
-              {detail?.instances.length ? (
-                <ul className="flex gap-2 overflow-x-auto pb-1 scrollbar-none" aria-label="Exercises in this session">
-                  {detail.instances.map((i) => (<li key={i.id} className="flex w-[104px] shrink-0 flex-col gap-1.5"><div className="relative aspect-square overflow-hidden rounded-lg bg-surface-3">{i.exercise.imageUrls[0] ? <img src={i.exercise.imageUrls[0]} alt="" className="size-full object-cover" loading="lazy" /> : null}{i.cautions.some((c) => c.level !== "info") ? <span className="absolute left-1 top-1 rounded-full bg-amber px-1.5 text-2xs font-semibold text-black">care</span> : null}</div><span className="truncate text-2xs text-fg-muted">{i.exercise.name}</span></li>))}
-                </ul>
-              ) : null}
-              <div className="flex gap-2"><Button asChild size="lg"><Link href={`/app/session/${today.id}`}>{today.status === "in_progress" ? "Continue" : "Start session"} <Play /></Link></Button><Button asChild variant="secondary" size="lg"><Link href="/app/programme">This week</Link></Button></div>
-            </div>
-            <Ring value={readiness.score != null ? readiness.score / 100 : 0} size={148} stroke={12} tone={tone} label={`Readiness ${readiness.score ?? "unknown"}`}>
-              <div className="text-center"><div className="font-display text-4xl font-semibold tracking-tighter">{readiness.score != null ? <CountUp value={readiness.score} /> : "-"}</div><div className="text-2xs uppercase tracking-[0.14em] text-fg-subtle">Readiness</div></div>
-            </Ring>
-          </CardContent>
-        </Card>
+        <HeroSession
+          session={{ name: today.name, status: today.status, minutes: today.estimatedMinutes, focus: today.focus, label: today.status === "in_progress" ? "In progress" : (today as { isOverdue?: boolean }).isOverdue ? "Overdue" : (today as { isToday?: boolean }).isToday ? "Today" : new Date(today.scheduledOn).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }) }}
+          readiness={{ score: readiness.score, band: readiness.band, line: readiness.reasons[readiness.reasons.length - 1] ?? "" }}
+          exercises={(detail?.instances ?? []).map((i) => { const w = i.plannedSets.filter((s) => s.type === "working"); const f = w[0]; return { id: i.id, name: i.exercise.name, role: i.role, sets: w.length, reps: f?.repRange ? `${f.repRange[0]}-${f.repRange[1]}` : String(f?.reps ?? ""), image: i.exercise.imageUrls[0], care: i.cautions.some((c) => c.level !== "info") }; })}
+          cta={today.status === "in_progress" ? "Continue" : "Start session"} href={`/app/session/${today.id}`}
+        />
       ) : (
         <Card><CardContent className="flex items-center justify-between gap-4"><div><h2 className="font-display text-xl font-semibold">Block complete.</h2><p className="text-sm text-fg-muted">Time to build the next one.</p></div><Button asChild><Link href="/app/programme/new?continue=1">Build next block <ArrowRight /></Link></Button></CardContent></Card>
       )}
 
       <div className="grid grid-cols-2 divide-x divide-border rounded-2xl bg-surface/50 ring-1 ring-white/[0.04] lg:grid-cols-4">
         <Tile label="Sessions" value={progress.completedSessions} hint={prog ? `of ${prog.totalWeeks * prog.daysPerWeek}` : undefined} spark={progress.weeklyTonnage.map((x) => x.kg)} />
-        <Tile label={`Volume · ${u}`} value={w(progress.tonnageThisWeek)} hint={progress.tonnageLastWeek ? `${progress.tonnageThisWeek >= progress.tonnageLastWeek ? "+" : ""}${Math.round(((progress.tonnageThisWeek - progress.tonnageLastWeek) / progress.tonnageLastWeek) * 100)}% wk/wk` : "this week"} spark={progress.weeklyTonnage.map((x) => x.kg)} tone="sky" />
+        <Tile label={`Volume · ${u}`} value={w(progress.tonnageThisWeek)} hint={progress.tonnageLastWeek && progress.tonnageThisWeek ? `${progress.tonnageThisWeek >= progress.tonnageLastWeek ? "+" : ""}${Math.round(((progress.tonnageThisWeek - progress.tonnageLastWeek) / progress.tonnageLastWeek) * 100)}% wk/wk` : progress.tonnageLastWeek ? `${w(progress.tonnageLastWeek)} last week` : "this week"} spark={progress.weeklyTonnage.map((x) => x.kg)} tone="sky" />
         <Tile label="Calories" value={nutrition.targets.calories} hint={`${nutrition.targets.proteinG} g protein`} />
         <Tile label={`Weight · ${u}`} value={progress.measurements.at(-1)?.weightKg != null ? w(progress.measurements.at(-1)!.weightKg!) : 0} hint={progress.measurements.length > 1 ? `${progress.measurements.length} check-ins` : "log a weigh-in"} spark={progress.measurements.filter((m) => m.weightKg != null).map((m) => m.weightKg!)} tone="signal" />
       </div>
@@ -99,7 +88,7 @@ export default async function Today() {
 function Tile({ label, value, hint, spark, tone = "ember" }: { label: string; value: number; hint?: string; spark?: number[]; tone?: "ember" | "signal" | "sky" | "amber" }) {
   return (
     <div className="flex items-end justify-between gap-2 p-4">
-      <div><div className="eyebrow">{label}</div><div className="font-display mt-1 text-3xl font-semibold tracking-tighter"><CountUp value={value} /></div>{hint ? <div className="mt-0.5 text-xs text-fg-subtle">{hint}</div> : null}</div>
+      <div><div className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">{label}</div><div className="font-display mt-1 text-4xl font-semibold tracking-tightest"><CountUp value={value} /></div>{hint ? <div className="mt-0.5 text-xs text-fg-subtle">{hint}</div> : null}</div>
       {spark && spark.length > 1 ? <Sparkline points={spark} tone={tone} /> : null}
     </div>
   );

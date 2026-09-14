@@ -107,13 +107,13 @@ export function SessionPlayer({ detail, units }: { detail: Detail; units: "metri
           <div className="p-4 pb-0 sm:pb-4 sm:pr-0"><ExerciseMedia name={cur.exercise.name} images={cur.exercise.imageUrls} video={cur.video} compact className="aspect-[4/3] sm:aspect-square" /></div>
           <CardContent className="space-y-2">
             <div className="flex items-center gap-2"><Badge tone={cur.role === "primary" ? "ember" : "neutral"} className="capitalize">{cur.role}</Badge><span className="text-xs text-fg-subtle">Exercise {idx + 1} of {instances.length}</span>{cur.swappedReason && <Badge tone="amber">Swapped</Badge>}</div>
-            <h1 className="font-display text-2xl font-semibold tracking-tighter">{cur.exercise.name}</h1>
-            <p className="text-sm text-fg-muted">{describePrescription(cur.plannedSets)}</p>
-            <p className="text-xs text-fg-subtle">{cur.notes ?? cur.rationale}</p>
+            <h1 className="font-display text-3xl font-semibold tracking-tightest">{cur.exercise.name}</h1>
+            <PrescriptionNumerals sets={cur.plannedSets} />
+            {cur.notes ? <p className="text-xs text-amber">{cur.notes}</p> : null}
             <div className="flex flex-wrap gap-2 pt-1"><Button size="sm" variant="secondary" onClick={() => setShowInfo((s) => !s)} aria-expanded={showInfo}><Info /> How to {showInfo ? <ChevronUp /> : <ChevronDown />}</Button><Button size="sm" variant="secondary" onClick={() => setSwapOpen(true)}><Repeat /> Swap</Button></div>
           </CardContent>
         </div>
-        {showInfo && (<div className="border-t border-border bg-surface-2 p-4 text-sm"><div className="grid gap-4 sm:grid-cols-2"><div><div className="eyebrow mb-1">Cues</div><ul className="space-y-1 text-fg-muted">{(cur.exercise.cues.length ? cur.exercise.cues : cur.exercise.instructions.slice(0, 4)).map((c) => <li key={c}>{c}</li>)}</ul></div><div><div className="eyebrow mb-1">Watch for</div><ul className="space-y-1 text-fg-muted">{cur.exercise.commonMistakes.length ? cur.exercise.commonMistakes.map((c) => <li key={c}>{c}</li>) : <li>Control the eccentric; stop 1–2 reps shy of failure unless told otherwise.</li>}</ul>{cur.cautions.filter((c) => c.level === "info").length ? <><div className="eyebrow mb-1 mt-3">Safety</div><ul className="space-y-1 text-fg-muted">{cur.cautions.filter((c) => c.level === "info").map((c, k) => <li key={k}>{c.text}</li>)}</ul></> : null}<Link href={`/library/${cur.exercise.slug}`} className="mt-2 inline-block text-ember hover:underline">Full exercise page</Link></div></div></div>)}
+        {showInfo && (<div className="border-t border-border bg-surface-2 p-4 text-sm"><div className="grid gap-4 sm:grid-cols-2"><div><div className="eyebrow mb-1">Cues</div><ul className="space-y-1 text-fg-muted">{(cur.exercise.cues.length ? cur.exercise.cues : cur.exercise.instructions.slice(0, 4)).map((c) => <li key={c}>{c}</li>)}</ul></div><div><div className="eyebrow mb-1">Watch for</div><ul className="space-y-1 text-fg-muted">{cur.exercise.commonMistakes.length ? cur.exercise.commonMistakes.map((c) => <li key={c}>{c}</li>) : <li>Control the eccentric; stop 1–2 reps shy of failure unless told otherwise.</li>}</ul>{cur.cautions.filter((c) => c.level === "info").length ? <><div className="eyebrow mb-1 mt-3">Safety</div><ul className="space-y-1 text-fg-muted">{cur.cautions.filter((c) => c.level === "info").map((c, k) => <li key={k}>{c.text}</li>)}</ul></> : null}<p className="mt-2 text-xs text-fg-subtle">{cur.rationale}</p><Link href={`/library/${cur.exercise.slug}`} className="mt-2 inline-block text-ember hover:underline">Full exercise page</Link></div></div></div>)}
       </Card>
 
       {!curDone && <FormCheck key={`check-${cur.id}`} exerciseId={cur.exerciseId} name={cur.exercise.name} cards={cards} image={cur.exercise.imageUrls[0]} />}
@@ -138,6 +138,15 @@ export function SessionPlayer({ detail, units }: { detail: Detail; units: "metri
   );
 }
 
+function PrescriptionNumerals({ sets }: { sets: PlannedSet[] }) {
+  const w = sets.filter((s) => s.type === "working"); const f = w[0];
+  if (!f) return null;
+  const cells: [string, string][] = [[String(w.length), "sets"], [f.repRange ? `${f.repRange[0]}-${f.repRange[1]}` : String(f.reps ?? ""), "reps"]];
+  if (f.targetRpe) cells.push([String(f.targetRpe), "rpe"]);
+  cells.push([`${Math.round(f.restSeconds / 60 * 10) / 10}`, "min rest"]);
+  if (f.tempo) cells.push([f.tempo, "tempo"]);
+  return <div className="flex flex-wrap gap-x-5 gap-y-1">{cells.map(([v, l]) => <div key={l}><span className="font-display text-2xl font-semibold tabular tracking-tighter">{v}</span><span className="ml-1 text-2xs uppercase tracking-[0.16em] text-fg-subtle">{l}</span></div>)}</div>;
+}
 function describePrescription(sets: PlannedSet[]): string {
   const w = sets.filter((s) => s.type === "working");
   if (!w.length) return `${sets.length} sets`;
