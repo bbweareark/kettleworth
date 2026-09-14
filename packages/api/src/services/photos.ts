@@ -9,6 +9,8 @@ import { getProfile, upsertProfile } from "./profile";
 
 /** Local disk in dev (STORAGE_DIR, default ./.uploads at the repo root); swap for S3/R2 by replacing these three functions. */
 const root = () => process.env.STORAGE_DIR ?? path.resolve(process.cwd(), "../../.uploads");
+/** Serverless hosts (Vercel) have no durable disk, so photos go into Postgres there; local dev keeps files on disk. */
+const inDb = () => process.env.PHOTO_STORAGE === "db" || (!!process.env.VERCEL && !process.env.STORAGE_DIR);
 const MAX_BYTES = 8 * 1024 * 1024;
 const TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
@@ -18,23 +20,24 @@ export async function savePhoto(userId: string, file: { bytes: Buffer; contentTy
   const id = randomUUID();
   const ext = file.contentType === "image/png" ? "png" : file.contentType === "image/webp" ? "webp" : "jpg";
   const key = `${userId}/${id}.${ext}`;
-  await mkdir(path.join(root(), userId), { recursive: true });
-  await writeFile(path.join(root(), key), file.bytes);
-  const [row] = await db().insert(progressPhoto).values({ id, userId, takenOn: file.takenOn ?? new Date().toISOString().slice(0, 10), storageKey: key, contentType: file.contentType, bytes: file.bytes.length, pose: file.pose }).returning();
+  if (!inDb()) { await mkdir(path.join(root(), userId), { recursive: true }); await writeFile(path.join(root(), key), file.bytes); }
+  const [row] = await db().insert(progressPhoto).values({ id, userId, takenOn: file.takenOn ?? new Date().toISOString().slice(0, 10), storageKey: key, contentType: file.contentType, bytes: file.bytes.length, pose: file.pose, data: inDb() ? file.bytes : null }).returning({ id: progressPhoto.id, userId: progressPhoto.userId, takenOn: progressPhoto.takenOn, storageKey: progressPhoto.storageKey, contentType: progressPhoto.contentType, bytes: progressPhoto.bytes, pose: progressPhoto.pose, analysis: progressPhoto.analysis, createdAt: progressPhoto.createdAt });
   return row!;
 }
+const cols = { id: progressPhoto.id, userId: progressPhoto.userId, takenOn: progressPhoto.takenOn, storageKey: progressPhoto.storageKey, contentType: progressPhoto.contentType, bytes: progressPhoto.bytes, pose: progressPhoto.pose, analysis: progressPhoto.analysis, createdAt: progressPhoto.createdAt };
 export async function listPhotos(userId: string) {
-  return db().select().from(progressPhoto).where(eq(progressPhoto.userId, userId)).orderBy(desc(progressPhoto.takenOn), desc(progressPhoto.createdAt));
+  return db().select(cols).from(progressPhoto).where(eq(progressPhoto.userId, userId)).orderBy(desc(progressPhoto.takenOn), desc(progressPhoto.createdAt));
 }
 export async function readPhoto(userId: string, id: string) {
   const [row] = await db().select().from(progressPhoto).where(and(eq(progressPhoto.id, id), eq(progressPhoto.userId, userId))).limit(1);
   if (!row) return null;
-  return { row, bytes: await readFile(path.join(root(), row.storageKey)) };
+  const { data, ...rest } = row;
+  return { row: rest, bytes: data ?? (await readFile(path.join(root(), row.storageKey))) };
 }
 export async function deletePhoto(userId: string, id: string) {
   const [row] = await db().select().from(progressPhoto).where(and(eq(progressPhoto.id, id), eq(progressPhoto.userId, userId))).limit(1);
   if (!row) return;
-  await rm(path.join(root(), row.storageKey), { force: true });
+  if (!row.data) await rm(path.join(root(), row.storageKey), { force: true });
   await db().delete(progressPhoto).where(eq(progressPhoto.id, id));
 }
 export async function deleteAllPhotos(userId: string) {

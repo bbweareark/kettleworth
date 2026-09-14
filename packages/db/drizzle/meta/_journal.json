@@ -43,6 +43,13 @@
       "when": 1789390786686,
       "tag": "0005_rest_item",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789394263587,
+      "tag": "0006_photo_bytes",
+      "breakpoints": true
     }
   ]
 }

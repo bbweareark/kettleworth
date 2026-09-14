@@ -5,7 +5,7 @@ import { getSession } from "./session";
 
 /** Route-handler helper: auth + zod body + uniform errors. */
 export function route<T extends z.ZodTypeAny | undefined>(schema: T, fn: (ctx: { userId: string; body: T extends z.ZodTypeAny ? z.infer<T> : undefined; req: Request; params: Record<string, string> }) => Promise<unknown>) {
-  return async (req: Request, ctx?: { params: Promise<Record<string, string>> }) => {
+  return async (req: Request, ctx: { params: Promise<Record<string, string>> }) => {
     const s = await getSession();
     if (!s) return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
     let body: unknown = undefined;
@@ -16,7 +16,7 @@ export function route<T extends z.ZodTypeAny | undefined>(schema: T, fn: (ctx: {
       body = parsed.data;
     }
     try {
-      const params = ctx ? await ctx.params : {};
+      const params = (await ctx?.params) ?? {};
       const out = await fn({ userId: s.user.id, body: body as never, req, params });
       return out instanceof Response ? out : NextResponse.json(out ?? { ok: true });
     } catch (e) {

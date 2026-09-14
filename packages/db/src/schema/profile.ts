@@ -1,4 +1,7 @@
-import { pgTable, text, timestamp, jsonb, real, uuid, integer, index, date } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, jsonb, real, uuid, integer, index, date, customType } from "drizzle-orm/pg-core";
+
+/** Raw bytes column, used when body photos are stored in Postgres rather than on disk. */
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({ dataType() { return "bytea"; } });
 import { user } from "./auth";
 import type { TrainingProfile, BaselineMetrics } from "@kettleworth/types";
 
@@ -41,6 +44,8 @@ export const progressPhoto = pgTable("progress_photo", {
   bytes: integer("bytes").notNull().default(0),
   pose: text("pose").notNull().default("front"),
   analysis: jsonb("analysis").$type<BodyAnalysis>(),
+  /** Image bytes when PHOTO_STORAGE=db (serverless hosts have no durable disk); null when the file lives at storageKey on disk. */
+  data: bytea("data"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [index("progress_photo_user_idx").on(t.userId)]);
 

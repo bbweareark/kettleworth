@@ -1,0 +1,1 @@
+ALTER TABLE "progress_photo" ADD COLUMN "data" "bytea";
