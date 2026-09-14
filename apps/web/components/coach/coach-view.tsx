@@ -72,7 +72,7 @@ export function CoachView({ letters, history, ai, name }: { letters: Letter[]; h
               {m.content}
               {m.actions.length ? <ul className="mt-2 space-y-1 border-t border-border pt-2 text-xs">{m.actions.map((a, i) => <li key={i} className={cn("flex items-center gap-1.5", a.applied ? "text-signal" : "text-amber")}>{a.applied ? <Check className="size-3.5" /> : <X className="size-3.5" />}{a.summary}</li>)}</ul> : null}
             </div>))}
-          {busy && <CoachPulse avatar="/art/coach-mark.jpg" label="Coach" items={[{ text: "Reading your last two weeks…", tone: "ember" }]} />}
+          {busy && <CoachPulse avatar="/art/seal.png" label="Coach" items={[{ text: "Reading your last two weeks…", tone: "ember" }]} />}
           <div ref={bottom} />
         </div>
         <form onSubmit={send} className="flex items-end gap-2 border-t border-border p-3">
