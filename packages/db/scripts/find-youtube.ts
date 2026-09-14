@@ -12,6 +12,7 @@ import { config } from "dotenv";
 config({ path: "../../.env" });
 import { and, desc, eq } from "drizzle-orm";
 import { createDb, exercise, exerciseVideo } from "../src";
+import { relevant, allowed } from "./youtube-gate";
 
 const KEY = process.env.YOUTUBE_API_KEY;
 const ALLOWLIST = (process.env.YOUTUBE_CHANNEL_ALLOWLIST ?? "").split(",").map((s) => s.trim()).filter(Boolean);
@@ -38,12 +39,12 @@ async function main() {
     const [existing] = await db.select({ id: exerciseVideo.id }).from(exerciseVideo).where(and(eq(exerciseVideo.exerciseId, ex.id), eq(exerciseVideo.isPlaceholder, false))).limit(1);
     if (existing) { skipped++; continue; }
     done++;
-    const q = `${ex.name} exercise how to form`;
+    const q = `"${ex.name}" how to form`;
     const s = (await (await fetch(`https://www.googleapis.com/youtube/v3/search?${new URLSearchParams({ key: KEY, part: "snippet", type: "video", videoEmbeddable: "true", videoDuration: "short", safeSearch: "strict", maxResults: "10", q })}`)).json()) as Search & { error?: { message: string } };
     if ((s as { error?: { message: string } }).error) throw new Error((s as { error: { message: string } }).error.message);
-    const candidates = (s.items ?? []).filter((i) => channels.some((c) => i.snippet.channelTitle.toLowerCase().includes(c)));
+    const candidates = (s.items ?? []).filter((i) => (allowed(i.snippet.channelTitle) || channels.some((c) => i.snippet.channelTitle.toLowerCase().includes(c))) && relevant(ex.name, i.snippet.title).ok);
     const pick = candidates[0] ?? null;
-    if (!pick) { console.log(`no allowlisted result: ${ex.name}`); continue; }
+    if (!pick) { console.log(`no allowlisted, on-topic result: ${ex.name}`); continue; }
     const v = (await (await fetch(`https://www.googleapis.com/youtube/v3/videos?${new URLSearchParams({ key: KEY, part: "contentDetails,status", id: pick.id.videoId })}`)).json()) as Videos;
     const meta = v.items?.[0];
     if (!meta || !meta.status.embeddable || meta.status.privacyStatus !== "public") { console.log(`not embeddable: ${ex.name}`); continue; }
