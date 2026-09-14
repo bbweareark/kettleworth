@@ -3,6 +3,8 @@ import { ArrowRight, Activity, Brain, Dumbbell, HeartPulse, Salad, Users, Watch 
 import { Badge, Button, Card, CardContent, Ring } from "@kettleworth/ui";
 import { Hero } from "@/components/marketing/hero";
 import { SessionMock } from "@/components/marketing/session-mock";
+// Rendered per request: these pages read the exercise library, and the production build must not need a database.
+export const dynamic = "force-dynamic";
 
 const pillars = [
   { icon: Brain, title: "A coach that actually knows you", body: "A conversational intake learns your body, goals, schedule, equipment, injuries and the exercises you hate. Your training profile is yours to review and edit." },

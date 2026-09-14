@@ -1,7 +1,8 @@
 import { searchExercises } from "@kettleworth/api";
 import { LibraryBrowser } from "@/components/library/browser";
+// Rendered per request: these pages read the exercise library, and the production build must not need a database.
+export const dynamic = "force-dynamic";
 export const metadata = { title: "Exercise library" };
-export const revalidate = 300;
 export default async function Library({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const sp = await searchParams;
   const initial = await searchExercises({ q: sp.q, muscle: sp.muscle, equipment: sp.equipment, pattern: sp.pattern, difficulty: sp.difficulty, limit: 40 });
