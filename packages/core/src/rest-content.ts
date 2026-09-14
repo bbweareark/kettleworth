@@ -2,8 +2,8 @@
  * Rest Deck content: what the app offers during rest countdowns. Every fact and quiz answer is drawn from docs/EVIDENCE.md
  * so nothing is trivia for its own sake: the user learns the reasoning behind their own plan while they recover.
  */
-export type Quiz = { id: string; q: string; options: string[]; answer: number; why: string; tag: "volume" | "effort" | "frequency" | "nutrition" | "recovery" | "technique" | "variety" };
-export type Fact = { id: string; text: string; tag: Quiz["tag"] };
+export type Quiz = { id: string; q: string; options: string[]; answer: number; why: string; tag: string };
+export type Fact = { id: string; text: string; tag: string };
 
 export const QUIZ_BANK: Quiz[] = [
   { id: "q1", q: "For muscle growth, how close to failure do sets need to be?", options: ["Every set to failure", "1 to 3 reps in reserve is nearly as good", "Stop at 5 reps in reserve"], answer: 1, why: "Meta-analyses show hypertrophy rises only modestly as sets approach failure; 1 to 2 reps in reserve matched failure in a 2024 trial, with far less fatigue.", tag: "effort" },

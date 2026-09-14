@@ -11,5 +11,6 @@ export * from "./services/coach";
 export * from "./services/life-mode";
 export * from "./services/adaptation";
 export * from "./services/community";
+export * from "./services/rest";
 export * from "./services/entitlements";
 export * from "./ai";

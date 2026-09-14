@@ -36,6 +36,13 @@
       "when": 1789379732335,
       "tag": "0004_week_checkin",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789390786686,
+      "tag": "0005_rest_item",
+      "breakpoints": true
     }
   ]
 }

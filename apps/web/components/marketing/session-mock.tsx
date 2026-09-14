@@ -10,7 +10,7 @@ export function SessionMock() {
       <Progress value={45} className="mb-5" />
       <div className="mb-1 flex items-center gap-2"><Badge tone="ember">Primary</Badge><span className="text-xs text-fg-subtle">Exercise 2 of 6</span></div>
       <h3 className="font-display text-2xl font-semibold tracking-tighter">Barbell Back Squat</h3>
-      <p className="mt-1 text-sm text-fg-muted">5 × 3–5 @ RPE 8 · 3 min rest</p>
+      <p className="mt-1 text-sm text-fg-muted">5 × 3 to 5 @ RPE 8 · 3 min rest</p>
       <div className="mt-4 space-y-2">
         {sets.map((s) => (
           <div key={s.n} className={`flex items-center gap-3 rounded-lg border px-3 py-2 ${s.done ? "border-border bg-surface-2" : "border-border-strong bg-surface"}`}>

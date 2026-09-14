@@ -13,45 +13,66 @@ type Props = { sessionId: string; seedKey: string; restSeconds: number; seen: st
  * Rest Deck: something worth doing while the clock runs. Content is real (the quiz is the evidence behind the user's plan),
  * timed to the rest, and every completed card is recorded so it counts toward Growth and never repeats.
  */
+type Served = { quiz: Quiz | null; fact: Fact | null };
+async function fetchNext(exclude: string[]): Promise<Served | null> {
+  try { const r = await fetch(`/api/rest/next?exclude=${encodeURIComponent(exclude.slice(-120).join(","))}`, { cache: "no-store" }); if (!r.ok) return null; return (await r.json()) as Served; } catch { return null; }
+}
+
 export function RestDeck(p: Props) {
   const initial = useMemo(() => pickRestContent(p.seedKey, p.seen, p.restSeconds), [p.seedKey, p.seen, p.restSeconds]);
   const [mode, setMode] = useState<"quiz" | "fact" | "breathe" | "predict" | "tip">(initial.kind);
+  // Served content: fetched fresh for every rest (the pool refills itself); the built-in bank covers offline.
+  const [served, setServed] = useState<Served | null>(null);
+  const shown = useRef<string[]>([]);
+  const load = async () => {
+    const next = await fetchNext([...p.seen, ...shown.current]);
+    const fallback: Served = { quiz: pickRestContent(p.seedKey + ":q:" + shown.current.length, [...p.seen, ...shown.current], 999).quiz ?? null, fact: pickRestContent(p.seedKey + ":f:" + shown.current.length, [...p.seen, ...shown.current], 10).fact ?? null };
+    const s = next ?? fallback;
+    if (s.quiz) shown.current.push(s.quiz.id);
+    if (s.fact) shown.current.push(s.fact.id);
+    setServed(s);
+  };
+  useEffect(() => { void load(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [p.seedKey]);
   const modes = [["quiz", Brain, "Quiz"], ["breathe", Wind, "Breathe"], ["predict", Target, "Call it"], ["tip", Lightbulb, "Tip"]] as const;
   return (
     <div className="mt-4 rounded-2xl bg-black/25 p-3">
       <div className="mb-2 flex gap-1" role="tablist" aria-label="Rest deck">{modes.map(([m, I, l]) => <button key={m} role="tab" aria-selected={mode === m} type="button" onClick={() => setMode(m)} className={cn("inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-medium transition-colors", mode === m ? "bg-fg text-bg" : "text-fg-muted hover:bg-white/10 hover:text-fg")}><I className="size-3.5" />{l}</button>)}</div>
       <AnimatePresence mode="wait" initial={false}>
         <motion.div key={mode} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
-          {mode === "quiz" && <QuizCard quiz={initial.kind === "quiz" && initial.quiz ? initial.quiz : (pickRestContent(p.seedKey + ":q", p.seen, 999).quiz ?? null)} sessionId={p.sessionId} onDone={p.onSeen} />}
+          {mode === "quiz" && (served ? <QuizCard key={served.quiz?.id ?? "none"} quiz={served.quiz} sessionId={p.sessionId} onDone={p.onSeen} onNext={load} /> : <Loading label="Picking a question" />)}
           {mode === "breathe" && <BreatheCard restSeconds={p.restSeconds} sessionId={p.sessionId} />}
           {mode === "predict" && <PredictCard nextSet={p.nextSet} sessionId={p.sessionId} onPrediction={p.onPrediction} />}
-          {mode === "tip" && <TipCard tips={p.tips} fact={initial.kind === "fact" ? initial.fact : undefined} />}
+          {mode === "tip" && <TipCard key={served?.fact?.id ?? "tip"} tips={p.tips} fact={served?.fact ?? undefined} onMoreFacts={load} />}
         </motion.div>
       </AnimatePresence>
     </div>
   );
 }
 
+function Loading({ label }: { label: string }) {
+  return <div className="space-y-2 py-1" aria-busy><div className="text-2xs uppercase tracking-[0.14em] text-fg-subtle">{label}</div><div className="h-5 w-3/4 animate-pulse rounded bg-white/10" /><div className="h-9 animate-pulse rounded-lg bg-white/5" /><div className="h-9 animate-pulse rounded-lg bg-white/5" /></div>;
+}
+
 async function record(body: Record<string, unknown>) { try { await fetch("/api/rest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); } catch {} }
 
-function QuizCard({ quiz, sessionId, onDone }: { quiz: Quiz | null; sessionId: string; onDone: (id: string) => void }) {
+function QuizCard({ quiz, sessionId, onDone, onNext }: { quiz: Quiz | null; sessionId: string; onDone: (id: string) => void; onNext: () => void }) {
   const [left, setLeft] = useState(QUIZ_SECONDS);
   const [picked, setPicked] = useState<number | null>(null);
   const done = useRef(false);
   useEffect(() => { if (!quiz || picked != null) return; const t = setInterval(() => setLeft((l) => { if (l <= 1) { clearInterval(t); return 0; } return l - 1; }), 1000); return () => clearInterval(t); }, [quiz, picked]);
   useEffect(() => { if (left === 0 && picked == null && quiz && !done.current) { done.current = true; setPicked(-1); record({ sessionId, kind: "quiz", itemId: quiz.id, correct: false, detail: { timedOut: true } }); onDone(quiz.id); } }, [left, picked, quiz, sessionId, onDone]);
-  if (!quiz) return <p className="text-sm text-fg-muted">You've cleared the whole quiz bank. New questions arrive with each evidence update.</p>;
+  if (!quiz) return <p className="text-sm text-fg-muted">No question this time. Try Breathe or Tip.</p>;
   const answer = (i: number) => { if (picked != null || done.current) return; done.current = true; setPicked(i); record({ sessionId, kind: "quiz", itemId: quiz.id, correct: i === quiz.answer, detail: { picked: i, secondsLeft: left } }); onDone(quiz.id); };
   const correct = picked === quiz.answer;
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between text-2xs uppercase tracking-[0.14em] text-fg-subtle"><span>Coach quiz · {quiz.tag}</span>{picked == null ? <span className={cn("tabular", left <= 5 && "text-rose")}>{left}s</span> : null}</div>
+      <div className="mb-2 flex items-center justify-between text-2xs uppercase tracking-[0.14em] text-fg-subtle"><span>Quiz · {quiz.tag}</span>{picked == null ? <span className={cn("tabular", left <= 5 && "text-rose")}>{left}s</span> : null}</div>
       <p className="font-display text-lg font-semibold leading-snug tracking-tighter">{quiz.q}</p>
       <div className="mt-3 grid gap-1.5">{quiz.options.map((o, i) => (
         <button key={i} type="button" disabled={picked != null} onClick={() => answer(i)} className={cn("rounded-lg border px-3 py-2 text-left text-sm transition-colors", picked == null ? "border-border bg-surface/40 hover:border-border-strong" : i === quiz.answer ? "border-signal bg-signal-soft" : i === picked ? "border-rose bg-rose-soft" : "border-border opacity-50")}>
           <span className="flex items-center gap-2">{picked != null && i === quiz.answer ? <Check className="size-4 text-signal" /> : picked === i ? <X className="size-4 text-rose" /> : null}{o}</span>
         </button>))}</div>
-      {picked != null && <p className="mt-3 text-sm text-fg-muted"><span className={cn("font-medium", correct ? "text-signal" : "text-amber")}>{picked === -1 ? "Time." : correct ? "Right, +10 Growth." : "Not quite."}</span> {quiz.why}</p>}
+      {picked != null && <><p className="mt-3 text-sm text-fg-muted"><span className={cn("font-medium", correct ? "text-signal" : "text-amber")}>{picked === -1 ? "Time." : correct ? "Right, +10 Growth." : "Not quite."}</span> {quiz.why}</p><Button size="sm" variant="ghost" className="mt-2" onClick={onNext}>Next question</Button></>}
     </div>
   );
 }
@@ -91,10 +112,10 @@ function PredictCard({ nextSet, sessionId, onPrediction }: { nextSet: Props["nex
   );
 }
 
-function TipCard({ tips, fact }: { tips: CheckCard[]; fact?: Fact }) {
+function TipCard({ tips, fact, onMoreFacts }: { tips: CheckCard[]; fact?: Fact; onMoreFacts: () => void }) {
   const [i, setI] = useState(0);
   const items = [...(fact ? [{ kind: "fact", text: fact.text }] : []), ...tips];
   const c = items[i % Math.max(1, items.length)];
   if (!c) return null;
-  return (<div><div className="text-2xs uppercase tracking-[0.14em] text-fg-subtle">{c.kind === "fact" ? "Did you know" : c.kind === "cue" ? "Cue" : c.kind === "mistake" ? "Avoid" : "For you"}</div><p className="mt-1 font-display text-lg font-semibold leading-snug tracking-tighter">{c.text}</p>{items.length > 1 && <Button size="sm" variant="ghost" className="mt-2" onClick={() => setI((x) => x + 1)}>Next</Button>}</div>);
+  return (<div><div className="text-2xs uppercase tracking-[0.14em] text-fg-subtle">{c.kind === "fact" ? "Did you know" : c.kind === "cue" ? "Cue" : c.kind === "mistake" ? "Avoid" : "For you"}</div><p className="mt-1 font-display text-lg font-semibold leading-snug tracking-tighter">{c.text}</p><div className="mt-2 flex gap-2">{items.length > 1 && <Button size="sm" variant="ghost" onClick={() => setI((x) => x + 1)}>Next</Button>}{c.kind === "fact" && <Button size="sm" variant="ghost" onClick={onMoreFacts}>Another fact</Button>}</div></div>);
 }
