@@ -10,7 +10,7 @@ const pillars = [
   { icon: Activity, title: "Adapts every week", body: "Hit every rep? Load goes up. Slept badly? Today eases off. Every change is explained in plain English." },
   { icon: Salad, title: "Nutrition that fits your life", body: "Calorie and macro targets, weekly meal plans, recipes and a grocery list that respect your diet, allergies, budget and cooking time." },
   { icon: Watch, title: "Recovery from your wearable", body: "Connect Whoop, Oura, Garmin, Fitbit, Polar or Strava. Readiness, sleep and HRV shape each session's intensity." },
-  { icon: Users, title: "People who train like you", body: "Match with lifters on the same goals and schedule, join groups, take on challenges. Private by default." },
+  { icon: Users, title: "People who train like you", body: "Matched on goals, level and schedule. Training partners, groups and session challenges. Private until you opt in." },
 ];
 
 export default function Landing() {

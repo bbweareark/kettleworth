@@ -9,5 +9,7 @@ export * from "./services/account";
 export * from "./services/photos";
 export * from "./services/coach";
 export * from "./services/life-mode";
+export * from "./services/adaptation";
+export * from "./services/community";
 export * from "./services/entitlements";
 export * from "./ai";

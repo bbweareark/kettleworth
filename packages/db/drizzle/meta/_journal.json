@@ -29,6 +29,13 @@
       "when": 1789368244602,
       "tag": "0003_coach",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1789379732335,
+      "tag": "0004_week_checkin",
+      "breakpoints": true
     }
   ]
 }

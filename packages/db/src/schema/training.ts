@@ -40,6 +40,9 @@ export const week = pgTable("week", {
   volumeScalar: real("volume_scalar").notNull().default(1),
   startsOn: date("starts_on").notNull(),
   adaptations: jsonb("adaptations").$type<Adaptation[]>().notNull().default([]),
+  adaptedAt: timestamp("adapted_at"),
+  checkin: text("checkin").$type<"keep" | "fresh" | "ease">(),
+  checkinAt: timestamp("checkin_at"),
 }, (t) => [index("week_programme_idx").on(t.programmeId, t.weekNumber)]);
 
 export const trainingSession = pgTable("training_session", {

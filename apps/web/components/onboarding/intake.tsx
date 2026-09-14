@@ -69,7 +69,7 @@ export function Intake({ initial, step, name, ai }: { initial: TrainingProfile |
       setTurns((t) => [...t, ...newTurns]);
       if (ai && ["goals", "injuries", "environment", "diet"].includes(stepDef.id)) {
         setThinking(true);
-        const r = await fetch("/api/onboarding/followup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ stage: stepDef.id }) }).then((x) => x.json()).catch(() => null);
+        const r = await fetch("/api/onboarding/followup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ stage: stepDef.id }), signal: AbortSignal.timeout(15_000) }).then((x) => x.json()).catch(() => null);
         setThinking(false);
         if (r?.question) { setFollowUp({ question: r.question, stage: stepDef.id }); setBusy(false); return; }
       }

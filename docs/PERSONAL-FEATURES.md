@@ -35,3 +35,9 @@ Principle: personal means the app remembers, notices and adapts, then tells you 
 - Generic gamification (badges for opening the app). Growth points already reward real work only.
 - Public leaderboards by default. Opt-in only, per the brief.
 - AI-generated body images. Silhouettes and the user's own photos are more honest and more premium.
+
+## Weekly check-in (added 14 September 2026)
+Every Monday the engine runs `runWeeklyAdaptation` (lazily on the Today page, and from the weekly cron before letters). It reads last week's completion and RPE, applies volume, intensity or deload changes, and detects stale exercises. The Today page then asks one question: stay the course, something fresh, or ease off. "Fresh" rotates accessories while anchors stay; "ease" drops loads 8 percent; "keep" leaves the engine's decision in place. Every applied change is stored on the week with a reason and surfaces in the coach pulse and the letter.
+
+## Community (added 14 September 2026)
+Private by default. A member creates a handle and picks visibility (private, members, public). Matching runs `rankMatches` over opted-in profiles only, scoring shared goals, styles, level, days per week, preferred time and city. Partners accept each other and get a private thread. Groups have posts, replies and reactions. Challenges score completed sessions automatically. Block and report exist on every card and post.

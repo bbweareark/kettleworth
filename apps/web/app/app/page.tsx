@@ -3,12 +3,13 @@ import { redirect } from "next/navigation";
 import { ArrowRight, Flame, Play, Sparkles } from "lucide-react";
 import { Badge, Button, Card, CardContent, CoachPulse, CountUp, Ring, Sparkline, type PulseItem } from "@kettleworth/ui";
 import { requireUser } from "@/lib/session";
-import { getProfile, getActiveProgramme, getTodaySession, upcomingSessions, getReadiness, getProgress, ensureNutritionPlan, connectedProviders, activitiesForDay, getSessionDetail, hasUnreadLetter, listPhotos } from "@kettleworth/api";
+import { getProfile, getActiveProgramme, getTodaySession, upcomingSessions, getReadiness, getProgress, ensureNutritionPlan, connectedProviders, activitiesForDay, getSessionDetail, hasUnreadLetter, listPhotos, runWeeklyAdaptation, currentWeekState } from "@kettleworth/api";
 import { kgToLb, ritualNudges } from "@kettleworth/core";
 import { ActivityLog } from "@/components/today/activity-log";
 import { HeroSession } from "@/components/app/hero-session";
 import { sessionArt } from "@/lib/art";
 import { OfflineWarmup } from "@/components/app/offline-warmup";
+import { WeeklyCheckIn } from "@/components/today/check-in";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,8 @@ export default async function Today() {
   const user = await requireUser();
   const rec = await getProfile(user.id);
   if (!rec?.onboardingCompletedAt) redirect("/app/onboarding");
+  await runWeeklyAdaptation(user.id).catch((e) => console.warn("weekly adaptation", e));
+  const weekState = await currentWeekState(user.id);
   const [prog, today, upcoming, readiness, progress, nutrition, providers, activities] = await Promise.all([getActiveProgramme(user.id), getTodaySession(user.id), upcomingSessions(user.id, 7), getReadiness(user.id), getProgress(user.id), ensureNutritionPlan(user.id), connectedProviders(user.id), activitiesForDay(user.id)]);
   const detail = today ? await getSessionDetail(user.id, today.id) : null;
   const [unread, photos] = await Promise.all([hasUnreadLetter(user.id), listPhotos(user.id)]);
@@ -37,6 +40,7 @@ export default async function Today() {
   for (const r of readiness.reasons.slice(0, -1)) pulse.push({ text: r, tone: "neutral" });
   if (detail?.instances.length) { const loads = detail.instances.filter((i) => i.plannedSets.some((s) => s.type === "working" && s.weightKg != null)); pulse.push({ text: loads.length ? `${loads.length} of ${detail.instances.length} exercises have calibrated targets for today.` : `First time on these lifts: I'll set targets from what you log today.`, tone: "ember" }); }
   if (progress.tonnageLastWeek && progress.tonnageThisWeek) pulse.push({ text: `Volume ${progress.tonnageThisWeek >= progress.tonnageLastWeek ? "up" : "down"} ${Math.abs(Math.round(((progress.tonnageThisWeek - progress.tonnageLastWeek) / progress.tonnageLastWeek) * 100))}% on last week.`, tone: "neutral" });
+  if (weekState?.week.adaptations.length) pulse.push({ text: `This week: ${weekState.week.adaptations[weekState.week.adaptations.length - 1]!.reason}`, tone: "ember" });
   if (progress.prs[0]) pulse.push({ text: `Latest PR: ${progress.prs[0].name}, e1RM ${w(progress.prs[0].value)} ${u}.`, tone: "signal" });
   if (progress.streakWeeks > 1) pulse.push({ text: `${progress.streakWeeks}-week streak. Consistency is doing the work.`, tone: "ember" });
   pulse.push({ text: `Nutrition target ${nutrition.targets.calories} kcal · ${nutrition.targets.proteinG} g protein, ${activities.length ? "adjusted for today's activity" : "recalibrated weekly from your weigh-ins"}.`, tone: "neutral" });
@@ -49,6 +53,7 @@ export default async function Today() {
       </div>
       <OfflineWarmup sessionHref={today ? `/app/session/${today.id}` : null} images={[...(today ? [sessionArt(today.name, rec.profile.sex)] : []), ...(detail?.instances ?? []).map((i) => i.exercise.imageUrls[0]).filter((u): u is string => !!u)]} />
       <CoachPulse items={pulse} />
+      {weekState && weekState.hasPrevious && !weekState.week.checkin && !weekState.week.isDeload ? <WeeklyCheckIn weekNumber={weekState.week.weekNumber} applied={weekState.week.adaptations} /> : null}
       {nudges.length ? <ul className="flex flex-wrap gap-2">{nudges.map((n) => (<li key={n.id} className={`flex items-center gap-3 rounded-xl px-3.5 py-2 text-sm ring-1 ring-white/[0.05] ${n.tone === "amber" ? "bg-amber-soft" : n.tone === "signal" ? "bg-signal-soft" : n.tone === "ember" ? "bg-ember-soft" : "bg-surface/60"}`}><span>{n.text}</span>{n.action ? <Link href={n.action.href} className="font-medium text-ember hover:underline">{n.action.label}</Link> : null}</li>))}</ul> : null}
 
       {!prog ? (
