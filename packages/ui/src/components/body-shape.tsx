@@ -56,7 +56,7 @@ export function BodyShapePicker({ value, onChange, sex = "male", className }: { 
         const active = value === o.pct;
         return (
           <button key={o.pct} type="button" role="radio" aria-checked={active} onClick={() => onChange(active ? undefined : o.pct)} className={cn("group flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center transition-all", active ? "border-ember bg-ember-soft shadow-glow" : "border-border bg-surface-2 hover:border-border-strong")}>
-            <BodySilhouette level={i / (BODY_SHAPES.length - 1)} sex={sex} size={96} active={active} className="group-hover:scale-[1.04]" />
+            <span className={cn("relative block aspect-[3/4] w-full overflow-hidden rounded-lg ring-1 ring-white/[0.06] transition-transform group-hover:scale-[1.03]", active && "ring-ember/60")}><img src={`/art/body/shape-${sex === "female" ? "f" : "m"}-${i}.jpg`} alt="" className="size-full object-cover object-top" /></span>
             <span className="text-xs font-medium">{o.label}</span>
             <span className="text-2xs text-fg-subtle">{o.hint}</span>
           </button>

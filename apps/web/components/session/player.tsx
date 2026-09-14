@@ -41,7 +41,8 @@ export function SessionPlayer({ detail, units, sex }: { detail: Detail; units: "
   const doneSets = instances.reduce((a, i) => a + i.loggedSets.filter((l) => l.completed).length, 0);
 
   useEffect(() => { pending().then(setQueued); const on = () => flush().then(() => pending().then(setQueued)); window.addEventListener("online", on); return () => window.removeEventListener("online", on); }, []);
-  useEffect(() => { if (session.status === "planned") start(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // Start is idempotent: a planned session gets its readiness snapshot, an in-progress one gets its rest clocks refreshed.
+  useEffect(() => { if (session.status === "planned" || session.status === "in_progress") start(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function start() {
     setStarting(true);
@@ -123,10 +124,10 @@ export function SessionPlayer({ detail, units, sex }: { detail: Detail; units: "
 
       <Card className="overflow-hidden">
         <div className="grid sm:grid-cols-[160px_1fr]">
-          <div className="space-y-3 p-4 pb-0 sm:pb-4 sm:pr-0"><ExerciseMedia name={cur.exercise.name} images={cur.exercise.imageUrls} video={cur.video} compact className="aspect-[4/3] sm:aspect-square" /><MuscleFigure muscles={cur.exercise.primaryMuscles} sex={sex} size="md" className="hidden sm:flex" /></div>
+          <div className="flex gap-3 p-4 pb-0 sm:flex-col sm:pb-4 sm:pr-0"><ExerciseMedia name={cur.exercise.name} images={cur.exercise.imageUrls} video={cur.video} compact className="aspect-[4/3] min-w-0 flex-1 sm:aspect-square sm:flex-none" /><MuscleFigure muscles={cur.exercise.primaryMuscles} sex={sex} size="md" /></div>
           <CardContent className="space-y-2">
             <div className="flex items-center gap-2"><Badge tone={cur.role === "primary" ? "ember" : "neutral"} className="capitalize">{cur.role}</Badge><span className="text-xs text-fg-subtle">Exercise {idx + 1} of {instances.length}</span>{cur.swappedReason && <Badge tone="amber">Swapped</Badge>}</div>
-            <div className="flex items-start justify-between gap-3"><h1 className="font-display text-3xl font-semibold tracking-tightest">{cur.exercise.name}</h1><MuscleFigure muscles={cur.exercise.primaryMuscles} sex={sex} size="sm" caption={false} className="sm:hidden" /></div>
+            <h1 className="font-display text-3xl font-semibold tracking-tightest">{cur.exercise.name}</h1>
             <PrescriptionNumerals sets={cur.plannedSets} />
             {cur.notes ? <p className="text-xs text-amber">{cur.notes}</p> : null}
             <div className="flex flex-wrap gap-2 pt-1"><Button size="sm" variant="secondary" onClick={() => setShowInfo((s) => !s)} aria-expanded={showInfo}><Info /> How to {showInfo ? <ChevronUp /> : <ChevronDown />}</Button><Button size="sm" variant="secondary" onClick={() => setSwapOpen(true)}><Repeat /> Swap</Button></div>

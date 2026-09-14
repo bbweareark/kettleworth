@@ -57,3 +57,22 @@ export function MuscleMap({ muscles, sex, className }: { muscles: string[]; sex?
     </div>
   );
 }
+
+const ALL_GROUPS: MuscleGroup[] = ["chest", "shoulders", "back", "biceps", "triceps", "forearms", "core", "lower-back", "glutes", "quads", "hamstrings", "calves"];
+/** Twelve figures, one per group: lit and counted when trained this week, dim when not. */
+export function MuscleGrid({ setsByMuscle, lastWeek, sex, className }: { setsByMuscle: Record<string, number>; lastWeek?: Record<string, number>; sex?: "male" | "female" | "other" | null; className?: string }) {
+  const tally = (src: Record<string, number>) => { const out: Partial<Record<MuscleGroup, number>> = {}; for (const [m, n] of Object.entries(src)) { const g = GROUP[m]; if (g) out[g] = (out[g] ?? 0) + n; } return out; };
+  const now = tally(setsByMuscle), prev = tally(lastWeek ?? {});
+  return (
+    <div className={cn("grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6", className)}>
+      {ALL_GROUPS.map((g) => { const n = now[g] ?? 0; const d = n - (prev[g] ?? 0); const lit = n > 0; return (
+        <div key={g} className={cn("relative overflow-hidden rounded-2xl ring-1 transition-all", lit ? "ring-ember/30" : "ring-white/[0.05]")}>
+          <img src={figureSrc(sex, lit ? g : null, BACK_VIEW.has(g) ? "back" : "front")} alt="" className={cn("aspect-[3/4] w-full object-cover object-top", !lit && "opacity-40 saturate-50")} />
+          <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.75))] p-2">
+            <div className="text-2xs uppercase tracking-[0.14em] text-fg-subtle">{GROUP_LABEL[g]}</div>
+            <div className="flex items-baseline gap-1"><span className={cn("font-display text-xl font-semibold tabular", lit ? "text-fg" : "text-fg-subtle")}>{n}</span><span className="text-2xs text-fg-subtle">sets</span>{d !== 0 && lastWeek ? <span className={cn("ml-auto text-2xs tabular", d > 0 ? "text-signal" : "text-amber")}>{d > 0 ? "+" : ""}{d}</span> : null}</div>
+          </div>
+        </div>); })}
+    </div>
+  );
+}

@@ -5,6 +5,7 @@ import { getProfile, getProgress, listPhotos, aiAvailable, physiqueProgress } fr
 import { GrowthPanel, PhysiqueCharts, CompareSlider } from "@/components/progress/physique";
 import { genderedArt } from "@/lib/art";
 import { BodyCheck } from "@/components/progress/body-check";
+import { MuscleGrid } from "@/components/muscle-figure";
 import { Badge, Card, CardContent, Stat, EmptyState } from "@kettleworth/ui";
 import { kgToLb, round } from "@kettleworth/core";
 import { E1RMChart, TonnageChart, WeightChart, VolumeCompare } from "@/components/progress/charts";
@@ -31,6 +32,10 @@ export default async function Progress() {
         <div className="p-4"><Stat label="Volume this week" value={w(p.tonnageThisWeek) ?? 0} unit={u} delta={p.tonnageLastWeek ? `${w(p.tonnageLastWeek)} ${u} last week` : undefined} /></div>
         <div className="p-4"><Stat label="Personal records" value={p.prs.length} /></div>
       </div>
+      <section className="space-y-3">
+        <div className="flex flex-wrap items-end justify-between gap-3"><div><div className="eyebrow">This week</div><h2 className="font-display text-2xl font-semibold tracking-tighter">Where the work went.</h2></div><p className="max-w-sm text-xs text-fg-subtle">Working sets per muscle group from completed sessions. Lit means trained this week.</p></div>
+        <MuscleGrid setsByMuscle={p.volumeThisWeek} lastWeek={p.volumeLastWeek} sex={rec.profile.sex ?? null} />
+      </section>
       <section className="relative space-y-6 overflow-hidden rounded-3xl p-6 ring-1 ring-white/[0.06]">
         <img src={genderedArt("progress", rec.profile.sex)} alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-70" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-bg)_70%,transparent)_0%,var(--color-bg)_55%)]" />
         <div className="flex flex-wrap items-end justify-between gap-3"><div><div className="eyebrow">Physique</div><h2 className="font-display text-2xl font-semibold tracking-tighter">What the mirror can't measure.</h2></div><p className="max-w-sm text-xs text-fg-subtle">Photo reads are smoothed against your weigh-ins so a change in lighting never looks like a change in you.</p></div>
