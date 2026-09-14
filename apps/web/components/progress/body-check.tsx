@@ -72,7 +72,7 @@ export function BodyCheck({ initial, ai, priorityMuscles, sex = "male" }: { init
             <button type="button" aria-label="Delete photo" onClick={() => remove(p.id)} className="absolute right-1 top-1 grid size-6 place-items-center rounded-full bg-black/60 text-white hover:bg-rose"><Trash2 className="size-3" /></button>
           </li>))}</ul>
       ) : <p className="text-sm text-fg-muted">Add a front, side and back photo in the same light every few weeks. The trend matters more than any single picture.</p>}
-      {photos.length ? <div className="flex flex-wrap items-center gap-2"><Button size="sm" onClick={analyse} loading={busy === "analyse"} disabled={!ai || !selected.size}><Sparkles /> Read selected ({selected.size})</Button>{!ai && <span className="text-xs text-fg-subtle">AI coach is off on this server; photos are stored only.</span>}</div> : null}
+      {photos.length ? <div className="flex flex-wrap items-center gap-2"><Button size="sm" onClick={analyse} loading={busy === "analyse"} disabled={!ai || !selected.size}><Sparkles /> Read selected ({selected.size})</Button>{!ai && <span className="text-xs text-fg-subtle">Photo reads are unavailable on this server; photos are stored only.</span>}</div> : null}
       {latest ? (
         <div className="space-y-3 rounded-xl border border-border p-4">
           <CoachPulse label="Read" items={[{ text: latest.summary, tone: "ember" }, ...latest.strengths.map((t) => ({ text: t, tone: "signal" as const })), ...latest.posture.map((t) => ({ text: t, tone: "sky" as const }))]} />

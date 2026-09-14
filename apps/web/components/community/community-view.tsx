@@ -6,8 +6,9 @@ import { Users, Shield, Flame, Trophy, MessageSquare, Send, Check, X, Plus, Flag
 import { Button, Field, Input, Textarea, Switch, Segmented, Tabs, TabsList, TabsTrigger, TabsContent, Dialog, DialogContent, toast, cn } from "@kettleworth/ui";
 
 type Me = { handle: string; displayName: string; bio: string | null; city: string | null; country: string | null; trainTogether: boolean; visibility: "public" | "members" | "private" };
-type Match = { userId: string; handle: string; displayName: string; bio: string | null; city: string | null; level: string | null; goals: string[]; styles: string[]; trainTogether: boolean; score: number; reasons: string[]; status: string | null; matchId: string | null; initiatedByMe: boolean };
-type Partner = { matchId: string; userId: string; handle: string; displayName: string; sessionsThisWeek: number };
+type Match = { userId: string; handle: string; displayName: string; bio: string | null; city: string | null; level: string | null; goals: string[]; styles: string[]; trainTogether: boolean; score: number; reasons: string[]; status: string | null; matchId: string | null; initiatedByMe: boolean; growth: number; growthLevel: number; streakWeeks: number };
+type Partner = { matchId: string; userId: string; handle: string; displayName: string; sessionsThisWeek: number; growth: number; growthLevel: number; streakWeeks: number };
+type GrowthRow = { userId: string; handle: string; displayName: string; me: boolean; growth: number; level: number; streakWeeks: number };
 type Group = { id: string; name: string; description: string | null; memberCount: number; joined: boolean };
 type Challenge = { id: string; name: string; endsOn: string; joined: boolean; participants: number; board: { userId: string; handle: string; displayName: string; score: number; me: boolean }[] };
 type Post = { id: string; body: string; kind: string; createdAt: string; author: { handle: string; displayName: string }; authorId: string; reactions: number; reacted: boolean; comments: { id: string; body: string; author: { handle: string; displayName: string } }[] };
@@ -24,7 +25,7 @@ function Avatar({ name, size = 40 }: { name: string; size?: number }) {
 }
 const daysLeft = (iso: string) => Math.max(0, Math.ceil((new Date(iso).getTime() - Date.now()) / 86400000));
 
-export function CommunityView(p: { me: Me | null; defaultName: string; matches: Match[]; matchReason: string | null; partners: Partner[]; pending: { matchId: string; handle: string; displayName: string }[]; groups: Group[]; challenges: Challenge[] }) {
+export function CommunityView(p: { me: Me | null; defaultName: string; matches: Match[]; matchReason: string | null; partners: Partner[]; pending: { matchId: string; handle: string; displayName: string }[]; groups: Group[]; challenges: Challenge[]; growthBoard: GrowthRow[] }) {
   const router = useRouter();
   const reduce = useReducedMotion();
   const [editing, setEditing] = useState(!p.me);
@@ -75,7 +76,7 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
           {p.partners.length ? (
             <div className="space-y-2"><p className="eyebrow">Your partners</p>
               <div className="grid gap-2 sm:grid-cols-2">{p.partners.map((pt) => (
-                <div key={pt.matchId} className="flex items-center gap-3 rounded-2xl bg-surface/50 p-3 ring-1 ring-white/[0.05]"><Avatar name={pt.displayName} /><div className="flex-1"><div className="text-sm font-medium">{pt.displayName}</div><div className="text-xs text-fg-muted">{pt.sessionsThisWeek} session{pt.sessionsThisWeek === 1 ? "" : "s"} this week</div></div><Button size="sm" variant="ghost" onClick={() => setChat(pt)}><MessageSquare className="size-4" />Message</Button></div>))}</div>
+                <div key={pt.matchId} className="flex items-center gap-3 rounded-2xl bg-surface/50 p-3 ring-1 ring-white/[0.05]"><Avatar name={pt.displayName} /><div className="flex-1"><div className="text-sm font-medium">{pt.displayName}</div><div className="text-xs text-fg-muted">{pt.sessionsThisWeek} session{pt.sessionsThisWeek === 1 ? "" : "s"} this week · level {pt.growthLevel}{pt.streakWeeks ? ` · ${pt.streakWeeks} wk streak` : ""}</div></div><Button size="sm" variant="ghost" onClick={() => setChat(pt)}><MessageSquare className="size-4" />Message</Button></div>))}</div>
             </div>
           ) : null}
           <div className="space-y-2"><p className="eyebrow">Suggested for you</p>
@@ -83,7 +84,7 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
             : p.matches.length === 0 ? <div className="rounded-2xl bg-surface/50 p-5 ring-1 ring-white/[0.05]"><p className="text-sm text-fg-muted">No one close enough yet. Matches appear as members with your goals and schedule opt in.</p></div>
             : <div className="grid gap-3 sm:grid-cols-2">{p.matches.map((m, i) => (
               <motion.div key={m.userId} {...stagger(i)} className="relative overflow-hidden rounded-2xl bg-surface/50 p-4 ring-1 ring-white/[0.05]">
-                <div className="flex items-start gap-3"><Avatar name={m.displayName} size={44} /><div className="min-w-0 flex-1"><div className="flex items-center gap-2"><span className="truncate font-medium">{m.displayName}</span><span className="ml-auto rounded-full bg-ember-soft px-2 py-0.5 font-display text-xs font-semibold tabular text-ember">{m.score}%</span></div><div className="truncate text-xs text-fg-muted">@{m.handle}{m.city ? ` · ${m.city}` : ""}{m.level ? ` · ${m.level}` : ""}</div></div></div>
+                <div className="flex items-start gap-3"><Avatar name={m.displayName} size={44} /><div className="min-w-0 flex-1"><div className="flex items-center gap-2"><span className="truncate font-medium">{m.displayName}</span><span className="ml-auto rounded-full bg-ember-soft px-2 py-0.5 font-display text-xs font-semibold tabular text-ember">{m.score}%</span></div><div className="truncate text-xs text-fg-muted">@{m.handle}{m.city ? ` · ${m.city}` : ""}{m.level ? ` · ${m.level}` : ""}</div><div className="mt-0.5 text-2xs uppercase tracking-[0.14em] text-ember">Level {m.growthLevel} · {m.growth} Growth{m.streakWeeks ? ` · ${m.streakWeeks} wk streak` : ""}</div></div></div>
                 <div className="mt-3 flex flex-wrap gap-1.5">{m.reasons.slice(0, 3).map((r) => <span key={r} className="rounded-full bg-surface-2 px-2 py-0.5 text-2xs text-fg-muted">{r}</span>)}</div>
                 <div className="mt-3 flex items-center gap-2">
                   {m.status === "accepted" ? <span className="text-xs text-signal">Partners</span> : m.status === "suggested" && m.initiatedByMe ? <span className="text-xs text-fg-subtle">Request sent</span> : m.status === "suggested" ? <Button size="sm" loading={busy === m.userId} onClick={() => run(m.userId, () => api("partner", { userId: m.userId }), "You're partners")}>Accept</Button> : <Button size="sm" loading={busy === m.userId} onClick={() => run(m.userId, () => api("partner", { userId: m.userId }), "Request sent")}>Train together</Button>}
@@ -106,7 +107,13 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
             </motion.div>))}</div>
         </TabsContent>
 
-        <TabsContent value="challenges" className="mt-4 space-y-3">
+        <TabsContent value="challenges" className="mt-4 space-y-6">
+          <div className="space-y-3">
+            <div className="flex items-end justify-between gap-3"><p className="eyebrow">Growth board</p><span className="text-2xs text-fg-subtle">Every session, set, weigh-in, check-in and answered question counts.</span></div>
+            {p.growthBoard.length ? <ol className="grid gap-1.5 sm:grid-cols-2">{p.growthBoard.slice(0, 10).map((b, j) => (
+              <li key={b.userId} className={cn("flex items-center gap-3 rounded-xl px-3 py-2 text-sm ring-1 ring-white/[0.05]", b.me ? "bg-ember-soft" : "bg-surface/50")}><span className="w-4 text-right font-display text-xs text-fg-subtle tabular">{j + 1}</span><Avatar name={b.displayName} size={26} /><span className="min-w-0 flex-1 truncate">{b.displayName}{b.me ? " (you)" : ""}<span className="ml-2 text-2xs uppercase tracking-[0.12em] text-fg-subtle">lvl {b.level}{b.streakWeeks ? ` · ${b.streakWeeks} wk` : ""}</span></span><span className="font-display font-semibold tabular">{b.growth}</span></li>))}</ol>
+            : <p className="text-sm text-fg-muted">Set your profile to members-only to appear on the board.</p>}
+          </div>
           <p className="eyebrow">Challenges</p>
           <div className="grid gap-3 md:grid-cols-2">{p.challenges.map((c, i) => (
             <motion.div key={c.id} {...stagger(i)} className="rounded-2xl bg-surface/50 p-4 ring-1 ring-white/[0.05]">

@@ -71,7 +71,8 @@ export async function applyAnalysis(userId: string, photoId: string, opts: { pri
 }
 
 import { physiqueTimeline, growthPoints, trend } from "@kettleworth/core";
-import { bodyMeasurement, trainingSession, personalRecord, exerciseInstance, healthSample, restActivity } from "@kettleworth/db";
+import { bodyMeasurement, trainingSession, personalRecord, exerciseInstance, healthSample, restActivity, profile as profileTable } from "@kettleworth/db";
+import { inArray } from "drizzle-orm";
 import { asc, sql } from "drizzle-orm";
 import { weeklyStreak } from "@kettleworth/core";
 
@@ -90,7 +91,8 @@ export async function physiqueProgress(userId: string) {
   const [acts] = await db().select({ n: sql<number>`count(*)::int` }).from(healthSample).where(and(eq(healthSample.userId, userId), eq(healthSample.metric, "workout"), eq(healthSample.provider, "manual")));
   const photoSets = new Set(photos.filter((p) => p.analysis).map((p) => p.takenOn)).size;
   const [rest] = await db().select({ n: sql<number>`count(*)::int` }).from(restActivity).where(and(eq(restActivity.userId, userId), sql`(${restActivity.kind} <> 'quiz' or ${restActivity.correct} = true)`));
-  const growth = growthPoints({ sessionsCompleted: sessions.length, prs: prs?.n ?? 0, weighIns: measurements.filter((m) => m.weightKg != null).length, photoSets, streakWeeks: weeklyStreak(sessions.map((s) => s.d)), setsLogged: sets?.n ?? 0, activitiesLogged: acts?.n ?? 0, restLearned: rest?.n ?? 0 });
+  const [prof] = await db().select({ step: profileTable.onboardingStep, done: profileTable.onboardingCompletedAt }).from(profileTable).where(eq(profileTable.userId, userId)).limit(1);
+  const growth = growthPoints({ sessionsCompleted: sessions.length, prs: prs?.n ?? 0, weighIns: measurements.filter((m) => m.weightKg != null).length, photoSets, streakWeeks: weeklyStreak(sessions.map((s) => s.d)), setsLogged: sets?.n ?? 0, activitiesLogged: acts?.n ?? 0, restLearned: rest?.n ?? 0, intakeSteps: prof?.step ?? 0, intakeComplete: !!prof?.done });
   const byDate = photos.reduce<Record<string, typeof photos>>((a, p) => { (a[p.takenOn] ??= []).push(p); return a; }, {});
   const dates = Object.keys(byDate).sort();
   const compare = dates.length >= 2 ? { before: byDate[dates[0]!]!.find((p) => p.pose === "front") ?? byDate[dates[0]!]![0]!, after: byDate[dates[dates.length - 1]!]!.find((p) => p.pose === "front") ?? byDate[dates[dates.length - 1]!]![0]! } : null;
@@ -106,4 +108,27 @@ export async function physiqueProgress(userId: string) {
     compare: compare ? { before: { id: compare.before.id, date: compare.before.takenOn }, after: { id: compare.after.id, date: compare.after.takenOn } } : null,
     photoDates: dates,
   };
+}
+
+/** Growth and streak for many members in a few grouped queries (community cards and boards). */
+export async function growthForUsers(ids: string[]): Promise<Record<string, { total: number; level: number; streakWeeks: number }>> {
+  if (!ids.length) return {};
+  const [sess, prs, sets, weigh, acts, rest, profs] = await Promise.all([
+    db().select({ u: trainingSession.userId, d: trainingSession.scheduledOn }).from(trainingSession).where(and(inArray(trainingSession.userId, ids), eq(trainingSession.status, "completed"))),
+    db().select({ u: personalRecord.userId, n: sql<number>`count(*)::int` }).from(personalRecord).where(inArray(personalRecord.userId, ids)).groupBy(personalRecord.userId),
+    db().select({ u: trainingSession.userId, n: sql<number>`coalesce(sum(jsonb_array_length(${exerciseInstance.loggedSets})),0)::int` }).from(exerciseInstance).innerJoin(trainingSession, eq(exerciseInstance.sessionId, trainingSession.id)).where(inArray(trainingSession.userId, ids)).groupBy(trainingSession.userId),
+    db().select({ u: bodyMeasurement.userId, n: sql<number>`count(*)::int` }).from(bodyMeasurement).where(and(inArray(bodyMeasurement.userId, ids), sql`${bodyMeasurement.weightKg} is not null`)).groupBy(bodyMeasurement.userId),
+    db().select({ u: healthSample.userId, n: sql<number>`count(*)::int` }).from(healthSample).where(and(inArray(healthSample.userId, ids), eq(healthSample.metric, "workout"), eq(healthSample.provider, "manual"))).groupBy(healthSample.userId),
+    db().select({ u: restActivity.userId, n: sql<number>`count(*)::int` }).from(restActivity).where(and(inArray(restActivity.userId, ids), sql`(${restActivity.kind} <> 'quiz' or ${restActivity.correct} = true)`)).groupBy(restActivity.userId),
+    db().select({ u: profileTable.userId, step: profileTable.onboardingStep, done: profileTable.onboardingCompletedAt }).from(profileTable).where(inArray(profileTable.userId, ids)),
+  ]);
+  const n = (rows: { u: string; n: number }[], u: string) => rows.find((r) => r.u === u)?.n ?? 0;
+  const out: Record<string, { total: number; level: number; streakWeeks: number }> = {};
+  for (const u of ids) {
+    const mine = sess.filter((s) => s.u === u);
+    const prof = profs.find((p) => p.u === u);
+    const g = growthPoints({ sessionsCompleted: mine.length, prs: n(prs, u), weighIns: n(weigh, u), photoSets: 0, streakWeeks: weeklyStreak(mine.map((s) => s.d)), setsLogged: n(sets, u), activitiesLogged: n(acts, u), restLearned: n(rest, u), intakeSteps: prof?.step ?? 0, intakeComplete: !!prof?.done });
+    out[u] = { total: g.total, level: g.level, streakWeeks: weeklyStreak(mine.map((s) => s.d)) };
+  }
+  return out;
 }

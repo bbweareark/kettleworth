@@ -35,7 +35,7 @@ export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { 
       <Card><CardContent className="space-y-3"><h2 className="font-display text-lg font-semibold">Appearance</h2><Segmented value={theme} onChange={applyTheme} options={[{ value: "dark", label: <span className="flex items-center gap-1.5"><Moon className="size-3.5" /> Iron</span> }, { value: "light", label: <span className="flex items-center gap-1.5"><Sun className="size-3.5" /> Chalk</span> }]} label="Theme" /></CardContent></Card>
       {profile && (
         <Card><CardContent className="space-y-5">
-          <div><h2 className="font-display text-lg font-semibold">Training profile</h2>{aiSummary ? <p className="mt-1 text-sm text-fg-muted">{aiSummary}</p> : null}<p className="mt-1 text-xs text-fg-subtle">{ai ? "AI coach: on" : "AI coach: off (no API key on this server; deterministic coaching in use)"}</p></div>
+          <div><h2 className="font-display text-lg font-semibold">Training profile</h2>{aiSummary ? <p className="mt-1 text-sm text-fg-muted">{aiSummary}</p> : null}<p className="mt-1 text-xs text-fg-subtle">{ai ? "Coach: live" : "Coach: templated on this server"}</p></div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Units"><Segmented value={p.units ?? "metric"} onChange={(v) => set({ units: v })} options={[{ value: "metric", label: "kg · cm" }, { value: "imperial", label: "lb · ft" }]} label="Units" /></Field>
             <Field label="Days per week"><ChipGroup>{[1, 2, 3, 4, 5, 6, 7].map((d) => <Chip key={d} className="h-8 px-3 text-xs" selected={p.daysPerWeek === d} onClick={() => set({ daysPerWeek: d })}>{d}</Chip>)}</ChipGroup></Field>

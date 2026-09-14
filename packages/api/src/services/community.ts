@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { db, communityProfile, group, groupMember, post, comment, reaction, match, message, challenge, challengeEntry, report, block, profile, trainingSession, user, auditLog } from "@kettleworth/db";
 import { rankMatches, type MatchProfile } from "@kettleworth/core";
 import { getProfile } from "./profile";
+import { growthForUsers } from "./photos";
 
 // ---------- Profile (private by default) ----------
 export async function getCommunityProfile(userId: string) {
@@ -29,7 +30,8 @@ export async function findMatches(userId: string, limit = 8) {
   const toMP = (cp: typeof communityProfile.$inferSelect, days: number, time?: string | null): MatchProfile => ({ userId: cp.userId, goals: cp.goals, styles: cp.styles, level: cp.level ?? "beginner", daysPerWeek: days, preferredTime: time ?? null, city: cp.city, country: cp.country, lat: cp.lat, lng: cp.lng, trainTogether: cp.trainTogether });
   const ranked = rankMatches(toMP(me, rec.profile.daysPerWeek, rec.profile.preferredTime), others.filter((o) => !hide.has(o.cp.userId)).map((o) => toMP(o.cp, o.p.daysPerWeek, o.p.preferredTime)), limit);
   const existing = await db().select().from(match).where(or(eq(match.userA, userId), eq(match.userB, userId)));
-  return { matches: ranked.map((m) => { const cp = others.find((o) => o.cp.userId === m.userId)!.cp; const ex = existing.find((e) => (e.userA === m.userId || e.userB === m.userId)); return { userId: m.userId, handle: cp.handle, displayName: cp.displayName, bio: cp.bio, city: cp.city, level: cp.level, goals: cp.goals, styles: cp.styles, trainTogether: cp.trainTogether, score: m.score, reasons: m.reasons, status: ex?.status ?? null, matchId: ex?.id ?? null, initiatedByMe: ex?.userA === userId }; }), reason: null };
+  const growth = await growthForUsers(ranked.map((m) => m.userId));
+  return { matches: ranked.map((m) => { const cp = others.find((o) => o.cp.userId === m.userId)!.cp; const ex = existing.find((e) => (e.userA === m.userId || e.userB === m.userId)); const g = growth[m.userId]; return { userId: m.userId, handle: cp.handle, displayName: cp.displayName, bio: cp.bio, city: cp.city, level: cp.level, goals: cp.goals, styles: cp.styles, trainTogether: cp.trainTogether, score: m.score, reasons: m.reasons, status: ex?.status ?? null, matchId: ex?.id ?? null, initiatedByMe: ex?.userA === userId, growth: g?.total ?? 0, growthLevel: g?.level ?? 0, streakWeeks: g?.streakWeeks ?? 0 }; }), reason: null };
 }
 export async function requestPartner(userId: string, otherId: string) {
   const [ex] = await db().select().from(match).where(or(and(eq(match.userA, userId), eq(match.userB, otherId)), and(eq(match.userA, otherId), eq(match.userB, userId)))).limit(1);
@@ -46,7 +48,8 @@ export async function partners(userId: string) {
   const profiles = ids.length ? await db().select().from(communityProfile).where(inArray(communityProfile.userId, ids)) : [];
   const week = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
   const done = ids.length ? await db().select({ userId: trainingSession.userId, n: sql<number>`count(*)::int` }).from(trainingSession).where(and(inArray(trainingSession.userId, ids), eq(trainingSession.status, "completed"), gte(trainingSession.scheduledOn, week))).groupBy(trainingSession.userId) : [];
-  return rows.map((r) => { const id = r.userA === userId ? r.userB : r.userA; const cp = profiles.find((p) => p.userId === id); return { matchId: r.id, userId: id, handle: cp?.handle ?? "member", displayName: cp?.displayName ?? "Member", sessionsThisWeek: done.find((d) => d.userId === id)?.n ?? 0 }; });
+  const growth = await growthForUsers(ids);
+  return rows.map((r) => { const id = r.userA === userId ? r.userB : r.userA; const cp = profiles.find((p) => p.userId === id); const g = growth[id]; return { matchId: r.id, userId: id, handle: cp?.handle ?? "member", displayName: cp?.displayName ?? "Member", sessionsThisWeek: done.find((d) => d.userId === id)?.n ?? 0, growth: g?.total ?? 0, growthLevel: g?.level ?? 0, streakWeeks: g?.streakWeeks ?? 0 }; });
 }
 export async function pendingRequests(userId: string) {
   const rows = await db().select().from(match).where(and(eq(match.userB, userId), eq(match.status, "suggested")));
@@ -144,3 +147,12 @@ export async function joinChallenge(userId: string, challengeId: string, join: b
 export async function reportContent(userId: string, targetType: "post" | "comment" | "user", targetId: string, reason: string) { await db().insert(report).values({ reporterId: userId, targetType, targetId, reason: reason.slice(0, 500) }); await db().insert(auditLog).values({ userId, action: "community.report", target: `${targetType}:${targetId}` }); }
 export async function blockUser(userId: string, otherId: string, on: boolean) { if (on) await db().insert(block).values({ blockerId: userId, blockedId: otherId }).onConflictDoNothing(); else await db().delete(block).where(and(eq(block.blockerId, userId), eq(block.blockedId, otherId))); await db().update(match).set({ status: "declined" }).where(or(and(eq(match.userA, userId), eq(match.userB, otherId)), and(eq(match.userA, otherId), eq(match.userB, userId)))); }
 export async function memberName(userId: string) { const [u] = await db().select({ name: user.name }).from(user).where(eq(user.id, userId)); return u?.name ?? "Member"; }
+
+/** Growth board: every member who opted in, ranked by Growth, with streaks. Showing up counts here too. */
+export async function growthBoard(userId: string, limit = 20) {
+  const members = await db().select({ userId: communityProfile.userId, handle: communityProfile.handle, displayName: communityProfile.displayName, visibility: communityProfile.visibility }).from(communityProfile).where(ne(communityProfile.visibility, "private")).limit(200);
+  const me = members.some((m) => m.userId === userId) ? [] : await db().select({ userId: communityProfile.userId, handle: communityProfile.handle, displayName: communityProfile.displayName, visibility: communityProfile.visibility }).from(communityProfile).where(eq(communityProfile.userId, userId));
+  const all = [...members, ...me];
+  const growth = await growthForUsers(all.map((m) => m.userId));
+  return all.map((m) => ({ userId: m.userId, handle: m.handle, displayName: m.displayName, me: m.userId === userId, growth: growth[m.userId]?.total ?? 0, level: growth[m.userId]?.level ?? 0, streakWeeks: growth[m.userId]?.streakWeeks ?? 0 })).sort((a, b) => b.growth - a.growth).slice(0, limit);
+}

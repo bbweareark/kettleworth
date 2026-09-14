@@ -57,7 +57,7 @@ export default function Landing() {
           </div>
           <div className="order-1 space-y-6 md:order-2">
             <p className="eyebrow">Explainable by design</p>
-            <h2 className="font-display text-3xl font-semibold md:text-4xl">The AI proposes. The rules decide. You always see why.</h2>
+            <h2 className="font-display text-3xl font-semibold md:text-4xl">The engine proposes. The evidence decides. You always see why.</h2>
             <p className="text-lg text-fg-muted">A rules engine owns the maths. The model does the coaching. Every change comes with its reason.</p>
             <Button asChild size="lg"><Link href="/sign-up">Build my programme <ArrowRight /></Link></Button>
           </div>

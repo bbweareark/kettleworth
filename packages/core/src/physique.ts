@@ -31,10 +31,13 @@ export function physiqueTimeline(entries: PhysiqueEntry[]): PhysiquePoint[] {
   return out;
 }
 
-export type GrowthInputs = { sessionsCompleted: number; prs: number; weighIns: number; photoSets: number; streakWeeks: number; setsLogged: number; activitiesLogged: number; restLearned?: number };
+export type GrowthInputs = { sessionsCompleted: number; prs: number; weighIns: number; photoSets: number; streakWeeks: number; setsLogged: number; activitiesLogged: number; restLearned?: number; intakeSteps?: number; intakeComplete?: boolean };
+export const INTAKE_STEP_POINTS = 15;
+export const INTAKE_COMPLETE_POINTS = 100;
 /** Growth points never decrease: every completed action adds. Weighted so consistency (sessions, streak) dominates. */
 export function growthPoints(g: GrowthInputs): { total: number; breakdown: { label: string; points: number }[]; level: number; nextLevelAt: number } {
   const breakdown = [
+    { label: "Showing up", points: Math.min(12, g.intakeSteps ?? 0) * INTAKE_STEP_POINTS + (g.intakeComplete ? INTAKE_COMPLETE_POINTS : 0) },
     { label: "Sessions completed", points: g.sessionsCompleted * 100 },
     { label: "Sets logged", points: g.setsLogged * 2 },
     { label: "Personal records", points: g.prs * 60 },

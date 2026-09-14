@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, ArrowRight, Check, Search, Sparkles, X } from "lucide-react";
 import { TrainingProfile, type Injury, type BaselineMetrics } from "@kettleworth/types";
-import { Button, Chip, ChipGroup, Field, Input, Textarea, Segmented, Slider, Card, CardContent, Progress, toast, Badge, cn, BodyShapePicker } from "@kettleworth/ui";
-import { computeBaseline, kgToLb, lbToKg, cmToIn, inToCm, round } from "@kettleworth/core";
-import { STEPS, type StepId } from "./steps";
+import { Button, Chip, ChipGroup, Field, Input, Textarea, Segmented, Slider, toast, Badge, cn, BodyShapePicker, BrandSeal } from "@kettleworth/ui";
+import { computeBaseline, kgToLb, lbToKg, cmToIn, inToCm, round, INTAKE_STEP_POINTS, INTAKE_COMPLETE_POINTS } from "@kettleworth/core";
+import { STEPS, JOURNEY, CHAPTERS, journeyArt, type StepId } from "./steps";
 
 type P = Partial<TrainingProfile>;
 type Turn = { role: "coach" | "user"; text: string; at: string };
@@ -106,37 +106,74 @@ export function Intake({ initial, step, name, ai }: { initial: TrainingProfile |
   const baseline = useMemo<BaselineMetrics | null>(() => { try { return computeBaseline(TrainingProfile.parse(p)); } catch { return null; } }, [p]);
   const anim = reduce ? {} : { initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -6 }, transition: { duration: 0.25 } };
 
+  const j = JOURNEY[stepDef.id];
+  const chapterIdx = CHAPTERS.indexOf(j.chapter);
+  const art = journeyArt(stepDef.id, p.sex);
+  const earned = Math.min(12, i) * INTAKE_STEP_POINTS;
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="mb-6 flex items-center gap-4"><Progress value={((i + (followUp ? 0.5 : 0)) / (STEPS.length - 1)) * 100} label="Intake progress" className="flex-1" /><span className="text-xs tabular text-fg-subtle">{Math.min(i + 1, STEPS.length)}/{STEPS.length}</span></div>
-      <div className="space-y-4">
-        {turns.slice(-6).map((t, k) => (<div key={k} className={cn("max-w-[85%] rounded-2xl px-4 py-2.5 text-sm", t.role === "coach" ? "bg-surface-2 text-fg-muted" : "ml-auto bg-ember-soft text-fg")}>{t.text}</div>))}
-        <AnimatePresence mode="wait">
-          <motion.div key={followUp ? "follow" : stepDef.id} {...anim} className="space-y-5">
-            <div className="flex items-start gap-3"><div className="grid size-8 shrink-0 place-items-center rounded-full bg-ember text-ember-fg"><Sparkles className="size-4" /></div><p className="rounded-2xl rounded-tl-sm bg-surface-2 px-4 py-3 text-base leading-relaxed">{followUp ? followUp.question : coachLine}</p></div>
-            {thinking ? <div className="ml-11 flex gap-1 px-2 py-2" aria-label="Coach is thinking"><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle" /><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle [animation-delay:150ms]" /><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle [animation-delay:300ms]" /></div> : null}
-            <Card className="ml-0 sm:ml-11"><CardContent className="space-y-5">
-              {followUp ? (
-                <>
-                  <Textarea autoFocus value={followAnswer} onChange={(e) => setFollowAnswer(e.target.value)} placeholder="Type your answer…" />
-                  <div className="flex justify-between"><Button variant="ghost" onClick={() => answerFollowUp(true)} disabled={busy}>Skip</Button><Button onClick={() => answerFollowUp()} loading={busy} disabled={!followAnswer.trim()}>Send <ArrowRight /></Button></div>
-                </>
-              ) : (
-                <>
-                  <StepBody id={stepDef.id} p={p} set={set} baseline={baseline} />
-                  <div className="flex items-center justify-between pt-2">
-                    <Button variant="ghost" onClick={() => setI((x) => Math.max(0, x - 1))} disabled={i === 0 || busy}><ArrowLeft /> Back</Button>
-                    {stepDef.id === "review" ? <Button size="lg" onClick={finish} loading={busy}>Build my programme <Sparkles /></Button> : <Button size="lg" onClick={next} loading={busy}>Continue <ArrowRight /></Button>}
-                  </div>
-                </>
-              )}
-            </CardContent></Card>
-          </motion.div>
+    <div className="-mx-4 -mt-4 min-h-[calc(100dvh-4rem)] md:-mx-6 md:-mt-6 lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
+      {/* Ground: the chapter image with a slow drift, the statement, and the chapter rail */}
+      <div className="relative h-[42vh] overflow-hidden lg:sticky lg:top-0 lg:h-[100dvh]">
+        <AnimatePresence initial={false}>
+          <motion.img key={art} src={art} alt="" aria-hidden initial={{ opacity: 0, scale: 1.04 }} animate={{ opacity: 1, scale: reduce ? 1 : 1.12 }} exit={{ opacity: 0 }} transition={{ opacity: { duration: 0.9 }, scale: { duration: 18, ease: "linear" } }} className="absolute inset-0 size-full object-cover object-top" />
         </AnimatePresence>
-        <div ref={bottom} />
+        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.15)_0%,rgba(0,0,0,0.05)_35%,var(--color-bg)_100%)] lg:bg-[linear-gradient(180deg,rgba(0,0,0,0.25)_0%,rgba(0,0,0,0)_40%,rgba(0,0,0,0.6)_100%)]" />
+        <div aria-hidden className="absolute inset-y-0 right-0 hidden w-32 bg-[linear-gradient(90deg,transparent,var(--color-bg))] lg:block" />
+        <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5 lg:p-8">
+          <ol className="flex items-center gap-1.5" aria-label="Chapters">{CHAPTERS.map((c, k) => <li key={c} className={cn("h-1 rounded-full transition-all", k < chapterIdx ? "w-6 bg-ember" : k === chapterIdx ? "w-10 bg-fg" : "w-3 bg-white/25")} title={c} />)}</ol>
+          <div className="flex items-center gap-3"><AnimatePresence mode="popLayout" initial={false}><motion.span key={earned} initial={reduce ? false : { opacity: 0, y: 8, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8 }} className="rounded-full bg-black/40 px-2.5 py-1 text-2xs uppercase tracking-[0.16em] text-ember backdrop-blur" title="Showing up counts: every answered step earns Growth">{earned} Growth</motion.span></AnimatePresence><span className="text-2xs uppercase tracking-[0.18em] text-white/70">{Math.min(i + 1, STEPS.length)} / {STEPS.length}</span></div>
+        </div>
+        <div className="absolute inset-x-0 bottom-0 p-5 lg:p-10">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div key={stepDef.id} initial={reduce ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0, y: -8 }} transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}>
+              <div className="text-2xs uppercase tracking-[0.18em] text-ember">Chapter {chapterIdx + 1} · {j.chapter}</div>
+              <h1 className="mt-2 max-w-md font-display text-3xl font-semibold leading-[1.02] tracking-tightest text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.6)] md:text-4xl lg:text-5xl">{j.headline}</h1>
+              <p className="mt-2 hidden max-w-sm text-sm text-white/75 lg:block">{j.sub}</p>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* The conversation */}
+      <div className="relative mx-auto w-full max-w-2xl px-4 pb-24 pt-6 md:px-8 lg:pt-16">
+        <div className="space-y-4">
+          {turns.slice(-4).map((t, k) => (<div key={k} className={cn("max-w-[85%] rounded-2xl px-4 py-2.5 text-sm", t.role === "coach" ? "bg-surface-2 text-fg-muted" : "ml-auto bg-ember-soft text-fg")}>{t.text}</div>))}
+          <AnimatePresence mode="wait">
+            <motion.div key={followUp ? "follow" : stepDef.id} {...anim} className="space-y-5">
+              <div className="flex items-start gap-3"><BrandSeal size={36} className="mt-0.5 shrink-0" /><Typed key={followUp ? followUp.question : coachLine} text={followUp ? followUp.question : coachLine} reduce={!!reduce} className="pt-1.5 font-display text-lg leading-snug tracking-tight text-fg md:text-xl" /></div>
+              {thinking ? <div className="ml-11 flex gap-1 px-2 py-2" aria-label="Coach is thinking"><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle" /><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle [animation-delay:150ms]" /><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle [animation-delay:300ms]" /></div> : null}
+              <div className="rounded-3xl bg-surface/60 p-5 ring-1 ring-white/[0.06] backdrop-blur md:p-6">
+                <div className="space-y-5">
+                  {followUp ? (
+                    <>
+                      <Textarea autoFocus value={followAnswer} onChange={(e) => setFollowAnswer(e.target.value)} placeholder="Type your answer…" />
+                      <div className="flex justify-between"><Button variant="ghost" onClick={() => answerFollowUp(true)} disabled={busy}>Skip</Button><Button onClick={() => answerFollowUp()} loading={busy} disabled={!followAnswer.trim()}>Send <ArrowRight /></Button></div>
+                    </>
+                  ) : (
+                    <>
+                      <StepBody id={stepDef.id} p={p} set={set} baseline={baseline} />
+                      <div className="flex items-center justify-between pt-2">
+                        <Button variant="ghost" onClick={() => setI((x) => Math.max(0, x - 1))} disabled={i === 0 || busy}><ArrowLeft /> Back</Button>
+                        {stepDef.id === "review" ? <Button size="lg" className="shadow-glow" onClick={finish} loading={busy}>Build my programme <Sparkles /></Button> : <Button size="lg" onClick={next} loading={busy}>Continue <ArrowRight /></Button>}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+          <div ref={bottom} />
+        </div>
       </div>
     </div>
   );
+}
+
+/** The coach line arrives as if spoken: character by character, instantly under reduced motion. */
+function Typed({ text, reduce, className }: { text: string; reduce: boolean; className?: string }) {
+  const [n, setN] = useState(reduce ? text.length : 0);
+  useEffect(() => { if (reduce) return setN(text.length); setN(0); let k = 0; const t = setInterval(() => { k += 2; setN(k); if (k >= text.length) clearInterval(t); }, 16); return () => clearInterval(t); }, [text, reduce]);
+  return <p className={className}><span className="sr-only">{text}</span><span aria-hidden>{text.slice(0, n)}</span>{n < text.length ? <span aria-hidden className="ml-0.5 inline-block h-[1em] w-0.5 animate-pulse bg-ember align-middle" /> : null}</p>;
 }
 
 function validate(id: StepId, p: P): string | null {
@@ -257,6 +294,7 @@ function StepBody({ id, p, set, baseline }: { id: StepId; p: P; set: (x: P) => v
       <div className="space-y-5">
         <div className="grid gap-3 sm:grid-cols-2">{STEPS.filter((s) => s.id !== "review").map((s) => (<div key={s.id} className="rounded-lg bg-surface-2 p-3"><div className="eyebrow mb-1">{s.id.replace("_", " ")}</div><div className="text-sm">{(function () { return summaryFor(s.id, p); })()}</div></div>))}</div>
         {baseline ? (<div className="rounded-xl border border-border p-4"><h3 className="font-display mb-3 text-lg font-semibold">Your baseline</h3><div className="grid grid-cols-2 gap-4 sm:grid-cols-4">{[["BMI", baseline.bmi], ["BMR", baseline.bmr, "kcal"], ["Maintenance", baseline.tdee, "kcal"], ["Target", baseline.targetCalories, "kcal"]].map(([l, v, u]) => (<div key={l as string}><div className="text-2xs uppercase tracking-wide text-fg-subtle">{l as string}</div><div className="font-display text-xl font-semibold tabular">{v ?? "-"} <span className="text-xs font-normal text-fg-muted">{u as string}</span></div></div>))}</div>{baseline.proteinG ? <p className="mt-3 text-sm text-fg-muted">Macros: {baseline.proteinG} g protein · {baseline.carbsG} g carbs · {baseline.fatG} g fat</p> : null}<ul className="mt-3 space-y-1.5 text-sm text-fg-muted">{baseline.explanations.map((e) => <li key={e} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-ember" />{e}</li>)}</ul></div>) : null}
+        <p className="rounded-xl bg-ember-soft px-3 py-2 text-sm"><span className="font-medium text-ember">{Math.min(12, STEPS.length - 1) * INTAKE_STEP_POINTS} Growth earned before lifting a thing.</span> Building the programme adds {INTAKE_COMPLETE_POINTS} more. Showing up is the first rep.</p>
         <p className="text-xs text-fg-subtle">Not medical advice. Kettleworth builds general fitness guidance from what you've told us; check with a professional if you have a medical condition.</p>
       </div>);
   }

@@ -105,7 +105,7 @@ export async function coachChat(userId: string, message: string) {
   if (out) { reply = cleanText(out.reply); actions = out.actions; generatedBy = AI_MODEL; }
   else {
     const m = message.toLowerCase();
-    reply = /readiness|tired|sleep|sore/.test(m) ? `${ctx.readiness.reasons.join(" ")} ${ctx.readiness.band === "low" ? "Today is a lighter day; the loads are already eased." : "You're good to train as planned."}` : /next|when|upcoming/.test(m) ? (ctx.upcoming[0] ? `Next up: ${ctx.upcoming[0].name} on ${ctx.upcoming[0].date}.` : "Nothing scheduled. Generate or extend a programme.") : "The AI coach is off on this server, so I can only report your data: readiness, upcoming sessions and recent performance. Ask about any of those.";
+    reply = /readiness|tired|sleep|sore/.test(m) ? `${ctx.readiness.reasons.join(" ")} ${ctx.readiness.band === "low" ? "Today is a lighter day; the loads are already eased." : "You're good to train as planned."}` : /next|when|upcoming/.test(m) ? (ctx.upcoming[0] ? `Next up: ${ctx.upcoming[0].name} on ${ctx.upcoming[0].date}.` : "Nothing scheduled. Generate or extend a programme.") : "Right now I can report your data: readiness, upcoming sessions and recent performance. Ask about any of those.";
   }
   const applied: { type: string; summary: string; applied: boolean }[] = [];
   for (const a of actions) {

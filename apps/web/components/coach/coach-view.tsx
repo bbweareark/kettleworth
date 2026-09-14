@@ -76,7 +76,7 @@ export function CoachView({ letters, history, ai, name }: { letters: Letter[]; h
           <div ref={bottom} />
         </div>
         <form onSubmit={send} className="flex items-end gap-2 border-t border-border p-3">
-          <Textarea value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }} placeholder={ai ? "Message the coach…" : "AI coach is off on this server; ask about readiness or upcoming sessions."} className="min-h-11 flex-1 resize-none py-2.5" rows={1} />
+          <Textarea value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }} placeholder={ai ? "Message your coach…" : "Ask about readiness, upcoming sessions or recent performance."} className="min-h-11 flex-1 resize-none py-2.5" rows={1} />
           <Button type="submit" size="icon" aria-label="Send" loading={busy} disabled={!text.trim()}><Send /></Button>
         </form>
       </section>
