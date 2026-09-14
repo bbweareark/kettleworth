@@ -22,6 +22,13 @@
       "when": 1789340944091,
       "tag": "0002_rest_activity",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789368244602,
+      "tag": "0003_coach",
+      "breakpoints": true
     }
   ]
 }

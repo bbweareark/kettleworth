@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Download, LogOut, Moon, Sun, Trash2 } from "lucide-react";
+import { Download, LogOut, Moon, Sun, Trash2, Plane, Thermometer, Bandage, Clock, Baby, CircleDot } from "lucide-react";
 import type { TrainingProfile } from "@kettleworth/types";
 import { Button, Card, CardContent, Chip, ChipGroup, Field, Input, Segmented, Slider, toast } from "@kettleworth/ui";
 import { authClient } from "@/lib/auth-client";
@@ -17,6 +17,18 @@ export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { 
   async function save() { setBusy("save"); const r = await fetch("/api/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ patch: p }) }); setBusy(null); if (!r.ok) return toast.error("Couldn't save"); toast.success("Profile updated. Regenerate your programme to apply changes."); router.refresh(); }
   async function del() { setBusy("delete"); const r = await fetch("/api/account/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ confirm: "DELETE" }) }); setBusy(null); if (!r.ok) return toast.error("Couldn't delete"); await authClient.signOut(); window.location.href = "/"; }
   const set = (patch: Partial<TrainingProfile>) => setP((x) => ({ ...x, ...patch }));
+  const rit = p.rituals ?? {};
+  const setRit = (patch: Partial<NonNullable<TrainingProfile["rituals"]>>) => set({ rituals: { ...rit, ...patch } });
+  const [modeUntil, setModeUntil] = useState("");
+  async function lifeMode(mode: TrainingProfile["lifeMode"]["mode"]) {
+    setBusy(`mode-${mode}`);
+    const r = await fetch("/api/life-mode", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode, until: modeUntil || null }) });
+    setBusy(null);
+    if (!r.ok) return toast.error("Couldn't change mode");
+    set({ lifeMode: { mode, since: new Date().toISOString().slice(0, 10), until: modeUntil || null } });
+    toast.success(mode === "normal" ? "Back to the full plan." : `${mode} mode on. Upcoming sessions adjusted.`); router.refresh();
+  }
+  const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div><p className="eyebrow">Settings</p><h1 className="font-display text-3xl font-semibold tracking-tighter md:text-4xl">{user.name}</h1><p className="text-fg-muted">{user.email}</p></div>
@@ -35,6 +47,23 @@ export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { 
           <div className="flex gap-2"><Button onClick={save} loading={busy === "save"}>Save profile</Button><Button variant="secondary" onClick={() => router.push("/app/onboarding")}>Redo full intake</Button></div>
         </CardContent></Card>
       )}
+      <Card id="rituals"><CardContent className="space-y-5">
+        <div><h2 className="font-display text-lg font-semibold">Rituals</h2><p className="text-sm text-fg-muted">The moments the app shows up. Set them once and the coach keeps them.</p></div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Wake time"><Input type="time" value={rit.wakeTime ?? ""} onChange={(e) => setRit({ wakeTime: e.target.value || undefined })} /></Field>
+          <Field label="Evening reflection"><Input type="time" value={rit.reflectionTime ?? ""} onChange={(e) => setRit({ reflectionTime: e.target.value || undefined })} /></Field>
+          <Field label="Training window"><div className="grid grid-cols-2 gap-2"><Input type="time" value={rit.trainingWindow?.start ?? ""} onChange={(e) => setRit({ trainingWindow: { start: e.target.value, end: rit.trainingWindow?.end ?? "20:00" } })} /><Input type="time" value={rit.trainingWindow?.end ?? ""} onChange={(e) => setRit({ trainingWindow: { start: rit.trainingWindow?.start ?? "06:00", end: e.target.value } })} /></div></Field>
+          <Field label="Weigh-in day"><ChipGroup>{DAYS.map((d, i) => <Chip key={d} className="h-8 px-3 text-xs" selected={rit.weighInDay === i} onClick={() => setRit({ weighInDay: rit.weighInDay === i ? undefined : i })}>{d}</Chip>)}</ChipGroup></Field>
+          <Field label="Body check day"><ChipGroup>{DAYS.map((d, i) => <Chip key={d} className="h-8 px-3 text-xs" selected={rit.photoDay === i} onClick={() => setRit({ photoDay: rit.photoDay === i ? undefined : i })}>{d}</Chip>)}</ChipGroup></Field>
+        </div>
+        <Button onClick={save} loading={busy === "save"}>Save rituals</Button>
+      </CardContent></Card>
+      <Card id="life"><CardContent className="space-y-4">
+        <div><h2 className="font-display text-lg font-semibold">Life mode</h2><p className="text-sm text-fg-muted">Life changes; the plan should flex, not break. Current: <span className="font-medium capitalize text-fg">{p.lifeMode?.mode ?? "normal"}</span>{p.lifeMode?.until ? ` until ${p.lifeMode.until}` : ""}.</p></div>
+        <div className="grid gap-2 sm:grid-cols-3">{([["travel", Plane, "Travelling", "Bodyweight and band versions"], ["ill", Thermometer, "Ill", "Pause without losing your streak"], ["injured", Bandage, "Injured", "Add the injury below; swaps apply"], ["busy", Clock, "Busy", "Main lifts only, 30 minutes"], ["newborn", Baby, "New parent", "Two short sessions a week"], ["normal", CircleDot, "Back to normal", "Restore the full plan"]] as const).map(([m, I, l, d]) => (
+          <button key={m} type="button" onClick={() => lifeMode(m)} disabled={busy?.startsWith("mode")} aria-pressed={(p.lifeMode?.mode ?? "normal") === m} className={`flex items-start gap-3 rounded-xl border p-3 text-left transition-colors ${(p.lifeMode?.mode ?? "normal") === m ? "border-ember bg-ember-soft" : "border-border hover:border-border-strong"}`}><I className="mt-0.5 size-4 shrink-0 text-ember" /><span><span className="block text-sm font-medium">{l}</span><span className="text-xs text-fg-muted">{d}</span></span></button>))}</div>
+        <Field label="Until (optional)" hint="Leave blank for two weeks; you can switch back any time."><Input type="date" value={modeUntil} onChange={(e) => setModeUntil(e.target.value)} className="max-w-[200px]" /></Field>
+      </CardContent></Card>
       <Card><CardContent className="space-y-4">
         <h2 className="font-display text-lg font-semibold">Your data</h2>
         <p className="text-sm text-fg-muted">Export everything we hold about you as JSON, or delete your account. Deleting revokes {providerCount} connected provider{providerCount === 1 ? "" : "s"}, removes all synced health data and cannot be undone.</p>

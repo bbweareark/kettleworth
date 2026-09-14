@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { db, programme, mesocycle, week, trainingSession, exerciseInstance, auditLog, estimatedMax } from "@kettleworth/db";
 import { generateProgramme, validatePlanAgainstLibrary } from "@kettleworth/core";
 import type { ProgrammePlan } from "@kettleworth/types";
@@ -32,10 +32,18 @@ export async function generateAndSaveProgramme(userId: string, opts: { startDate
   const names = Object.fromEntries((await getExercisesByIds(ids)).map((e) => [e.id, e.name]));
   const note = await programmeCoachNote(userId, rec.profile, plan, names);
 
+  // Extending queues the next block behind the current one; starting over replaces it.
+  const queue = !!prev && (await db().select({ id: trainingSession.id }).from(trainingSession).where(and(eq(trainingSession.programmeId, prev.id), eq(trainingSession.status, "planned"))).limit(1)).length > 0;
   return db().transaction(async (tx) => {
-    await tx.update(programme).set({ status: "archived" }).where(and(eq(programme.userId, userId), eq(programme.status, "active")));
-    await tx.update(trainingSession).set({ status: "skipped" }).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "planned")));
-    const [p] = await tx.insert(programme).values({ userId, name: plan.name, split: plan.split, goal: rec.profile.primaryGoal, daysPerWeek: plan.daysPerWeek, totalWeeks: plan.totalWeeks, startDate, summary: plan.summary, coachNote: `${note.note}\n\nWeek one focus: ${note.weekOneFocus}`, rationale: plan.rationale, plan, seed, generatedBy: aiAvailable() ? "rules+ai" : "rules" }).returning();
+    if (!queue) {
+      await tx.update(programme).set({ status: "archived" }).where(and(eq(programme.userId, userId), inArray(programme.status, ["active", "scheduled"])));
+      await tx.update(trainingSession).set({ status: "skipped" }).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "planned")));
+    } else {
+      await tx.update(programme).set({ status: "archived" }).where(and(eq(programme.userId, userId), eq(programme.status, "scheduled"))); // one queued block at a time
+      const queuedIds = await tx.select({ id: programme.id }).from(programme).where(and(eq(programme.userId, userId), eq(programme.status, "archived"), sql`${programme.createdAt} > now() - interval '1 second'`));
+      if (queuedIds.length) await tx.delete(trainingSession).where(and(inArray(trainingSession.programmeId, queuedIds.map((q) => q.id)), eq(trainingSession.status, "planned")));
+    }
+    const [p] = await tx.insert(programme).values({ userId, name: plan.name, split: plan.split, goal: rec.profile.primaryGoal, daysPerWeek: plan.daysPerWeek, totalWeeks: plan.totalWeeks, startDate, summary: plan.summary, coachNote: `${note.note}\n\nWeek one focus: ${note.weekOneFocus}`, rationale: plan.rationale, plan, seed, generatedBy: aiAvailable() ? "rules+ai" : "rules", status: queue ? "scheduled" : "active" }).returning();
     const offsets = DAY_OFFSETS[plan.daysPerWeek] ?? DAY_OFFSETS[3]!;
     let weekIdx = 0;
     for (const m of plan.mesocycles) {
@@ -57,6 +65,18 @@ export async function generateAndSaveProgramme(userId: string, opts: { startDate
 
 export async function getActiveProgramme(userId: string) {
   const [p] = await db().select().from(programme).where(and(eq(programme.userId, userId), eq(programme.status, "active"))).orderBy(desc(programme.createdAt)).limit(1);
+  if (!p) return null;
+  // Promote the queued block once the current one has no planned sessions left.
+  const [left] = await db().select({ id: trainingSession.id }).from(trainingSession).where(and(eq(trainingSession.programmeId, p.id), eq(trainingSession.status, "planned"))).limit(1);
+  if (left) return p;
+  const [next] = await db().select().from(programme).where(and(eq(programme.userId, userId), eq(programme.status, "scheduled"))).orderBy(asc(programme.createdAt)).limit(1);
+  if (!next) return p;
+  await db().update(programme).set({ status: "completed" }).where(eq(programme.id, p.id));
+  await db().update(programme).set({ status: "active" }).where(eq(programme.id, next.id));
+  return next;
+}
+export async function getQueuedProgramme(userId: string) {
+  const [p] = await db().select().from(programme).where(and(eq(programme.userId, userId), eq(programme.status, "scheduled"))).orderBy(asc(programme.createdAt)).limit(1);
   return p ?? null;
 }
 

@@ -1,17 +1,18 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Dumbbell, BookOpen, TrendingUp, Salad, Settings, Watch } from "lucide-react";
+import { Home, Dumbbell, BookOpen, TrendingUp, Salad, Settings, Watch, MessageCircle } from "lucide-react";
 import { cn, Logo } from "@kettleworth/ui";
 
 const items = [
   { href: "/app", label: "Today", icon: Home },
+  { href: "/app/coach", label: "Coach", icon: MessageCircle },
   { href: "/app/programme", label: "Programme", icon: Dumbbell },
   { href: "/app/progress", label: "Progress", icon: TrendingUp },
   { href: "/app/nutrition", label: "Nutrition", icon: Salad },
-  { href: "/library", label: "Library", icon: BookOpen },
 ];
 const secondary = [
+  { href: "/library", label: "Library", icon: BookOpen },
   { href: "/app/connected", label: "Connected apps", icon: Watch },
   { href: "/app/settings", label: "Settings", icon: Settings },
 ];

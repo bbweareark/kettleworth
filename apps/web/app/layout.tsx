@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Kettleworth" },
   icons: { icon: "/icon.svg", apple: "/icon.svg" },
 };
-export const viewport: Viewport = { themeColor: "#111114", width: "device-width", initialScale: 1, viewportFit: "cover" };
+export const viewport: Viewport = { themeColor: "#131211", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

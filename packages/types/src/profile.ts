@@ -115,6 +115,17 @@ export const TrainingProfile = z.object({
   varietyPreference: z.enum(["steady", "balanced", "high"]).default("balanced"),
   /** Muscles the user (or the body-photo analysis, once confirmed) wants prioritised. Muscle ids from the exercise taxonomy. */
   priorityMuscles: z.array(z.string()).default([]),
+  /** Rituals: the moments the app shows up. Times are local HH:MM; days are 0 (Mon) to 6 (Sun). */
+  rituals: z.object({
+    wakeTime: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+    trainingWindow: z.object({ start: z.string().regex(/^\d{2}:\d{2}$/), end: z.string().regex(/^\d{2}:\d{2}$/) }).optional(),
+    weighInDay: z.number().int().min(0).max(6).optional(),
+    photoDay: z.number().int().min(0).max(6).optional(),
+    reflectionTime: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+    timezone: z.string().optional(),
+  }).default({}),
+  /** Life mode: a temporary situation the plan flexes around. */
+  lifeMode: z.object({ mode: z.enum(["normal", "travel", "ill", "injured", "busy", "newborn"]), since: z.string(), until: z.string().nullable(), note: z.string().max(200).optional() }).default({ mode: "normal", since: "2026-01-01", until: null }),
   injuries: z.array(Injury).default([]),
   medicalFlags: z.array(z.string()).default([]),
   sleepHours: z.number().min(3).max(12).optional(),

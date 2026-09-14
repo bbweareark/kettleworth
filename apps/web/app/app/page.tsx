@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import { ArrowRight, Flame, Play, Sparkles } from "lucide-react";
 import { Badge, Button, Card, CardContent, CoachPulse, CountUp, Ring, Sparkline, type PulseItem } from "@kettleworth/ui";
 import { requireUser } from "@/lib/session";
-import { getProfile, getActiveProgramme, getTodaySession, upcomingSessions, getReadiness, getProgress, ensureNutritionPlan, connectedProviders, activitiesForDay, getSessionDetail } from "@kettleworth/api";
-import { kgToLb } from "@kettleworth/core";
+import { getProfile, getActiveProgramme, getTodaySession, upcomingSessions, getReadiness, getProgress, ensureNutritionPlan, connectedProviders, activitiesForDay, getSessionDetail, hasUnreadLetter, listPhotos } from "@kettleworth/api";
+import { kgToLb, ritualNudges } from "@kettleworth/core";
 import { ActivityLog } from "@/components/today/activity-log";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +15,10 @@ export default async function Today() {
   if (!rec?.onboardingCompletedAt) redirect("/app/onboarding");
   const [prog, today, upcoming, readiness, progress, nutrition, providers, activities] = await Promise.all([getActiveProgramme(user.id), getTodaySession(user.id), upcomingSessions(user.id, 7), getReadiness(user.id), getProgress(user.id), ensureNutritionPlan(user.id), connectedProviders(user.id), activitiesForDay(user.id)]);
   const detail = today ? await getSessionDetail(user.id, today.id) : null;
+  const [unread, photos] = await Promise.all([hasUnreadLetter(user.id), listPhotos(user.id)]);
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+  const nudges = ritualNudges(rec.profile, { now: new Date(), weighedInToday: progress.measurements.some((m) => m.measuredOn === todayIso), photoThisWeek: photos.some((p) => p.takenOn >= weekAgo), sessionToday: !!today && (today as { isToday?: boolean }).isToday === true, sessionDone: today?.status === "completed", letterUnread: unread });
   const units = rec.profile.units;
   const w = (kg: number) => Math.round(units === "metric" ? kg : kgToLb(kg));
   const u = units === "metric" ? "kg" : "lb";
@@ -41,6 +45,7 @@ export default async function Today() {
         {progress.streakWeeks > 0 && <Badge tone="ember"><Flame className="size-3" /> {progress.streakWeeks}-week streak</Badge>}
       </div>
       <CoachPulse items={pulse} />
+      {nudges.length ? <ul className="flex flex-wrap gap-2">{nudges.map((n) => (<li key={n.id} className={`flex items-center gap-3 rounded-xl px-3.5 py-2 text-sm ring-1 ring-white/[0.05] ${n.tone === "amber" ? "bg-amber-soft" : n.tone === "signal" ? "bg-signal-soft" : n.tone === "ember" ? "bg-ember-soft" : "bg-surface/60"}`}><span>{n.text}</span>{n.action ? <Link href={n.action.href} className="font-medium text-ember hover:underline">{n.action.label}</Link> : null}</li>))}</ul> : null}
 
       {!prog ? (
         <Card className="animate-fade-up"><CardContent className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">

@@ -11,7 +11,7 @@ export const programme = pgTable("programme", {
   goal: text("goal").notNull(),
   daysPerWeek: integer("days_per_week").notNull(),
   totalWeeks: integer("total_weeks").notNull(),
-  status: text("status").$type<"active" | "completed" | "archived" | "draft">().notNull().default("active"),
+  status: text("status").$type<"active" | "scheduled" | "completed" | "archived" | "draft">().notNull().default("active"),
   startDate: date("start_date").notNull(),
   summary: text("summary").notNull(),
   coachNote: text("coach_note"),

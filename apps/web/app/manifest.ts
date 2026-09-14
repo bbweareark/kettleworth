@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Kettleworth", short_name: "Kettleworth", description: "A coach in your pocket: personalised training, nutrition and recovery.",
-    start_url: "/app", display: "standalone", background_color: "#111114", theme_color: "#111114",
+    start_url: "/app", display: "standalone", background_color: "#131211", theme_color: "#131211",
     icons: [{ src: "/icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" }, { src: "/icon-maskable.svg", sizes: "any", type: "image/svg+xml", purpose: "maskable" }],
     categories: ["health", "fitness", "lifestyle"],
   };
