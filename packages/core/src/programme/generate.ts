@@ -1,3 +1,4 @@
+import { restFor } from "./rest";
 import type { ExerciseSummary, TrainingProfile, ProgrammePlan, PlannedSession, PlannedWeek, PlannedMesocycle, PlannedExercise, Muscle } from "@kettleworth/types";
 import { chooseSplit } from "./split";
 import { selectForSlot } from "./selection";
@@ -78,6 +79,7 @@ export function generateProgramme(profile: TrainingProfile, library: ExerciseSum
         if (!sel) return;
         const ex = sel.exercise;
         const p = prescribe(profile.primaryGoal, slot.role, profile.experience, ex.mechanics === "compound");
+        p.restSeconds = restFor(ex, { role: slot.role, goal: profile.primaryGoal, topReps: p.repRange[1], experience: profile.experience }).seconds;
         const lower = LOWER_PATTERNS.has(ex.pattern) || ex.primaryMuscles.some((m) => ["quads", "hamstrings", "glutes"].includes(m));
         let sets = buildSets(p, { e1rmKg: e1rm.get(ex.id), volumeScalar: 1, intensityScalar: 1, isDeload: false, lowerBody: lower, includeWarmup: slot.role === "primary" });
         // Volume ceiling: trim this slot's working sets so no primary muscle exceeds MAX_SETS in the week; drop optional slots entirely.
@@ -149,6 +151,7 @@ function scaleSessions(base: PlannedSession[], volumeScalar: number, intensitySc
     exercises: s.exercises.map((pe) => {
       const ex = byId.get(pe.exerciseId)!;
       const p = prescribe(profile.primaryGoal, pe.role, profile.experience, ex.mechanics === "compound");
+      p.restSeconds = restFor(ex, { role: pe.role, goal: profile.primaryGoal, topReps: p.repRange[1], experience: profile.experience }).seconds;
       const lower = LOWER_PATTERNS.has(ex.pattern) || ex.primaryMuscles.some((m) => ["quads", "hamstrings", "glutes"].includes(m));
       const baseWorking = pe.sets.filter((x) => x.type === "working").length;
       const sets = buildSets({ ...p, sets: baseWorking }, { e1rmKg: e1rm.get(ex.id), volumeScalar, intensityScalar, isDeload, lowerBody: lower, includeWarmup: pe.role === "primary" });

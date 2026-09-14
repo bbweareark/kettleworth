@@ -4,6 +4,7 @@ import { ArrowLeft, AlertTriangle, Lightbulb, XCircle, ShieldAlert } from "lucid
 import { getExercise } from "@kettleworth/api";
 import { Badge, Card, CardContent } from "@kettleworth/ui";
 import { ExerciseMedia } from "@/components/library/media";
+import { MuscleFigure } from "@/components/muscle-figure";
 
 const label = (s: string) => s.replace(/_/g, " ");
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) { const e = await getExercise((await params).slug); return { title: e?.name ?? "Exercise" }; }
@@ -21,7 +22,7 @@ export default async function ExercisePage({ params }: { params: Promise<{ slug:
         <div className="space-y-5">
           <div><div className="mb-2 flex flex-wrap gap-1.5"><Badge tone="ember" className="capitalize">{label(e.pattern)}</Badge><Badge tone="outline" className="capitalize">{e.difficulty}</Badge><Badge tone="outline" className="capitalize">{e.mechanics}</Badge>{e.unilateral && <Badge tone="outline">Unilateral</Badge>}</div><h1 className="font-display text-3xl font-semibold tracking-tighter md:text-4xl">{e.name}</h1>{e.aliases.length ? <p className="mt-1 text-sm text-fg-subtle">Also called {e.aliases.join(", ")}</p> : null}</div>
           <dl className="grid grid-cols-2 gap-4 text-sm">
-            <div><dt className="eyebrow mb-1">Primary</dt><dd className="capitalize">{e.primaryMuscles.map(label).join(", ") || "-"}</dd></div>
+            <div className="flex items-start gap-3"><MuscleFigure muscles={e.primaryMuscles} size="sm" caption={false} /><div><dt className="eyebrow mb-1">Primary</dt><dd className="capitalize">{e.primaryMuscles.map(label).join(", ") || "-"}</dd></div></div>
             <div><dt className="eyebrow mb-1">Secondary</dt><dd className="capitalize">{e.secondaryMuscles.map(label).join(", ") || "-"}</dd></div>
             <div><dt className="eyebrow mb-1">Equipment</dt><dd className="capitalize">{e.equipment.map(label).join(", ")}</dd></div>
             <div><dt className="eyebrow mb-1">Watch out for</dt><dd className="capitalize">{e.contraindicatedRegions.map(label).join(", ") || "-"}</dd></div>

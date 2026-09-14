@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Minus, Plus, SkipForward } from "lucide-react";
 import { Button } from "@kettleworth/ui";
 
-export function RestTimer({ seconds, onDone, onSkip, children }: { seconds: number; onDone: () => void; onSkip: () => void; children?: React.ReactNode }) {
+export function RestTimer({ seconds, onDone, onSkip, children, why }: { seconds: number; onDone: () => void; onSkip: () => void; children?: React.ReactNode; why?: string }) {
   const [left, setLeft] = useState(seconds);
   const [total, setTotal] = useState(seconds);
   const endAt = useRef(Date.now() + seconds * 1000);
@@ -21,7 +21,7 @@ export function RestTimer({ seconds, onDone, onSkip, children }: { seconds: numb
   const mm = Math.floor(left / 60), ss = String(left % 60).padStart(2, "0");
   return (
     <div className="rounded-2xl border border-ember/40 bg-ember-soft p-5" role="timer" aria-live="polite" aria-label={`Rest ${mm}:${ss} remaining`}>
-      <div className="mb-3 flex items-center justify-between text-sm"><span className="font-medium text-ember">Rest</span><span className="text-fg-muted">Next set when it hits zero</span></div>
+      <div className="mb-3 flex items-center justify-between gap-3 text-sm"><span className="font-medium text-ember">Rest</span><span className="truncate text-right text-fg-muted">{why ?? "Next set when it hits zero"}</span></div>
       <div className="font-mono text-6xl font-semibold tabular tracking-tight">{mm}:{ss}</div>
       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-black/20"><div className="h-full rounded-full bg-ember transition-[width] duration-200" style={{ width: `${pct}%` }} /></div>
       <div className="mt-4 flex gap-2"><Button variant="secondary" size="sm" onClick={() => adjust(-15)} aria-label="Minus 15 seconds"><Minus /> 15s</Button><Button variant="secondary" size="sm" onClick={() => adjust(15)} aria-label="Plus 15 seconds"><Plus /> 15s</Button><Button variant="ghost" size="sm" className="ml-auto" onClick={onSkip}>Skip <SkipForward /></Button></div>

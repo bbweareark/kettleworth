@@ -1,5 +1,6 @@
 import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { db, trainingSession, exerciseInstance, exercise, exerciseVideo, personalRecord, estimatedMax, substitution, week, restActivity } from "@kettleworth/db";
+import { restFor } from "@kettleworth/core";
 import { LoggedSet, type PlannedSet } from "@kettleworth/types";
 import { decideProgression, estimate1RM, substitutesFor, isPR, type SetRecord } from "@kettleworth/core";
 import { getProfile } from "./profile";
@@ -59,6 +60,7 @@ export async function startSession(userId: string, sessionId: string) {
   // Idempotent: a session already in progress keeps its readiness snapshot and its (already eased) loads.
   if (existing.status === "in_progress") {
     const readiness = await getReadiness(userId);
+    await refreshRest(userId, sessionId);
     return { session: existing, readiness: { ...readiness, intensityScalar: existing.intensityScalar, score: existing.readinessScore }, instances: await instancesOf(), applied: false };
   }
   if (existing.status !== "planned") throw new Error("Session already finished");
@@ -66,27 +68,55 @@ export async function startSession(userId: string, sessionId: string) {
   const scalar = readiness.intensityScalar;
   const [s] = await db().update(trainingSession).set({ status: "in_progress", startedAt: new Date(), readinessScore: readiness.score, intensityScalar: scalar }).where(and(eq(trainingSession.id, sessionId), eq(trainingSession.status, "planned"))).returning();
   if (!s) return startSession(userId, sessionId); // raced with another tab; fall through to the idempotent path
-  if (scalar !== 1) {
-    // Apply readiness to this session's planned loads once, and explain it on each exercise.
-    for (const i of await instancesOf()) {
-      const sets = i.plannedSets.map((ps: PlannedSet) => ps.weightKg != null && ps.type === "working" ? { ...ps, weightKg: Math.round((ps.weightKg * scalar) / 1.25) * 1.25 } : ps);
-      await db().update(exerciseInstance).set({ plannedSets: sets, notes: `${i.notes ? i.notes + " " : ""}Loads eased ${Math.round((1 - scalar) * 100)}% for today's readiness.` }).where(eq(exerciseInstance.id, i.id));
-    }
+  // Apply readiness to this session's planned loads once, and refresh rest from the per-exercise evidence rule so older programmes benefit too.
+  const rec = await getProfile(userId);
+  const rows = await db().select({ inst: exerciseInstance, ex: exercise }).from(exerciseInstance).innerJoin(exercise, eq(exercise.id, exerciseInstance.exerciseId)).where(eq(exerciseInstance.sessionId, sessionId));
+  for (const { inst: i, ex } of rows) {
+    const sets = i.plannedSets.map((ps: PlannedSet) => {
+      const eased = ps.weightKg != null && ps.type === "working" && scalar !== 1 ? Math.round((ps.weightKg * scalar) / 1.25) * 1.25 : ps.weightKg;
+      const rest = ps.type === "working" && rec ? restFor(ex, { role: i.role as never, goal: rec.profile.primaryGoal, topReps: ps.repRange?.[1] ?? ps.reps ?? 10, experience: rec.profile.experience }).seconds : ps.restSeconds;
+      return { ...ps, weightKg: eased, restSeconds: rest };
+    });
+    await db().update(exerciseInstance).set({ plannedSets: sets, notes: scalar !== 1 ? `${i.notes ? i.notes + " " : ""}Loads eased ${Math.round((1 - scalar) * 100)}% for today's readiness.` : i.notes }).where(eq(exerciseInstance.id, i.id));
   }
   return { session: s, readiness, instances: await instancesOf(), applied: scalar !== 1 };
+}
+
+/**
+ * Plausibility gate for a logged set. Values are checked against the lifter's own history for the exercise and the planned
+ * set, not against population tables: a set is "unusual" when it implies an e1RM more than 35% above their best (or, with no
+ * history, more than 60% above the planned load), or reps land far outside the planned range. Unusual sets need explicit
+ * confirmation; they still count, but a PR from an unconfirmed outlier is never recorded.
+ */
+export function checkPlausibility(set: LoggedSet, planned: PlannedSet | undefined, bestE1rmKg: number | null): { ok: true } | { ok: false; reason: string } {
+  if (!set.completed) return { ok: true };
+  if (set.reps != null && set.reps > 60) return { ok: false, reason: `${set.reps} reps in one set is far beyond any planned range.` };
+  const range = planned?.repRange ?? (planned?.reps != null ? [planned.reps, planned.reps] as [number, number] : null);
+  if (range && set.reps != null && set.reps > range[1] + 12) return { ok: false, reason: `${set.reps} reps is well past the ${range[0]} to ${range[1]} target.` };
+  if (set.weightKg != null && set.reps != null && set.reps > 0) {
+    const e = estimate1RM(set.weightKg, set.reps);
+    if (bestE1rmKg && e > bestE1rmKg * 1.35) return { ok: false, reason: `That implies a max ${Math.round(((e / bestE1rmKg) - 1) * 100)}% above your best on this lift.` };
+    if (!bestE1rmKg && planned?.weightKg && set.weightKg > planned.weightKg * 1.6) return { ok: false, reason: `${set.weightKg} kg is ${Math.round(((set.weightKg / planned.weightKg) - 1) * 100)}% above the planned ${planned.weightKg} kg.` };
+  }
+  return { ok: true };
 }
 
 export async function logSet(userId: string, instanceId: string, set: LoggedSet) {
   const parsed = LoggedSet.parse(set);
   const [inst] = await db().select({ inst: exerciseInstance, sessionUser: trainingSession.userId }).from(exerciseInstance).innerJoin(trainingSession, eq(exerciseInstance.sessionId, trainingSession.id)).where(eq(exerciseInstance.id, instanceId)).limit(1);
   if (!inst || inst.sessionUser !== userId) throw new Error("Not found");
+  const plannedSet = inst.inst.plannedSets.find((p) => p.setNumber === parsed.setNumber);
+  const [best] = await db().select({ e: estimatedMax.e1rmKg }).from(estimatedMax).where(and(eq(estimatedMax.userId, userId), eq(estimatedMax.exerciseId, inst.inst.exerciseId))).orderBy(desc(estimatedMax.e1rmKg)).limit(1);
+  const check = checkPlausibility(parsed, plannedSet, best?.e ?? null);
+  if (!check.ok && !parsed.confirmed) { const err = new Error(check.reason) as Error & { code: string }; err.code = "needs_confirmation"; throw err; }
+  const unusual = !check.ok;
   const logged = inst.inst.loggedSets.filter((l) => l.setNumber !== parsed.setNumber).concat(parsed).sort((a, b) => a.setNumber - b.setNumber);
   const working = inst.inst.plannedSets.filter((p) => p.type !== "warmup").length;
   const allDone = logged.filter((l) => l.completed).length >= working;
   await db().update(exerciseInstance).set({ loggedSets: logged, completedAt: allDone ? new Date() : null }).where(eq(exerciseInstance.id, instanceId));
   // PR detection against history (excluding this instance)
   let pr: { kind: "e1rm"; value: number } | null = null;
-  if (parsed.completed && parsed.weightKg && parsed.reps) {
+  if (parsed.completed && parsed.weightKg && parsed.reps && !unusual) {
     const hist = await historyFor(userId, inst.inst.exerciseId, instanceId);
     if (isPR(hist, inst.inst.exerciseId, parsed)) {
       const e = estimate1RM(parsed.weightKg, parsed.reps);
@@ -179,4 +209,34 @@ export async function recordRestActivity(userId: string, a: { sessionId?: string
 export async function seenRestItems(userId: string) {
   const rows = await db().select({ itemId: restActivity.itemId }).from(restActivity).where(eq(restActivity.userId, userId));
   return rows.map((r) => r.itemId).filter((x): x is string => !!x);
+}
+
+/** Start the session over: every logged set is cleared, planned sets stay as prescribed for today. */
+export async function resetSession(userId: string, sessionId: string) {
+  const [s] = await db().select().from(trainingSession).where(and(eq(trainingSession.id, sessionId), eq(trainingSession.userId, userId))).limit(1);
+  if (!s) throw new Error("Session not found");
+  if (s.status === "completed") throw new Error("A completed session cannot be reset");
+  await db().update(exerciseInstance).set({ loggedSets: [], completedAt: null }).where(eq(exerciseInstance.sessionId, sessionId));
+  await db().delete(personalRecord).where(and(eq(personalRecord.userId, userId), eq(personalRecord.sessionId, sessionId)));
+  const [row] = await db().update(trainingSession).set({ startedAt: new Date() }).where(eq(trainingSession.id, sessionId)).returning();
+  return row!;
+}
+/** Clear one exercise's logged sets so it can be redone. */
+export async function resetInstance(userId: string, instanceId: string) {
+  const [inst] = await db().select({ inst: exerciseInstance, sessionUser: trainingSession.userId, sessionId: trainingSession.id }).from(exerciseInstance).innerJoin(trainingSession, eq(exerciseInstance.sessionId, trainingSession.id)).where(eq(exerciseInstance.id, instanceId)).limit(1);
+  if (!inst || inst.sessionUser !== userId) throw new Error("Not found");
+  await db().update(exerciseInstance).set({ loggedSets: [], completedAt: null }).where(eq(exerciseInstance.id, instanceId));
+  await db().delete(personalRecord).where(and(eq(personalRecord.userId, userId), eq(personalRecord.exerciseId, inst.inst.exerciseId), eq(personalRecord.sessionId, inst.sessionId)));
+  return { ok: true };
+}
+
+/** Re-derive rest for every working set from the per-exercise evidence rule, so sessions planned before a rule change still get the right clock. */
+async function refreshRest(userId: string, sessionId: string) {
+  const rec = await getProfile(userId);
+  if (!rec) return;
+  const rows = await db().select({ inst: exerciseInstance, ex: exercise }).from(exerciseInstance).innerJoin(exercise, eq(exercise.id, exerciseInstance.exerciseId)).where(eq(exerciseInstance.sessionId, sessionId));
+  for (const { inst: i, ex } of rows) {
+    const sets = i.plannedSets.map((ps: PlannedSet) => ps.type === "working" ? { ...ps, restSeconds: restFor(ex, { role: i.role as never, goal: rec.profile.primaryGoal, topReps: ps.repRange?.[1] ?? ps.reps ?? 10, experience: rec.profile.experience }).seconds } : ps);
+    if (JSON.stringify(sets) !== JSON.stringify(i.plannedSets)) await db().update(exerciseInstance).set({ plannedSets: sets }).where(eq(exerciseInstance.id, i.id));
+  }
 }

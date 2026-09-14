@@ -16,3 +16,4 @@ export * from "./rest-content";
 export * from "./rituals";
 export * from "./programme/apply";
 export * from "./community";
+export * from "./programme/rest";

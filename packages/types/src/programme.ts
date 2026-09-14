@@ -21,11 +21,13 @@ export type PlannedSet = z.infer<typeof PlannedSet>;
 export const LoggedSet = z.object({
   setNumber: z.number().int().min(1),
   reps: z.number().int().min(0).max(100).nullable(),
-  weightKg: z.number().min(0).nullable(),
+  weightKg: z.number().min(0).max(500).nullable(),
   rpe: z.number().min(5).max(10).nullable(),
   durationSeconds: z.number().int().nullable(),
   completed: z.boolean(),
   loggedAt: z.string(),
+  /** Set when the lifter confirmed a value the engine flagged as implausible; unconfirmed outliers are rejected. */
+  confirmed: z.boolean().optional(),
 });
 export type LoggedSet = z.infer<typeof LoggedSet>;
 

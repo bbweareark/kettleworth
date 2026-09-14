@@ -21,6 +21,8 @@ export function route<T extends z.ZodTypeAny | undefined>(schema: T, fn: (ctx: {
       return out instanceof Response ? out : NextResponse.json(out ?? { ok: true });
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Something went wrong";
+      const code = (e as { code?: string })?.code;
+      if (code === "needs_confirmation") return NextResponse.json({ error: msg, code }, { status: 409 });
       console.error(`[api] ${req.method} ${new URL(req.url).pathname}:`, e);
       return NextResponse.json({ error: msg }, { status: 400 });
     }

@@ -1,6 +1,6 @@
 # Evidence base for the Kettleworth engine
 
-_Every rule in `packages/core` maps to a line here. When a rule changes, this file changes. Last reviewed 13 Sep 2026._
+_Every rule in `packages/core` maps to a line here. When a rule changes, this file changes. Last reviewed 14 Sep 2026._
 
 Kettleworth is not medical advice. The evidence below is from peer-reviewed meta-analyses and randomised trials in healthy adults; individual responses vary, which is exactly why the engine adapts from logged data rather than trusting averages.
 
@@ -8,6 +8,7 @@ Kettleworth is not medical advice. The evidence below is from peer-reviewed meta
 
 | Rule in the engine | What we do | Evidence | Confidence |
 |---|---|---|---|
+| Rest between sets set per exercise (`rest.ts`) | Multi-joint: 3 min at 5 reps or fewer, 2.5 min at 6 to 10, 2 min at 11 to 15; big lower-body lifts +30 s; isolation 60 to 90 s; explosive work 3 to 4 min; endurance and finishers capped at 90 s or less; advanced +15 s, beginners -15 s on compounds | Schoenfeld et al. 2016 RCT: 3 min rest beat 1 min for strength and hypertrophy in trained men. Grgic et al. 2017 systematic review: over 2 min needed for maximal strength in multi-joint lifts, shorter suffices for single-joint. Grgic et al. 2018: 60 to 90 s preserves hypertrophy on isolation work. de Salles et al. 2009: 3 to 5 min sustains reps at 50 to 90% 1RM. Willardson & Burkett 2006 and Senna et al. 2016: lower-body and multi-joint lifts lose reps faster with short rest. Ibbott et al. 2019: self-selected rest performs like fixed 3 min, so the timer is a floor the user can extend. | High for compounds, moderate for exact isolation values |
 | Train each muscle at least twice a week when days allow (`split.ts`) | 2 to 3 days: full-body; 4: upper/lower; 5 to 6: PPL variants | Schoenfeld, Grgic & Krieger 2019 meta-analysis: with volume equated, frequency does not change hypertrophy, but training a muscle 2+ times a week produces modestly better strength gains. Pelland et al. 2025 meta-regression (67 studies) supports a positive volume dose-response with diminishing returns. | High |
 | Start volume around 10 to 12 working sets per muscle per week and ramp ~10% per week inside a block (`generate.ts`) | Volume scalar 1.0 to 1.2 over 3 weeks | Schoenfeld, Ogborn & Krieger 2017 dose-response meta-analysis: 10+ weekly sets per muscle produce greater growth than fewer; Pelland 2025 shows gains continue with more volume but flatten. Ramping lets us find each person's ceiling from soreness and RPE logs instead of guessing. | High for the direction, moderate for the exact numbers |
 | Hypertrophy sets stop 1 to 3 reps short of failure (`prescription.ts` RIR 1 to 3) | RPE 8 to 9 targets | Robinson et al. 2024 meta-regression: hypertrophy rises modestly as sets get closer to failure; strength gains are essentially unrelated to proximity to failure. Refalo et al. 2024 RCT: 1 to 2 RIR matched training to failure for quadriceps growth in trained adults. Leaving reps in reserve preserves quality and recovery at little cost. | High |
