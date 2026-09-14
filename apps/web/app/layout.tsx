@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description: "A coach in your pocket. Personalised training, nutrition and recovery that adapt to what you actually do.",
   applicationName: "Kettleworth",
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Kettleworth" },
-  icons: { icon: "/icon.svg", apple: "/icon.svg" },
+  icons: { icon: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }, { url: "/icons/favicon-32.png", sizes: "32x32", type: "image/png" }], apple: "/icons/apple-touch-icon.png" },
 };
 export const viewport: Viewport = { themeColor: "#131211", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
