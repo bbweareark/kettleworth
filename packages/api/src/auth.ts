@@ -33,6 +33,11 @@ function build() {
 type Built = ReturnType<typeof build>;
 let _auth: Built | null = null;
 export function getAuth(): Built { return (_auth ??= build()); }
-export const auth: Built = new Proxy({} as Built, { get(_, key) { return (getAuth() as unknown as Record<PropertyKey, unknown>)[key]; } });
+export const auth: Built = new Proxy({} as Built, {
+  get(_, key) { return (getAuth() as unknown as Record<PropertyKey, unknown>)[key]; },
+  has(_, key) { return key in (getAuth() as object); },
+  ownKeys() { return Reflect.ownKeys(getAuth() as object); },
+  getOwnPropertyDescriptor(_, key) { const d = Object.getOwnPropertyDescriptor(getAuth() as object, key); return d ? { ...d, configurable: true } : undefined; },
+});
 export type Auth = Built;
 export const enabledSocialProviders = () => Object.keys(socialProviders);

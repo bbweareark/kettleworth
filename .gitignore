@@ -14,3 +14,5 @@ apps/web/public/sw.js
 apps/web/public/swe-worker-*.js
 packages/db/.seed-cache
 .uploads
+.vercel
+.env*
