@@ -20,6 +20,8 @@
     "@kettleworth/ui": "workspace:*",
     "@mux/mux-player-react": "^3.13.3",
     "@serwist/next": "^9.5.12",
+    "@zxing/browser": "^0.2.1",
+    "@zxing/library": "^0.23.0",
     "better-auth": "^1.7.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -36,6 +38,7 @@
     "zod": "^4.6.4"
   },
   "devDependencies": {
+    "@kettleworth/config": "workspace:*",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^24",
@@ -45,7 +48,6 @@
     "eslint-config-next": "^16.3.5",
     "serwist": "^9.5.12",
     "tailwindcss": "^4.3.3",
-    "typescript": "^5.9.3",
-    "@kettleworth/config": "workspace:*"
+    "typescript": "^5.9.3"
   }
 }

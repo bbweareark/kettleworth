@@ -1,10 +1,11 @@
 import { and, asc, desc, eq, gte } from "drizzle-orm";
-import { db, nutritionPlan, mealPlan, recipe, bodyMeasurement, foodLog, healthSample } from "@kettleworth/db";
-import { nutritionTargets, buildWeeklyMealPlan, type RecipeInput } from "@kettleworth/core";
+import { db, nutritionPlan, mealPlan, recipe, bodyMeasurement, foodLog, healthSample, foodProduct } from "@kettleworth/db";
+import { nutritionTargets, buildWeeklyMealPlan, parseDrink, drinkMacros, type RecipeInput, type DrinkOrder } from "@kettleworth/core";
 import type { NutritionTargets, WeeklyMealPlan, MealSlot } from "@kettleworth/types";
 import { getProfile } from "./profile";
 import { getActiveProgramme } from "./programme";
-import { mealPlanNote } from "../ai/tasks";
+import { mealPlanNote, estimateMeal, type FoodEstimateItem } from "../ai/tasks";
+import { aiAvailable } from "../ai/client";
 
 const mondayOf = (d = new Date()) => { const x = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = x.getUTCDay() || 7; x.setUTCDate(x.getUTCDate() - day + 1); return x.toISOString().slice(0, 10); };
 
@@ -76,9 +77,73 @@ export async function listRecipesFor(userId: string, slot?: MealSlot) {
   return all.filter((r) => recipeAllowed({ id: r.id, name: r.name, slots: r.slots, dietTypes: r.dietTypes, allergens: r.allergens, prepMinutes: r.prepMinutes, costTier: r.costTier, macros: r.macros, ingredients: r.ingredients, tags: r.tags }, rec.profile) && (!slot || r.slots.includes(slot)));
 }
 
-export async function logFood(userId: string, entry: { loggedOn: string; slot: MealSlot; label: string; recipeId?: string | null; servings?: number; macros: { calories: number; proteinG: number; carbsG: number; fatG: number; fibreG: number } }) {
-  const [row] = await db().insert(foodLog).values({ userId, loggedOn: entry.loggedOn, slot: entry.slot, label: entry.label, recipeId: entry.recipeId ?? null, servings: entry.servings ?? 1, macros: entry.macros }).returning();
+export type FoodSource = "manual" | "recipe" | "drink" | "barcode" | "photo" | "estimate";
+export async function logFood(userId: string, entry: { loggedOn: string; slot: MealSlot; label: string; recipeId?: string | null; servings?: number; macros: { calories: number; proteinG: number; carbsG: number; fatG: number; fibreG: number }; source?: FoodSource; detail?: Record<string, unknown> | null }) {
+  const [row] = await db().insert(foodLog).values({ userId, loggedOn: entry.loggedOn, slot: entry.slot, label: entry.label, recipeId: entry.recipeId ?? null, servings: entry.servings ?? 1, macros: entry.macros, source: entry.source ?? (entry.recipeId ? "recipe" : "manual"), detail: entry.detail ?? null }).returning();
   return row!;
+}
+export async function deleteFoodEntry(userId: string, id: string) {
+  await db().delete(foodLog).where(and(eq(foodLog.id, id), eq(foodLog.userId, userId)));
+}
+
+export type EstimateResult = {
+  source: "drink" | "estimate" | "photo";
+  items: (FoodEstimateItem & { breakdown?: { label: string; calories: number }[] })[];
+  note: string | null;
+  /** More than 1 when the photo shows several identical portions; values are for one. */
+  portionsVisible: number;
+  drink?: DrinkOrder;
+};
+
+/**
+ * The smart calorie meter. A clearly typed drink is calculated exactly and instantly from reference values. Anything
+ * else, and every photo, goes to the itemised estimate. Nothing is logged here: the person confirms first.
+ */
+export async function estimateFood(userId: string, input: { text?: string; image?: { data: string; mediaType: "image/jpeg" | "image/png" | "image/webp" } }): Promise<EstimateResult> {
+  if (!input.image && input.text) {
+    const order = parseDrink(input.text);
+    if (order) {
+      const r = drinkMacros(order);
+      return { source: "drink", drink: order, note: null, portionsVisible: 1, items: [{ name: r.label, portion: `${r.volumeMl} ml`, grams: null, calories: r.calories, proteinG: r.proteinG, carbsG: r.carbsG, fatG: r.fatG, fibreG: 0, confidence: "high", breakdown: r.breakdown }] };
+    }
+  }
+  if (!aiAvailable()) throw new Error(input.image ? "Photo scanning is not available on this server. Try a barcode or describe it." : "Couldn't read that as a drink. Add it with calories below.");
+  const out = await estimateMeal(userId, input);
+  if (!out) throw new Error("Couldn't estimate that. Try describing it with a portion, like \"bowl of pasta with pesto\".");
+  if (!out.recognised || !out.items.length) throw new Error(input.image ? "That doesn't look like food or drink. Try another angle, closer and in good light." : "Couldn't find food or drink in that.");
+  return { source: input.image ? "photo" : "estimate", items: out.items, note: out.note, portionsVisible: out.portionsVisible ?? 1 };
+}
+
+export type BarcodeProduct = { barcode: string; name: string; brand: string | null; per100: { calories: number; proteinG: number; carbsG: number; fatG: number; fibreG: number; sugarG: number | null; saltG: number | null }; unit: "g" | "ml"; servingSize: number | null; servingLabel: string | null; imageUrl: string | null };
+const DAY = 86400000;
+
+/** Packaged food by barcode, from Open Food Facts, cached for 30 days (7 days for a miss). Label values, not estimates. */
+export async function lookupBarcode(code: string): Promise<BarcodeProduct | null> {
+  const barcode = code.replace(/\D/g, "");
+  if (barcode.length < 8 || barcode.length > 14) throw new Error("That barcode doesn't look right");
+  const [cached] = await db().select().from(foodProduct).where(eq(foodProduct.barcode, barcode)).limit(1);
+  if (cached && Date.now() - cached.fetchedAt.getTime() < (cached.found ? 30 : 7) * DAY) return cached.found && cached.per100 ? toProduct(cached) : null;
+  const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json?fields=product_name,product_name_en,brands,nutriments,serving_size,serving_quantity,serving_quantity_unit,product_quantity_unit,image_front_small_url`, { headers: { "User-Agent": "Kettleworth/1.0 (https://kettleworth.vercel.app)" }, signal: AbortSignal.timeout(8000) }).catch(() => null);
+  if (!res || !res.ok) { if (cached) return cached.found && cached.per100 ? toProduct(cached) : null; throw new Error("The product database is unreachable right now. Try again in a moment."); }
+  const j = (await res.json()) as { status: number; product?: Record<string, unknown> };
+  const p = j.product; const n = (p?.nutriments ?? {}) as Record<string, number | undefined>;
+  const kcal = n["energy-kcal_100g"] ?? (n["energy_100g"] != null ? n["energy_100g"]! / 4.184 : undefined);
+  if (j.status !== 1 || !p || kcal == null) {
+    await db().insert(foodProduct).values({ barcode, found: 0 }).onConflictDoUpdate({ target: foodProduct.barcode, set: { found: 0, fetchedAt: new Date() } });
+    return null;
+  }
+  const servingLabel = (p.serving_size as string | undefined) ?? null;
+  const unit: "g" | "ml" = (p.serving_quantity_unit as string | undefined)?.toLowerCase() === "ml" || (p.product_quantity_unit as string | undefined)?.toLowerCase() === "ml" || /\bml\b/i.test(servingLabel ?? "") ? "ml" : "g";
+  const row = {
+    barcode, found: 1, name: String(p.product_name_en || p.product_name || "Unnamed product").slice(0, 120), brand: p.brands ? String(p.brands).split(",")[0]!.trim().slice(0, 80) : null,
+    per100: { calories: Math.round(kcal), proteinG: n.proteins_100g ?? 0, carbsG: n.carbohydrates_100g ?? 0, fatG: n.fat_100g ?? 0, fibreG: n.fiber_100g ?? 0, sugarG: n.sugars_100g ?? null, saltG: n.salt_100g ?? null },
+    unit, servingSize: typeof p.serving_quantity === "number" ? p.serving_quantity : Number(p.serving_quantity) || null, servingLabel, imageUrl: (p.image_front_small_url as string | undefined) ?? null, fetchedAt: new Date(),
+  };
+  await db().insert(foodProduct).values(row).onConflictDoUpdate({ target: foodProduct.barcode, set: row });
+  return toProduct(row);
+}
+function toProduct(r: { barcode: string; name: string | null; brand: string | null; per100: BarcodeProduct["per100"] | null; unit: "g" | "ml"; servingSize: number | null; servingLabel: string | null; imageUrl: string | null }): BarcodeProduct {
+  return { barcode: r.barcode, name: r.name ?? "Unnamed product", brand: r.brand, per100: r.per100!, unit: r.unit, servingSize: r.servingSize, servingLabel: r.servingLabel, imageUrl: r.imageUrl };
 }
 export async function foodLogForDay(userId: string, loggedOn: string) {
   return db().select().from(foodLog).where(and(eq(foodLog.userId, userId), eq(foodLog.loggedOn, loggedOn))).orderBy(asc(foodLog.createdAt));

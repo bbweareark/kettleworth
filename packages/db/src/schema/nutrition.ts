@@ -47,6 +47,23 @@ export const foodLog = pgTable("food_log", {
   recipeId: text("recipe_id"),
   servings: real("servings").notNull().default(1),
   macros: jsonb("macros").$type<RecipeMacros>().notNull(),
+  /** manual | recipe | drink | barcode | photo | estimate */
   source: text("source").notNull().default("manual"),
+  /** How the numbers were reached: drink order, barcode and portion, or the itemised estimate. Kept so an entry can be explained. */
+  detail: jsonb("detail").$type<Record<string, unknown>>(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [index("food_log_user_date_idx").on(t.userId, t.loggedOn)]);
+
+/** Packaged food looked up by barcode (Open Food Facts), cached so a product scanned daily costs one request a month. */
+export const foodProduct = pgTable("food_product", {
+  barcode: text("barcode").primaryKey(),
+  found: integer("found").notNull().default(1),
+  name: text("name"),
+  brand: text("brand"),
+  per100: jsonb("per100").$type<{ calories: number; proteinG: number; carbsG: number; fatG: number; fibreG: number; sugarG: number | null; saltG: number | null }>(),
+  unit: text("unit").$type<"g" | "ml">().notNull().default("g"),
+  servingSize: real("serving_size"),
+  servingLabel: text("serving_label"),
+  imageUrl: text("image_url"),
+  fetchedAt: timestamp("fetched_at").notNull().defaultNow(),
+});

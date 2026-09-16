@@ -103,3 +103,50 @@ You are reading progress photos for a coaching client who asked for this. Be res
   const { bodyFatLowPct, bodyFatHighPct, ...rest } = out;
   return { ...rest, bodyFatRangePct: bodyFatLowPct != null && bodyFatHighPct != null ? [Math.min(bodyFatLowPct, bodyFatHighPct), Math.max(bodyFatLowPct, bodyFatHighPct)] : null, summary: cleanText(out.summary), strengths: out.strengths.map(cleanText), posture: out.posture.map(cleanText), caveats: out.caveats.map(cleanText), focusAreas: out.focusAreas.map((f) => ({ ...f, reason: cleanText(f.reason) })) };
 }
+
+// ---------- Food estimate (text or photo) ----------
+const FoodItem = z.object({
+  name: z.string().max(80),
+  portion: z.string().max(80),
+  grams: z.number().min(0).max(3000).nullable(),
+  calories: z.number().min(0).max(3000),
+  proteinG: z.number().min(0).max(300),
+  carbsG: z.number().min(0).max(400),
+  fatG: z.number().min(0).max(300),
+  fibreG: z.number().min(0).max(100),
+  confidence: z.enum(["high", "medium", "low"]),
+});
+const MealEstimate = z.object({ recognised: z.boolean(), portionsVisible: z.number().int().min(1).max(24), items: z.array(FoodItem).max(12), note: z.string().max(300).nullable() });
+export type FoodEstimateItem = z.infer<typeof FoodItem>;
+
+const FOOD_SYSTEM = `You estimate the nutrition of food and drink for someone logging their day. You work like a registered dietitian reading a plate: identify each distinct item, judge the portion from what is visible or described, and apply standard reference values (McCance and Widdowson, USDA FoodData Central).
+Rules:
+- Itemise. A plate of chicken, rice and broccoli is three items; a latte is one item.
+- One person, one portion. If the photo shows several identical portions (meal prep boxes, a tray of servings, a shared platter), give the items and values for ONE portion only and set portionsVisible to how many there are. Otherwise portionsVisible is 1.
+- Portions: use the plate, bowl, cutlery and hand sizes in a photo as scale. For text, take stated quantities literally and otherwise assume a typical single serving.
+- Include what is easy to forget when it is visible or implied: cooking oil, butter, dressings, sauces, milk and sugar in drinks.
+- Calories must agree with the macros (protein 4, carbohydrate 4, fat 9 kcal per gram, alcohol 7).
+- Confidence is high only when the item and portion are both clear; low when the portion is a guess.
+- If the photo or text is not food or drink, set recognised to false and return no items.
+- The note is one short sentence on the biggest source of uncertainty, or null. Never moralise about the food.
+- British English. Never use em dashes or en dashes.`;
+
+/** Itemised calories and macros from a description or a photo. Calories are reconciled to the macros when they disagree. */
+export async function estimateMeal(userId: string, input: { text?: string; image?: { data: string; mediaType: "image/jpeg" | "image/png" | "image/webp" } }): Promise<z.infer<typeof MealEstimate> | null> {
+  const out = await structured({
+    task: input.image ? "food_photo_estimate" : "food_text_estimate", userId, system: FOOD_SYSTEM, schema: MealEstimate, effort: "low", maxTokens: 1400,
+    images: input.image ? [input.image] : undefined,
+    user: input.image ? `Estimate everything on this photo.${input.text ? ` The person added: ${input.text}` : ""}` : `What they had: ${input.text}`,
+  });
+  if (!out) return null;
+  return {
+    ...out,
+    note: out.note ? cleanText(out.note) : null,
+    items: out.items.map((i) => {
+      const fromMacros = i.proteinG * 4 + i.carbsG * 4 + i.fatG * 9;
+      const alcohol = /\b(beer|lager|wine|cider|gin|vodka|rum|whisk|spirit|cocktail|prosecco|champagne)\b/i.test(i.name);
+      const off = fromMacros > 0 && Math.abs(i.calories - fromMacros) / Math.max(i.calories, fromMacros) > 0.25;
+      return { ...i, name: cleanText(i.name), portion: cleanText(i.portion), calories: Math.round(off && !alcohol ? fromMacros : i.calories), proteinG: Math.round(i.proteinG * 10) / 10, carbsG: Math.round(i.carbsG * 10) / 10, fatG: Math.round(i.fatG * 10) / 10, fibreG: Math.round(i.fibreG * 10) / 10 };
+    }),
+  };
+}

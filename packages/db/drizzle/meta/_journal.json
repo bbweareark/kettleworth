@@ -57,6 +57,13 @@
       "when": 1789542374508,
       "tag": "0007_quest_log",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1789546853924,
+      "tag": "0008_food_scanner",
+      "breakpoints": true
     }
   ]
 }
