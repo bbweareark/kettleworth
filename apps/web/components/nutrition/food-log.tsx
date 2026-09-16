@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Coffee, ScanBarcode, Sparkles, Search, Camera, UtensilsCrossed, X, Plus, CupSoda, ChefHat } from "lucide-react";
@@ -25,7 +25,9 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
   const router = useRouter();
   const reduce = useReducedMotion();
   const [entries, setEntries] = useState(initial);
-  const [slot, setSlot] = useState<MealSlot>(() => slotForNow());
+  const [slot, setSlot] = useState<MealSlot>("lunch");
+  // The server has no idea what time it is where you are; pick the meal from the phone's clock once it has loaded.
+  useEffect(() => { setSlot(slotForNow()); }, []);
   const [mode, setMode] = useState<Mode>("drinks");
   const [busy, setBusy] = useState<string | null>(null);
   // Scan and describe state

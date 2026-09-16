@@ -1,4 +1,5 @@
 "use client";
+import { dayMonth } from "@/lib/format";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
@@ -49,7 +50,7 @@ export function CoachView({ letters, history, ai, name }: { letters: Letter[]; h
             <article key={l.id} className={cn("relative overflow-hidden rounded-2xl ring-1 ring-white/[0.05] transition-colors", open === l.id ? "bg-surface/70" : "bg-surface/30 hover:bg-surface/50")}>
               {open === l.id ? <><img src="/art/letter.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-40" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-bg)_60%,transparent)_0%,var(--color-bg)_40%)]" /></> : null}
               <button type="button" onClick={() => setOpen(open === l.id ? null : l.id)} className="flex w-full items-center justify-between gap-3 p-5 text-left">
-                <div><div className="text-2xs uppercase tracking-[0.14em] text-fg-subtle">Week of {new Date(l.weekStartsOn).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}</div><h2 className="font-display text-xl font-semibold tracking-tighter">{l.headline}</h2></div>
+                <div><div className="text-2xs uppercase tracking-[0.14em] text-fg-subtle">Week of {dayMonth(l.weekStartsOn, true)}</div><h2 className="font-display text-xl font-semibold tracking-tighter">{l.headline}</h2></div>
                 {!l.readAt && <Badge tone="ember">New</Badge>}
               </button>
               <AnimatePresence initial={false}>{open === l.id && (

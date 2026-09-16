@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
+import { cookies } from "next/headers";
 import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "@kettleworth/ui";
 import { TooltipProvider } from "@kettleworth/ui";
@@ -19,11 +19,12 @@ export const metadata: Metadata = {
 };
 export const viewport: Viewport = { themeColor: "#131211", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Theme is read on the server from a cookie, so the first paint is already right and no inline script is needed.
+  const theme = (await cookies()).get("kw-theme")?.value === "light" ? "light" : "dark";
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${interTight.variable} ${mono.variable}`} style={{ ["--font-sans" as string]: "var(--font-inter), ui-sans-serif, system-ui", ["--font-display" as string]: "var(--font-inter-tight), var(--font-inter), ui-sans-serif", ["--font-mono" as string]: "var(--font-jetbrains), ui-monospace" }}>
+    <html lang="en" data-theme={theme} suppressHydrationWarning className={`${inter.variable} ${interTight.variable} ${mono.variable}`} style={{ ["--font-sans" as string]: "var(--font-inter), ui-sans-serif, system-ui", ["--font-display" as string]: "var(--font-inter-tight), var(--font-inter), ui-sans-serif", ["--font-mono" as string]: "var(--font-jetbrains), ui-monospace" }}>
       <body className="min-h-dvh bg-bg text-fg">
-        <Script id="kw-theme" strategy="beforeInteractive">{`try{var t=localStorage.getItem('kw-theme');document.documentElement.dataset.theme=(t==='light')?'light':'dark'}catch(e){document.documentElement.dataset.theme='dark'}`}</Script>
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster position="top-center" toastOptions={{ className: "!bg-bg-elevated !border-border !text-fg !shadow-pop !rounded-xl" }} />
       </body>

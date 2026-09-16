@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useNow, localIsoDate } from "@/lib/use-now";
 import { cn } from "@kettleworth/ui";
 
 type S = { id: string; scheduledOn: string; status: string; name: string; weekId: string | null };
@@ -8,7 +9,9 @@ type Wk = { id: string; weekNumber: number; isDeload: boolean; mesocycleId: stri
 export function ProgrammeCalendar({ weeks, sessions, mesocycles, currentWeekId }: { weeks: Wk[]; sessions: S[]; mesocycles: { id: string; name: string }[]; currentWeekId: string | null }) {
   const days = ["M", "T", "W", "T", "F", "S", "S"];
   const dayIndex = (d: string) => (new Date(d + "T00:00:00Z").getUTCDay() + 6) % 7;
-  const today = new Date().toISOString().slice(0, 10);
+  const now = useNow();
+  // Until mounted, nothing is "overdue": the server cannot know the phone's date.
+  const today = now == null ? "0000-00-00" : localIsoDate(now);
   return (
     <div className="overflow-x-auto">
       <div className="min-w-[520px]">

@@ -1,4 +1,5 @@
 "use client";
+import { LocalDateTime } from "@/lib/format";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Link2, RefreshCw, Unplug } from "lucide-react";
@@ -39,7 +40,7 @@ export function ProviderGrid({ catalogue, connected, flash }: { catalogue: Info[
           <Card key={p.id}><CardContent className="space-y-3 p-4">
             <div className="flex items-center gap-3"><span className="size-3 rounded-full" style={{ background: p.brandColor }} aria-hidden /><span className="font-medium">{p.displayName}</span>{c ? <Badge tone={c.status === "connected" ? "signal" : "amber"} className="ml-auto">{c.status}</Badge> : !p.configured ? <Badge tone="neutral" className="ml-auto">Not configured</Badge> : null}</div>
             {c ? (<>
-              <div className="text-xs text-fg-subtle">{c.lastSyncAt ? `Synced ${new Date(c.lastSyncAt).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}` : "Not synced yet"}{c.lastError ? <span className="block text-rose">{c.lastError}</span> : null}</div>
+              <div className="text-xs text-fg-subtle">{c.lastSyncAt ? <>Synced <LocalDateTime iso={c.lastSyncAt} /></> : "Not synced yet"}{c.lastError ? <span className="block text-rose">{c.lastError}</span> : null}</div>
               <details className="text-sm"><summary className="cursor-pointer text-fg-muted">Data types ({c.enabledMetrics.length}/{p.metrics.length})</summary><ul className="mt-2 space-y-1.5">{p.metrics.map((m) => <li key={m} className="flex items-center justify-between"><span>{LABEL[m] ?? m}</span><Switch checked={c.enabledMetrics.includes(m)} onCheckedChange={(on) => toggle(p.id, on ? [...c.enabledMetrics, m] : c.enabledMetrics.filter((x) => x !== m))} aria-label={`${LABEL[m]} from ${p.displayName}`} /></li>)}</ul></details>
               <div className="flex gap-2"><Button size="sm" variant="secondary" loading={busy === p.id} onClick={() => act(p.id, "sync")}><RefreshCw /> Sync</Button><Button size="sm" variant="danger" onClick={() => { if (confirm(`Disconnect ${p.displayName} and delete all data synced from it?`)) act(p.id, "disconnect"); }}><Unplug /> Disconnect</Button></div>
             </>) : (<>

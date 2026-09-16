@@ -174,7 +174,7 @@ function describePrescription(sets: PlannedSet[]): string {
 }
 const fmtW = (kg: number | null, units: "metric" | "imperial") => (kg == null ? "-" : units === "metric" ? `${round(kg, 1)}` : `${round(kgToLb(kg), 1)}`);
 
-const RPE_WORDS: Record<number, string> = { 6: "4 left", 7: "3 left", 8: "2 left", 9: "1 left", 10: "nothing left" };
+const RPE_WORDS: Record<number, string> = { 6: "4 left", 7: "3 left", 8: "2 left", 9: "1 left", 10: "0 left" };
 
 /**
  * The set console. One set is in focus at a time with big tactile numerals: weight and reps step by real plate increments,
@@ -208,7 +208,7 @@ function SetConsole({ inst, units, onLog, onReset }: { inst: Instance; units: "m
   const unit = units === "metric" ? "kg" : "lb";
   const done = !!logged;
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-surface)_92%,var(--color-ember)),var(--color-surface))] p-4 ring-1 ring-white/[0.06] sm:p-5" aria-label="Log sets">
+    <section className="relative overflow-hidden rounded-3xl bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-surface)_92%,var(--color-ember)),var(--color-surface))] p-3 ring-1 ring-white/[0.06] min-[360px]:p-4 sm:p-5" aria-label="Log sets">
       <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 size-64 rounded-full bg-ember/10 blur-3xl" />
       {/* Set track */}
       <ol className="flex items-center gap-1.5" aria-label="Sets">
@@ -224,29 +224,30 @@ function SetConsole({ inst, units, onLog, onReset }: { inst: Instance; units: "m
       <AnimatePresence mode="wait" initial={false}>
         <motion.div key={set.setNumber} initial={reduce ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={reduce ? undefined : { opacity: 0, x: -12 }} transition={{ duration: 0.22 }} className="mt-4">
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-            <div className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">{set.type === "warmup" ? "Warm-up" : `Set ${set.setNumber} of ${sets.length}`}{target ? <span className="text-ember"> · target {target}{set.targetRpe ? ` @ ${set.targetRpe}` : ""}</span> : null}</div>
+            <div className="text-2xs uppercase tracking-[0.14em] text-fg-subtle">{set.type === "warmup" ? "Warm-up" : `Set ${set.setNumber} of ${sets.length}`}{target ? <span className="text-ember"> · target {target}{set.targetRpe ? ` @ ${set.targetRpe}` : ""}</span> : null}</div>
             {last ? <button type="button" onClick={() => { setW(disp(last.weightKg)); setR(String(last.reps ?? "")); setRpe(last.rpe ?? rpe); }} className="inline-flex items-center gap-1 text-2xs uppercase tracking-[0.14em] text-fg-subtle hover:text-fg"><History className="size-3" /> last {disp(last.weightKg) || "bw"} × {last.reps}{last.rpe ? ` @ ${last.rpe}` : ""}</button> : null}
           </div>
 
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            {([["w", "Weight", w, unit, set.weightKg != null ? `plan ${disp(set.weightKg)}` : "bodyweight ok"], ["r", "Reps", r, "", target ? `range ${target}` : ""]] as const).map(([k, label, val, u, hint]) => (
-              <div key={k} className="rounded-2xl bg-black/30 p-3 ring-1 ring-white/[0.06]">
-                <div className="flex items-center justify-between"><span className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">{label}</span><span className="text-2xs text-fg-subtle">{hint}</span></div>
-                <div className="mt-1 flex items-center gap-1">
-                  <button type="button" onClick={() => nudge(k, -1)} className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/[0.06] text-fg-muted transition-transform hover:bg-white/10 active:scale-90" aria-label={k === "w" ? "Lighter" : "Fewer"}><Minus className="size-4" /></button>
-                  <div className="relative min-w-0 flex-1 text-center">
-                    <input aria-label={label} inputMode={k === "w" ? "decimal" : "numeric"} value={val} onChange={(e) => (k === "w" ? setW : setR)(e.target.value.replace(/[^0-9.]/g, ""))} placeholder={k === "w" ? unit : "reps"} className="w-full bg-transparent text-center font-display text-4xl font-semibold tabular tracking-tightest text-fg placeholder:text-fg-subtle/60 focus:outline-none" />
-                    {u ? <span aria-hidden className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 text-xs text-fg-subtle">{u}</span> : null}
-                  </div>
-                  <button type="button" onClick={() => nudge(k, 1)} className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/[0.06] text-fg-muted transition-transform hover:bg-white/10 active:scale-90" aria-label={k === "w" ? "Heavier" : "More"}><Plus className="size-4" /></button>
+          {/* Phones: one full-width dial per value, so a four-digit weight never clips. Wider screens: side by side. */}
+          <div className="mt-3 grid gap-2.5 sm:grid-cols-2 sm:gap-3">
+            {([["w", "Weight", w, unit, set.weightKg != null ? `plan ${disp(set.weightKg)} ${unit}` : "optional"], ["r", "Reps", r, "reps", target ? `aim ${target}` : ""]] as const).map(([k, label, val, u, hint]) => (
+              <div key={k} className="rounded-2xl bg-black/30 px-2.5 py-2.5 ring-1 ring-white/[0.06] sm:px-3 sm:py-3">
+                <div className="flex items-baseline justify-between gap-2 px-1"><span className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">{label}</span><span className="truncate text-2xs text-fg-subtle">{hint}</span></div>
+                <div className="mt-1.5 flex items-center gap-1.5 min-[360px]:gap-2">
+                  <button type="button" onClick={() => nudge(k, -1)} className="grid size-11 shrink-0 touch-manipulation place-items-center rounded-xl bg-white/[0.06] text-fg-muted transition-transform hover:bg-white/10 active:scale-90 min-[360px]:size-12" aria-label={k === "w" ? "Lighter" : "Fewer"}><Minus className="size-5" /></button>
+                  <label className="flex min-w-0 flex-1 cursor-text items-baseline justify-center gap-1.5 rounded-xl py-1 focus-within:bg-white/[0.04]">
+                    <input aria-label={label} inputMode={k === "w" ? "decimal" : "numeric"} enterKeyHint="done" value={val} onChange={(e) => (k === "w" ? setW : setR)(e.target.value.replace(/[^0-9.]/g, "").slice(0, 6))} placeholder="0" style={{ width: `${Math.max(1, (val || "0").length) + 0.4}ch` }} className="min-w-0 bg-transparent text-right font-display text-[clamp(1.875rem,10vw,2.5rem)] font-semibold leading-none tabular tracking-tight text-fg caret-ember placeholder:text-fg-subtle/50 focus:outline-none" />
+                    <span className="shrink-0 text-sm text-fg-subtle">{u}</span>
+                  </label>
+                  <button type="button" onClick={() => nudge(k, 1)} className="grid size-11 shrink-0 touch-manipulation place-items-center rounded-xl bg-white/[0.06] text-fg-muted transition-transform hover:bg-white/10 active:scale-90 min-[360px]:size-12" aria-label={k === "w" ? "Heavier" : "More"}><Plus className="size-5" /></button>
                 </div>
               </div>))}
           </div>
 
           <div className="mt-3 rounded-2xl bg-black/30 p-3 ring-1 ring-white/[0.06]" role="radiogroup" aria-label="Effort">
-            <div className="flex items-center justify-between"><span className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">Effort</span><span className="text-2xs text-fg-subtle">{rpe != null ? `RPE ${rpe} · ${RPE_WORDS[Math.round(rpe)] ?? ""}` : "how hard was it"}</span></div>
+            <div className="flex items-center justify-between"><span className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">Effort</span><span className="text-2xs text-fg-subtle">{rpe != null ? (rpe >= 10 ? "RPE 10 · nothing left" : `RPE ${rpe} · ${RPE_WORDS[Math.round(rpe)] ?? ""} in the tank`) : "how hard was it"}</span></div>
             <div className="mt-2 grid grid-cols-5 gap-1.5">{[6, 7, 8, 9, 10].map((n) => (
-              <button key={n} type="button" role="radio" aria-checked={rpe === n} onClick={() => setRpe(n)} className={cn("flex h-12 flex-col items-center justify-center rounded-xl transition-all", rpe === n ? "bg-ember text-ember-fg shadow-glow" : "bg-white/[0.05] text-fg-muted hover:bg-white/10")}><span className="font-display text-lg font-semibold tabular">{n}</span><span className="text-[9px] uppercase tracking-wider opacity-80">{RPE_WORDS[n]}</span></button>))}</div>
+              <button key={n} type="button" role="radio" aria-checked={rpe === n} onClick={() => setRpe(n)} className={cn("flex h-12 min-w-0 touch-manipulation flex-col items-center justify-center rounded-xl transition-all", rpe === n ? "bg-ember text-ember-fg shadow-glow" : "bg-white/[0.05] text-fg-muted hover:bg-white/10")}><span className="font-display text-lg font-semibold leading-tight tabular">{n}</span><span className="whitespace-nowrap text-[9px] uppercase tracking-wide opacity-80">{RPE_WORDS[n]}</span></button>))}</div>
           </div>
 
           {challenge ? (

@@ -1,5 +1,6 @@
 "use client";
-import { useMemo, useState } from "react";
+import { dayMonth } from "@/lib/format";
+import { useEffect, useMemo, useState } from "react";
 import { RefreshCw, Repeat, ShoppingBasket, Clock } from "lucide-react";
 import type { WeeklyMealPlan, NutritionTargets, MealSlot, RecipeMacros } from "@kettleworth/types";
 import { Badge, Button, Card, CardContent, Chip, ChipGroup, Progress, Sheet, SheetContent, toast, cn } from "@kettleworth/ui";
@@ -10,7 +11,8 @@ const SLOT_ORDER: MealSlot[] = ["breakfast", "pre_workout", "lunch", "post_worko
 
 export function MealPlanView({ initial, recipes, targets }: { initial: { weekStartsOn: string; plan: WeeklyMealPlan; coachNote: string | null }; recipes: Record<string, Recipe>; targets: NutritionTargets }) {
   const [state, setState] = useState(initial);
-  const [day, setDay] = useState(Math.min(6, (new Date().getDay() + 6) % 7));
+  const [day, setDay] = useState(0);
+  useEffect(() => { setDay(Math.min(6, (new Date().getDay() + 6) % 7)); }, []);
   const [open, setOpen] = useState<Recipe | null>(null);
   const [swap, setSwap] = useState<{ day: number; slot: MealSlot } | null>(null);
   const [grocery, setGrocery] = useState(false);
@@ -20,14 +22,14 @@ export function MealPlanView({ initial, recipes, targets }: { initial: { weekSta
   async function regenerate() { setBusy(true); const r = await fetch("/api/nutrition/mealplan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ weekStartsOn: state.weekStartsOn, force: true }) }); setBusy(false); if (!r.ok) return toast.error("Couldn't rebuild"); setState(await r.json()); toast.success("New week planned"); }
   return (
     <Card><CardContent className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-display text-lg font-semibold">This week's meals</h2><p className="text-xs text-fg-subtle">Week of {new Date(state.weekStartsOn).toLocaleDateString("en-GB", { day: "numeric", month: "short" })} · est. £{state.plan.estimatedWeeklyCost.toFixed(2)} groceries</p></div><div className="flex gap-2"><Button variant="secondary" size="sm" onClick={() => setGrocery(true)}><ShoppingBasket /> Grocery list</Button><Button variant="ghost" size="sm" onClick={regenerate} loading={busy}><RefreshCw /> Rebuild</Button></div></div>
+      <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-display text-lg font-semibold">This week's meals</h2><p className="text-xs text-fg-subtle">Week of {dayMonth(state.weekStartsOn)} · est. £{state.plan.estimatedWeeklyCost.toFixed(2)} groceries</p></div><div className="flex gap-2"><Button variant="secondary" size="sm" onClick={() => setGrocery(true)}><ShoppingBasket /> Grocery list</Button><Button variant="ghost" size="sm" onClick={regenerate} loading={busy}><RefreshCw /> Rebuild</Button></div></div>
       {state.coachNote ? <details className="text-sm text-fg-muted"><summary className="cursor-pointer text-xs uppercase tracking-[0.16em] text-fg-subtle">Coach note</summary><p className="mt-2">{state.coachNote}</p></details> : null}
       <ChipGroup role="tablist">{DAYS.map((d, i) => <Chip key={d} role="tab" aria-selected={day === i} selected={day === i} onClick={() => setDay(i)} className="h-8 px-3 text-xs">{d}</Chip>)}</ChipGroup>
       <div className="grid gap-3 sm:grid-cols-4"><MacroBar label="kcal" value={tot.calories} target={targets.calories} /><MacroBar label="protein" value={tot.proteinG} target={targets.proteinG} unit="g" /><MacroBar label="carbs" value={tot.carbsG} target={targets.carbsG} unit="g" /><MacroBar label="fat" value={tot.fatG} target={targets.fatG} unit="g" /></div>
       <ul className="space-y-2">{items.map((it) => { const r = recipes[it.recipeId]; if (!r) return null; return (
         <li key={`${it.day}-${it.slot}-${it.recipeId}`} className="flex items-center gap-4 border-b border-border py-3 last:border-0">
           <span className={cn("size-10 shrink-0 rounded-lg", { breakfast: "bg-amber/40", lunch: "bg-sky/40", dinner: "bg-ember/40", snack: "bg-signal/40", pre_workout: "bg-signal/30", post_workout: "bg-ember/30" }[it.slot])} aria-hidden />
-          <div className="min-w-0 flex-1"><div className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">{it.slot.replace("_", " ")}{it.servings !== 1 ? ` · ${it.servings}×` : ""}</div><button type="button" onClick={() => setOpen(r)} className="truncate text-left text-base font-medium hover:text-ember">{r.name}</button></div>
+          <div className="min-w-0 flex-1"><div className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">{it.slot.replace("_", " ")}{it.servings !== 1 ? ` · ${it.servings}×` : ""}</div><button type="button" onClick={() => setOpen(r)} className="block max-w-full truncate text-left text-base font-medium hover:text-ember">{r.name}</button></div>
           <div className="text-right"><div className="font-display text-xl font-semibold tabular tracking-tighter">{it.macros.calories}</div><div className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">{it.macros.proteinG}P · {r.prepMinutes}m</div></div>
           <Button size="icon-sm" variant="ghost" aria-label={`Swap ${r.name}`} onClick={() => setSwap({ day: it.day, slot: it.slot })}><Repeat /></Button>
         </li>); })}</ul>

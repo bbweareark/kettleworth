@@ -1,5 +1,7 @@
 "use client";
+import { LocalDateTime } from "@/lib/format";
 import { useEffect, useState } from "react";
+import { useNow } from "@/lib/use-now";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 import { Users, Shield, Flame, Trophy, MessageSquare, Send, Check, X, Plus, Flag, Ban, Lock, Eye } from "lucide-react";
@@ -23,11 +25,12 @@ function Avatar({ name, size = 40 }: { name: string; size?: number }) {
   const hue = [...name].reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
   return <span aria-hidden className="grid shrink-0 place-items-center rounded-full font-display font-semibold text-white/90" style={{ width: size, height: size, fontSize: size * 0.4, background: `linear-gradient(135deg, oklch(0.55 0.12 ${hue}), oklch(0.35 0.08 ${(hue + 40) % 360}))` }}>{name.slice(0, 1).toUpperCase()}</span>;
 }
-const daysLeft = (iso: string) => Math.max(0, Math.ceil((new Date(iso).getTime() - Date.now()) / 86400000));
+const daysLeft = (iso: string, now: number | null) => (now == null ? 0 : Math.max(0, Math.ceil((new Date(iso).getTime() - now) / 86400000)));
 
 export function CommunityView(p: { me: Me | null; defaultName: string; matches: Match[]; matchReason: string | null; partners: Partner[]; pending: { matchId: string; handle: string; displayName: string }[]; groups: Group[]; challenges: Challenge[]; growthBoard: GrowthRow[] }) {
   const router = useRouter();
   const reduce = useReducedMotion();
+  const now = useNow();
   const [editing, setEditing] = useState(!p.me);
   const [busy, setBusy] = useState<string | null>(null);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
@@ -117,7 +120,7 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
           <p className="eyebrow">Challenges</p>
           <div className="grid gap-3 md:grid-cols-2">{p.challenges.map((c, i) => (
             <motion.div key={c.id} {...stagger(i)} className="rounded-2xl bg-surface/50 p-4 ring-1 ring-white/[0.05]">
-              <div className="flex items-start gap-3"><div className="grid size-10 shrink-0 place-items-center rounded-xl bg-ember-soft"><Trophy className="size-5 text-ember" /></div><div className="flex-1"><div className="font-display text-lg font-semibold tracking-tight">{c.name}</div><div className="text-xs text-fg-muted">Completed sessions · {daysLeft(c.endsOn)} day{daysLeft(c.endsOn) === 1 ? "" : "s"} left · {c.participants} in</div></div>
+              <div className="flex items-start gap-3"><div className="grid size-10 shrink-0 place-items-center rounded-xl bg-ember-soft"><Trophy className="size-5 text-ember" /></div><div className="flex-1"><div className="font-display text-lg font-semibold tracking-tight">{c.name}</div><div className="text-xs text-fg-muted">Completed sessions · {now == null ? "" : `${daysLeft(c.endsOn, now)} day${daysLeft(c.endsOn, now) === 1 ? "" : "s"} left`} · {c.participants} in</div></div>
                 <Button size="sm" variant={c.joined ? "ghost" : "primary"} loading={busy === c.id} onClick={() => run(c.id, () => api("challenges/join", { challengeId: c.id, join: !c.joined }), c.joined ? "Left challenge" : "You're in")}>{c.joined ? "Leave" : "Join"}</Button></div>
               {c.board.length ? <ol className="mt-4 space-y-1.5">{c.board.slice(0, 5).map((b, j) => (
                 <li key={b.userId} className={cn("flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm", b.me && "bg-ember-soft")}><span className="w-4 text-right font-display text-xs text-fg-subtle tabular">{j + 1}</span><Avatar name={b.displayName} size={24} /><span className="flex-1 truncate">{b.displayName}{b.me ? " (you)" : ""}</span><span className="font-display font-semibold tabular">{b.score}</span></li>))}</ol> : <p className="mt-3 text-xs text-fg-subtle">Be the first in. Every completed session counts automatically.</p>}
@@ -182,7 +185,7 @@ function GroupDialog({ id, onClose }: { id: string | null; onClose: () => void }
           {feed?.posts.length === 0 ? <p className="text-sm text-fg-muted">Quiet so far. Say hello.</p> : null}
           {feed?.posts.map((po) => (
             <div key={po.id} className="rounded-xl bg-surface-2 p-3">
-              <div className="flex items-center gap-2"><Avatar name={po.author.displayName} size={28} /><span className="text-sm font-medium">{po.author.displayName}</span><span className="text-2xs text-fg-subtle">{new Date(po.createdAt).toLocaleDateString(undefined, { day: "numeric", month: "short" })}</span>
+              <div className="flex items-center gap-2"><Avatar name={po.author.displayName} size={28} /><span className="text-sm font-medium">{po.author.displayName}</span><span className="text-2xs text-fg-subtle"><LocalDateTime iso={po.createdAt} time={false} /></span>
                 <button type="button" className="ml-auto text-fg-subtle hover:text-fg" aria-label="Report post" onClick={async () => { const why = prompt("What's wrong?"); if (why) { await api("report", { targetType: "post", targetId: po.id, reason: why }); toast.success("Reported"); } }}><Flag className="size-3.5" /></button></div>
               <p className="mt-2 whitespace-pre-wrap text-sm">{po.body}</p>
               <div className="mt-2 flex items-center gap-3 text-xs">

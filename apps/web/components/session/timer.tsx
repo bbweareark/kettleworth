@@ -1,4 +1,5 @@
 "use client";
+import { useNow } from "@/lib/use-now";
 import { useEffect, useRef, useState } from "react";
 import { Minus, Plus, SkipForward } from "lucide-react";
 import { Button } from "@kettleworth/ui";
@@ -33,9 +34,9 @@ function beep() {
   try { const ctx = new AudioContext(); const o = ctx.createOscillator(); const g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.value = 880; g.gain.value = 0.05; o.start(); o.stop(ctx.currentTime + 0.18); } catch {}
 }
 export function ElapsedClock({ since }: { since: string | null }) {
-  const [now, setNow] = useState(Date.now());
-  useEffect(() => { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, []);
+  const now = useNow(1000);
   if (!since) return null;
+  if (now == null) return <span className="font-mono tabular text-fg-subtle">0:00</span>;
   const s = Math.max(0, Math.floor((now - new Date(since).getTime()) / 1000));
   return <span className="font-mono tabular text-fg-subtle">{Math.floor(s / 60)}:{String(s % 60).padStart(2, "0")}</span>;
 }
