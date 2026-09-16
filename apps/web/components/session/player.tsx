@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight, Check, ChevronDown, ChevronUp, Info, Repeat, Wif
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { LoggedSet, PlannedSet, ExerciseSummary } from "@kettleworth/types";
 import { Badge, Button, Card, CardContent, Progress, Sheet, SheetContent, Segmented, Textarea, CoachPulse, Dialog, DialogContent, cn, toast, type PulseItem } from "@kettleworth/ui";
-import { kgToLb, lbToKg, round, restFor } from "@kettleworth/core";
+import { kgToLb, lbToKg, round, restFor, loadModel, platesPerSide, describePlates, DEFAULT_BARS_KG, BAR_CHOICES_KG, BAR_CHOICES_LB, BAR_NAMES, type BarKind } from "@kettleworth/core";
 import { ExerciseMedia } from "@/components/library/media";
 import { RestTimer, ElapsedClock } from "./timer";
 import { FormCheck, type CheckCard } from "./form-check";
@@ -15,12 +15,19 @@ import { PRCelebration } from "./celebrate";
 import { postResilient, flush, pending } from "@/lib/offline-queue";
 import { MuscleFigure } from "@/components/muscle-figure";
 
+type BarWeights = Partial<Record<BarKind, number>>;
 type Exercise = { id: string; slug: string; name: string; primaryMuscles: string[]; equipment: string[]; imageUrls: string[]; cues: string[]; instructions: string[]; commonMistakes: string[]; pattern: string; mechanics?: "compound" | "isolation"; category?: string; unilateral?: boolean };
 type Caution = { level: "info" | "warn" | "stop"; text: string };
 type Instance = { id: string; exerciseId: string; order: number; role: string; plannedSets: PlannedSet[]; loggedSets: LoggedSet[]; rationale: string; notes: string | null; exercise: Exercise; lastTime: LoggedSet[] | null; swappedReason: string | null; cautions: Caution[]; video: { provider: string; playbackId: string | null; isPlaceholder: boolean; status: string } | null };
 type Detail = { session: { id: string; name: string; status: string; startedAt: string | null; warmup: string[]; estimatedMinutes: number; focus: string[]; readinessScore: number | null; intensityScalar: number }; week: { weekNumber: number; isDeload: boolean } | null; instances: Instance[]; seenRest?: string[] };
 
-export function SessionPlayer({ detail, units, sex }: { detail: Detail; units: "metric" | "imperial"; sex?: "male" | "female" | "other" | null }) {
+export function SessionPlayer({ detail, units, sex, barWeights: initialBars }: { detail: Detail; units: "metric" | "imperial"; sex?: "male" | "female" | "other" | null; barWeights?: BarWeights }) {
+  const [barWeights, setBarWeights] = useState<BarWeights>(initialBars ?? {});
+  async function saveBar(kind: BarKind, kg: number) {
+    const next = { ...barWeights, [kind]: kg }; setBarWeights(next);
+    const r = await fetch("/api/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ patch: { barWeights: next } }) }).catch(() => null);
+    if (!r?.ok) toast.error("Couldn't save the bar weight"); else toast.success(`${BAR_NAMES[kind]} set to ${round(units === "metric" ? kg : kgToLb(kg), 1)} ${units === "metric" ? "kg" : "lb"}`);
+  }
   const router = useRouter();
   const [session, setSession] = useState(detail.session);
   const [instances, setInstances] = useState(detail.instances);
@@ -29,7 +36,7 @@ export function SessionPlayer({ detail, units, sex }: { detail: Detail; units: "
   const [showInfo, setShowInfo] = useState(false);
   const [swapOpen, setSwapOpen] = useState(false);
   const [finishOpen, setFinishOpen] = useState(false);
-  const [pr, setPr] = useState<{ name: string; value: number; units: "metric" | "imperial" } | null>(null);
+  const [pr, setPr] = useState<{ name: string; headline: string; detail: string } | null>(null);
   const [queued, setQueued] = useState(0);
   const [starting, setStarting] = useState(false);
   const [live, setLive] = useState<PulseItem[]>([]);
@@ -55,13 +62,13 @@ export function SessionPlayer({ detail, units, sex }: { detail: Detail; units: "
     setStarting(false);
   }
 
-  const logSet = useCallback(async (inst: Instance, set: PlannedSet, values: { weightKg: number | null; reps: number | null; rpe: number | null }, confirmed = false): Promise<{ ok: true } | { ok: false; reason: string }> => {
-    const logged: LoggedSet = { setNumber: set.setNumber, reps: values.reps, weightKg: values.weightKg, rpe: values.rpe, durationSeconds: null, completed: true, loggedAt: new Date().toISOString(), ...(confirmed ? { confirmed: true } : {}) };
-    const r = await postResilient<{ pr: { value: number } | null }>(`/api/instance/${inst.id}/log`, logged);
+  const logSet = useCallback(async (inst: Instance, set: PlannedSet, values: { weightKg: number | null; reps: number | null; rpe: number | null; barKg?: number | null }, confirmed = false): Promise<{ ok: true } | { ok: false; reason: string }> => {
+    const logged: LoggedSet = { setNumber: set.setNumber, reps: values.reps, weightKg: values.weightKg, rpe: values.rpe, durationSeconds: null, completed: true, loggedAt: new Date().toISOString(), ...(values.barKg != null ? { barKg: values.barKg } : {}), ...(confirmed ? { confirmed: true } : {}) };
+    const r = await postResilient<{ pr: { headline: string; detail: string; value: number } | null }>(`/api/instance/${inst.id}/log`, logged);
     if (!r.ok && "needsConfirmation" in r) return { ok: false, reason: r.reason };
     setInstances((prev) => prev.map((i) => (i.id === inst.id ? { ...i, loggedSets: [...i.loggedSets.filter((l) => l.setNumber !== set.setNumber), logged].sort((a, b) => a.setNumber - b.setNumber) } : i)));
     if (!r.ok) { setQueued((q) => q + 1); toast.message("Saved on this device", { description: "We'll sync when you're back online.", icon: <WifiOff className="size-4" /> }); }
-    else if (r.data.pr) setPr({ name: inst.exercise.name, value: r.data.pr.value, units });
+    else if (r.data.pr) setPr({ name: inst.exercise.name, headline: r.data.pr.headline, detail: r.data.pr.detail });
     // Coach reads the set back: on target, above, or below, from the actual numbers.
     const target = set.repRange ?? (set.reps != null ? [set.reps, set.reps] : null);
     const rpeGap = values.rpe != null && set.targetRpe != null ? values.rpe - set.targetRpe : null;
@@ -140,7 +147,7 @@ export function SessionPlayer({ detail, units, sex }: { detail: Detail; units: "
 
       {rest != null ? <RestTimer key={rest + "-" + doneSets} seconds={rest} why={restWhy} onDone={() => setRest(null)} onSkip={() => setRest(null)}><RestDeck sessionId={session.id} seedKey={`${session.id}:${cur.id}:${doneSets}`} restSeconds={rest} seen={seenRest} onSeen={(id) => setSeenRest((s) => [...s, id])} tips={restCards} nextSet={(() => { const n = cur.plannedSets.find((ps) => !cur.loggedSets.some((l) => l.setNumber === ps.setNumber && l.completed)); return n ? { repRange: n.repRange, reps: n.reps } : null; })()} onPrediction={setPrediction} /></RestTimer> : null}
 
-      <SetConsole key={`console-${cur.id}`} inst={cur} units={units} onLog={(set, v, confirmed) => logSet(cur, set, v, confirmed)} onReset={resetExercise} />
+      <SetConsole key={`console-${cur.id}`} inst={cur} units={units} barWeights={barWeights} onBarChange={saveBar} onLog={(set, v, confirmed) => logSet(cur, set, v, confirmed)} onReset={resetExercise} />
 
       <div className="flex items-center justify-between gap-3 pb-6">
         <Button variant="ghost" disabled={idx === 0} onClick={() => { setIdx((i) => i - 1); setRest(null); }}><ArrowLeft /> Previous</Button>
@@ -181,7 +188,7 @@ const RPE_WORDS: Record<number, string> = { 6: "4 left", 7: "3 left", 8: "2 left
  * effort is a five-stop scale in reps-in-reserve language, and the target and last time sit beside the numbers so the
  * lifter never has to remember them. Unusual values are challenged before they count.
  */
-function SetConsole({ inst, units, onLog, onReset }: { inst: Instance; units: "metric" | "imperial"; onLog: (set: PlannedSet, v: { weightKg: number | null; reps: number | null; rpe: number | null }, confirmed?: boolean) => Promise<{ ok: true } | { ok: false; reason: string }>; onReset: () => void }) {
+function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { inst: Instance; units: "metric" | "imperial"; barWeights: BarWeights; onBarChange: (kind: BarKind, kg: number) => void; onLog: (set: PlannedSet, v: { weightKg: number | null; reps: number | null; rpe: number | null; barKg?: number | null }, confirmed?: boolean) => Promise<{ ok: true } | { ok: false; reason: string }>; onReset: () => void }) {
   const reduce = useReducedMotion();
   const sets = inst.plannedSets;
   const doneOf = (n: number) => inst.loggedSets.find((l) => l.setNumber === n && l.completed) ?? null;
@@ -192,21 +199,55 @@ function SetConsole({ inst, units, onLog, onReset }: { inst: Instance; units: "m
   const set = sets.find((s) => s.setNumber === focus) ?? sets[0]!;
   const logged = doneOf(set.setNumber);
   const last = inst.lastTime?.find((l) => l.setNumber === set.setNumber && l.completed) ?? inst.lastTime?.filter((l) => l.completed).at(-1) ?? null;
-  const lower = inst.exercise.primaryMuscles.some((m) => ["quads", "glutes", "hamstrings", "lower_back"].includes(m));
-  const step = units === "metric" ? (inst.exercise.equipment.includes("dumbbell") || !lower ? 1.25 : 2.5) : (inst.exercise.equipment.includes("dumbbell") || !lower ? 2.5 : 5);
-  const disp = (kg: number | null | undefined) => (kg == null ? "" : String(round(units === "metric" ? kg : kgToLb(kg), 1)));
-  const [w, setW] = useState(disp(logged?.weightKg ?? set.weightKg));
+  const model = loadModel({ name: inst.exercise.name, equipment: inst.exercise.equipment as never, unilateral: !!inst.exercise.unilateral });
+  const metric = units === "metric";
+  const toDisp = (kg: number) => round(metric ? kg : kgToLb(kg), 2);
+  const disp = (kg: number | null | undefined) => (kg == null ? "" : String(round(metric ? kg : kgToLb(kg), 1)));
+  const barKg = model.kind === "bar" ? (barWeights[model.bar] ?? DEFAULT_BARS_KG[units][model.bar]) : 0;
+  const barDisp = model.kind === "bar" ? round(toDisp(barKg), 1) : 0;
+  // Bars can be entered as the total or per side; the choice is remembered on this device.
+  const [entry, setEntry] = useState<"total" | "side">("total");
+  useEffect(() => { try { if (model.kind === "bar" && localStorage.getItem("kw-bar-entry") === "side") setEntry("side"); } catch {} /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, []);
+  const sideMode = model.kind === "bar" && entry === "side";
+  const toField = (totalKg: number | null | undefined) => (totalKg == null ? "" : sideMode ? String(Math.max(0, round((toDisp(totalKg) - barDisp) / 2, 2))) : disp(totalKg));
+  const step = model.kind === "bar" ? (sideMode ? (metric ? 1.25 : 2.5) : (metric ? 2.5 : 5))
+    : model.kind === "handheld" ? (model.implement === "kettlebell" ? (metric ? 4 : 5) : (metric ? 2.5 : 5))
+    : model.kind === "stack" ? (metric ? 5 : 10) : (metric ? 2.5 : 5);
+  const [w, setW] = useState(() => toField(logged?.weightKg ?? set.weightKg));
+  const [barOpen, setBarOpen] = useState(false);
+  const fieldToTotalDisp = (v: string) => (v === "" ? null : sideMode ? Number(v) * 2 + barDisp : Number(v));
+  function switchEntry(next: "total" | "side") {
+    if (next === entry) return;
+    const totalDisp = fieldToTotalDisp(w);
+    setEntry(next);
+    try { localStorage.setItem("kw-bar-entry", next); } catch {}
+    if (totalDisp == null) return;
+    setW(next === "side" ? String(Math.max(0, round((totalDisp - barDisp) / 2, 2))) : String(round(totalDisp, 2)));
+  }
   const [r, setR] = useState(logged?.reps != null ? String(logged.reps) : set.reps != null ? String(set.reps) : set.repRange ? String(set.repRange[1]) : "");
   const [rpe, setRpe] = useState<number | null>(logged?.rpe ?? set.targetRpe ?? null);
   const [busy, setBusy] = useState(false);
   const [challenge, setChallenge] = useState<string | null>(null);
-  useEffect(() => { const l = doneOf(set.setNumber); setW(disp(l?.weightKg ?? set.weightKg)); setR(l?.reps != null ? String(l.reps) : set.reps != null ? String(set.reps) : set.repRange ? String(set.repRange[1]) : ""); setRpe(l?.rpe ?? set.targetRpe ?? null); setChallenge(null); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [set.setNumber]);
+  useEffect(() => { const l = doneOf(set.setNumber); setW(toField(l?.weightKg ?? set.weightKg)); setR(l?.reps != null ? String(l.reps) : set.reps != null ? String(set.reps) : set.repRange ? String(set.repRange[1]) : ""); setRpe(l?.rpe ?? set.targetRpe ?? null); setChallenge(null); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [set.setNumber]);
   const nudge = (which: "w" | "r", d: number) => { if (which === "w") setW((x) => String(Math.max(0, round((Number(x) || 0) + d * step, 2)))); else setR((x) => String(Math.max(0, (Number(x) || 0) + d))); };
-  const values = () => ({ weightKg: w === "" ? null : units === "metric" ? Number(w) : lbToKg(Number(w)), reps: r === "" ? null : Number(r), rpe });
+  const values = () => { const t = fieldToTotalDisp(w); return { weightKg: t == null ? null : metric ? t : lbToKg(t), reps: r === "" ? null : Number(r), rpe, barKg: model.kind === "bar" ? barKg : null }; };
   const submit = async (confirmed = false) => { setBusy(true); const res = await onLog(set, values(), confirmed); setBusy(false); if (!res.ok) setChallenge(res.reason); else setChallenge(null); };
   const target = set.repRange ? `${set.repRange[0]} to ${set.repRange[1]}` : set.reps != null ? String(set.reps) : "";
-  const unit = units === "metric" ? "kg" : "lb";
+  const unit = metric ? "kg" : "lb";
   const done = !!logged;
+  const totalNow = fieldToTotalDisp(w);
+  const makeup = (() => {
+    if (model.kind === "bar") {
+      if (totalNow == null) return `${barDisp} ${unit} ${BAR_NAMES[model.bar].toLowerCase()}`;
+      if (totalNow < barDisp) return `Less than the ${barDisp} ${unit} bar`;
+      const pl = platesPerSide(totalNow, barDisp, units);
+      const plates = pl.plates.length ? `${describePlates(pl.plates)} a side` : "empty bar";
+      return sideMode ? `${round(totalNow, 1)} ${unit} total · ${plates}` : pl.exact ? plates : `${plates} (closest you can load is ${round(pl.loadable, 1)} ${unit})`;
+    }
+    if (model.kind === "handheld" && model.count === 2 && totalNow) return `A pair of ${round(totalNow, 1)} ${unit} ${model.implement}s`;
+    return null;
+  })();
+  const planHint = set.weightKg != null ? `plan ${disp(set.weightKg)} ${unit}${model.kind === "handheld" ? ` ${model.hint}` : ""}` : model.hint;
   return (
     <section className="relative overflow-hidden rounded-3xl bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-surface)_92%,var(--color-ember)),var(--color-surface))] p-3 ring-1 ring-white/[0.06] min-[360px]:p-4 sm:p-5" aria-label="Log sets">
       <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 size-64 rounded-full bg-ember/10 blur-3xl" />
@@ -225,22 +266,41 @@ function SetConsole({ inst, units, onLog, onReset }: { inst: Instance; units: "m
         <motion.div key={set.setNumber} initial={reduce ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={reduce ? undefined : { opacity: 0, x: -12 }} transition={{ duration: 0.22 }} className="mt-4">
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <div className="text-2xs uppercase tracking-[0.14em] text-fg-subtle">{set.type === "warmup" ? "Warm-up" : `Set ${set.setNumber} of ${sets.length}`}{target ? <span className="text-ember"> · target {target}{set.targetRpe ? ` @ ${set.targetRpe}` : ""}</span> : null}</div>
-            {last ? <button type="button" onClick={() => { setW(disp(last.weightKg)); setR(String(last.reps ?? "")); setRpe(last.rpe ?? rpe); }} className="inline-flex items-center gap-1 text-2xs uppercase tracking-[0.14em] text-fg-subtle hover:text-fg"><History className="size-3" /> last {disp(last.weightKg) || "bw"} × {last.reps}{last.rpe ? ` @ ${last.rpe}` : ""}</button> : null}
+            {last ? <button type="button" onClick={() => { setW(toField(last.weightKg)); setR(String(last.reps ?? "")); setRpe(last.rpe ?? rpe); }} className="inline-flex items-center gap-1 text-2xs uppercase tracking-[0.14em] text-fg-subtle hover:text-fg"><History className="size-3" /> last {disp(last.weightKg) || "bw"} × {last.reps}{last.rpe ? ` @ ${last.rpe}` : ""}</button> : null}
           </div>
 
           {/* Phones: one full-width dial per value, so a four-digit weight never clips. Wider screens: side by side. */}
           <div className="mt-3 grid gap-2.5 sm:grid-cols-2 sm:gap-3">
-            {([["w", "Weight", w, unit, set.weightKg != null ? `plan ${disp(set.weightKg)} ${unit}` : "optional"], ["r", "Reps", r, "reps", target ? `aim ${target}` : ""]] as const).map(([k, label, val, u, hint]) => (
+            {([["w", model.label, w, sideMode ? `${unit} a side` : unit, planHint], ["r", "Reps", r, "reps", target ? `aim ${target}` : ""]] as const).map(([k, label, val, u, hint]) => (
               <div key={k} className="rounded-2xl bg-black/30 px-2.5 py-2.5 ring-1 ring-white/[0.06] sm:px-3 sm:py-3">
-                <div className="flex items-baseline justify-between gap-2 px-1"><span className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">{label}</span><span className="truncate text-2xs text-fg-subtle">{hint}</span></div>
+                <div className="flex min-h-7 items-center justify-between gap-2 px-1">
+                  <span className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">{label}</span>
+                  {k === "w" && model.kind === "bar" ? (
+                    <span role="radiogroup" aria-label="Total or per side" className="inline-flex rounded-full bg-white/[0.05] p-0.5 ring-1 ring-white/[0.06]">
+                      {(["total", "side"] as const).map((m) => <button key={m} type="button" role="radio" aria-checked={entry === m} onClick={() => switchEntry(m)} className={cn("h-6 rounded-full px-2.5 text-2xs font-medium transition-colors", entry === m ? "bg-fg text-bg" : "text-fg-muted")}>{m === "total" ? "Total" : "Per side"}</button>)}
+                    </span>
+                  ) : <span className="truncate text-2xs text-fg-subtle">{hint}</span>}
+                </div>
                 <div className="mt-1.5 flex items-center gap-1.5 min-[360px]:gap-2">
                   <button type="button" onClick={() => nudge(k, -1)} className="grid size-11 shrink-0 touch-manipulation place-items-center rounded-xl bg-white/[0.06] text-fg-muted transition-transform hover:bg-white/10 active:scale-90 min-[360px]:size-12" aria-label={k === "w" ? "Lighter" : "Fewer"}><Minus className="size-5" /></button>
                   <label className="flex min-w-0 flex-1 cursor-text items-baseline justify-center gap-1.5 rounded-xl py-1 focus-within:bg-white/[0.04]">
-                    <input aria-label={label} inputMode={k === "w" ? "decimal" : "numeric"} enterKeyHint="done" value={val} onChange={(e) => (k === "w" ? setW : setR)(e.target.value.replace(/[^0-9.]/g, "").slice(0, 6))} placeholder="0" style={{ width: `${Math.max(1, (val || "0").length) + 0.4}ch` }} className="min-w-0 bg-transparent text-right font-display text-[clamp(1.875rem,10vw,2.5rem)] font-semibold leading-none tabular tracking-tight text-fg caret-ember placeholder:text-fg-subtle/50 focus:outline-none" />
-                    <span className="shrink-0 text-sm text-fg-subtle">{u}</span>
+                    <input aria-label={k === "w" ? model.label : "Reps"} inputMode={k === "w" ? "decimal" : "numeric"} enterKeyHint="done" value={val} onChange={(e) => (k === "w" ? setW : setR)(e.target.value.replace(/[^0-9.]/g, "").slice(0, 6))} placeholder="0" style={{ width: `${Math.max(1, (val || "0").length) + 0.4}ch` }} className="min-w-0 bg-transparent text-right font-display text-[clamp(1.875rem,10vw,2.5rem)] font-semibold leading-none tabular tracking-tight text-fg caret-ember placeholder:text-fg-subtle/50 focus:outline-none" />
+                    <span className="shrink-0 whitespace-nowrap text-sm text-fg-subtle">{u}</span>
                   </label>
                   <button type="button" onClick={() => nudge(k, 1)} className="grid size-11 shrink-0 touch-manipulation place-items-center rounded-xl bg-white/[0.06] text-fg-muted transition-transform hover:bg-white/10 active:scale-90 min-[360px]:size-12" aria-label={k === "w" ? "Heavier" : "More"}><Plus className="size-5" /></button>
                 </div>
+                {k === "w" && (model.kind === "bar" || makeup) ? (
+                  <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 px-1 text-xs">
+                    {model.kind === "bar" ? <button type="button" onClick={() => setBarOpen((o) => !o)} aria-expanded={barOpen} className="inline-flex h-6 items-center gap-1 rounded-full bg-white/[0.06] px-2 text-2xs text-fg-muted ring-1 ring-white/[0.06] hover:text-fg">{BAR_NAMES[model.bar]} {barDisp} {unit}<ChevronDown className={cn("size-3 transition-transform", barOpen && "rotate-180")} /></button> : null}
+                    {makeup ? <span className="min-w-0 text-fg-subtle">{makeup}</span> : null}
+                  </div>
+                ) : null}
+                {k === "w" && model.kind === "bar" && barOpen ? (
+                  <div className="mt-2 flex flex-wrap gap-1.5 px-1" role="radiogroup" aria-label={`${BAR_NAMES[model.bar]} weight`}>
+                    {(metric ? BAR_CHOICES_KG : BAR_CHOICES_LB)[model.bar].map((c) => { const kg = metric ? c : round(lbToKg(c), 2); const on = Math.abs(barDisp - c) < 0.2; return (
+                      <button key={c} type="button" role="radio" aria-checked={on} onClick={() => { const totalDisp = fieldToTotalDisp(w); onBarChange(model.bar, kg); setBarOpen(false); if (sideMode && totalDisp != null) setW(String(Math.max(0, round((totalDisp - c) / 2, 2)))); }} className={cn("h-8 rounded-full px-3 text-xs tabular ring-1", on ? "bg-ember text-ember-fg ring-ember" : "text-fg-muted ring-white/10 hover:text-fg")}>{c === 0 ? "Not counted" : `${c} ${unit}`}</button>); })}
+                  </div>
+                ) : null}
               </div>))}
           </div>
 

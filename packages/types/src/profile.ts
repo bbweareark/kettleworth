@@ -126,6 +126,8 @@ export const TrainingProfile = z.object({
   }).default({}),
   /** Life mode: a temporary situation the plan flexes around. */
   lifeMode: z.object({ mode: z.enum(["normal", "travel", "ill", "injured", "busy", "newborn"]), since: z.string(), until: z.string().nullable(), note: z.string().max(200).optional() }).default({ mode: "normal", since: "2026-01-01", until: null }),
+  /** Bar weights in kg, set once. Defaults: 20 kg barbell (45 lb imperial), 10 kg EZ bar, 25 kg trap bar, Smith machine not counted. */
+  barWeights: z.object({ barbell: z.number().min(0).max(40).optional(), ez_bar: z.number().min(0).max(30).optional(), trap_bar: z.number().min(0).max(45).optional(), smith_machine: z.number().min(0).max(40).optional() }).optional(),
   injuries: z.array(Injury).default([]),
   medicalFlags: z.array(z.string()).default([]),
   sleepHours: z.number().min(3).max(12).optional(),

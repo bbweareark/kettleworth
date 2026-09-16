@@ -9,5 +9,5 @@ export default async function SessionPage({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const [d, rec] = await Promise.all([getSessionDetail(user.id, id), getProfile(user.id)]);
   if (!d) notFound();
-  return <SessionPlayer detail={JSON.parse(JSON.stringify(d))} units={rec?.profile.units ?? "metric"} sex={rec?.profile.sex ?? null} />;
+  return <SessionPlayer detail={JSON.parse(JSON.stringify(d))} units={rec?.profile.units ?? "metric"} sex={rec?.profile.sex ?? null} barWeights={rec?.profile.barWeights ?? {}} />;
 }

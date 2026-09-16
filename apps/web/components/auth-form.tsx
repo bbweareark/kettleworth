@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Field, Input, toast } from "@kettleworth/ui";
@@ -12,6 +12,9 @@ export function AuthForm({ mode, providers }: { mode: "sign-in" | "sign-up"; pro
   const [name, setName] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [magicSent, setMagicSent] = useState(false);
+  // Until the page has loaded, a tap on the button would do nothing; keep it disabled so a quick tap on a slow phone is never lost.
+  const [ready, setReady] = useState(false);
+  useEffect(() => { setReady(true); }, []);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -58,7 +61,7 @@ export function AuthForm({ mode, providers }: { mode: "sign-in" | "sign-up"; pro
         {mode === "sign-up" && <Field label="Name"><Input value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" placeholder="What should we call you?" /></Field>}
         <Field label="Email"><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" placeholder="you@example.com" /></Field>
         <Field label="Password" hint={mode === "sign-up" ? "At least 10 characters." : undefined}><Input type="password" required minLength={10} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete={mode === "sign-up" ? "new-password" : "current-password"} /></Field>
-        <Button type="submit" size="lg" className="w-full" loading={busy === "password"}>{mode === "sign-up" ? "Create account" : "Sign in"}</Button>
+        <Button type="submit" size="lg" className="w-full" disabled={!ready} loading={busy === "password"}>{mode === "sign-up" ? "Create account" : "Sign in"}</Button>
         <Button type="button" variant="ghost" size="lg" className="w-full" loading={busy === "magic"} onClick={magic}>Email me a sign-in link instead</Button>
       </form>
       <p className="text-center text-sm text-fg-muted">

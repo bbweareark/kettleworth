@@ -28,6 +28,8 @@ export const LoggedSet = z.object({
   loggedAt: z.string(),
   /** Set when the lifter confirmed a value the engine flagged as implausible; unconfirmed outliers are rejected. */
   confirmed: z.boolean().optional(),
+  /** Bar weight used when this set was logged, so a total can always be explained as bar plus plates. */
+  barKg: z.number().min(0).max(45).nullable().optional(),
 });
 export type LoggedSet = z.infer<typeof LoggedSet>;
 

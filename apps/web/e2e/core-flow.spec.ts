@@ -68,9 +68,9 @@ test("sign up → intake → programme → session logging", async ({ page }) =>
   await page.goto("/app");
   await page.getByRole("link", { name: /Start session/ }).click();
   await page.waitForURL(/\/app\/session\//);
-  const weight = page.getByLabel("Weight").first();
+  const weight = page.getByRole("textbox", { name: /weight/i }).first();
   await weight.fill("40");
-  await page.getByLabel("Reps").first().fill("8");
+  await page.getByRole("textbox", { name: "Reps" }).first().fill("8");
   await page.getByRole("button", { name: "Log set" }).first().click();
   await expect(page.getByRole("timer")).toBeVisible();
   await expect(page.getByRole("button", { name: "Update set" }).first()).toBeVisible();

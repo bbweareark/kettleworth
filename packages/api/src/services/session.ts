@@ -2,7 +2,7 @@ import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { db, trainingSession, exerciseInstance, exercise, exerciseVideo, personalRecord, estimatedMax, substitution, week, restActivity } from "@kettleworth/db";
 import { restFor } from "@kettleworth/core";
 import { LoggedSet, type PlannedSet } from "@kettleworth/types";
-import { decideProgression, estimate1RM, substitutesFor, isPR, type SetRecord } from "@kettleworth/core";
+import { decideProgression, estimate1RM, substitutesFor, detectPR, type SetRecord, type PRKind } from "@kettleworth/core";
 import { getProfile } from "./profile";
 import { libraryForEngine, toSummary } from "./library";
 import { getReadiness } from "./integrations";
@@ -114,20 +114,24 @@ export async function logSet(userId: string, instanceId: string, set: LoggedSet)
   const working = inst.inst.plannedSets.filter((p) => p.type !== "warmup").length;
   const allDone = logged.filter((l) => l.completed).length >= working;
   await db().update(exerciseInstance).set({ loggedSets: logged, completedAt: allDone ? new Date() : null }).where(eq(exerciseInstance.id, instanceId));
-  // PR detection against history (excluding this instance)
-  let pr: { kind: "e1rm"; value: number } | null = null;
-  if (parsed.completed && parsed.weightKg && parsed.reps && !unusual) {
-    const hist = await historyFor(userId, inst.inst.exerciseId, instanceId);
-    if (isPR(hist, inst.inst.exerciseId, parsed)) {
-      const e = estimate1RM(parsed.weightKg, parsed.reps);
-      pr = { kind: "e1rm", value: e };
-      // One PR row per exercise per session: a later, bigger set in the same session updates it rather than stacking.
-      const [samePr] = await db().select({ id: personalRecord.id }).from(personalRecord).where(and(eq(personalRecord.userId, userId), eq(personalRecord.exerciseId, inst.inst.exerciseId), eq(personalRecord.sessionId, inst.inst.sessionId))).limit(1);
-      if (samePr) await db().update(personalRecord).set({ value: e, reps: parsed.reps, weightKg: parsed.weightKg, achievedAt: new Date() }).where(eq(personalRecord.id, samePr.id));
-      else await db().insert(personalRecord).values({ userId, exerciseId: inst.inst.exerciseId, kind: "e1rm", value: e, reps: parsed.reps, weightKg: parsed.weightKg, sessionId: inst.inst.sessionId });
-      await db().insert(estimatedMax).values({ userId, exerciseId: inst.inst.exerciseId, e1rmKg: e, source: "logged" });
+  // Records: a set is judged against every earlier session of this exercise and the rest of today's sets. A first session
+  // is the baseline, warm-ups never count, and re-saving a set that was already this good does not celebrate twice.
+  let pr: { kinds: PRKind[]; headline: string; detail: string; value: number } | null = null;
+  const prior = await historyFor(userId, inst.inst.exerciseId, instanceId);
+  const isWarmup = plannedSet?.type === "warmup";
+  const hasBaseline = prior.some((h) => h.set.completed && (h.set.weightKg ?? 0) > 0 && (h.set.reps ?? 0) > 0 && !h.set.confirmed);
+  if (!unusual && !isWarmup && hasBaseline) {
+    const today = logged.filter((l) => l.setNumber !== parsed.setNumber).map((l) => ({ exerciseId: inst.inst.exerciseId, date: "today", set: l, primaryMuscles: [] }));
+    const before = inst.inst.loggedSets.find((l) => l.setNumber === parsed.setNumber && l.completed);
+    const unchanged = !!before && before.weightKg === parsed.weightKg && before.reps === parsed.reps;
+    const units = (await getProfile(userId))?.profile.units ?? "metric";
+    const found = detectPR([...prior, ...today], parsed, units);
+    if (found && !unchanged) {
+      pr = { kinds: found.kinds, headline: found.headline, detail: found.detail, value: found.e1rm };
+      if (found.kinds.includes("e1rm")) await db().insert(estimatedMax).values({ userId, exerciseId: inst.inst.exerciseId, e1rmKg: found.e1rm, source: "logged" });
     }
   }
+  await syncSessionRecord(userId, inst.inst.exerciseId, inst.inst.sessionId, prior, logged, inst.inst.plannedSets);
   return { loggedSets: logged, completed: allDone, pr };
 }
 
@@ -239,4 +243,49 @@ async function refreshRest(userId: string, sessionId: string) {
     const sets = i.plannedSets.map((ps: PlannedSet) => ps.type === "working" ? { ...ps, restSeconds: restFor(ex, { role: i.role as never, goal: rec.profile.primaryGoal, topReps: ps.repRange?.[1] ?? ps.reps ?? 10, experience: rec.profile.experience }).seconds } : ps);
     if (JSON.stringify(sets) !== JSON.stringify(i.plannedSets)) await db().update(exerciseInstance).set({ plannedSets: sets }).where(eq(exerciseInstance.id, i.id));
   }
+}
+
+/**
+ * Keep one record row per exercise per session, always describing the best working set of that session, and only
+ * when that set beat every earlier session. Editing a set down, or a first session, removes the row, so the record
+ * count on Progress can never be inflated by a mistake.
+ */
+async function syncSessionRecord(userId: string, exerciseId: string, sessionId: string, prior: SetRecord[], logged: LoggedSet[], planned: PlannedSet[]) {
+  const working = new Set(planned.filter((p) => p.type !== "warmup").map((p) => p.setNumber));
+  const sets = logged.filter((l) => working.has(l.setNumber) && l.completed && (l.weightKg ?? 0) > 0 && (l.reps ?? 0) > 0 && !l.confirmed);
+  const best = sets.sort((a, b) => estimate1RM(b.weightKg!, b.reps!) - estimate1RM(a.weightKg!, a.reps!) || b.weightKg! - a.weightKg!)[0];
+  const found = best ? detectPR(prior, best) : null;
+  const [row] = await db().select({ id: personalRecord.id }).from(personalRecord).where(and(eq(personalRecord.userId, userId), eq(personalRecord.exerciseId, exerciseId), eq(personalRecord.sessionId, sessionId))).limit(1);
+  if (!found || !best) { if (row) await db().delete(personalRecord).where(eq(personalRecord.id, row.id)); return; }
+  const kind = found.kinds.includes("weight") ? "weight" : found.kinds.includes("e1rm") ? "e1rm" : "reps";
+  const values = { kind: kind as "weight" | "e1rm" | "reps", value: found.e1rm, reps: best.reps!, weightKg: best.weightKg! };
+  if (row) await db().update(personalRecord).set(values).where(eq(personalRecord.id, row.id));
+  else await db().insert(personalRecord).values({ userId, exerciseId, sessionId, ...values });
+}
+
+/**
+ * Rebuild every stored record from the logged sets, session by session in date order, with the current rules.
+ * Used once to correct records written by the old rule, and safe to run again at any time.
+ */
+export async function rebuildPersonalRecords(userId?: string): Promise<{ users: number; records: number }> {
+  const users = userId ? [userId] : (await db().selectDistinct({ u: trainingSession.userId }).from(trainingSession)).map((r) => r.u);
+  let records = 0;
+  for (const u of users) {
+    const rows = await db().select({ exerciseId: exerciseInstance.exerciseId, sessionId: exerciseInstance.sessionId, loggedSets: exerciseInstance.loggedSets, plannedSets: exerciseInstance.plannedSets, date: trainingSession.scheduledOn, startedAt: trainingSession.startedAt })
+      .from(exerciseInstance).innerJoin(trainingSession, eq(exerciseInstance.sessionId, trainingSession.id)).where(eq(trainingSession.userId, u));
+    await db().delete(personalRecord).where(eq(personalRecord.userId, u));
+    const byExercise = new Map<string, typeof rows>();
+    for (const r of rows) if (r.loggedSets.length) (byExercise.get(r.exerciseId) ?? byExercise.set(r.exerciseId, []).get(r.exerciseId)!).push(r);
+    for (const [exerciseId, list] of byExercise) {
+      list.sort((a, b) => a.date.localeCompare(b.date) || (a.startedAt?.getTime() ?? 0) - (b.startedAt?.getTime() ?? 0));
+      const prior: SetRecord[] = [];
+      for (const r of list) {
+        await syncSessionRecord(u, exerciseId, r.sessionId, [...prior], r.loggedSets, r.plannedSets);
+        for (const l of r.loggedSets) prior.push({ exerciseId, date: r.date, set: l, primaryMuscles: [] });
+      }
+    }
+    const [cnt] = await db().select({ n: sql<number>`count(*)::int` }).from(personalRecord).where(eq(personalRecord.userId, u));
+    records += cnt?.n ?? 0;
+  }
+  return { users: users.length, records };
 }
