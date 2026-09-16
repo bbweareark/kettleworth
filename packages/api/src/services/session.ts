@@ -1,8 +1,8 @@
 import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
-import { db, trainingSession, exerciseInstance, exercise, exerciseVideo, personalRecord, estimatedMax, substitution, week, restActivity } from "@kettleworth/db";
+import { db, trainingSession, exerciseInstance, exercise, exerciseVideo, personalRecord, estimatedMax, substitution, week, restActivity, auditLog } from "@kettleworth/db";
 import { restFor } from "@kettleworth/core";
 import { LoggedSet, type PlannedSet } from "@kettleworth/types";
-import { decideProgression, estimate1RM, substitutesFor, detectPR, type SetRecord, type PRKind } from "@kettleworth/core";
+import { decideProgression, estimate1RM, substitutesFor, detectPR, loadMultiplier, type SetRecord, type PRKind } from "@kettleworth/core";
 import { getProfile } from "./profile";
 import { libraryForEngine, toSummary } from "./library";
 import { getReadiness } from "./integrations";
@@ -16,6 +16,38 @@ export async function getTodaySession(userId: string) {
   return { ...next, isToday: next.scheduledOn === today, isOverdue: next.scheduledOn < today };
 }
 
+type SessionRow = typeof trainingSession.$inferSelect;
+export type TodayState =
+  | { kind: "in_progress"; session: SessionRow; stale: boolean }
+  | { kind: "today"; session: SessionRow }
+  | { kind: "overdue"; session: SessionRow }
+  | { kind: "done"; session: SessionRow; next: SessionRow | null }
+  | { kind: "rest"; next: SessionRow }
+  | { kind: "none" };
+
+/**
+ * What Today should lead with, judged on the lifter's own calendar date. A finished session is celebrated as done and
+ * the next one is only previewed; tomorrow's workout is never offered as something to continue. Sessions missed more
+ * than a day ago stop crowding the screen (the quest board handles yesterday).
+ */
+export async function todayState(userId: string, todayIso: string): Promise<TodayState> {
+  const yesterday = new Date(new Date(`${todayIso}T12:00:00Z`).getTime() - 86400000).toISOString().slice(0, 10);
+  const [inProgress] = await db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "in_progress"))).orderBy(desc(trainingSession.startedAt)).limit(1);
+  const todays = await db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), eq(trainingSession.scheduledOn, todayIso)));
+  const [next] = await db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "planned"), sql`${trainingSession.scheduledOn} > ${todayIso}`)).orderBy(asc(trainingSession.scheduledOn)).limit(1);
+  const startedToday = (s: SessionRow) => !!s.startedAt && s.startedAt.getTime() > Date.now() - 16 * 3600000;
+  if (inProgress && startedToday(inProgress)) return { kind: "in_progress", session: inProgress, stale: false };
+  const plannedToday = todays.find((s) => s.status === "planned");
+  if (plannedToday) return { kind: "today", session: plannedToday };
+  const doneToday = todays.filter((s) => s.status === "completed").sort((a, b) => (b.completedAt?.getTime() ?? 0) - (a.completedAt?.getTime() ?? 0))[0];
+  if (doneToday) return { kind: "done", session: doneToday, next: next ?? null };
+  if (inProgress) return { kind: "in_progress", session: inProgress, stale: true };
+  const [overdue] = await db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "planned"), eq(trainingSession.scheduledOn, yesterday))).limit(1);
+  if (overdue) return { kind: "overdue", session: overdue };
+  if (next) return { kind: "rest", next };
+  return { kind: "none" };
+}
+
 export async function getSessionDetail(userId: string, sessionId: string) {
   const [s] = await db().select().from(trainingSession).where(and(eq(trainingSession.id, sessionId), eq(trainingSession.userId, userId))).limit(1);
   if (!s) return null;
@@ -27,6 +59,7 @@ export async function getSessionDetail(userId: string, sessionId: string) {
   const videoById = Object.fromEntries(vids.map((v) => [v.exerciseId, { provider: v.provider, playbackId: v.playbackId, isPlaceholder: v.isPlaceholder, status: v.status }]));
   // previous performance per exercise for "last time" hints
   const prev = await db().select({ exerciseId: exerciseInstance.exerciseId, loggedSets: exerciseInstance.loggedSets, completedAt: exerciseInstance.completedAt }).from(exerciseInstance).innerJoin(trainingSession, eq(exerciseInstance.sessionId, trainingSession.id)).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "completed"), ids.length ? inArray(exerciseInstance.exerciseId, ids) : sql`false`)).orderBy(desc(exerciseInstance.completedAt)).limit(200);
+  const benchmarks = await benchmarksFor(userId, ids, sessionId);
   const lastById: Record<string, LoggedSet[]> = {};
   for (const p of prev) if (!lastById[p.exerciseId] && p.loggedSets.length) lastById[p.exerciseId] = p.loggedSets;
   const wk = s.weekId ? (await db().select().from(week).where(eq(week.id, s.weekId)).limit(1))[0] : null;
@@ -34,7 +67,7 @@ export async function getSessionDetail(userId: string, sessionId: string) {
   const seenRest = await seenRestItems(userId);
   const injuries = rec?.profile.injuries ?? [];
   const flags = rec?.profile.medicalFlags ?? [];
-  return { session: s, week: wk, seenRest, instances: instances.map((i) => { const ex = byId[i.exerciseId]!; return { ...i, exercise: ex, video: videoById[i.exerciseId] ?? null, lastTime: lastById[i.exerciseId] ?? null, cautions: cautionsFor(ex, injuries, flags) }; }) };
+  return { session: s, week: wk, seenRest, instances: instances.map((i) => { const ex = byId[i.exerciseId]!; return { ...i, exercise: ex, video: videoById[i.exerciseId] ?? null, lastTime: lastById[i.exerciseId] ?? null, benchmark: benchmarks[i.exerciseId] ?? null, cautions: cautionsFor(ex, injuries, flags) }; }) };
 }
 
 /** Person-specific cautions for one exercise: which of their injuries it loads, what to do, and general safety notes. */
@@ -288,4 +321,99 @@ export async function rebuildPersonalRecords(userId?: string): Promise<{ users: 
     records += cnt?.n ?? 0;
   }
   return { users: users.length, records };
+}
+
+/** A finished session in four numbers: working sets done, volume moved (pairs of dumbbells counted twice), minutes, records. */
+export async function sessionSummary(userId: string, sessionId: string) {
+  const [s] = await db().select().from(trainingSession).where(and(eq(trainingSession.id, sessionId), eq(trainingSession.userId, userId))).limit(1);
+  if (!s) return null;
+  const rows = await db().select({ logged: exerciseInstance.loggedSets, name: exercise.name, equipment: exercise.equipment, unilateral: exercise.unilateral }).from(exerciseInstance).innerJoin(exercise, eq(exercise.id, exerciseInstance.exerciseId)).where(eq(exerciseInstance.sessionId, sessionId));
+  let sets = 0, volumeKg = 0;
+  for (const r of rows) { const mult = loadMultiplier({ name: r.name, equipment: r.equipment, unilateral: r.unilateral }); for (const l of r.logged) if (l.completed) { sets++; volumeKg += (l.weightKg ?? 0) * (l.reps ?? 0) * mult; } }
+  const [rc] = await db().select({ n: sql<number>`count(*)::int` }).from(personalRecord).where(and(eq(personalRecord.userId, userId), eq(personalRecord.sessionId, sessionId)));
+  const minutes = s.startedAt && s.completedAt ? Math.max(1, Math.round((s.completedAt.getTime() - s.startedAt.getTime()) / 60000)) : null;
+  return { sets, volumeKg: Math.round(volumeKg), minutes, records: rc?.n ?? 0, exercises: rows.length };
+}
+
+export type LiftSet = { weightKg: number | null; reps: number | null; rpe: number | null; barKg?: number | null };
+export type LiftSession = { sessionId: string; name: string; date: string; sets: LiftSet[]; top: LiftSet | null; e1rm: number | null; volumeKg: number };
+export type LiftBenchmark = {
+  last: LiftSession | null;
+  bestWeight: { weightKg: number; reps: number; date: string } | null;
+  bestE1rm: { e1rm: number; weightKg: number; reps: number; date: string } | null;
+  sessions: number;
+};
+
+/** Every session's working sets for some exercises, newest first. One query for a whole workout. */
+async function liftSessions(userId: string, exerciseIds: string[]): Promise<Map<string, LiftSession[]>> {
+  const out = new Map<string, LiftSession[]>();
+  if (!exerciseIds.length) return out;
+  const rows = await db().select({ exerciseId: exerciseInstance.exerciseId, logged: exerciseInstance.loggedSets, planned: exerciseInstance.plannedSets, sessionId: trainingSession.id, name: trainingSession.name, date: trainingSession.scheduledOn, startedAt: trainingSession.startedAt, eq: exercise.equipment, exName: exercise.name, uni: exercise.unilateral })
+    .from(exerciseInstance).innerJoin(trainingSession, eq(exerciseInstance.sessionId, trainingSession.id)).innerJoin(exercise, eq(exercise.id, exerciseInstance.exerciseId))
+    .where(and(eq(trainingSession.userId, userId), inArray(exerciseInstance.exerciseId, exerciseIds)))
+    .orderBy(desc(trainingSession.scheduledOn), desc(trainingSession.startedAt));
+  for (const r of rows) {
+    const warm = new Set(r.planned.filter((p) => p.type === "warmup").map((p) => p.setNumber));
+    const sets = r.logged.filter((l) => l.completed && !warm.has(l.setNumber) && (l.reps ?? 0) > 0).sort((a, b) => a.setNumber - b.setNumber);
+    if (!sets.length) continue;
+    const mult = loadMultiplier({ name: r.exName, equipment: r.eq, unilateral: r.uni });
+    const scored = sets.filter((l) => (l.weightKg ?? 0) > 0 && !l.confirmed);
+    const top = scored.sort((a, b) => estimate1RM(b.weightKg!, Math.min(b.reps!, 10)) - estimate1RM(a.weightKg!, Math.min(a.reps!, 10)))[0] ?? null;
+    const list = out.get(r.exerciseId) ?? [];
+    list.push({ sessionId: r.sessionId, name: r.name, date: r.date, sets: sets.map((l) => ({ weightKg: l.weightKg, reps: l.reps, rpe: l.rpe, barKg: l.barKg ?? null })), top: top ? { weightKg: top.weightKg, reps: top.reps, rpe: top.rpe } : null, e1rm: top && top.reps! <= 10 ? estimate1RM(top.weightKg!, top.reps!) : null, volumeKg: Math.round(sets.reduce((a, l) => a + (l.weightKg ?? 0) * (l.reps ?? 0) * mult, 0)) });
+    out.set(r.exerciseId, list);
+  }
+  return out;
+}
+
+function benchmarkOf(list: LiftSession[], excludeSessionId?: string): LiftBenchmark {
+  const past = list.filter((x) => x.sessionId !== excludeSessionId);
+  let bestWeight: LiftBenchmark["bestWeight"] = null, bestE1rm: LiftBenchmark["bestE1rm"] = null;
+  for (const sess of past) for (const set of sess.sets) {
+    if (!set.weightKg || !set.reps) continue;
+    if (!bestWeight || set.weightKg > bestWeight.weightKg || (set.weightKg === bestWeight.weightKg && set.reps > bestWeight.reps)) bestWeight = { weightKg: set.weightKg, reps: set.reps, date: sess.date };
+    if (set.reps <= 10) { const e = estimate1RM(set.weightKg, set.reps); if (!bestE1rm || e > bestE1rm.e1rm) bestE1rm = { e1rm: e, weightKg: set.weightKg, reps: set.reps, date: sess.date }; }
+  }
+  return { last: past[0] ?? null, bestWeight, bestE1rm, sessions: past.length };
+}
+
+/** Benchmarks for the exercises in a workout: last session, heaviest set and best estimated max, excluding this session. */
+export async function benchmarksFor(userId: string, exerciseIds: string[], excludeSessionId?: string): Promise<Record<string, LiftBenchmark>> {
+  const all = await liftSessions(userId, [...new Set(exerciseIds)]);
+  return Object.fromEntries(exerciseIds.map((id) => [id, benchmarkOf(all.get(id) ?? [], excludeSessionId)]));
+}
+
+/** Full history of one exercise for the history sheet and the lift page. */
+export async function exerciseHistory(userId: string, exerciseId: string) {
+  const [ex] = await db().select({ id: exercise.id, name: exercise.name, slug: exercise.slug, equipment: exercise.equipment, unilateral: exercise.unilateral }).from(exercise).where(eq(exercise.id, exerciseId)).limit(1);
+  if (!ex) return null;
+  const list = (await liftSessions(userId, [exerciseId])).get(exerciseId) ?? [];
+  const [rc] = await db().select({ n: sql<number>`count(*)::int` }).from(personalRecord).where(and(eq(personalRecord.userId, userId), eq(personalRecord.exerciseId, exerciseId)));
+  return { exercise: ex, ...benchmarkOf(list), records: rc?.n ?? 0, history: list.slice(0, 40) };
+}
+
+/** Every exercise this person has logged, with its benchmark, most recently trained first. */
+export async function liftsOverview(userId: string) {
+  const ids = (await db().selectDistinct({ id: exerciseInstance.exerciseId }).from(exerciseInstance).innerJoin(trainingSession, eq(exerciseInstance.sessionId, trainingSession.id)).where(and(eq(trainingSession.userId, userId), sql`jsonb_array_length(${exerciseInstance.loggedSets}) > 0`))).map((r) => r.id);
+  if (!ids.length) return [];
+  const [all, names] = await Promise.all([liftSessions(userId, ids), db().select({ id: exercise.id, name: exercise.name, equipment: exercise.equipment, unilateral: exercise.unilateral }).from(exercise).where(inArray(exercise.id, ids))]);
+  return names.map((n) => { const list = all.get(n.id) ?? []; return { ...n, ...benchmarkOf(list), trend: list.slice(0, 12).reverse().map((x) => x.e1rm).filter((x): x is number => x != null) }; })
+    .filter((x) => x.sessions > 0).sort((a, b) => (b.last?.date ?? "").localeCompare(a.last?.date ?? ""));
+}
+
+/**
+ * Apply a load change to the sets of this exercise that have not been done yet. Called after a set is logged, when
+ * the reps and effort say the next sets should be heavier or lighter, and again if the lifter keeps the old weight.
+ */
+export async function adjustRemainingLoads(userId: string, instanceId: string, afterSetNumber: number, weightKg: number, reason: string) {
+  const [inst] = await db().select({ inst: exerciseInstance, sessionUser: trainingSession.userId, status: trainingSession.status }).from(exerciseInstance).innerJoin(trainingSession, eq(exerciseInstance.sessionId, trainingSession.id)).where(eq(exerciseInstance.id, instanceId)).limit(1);
+  if (!inst || inst.sessionUser !== userId) throw new Error("Not found");
+  if (inst.status === "completed") throw new Error("That session is finished");
+  const done = new Set(inst.inst.loggedSets.filter((l) => l.completed).map((l) => l.setNumber));
+  let changed = 0;
+  const planned = inst.inst.plannedSets.map((ps) => { if (ps.type !== "working" || ps.setNumber <= afterSetNumber || done.has(ps.setNumber)) return ps; changed++; return { ...ps, weightKg }; });
+  if (!changed) return { changed };
+  await db().update(exerciseInstance).set({ plannedSets: planned }).where(eq(exerciseInstance.id, instanceId));
+  await db().insert(auditLog).values({ userId, action: "session.autoregulate", target: instanceId, meta: { afterSetNumber, weightKg, reason } }).catch(() => {});
+  return { changed };
 }

@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gte } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray } from "drizzle-orm";
 import { db, trainingSession, exerciseInstance, exercise, bodyMeasurement, personalRecord } from "@kettleworth/db";
 import { e1rmSeries, volumeByMuscle, tonnage, weeklyStreak, bestE1RM, isoWeek, type SetRecord , loadMultiplier } from "@kettleworth/core";
 
@@ -16,6 +16,8 @@ export async function getProgress(userId: string) {
   const strength = [...byEx.entries()].map(([id, recs]) => ({ exerciseId: id, name: names[id]!, best: bestE1RM(recs), series: e1rmSeries(recs, id), sets: recs.filter((r) => r.set.completed).length })).filter((x) => x.best != null).sort((a, b) => b.sets - a.sets).slice(0, 6);
   const measurements = await db().select().from(bodyMeasurement).where(eq(bodyMeasurement.userId, userId)).orderBy(asc(bodyMeasurement.measuredOn));
   const prs = await db().select().from(personalRecord).where(eq(personalRecord.userId, userId)).orderBy(desc(personalRecord.achievedAt)).limit(10);
+  const missing = [...new Set(prs.map((p) => p.exerciseId).filter((id) => !names[id]))];
+  const prNames: Record<string, string> = missing.length ? Object.fromEntries((await db().select({ id: exercise.id, name: exercise.name }).from(exercise).where(inArray(exercise.id, missing))).map((e) => [e.id, e.name])) : {};
   const weeklyTonnage: Record<string, number> = {};
   for (const r of records) if (r.set.completed) weeklyTonnage[isoWeek(r.date)] = (weeklyTonnage[isoWeek(r.date)] ?? 0) + (r.set.weightKg ?? 0) * (r.loadMultiplier ?? 1) * (r.set.reps ?? 0);
   return {
@@ -28,7 +30,7 @@ export async function getProgress(userId: string) {
     volumeLastWeek: volumeByMuscle(records.filter((r) => isoWeek(r.date) === lastWeek)),
     strength,
     measurements,
-    prs: prs.map((p) => ({ ...p, name: names[p.exerciseId] ?? p.exerciseId })),
+    prs: prs.map((p) => ({ ...p, name: names[p.exerciseId] ?? prNames[p.exerciseId] ?? p.exerciseId })),
     recentSessions: sessions.slice(0, 8),
   };
 }

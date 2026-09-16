@@ -67,18 +67,20 @@ export function generateProgramme(profile: TrainingProfile, library: ExerciseSum
       const isUpper = t.name.startsWith("Upper") || t.name === "Push" || t.name === "Pull";
       const isLower = t.name.startsWith("Lower") || t.name === "Legs";
       t.slots.forEach((slot, i) => {
+        const inSession = new Set(exercises.map((e) => e.exerciseId));
         const keep = previous?.[dayIndex]?.exercises.find((e) => e.order === i);
-        let sel = keep && !avoid.has(keep.exerciseId) ? { exercise: library.find((e) => e.id === keep.exerciseId)!, rationale: keep.rationale } : null;
+        let sel = keep && !avoid.has(keep.exerciseId) && !inSession.has(keep.exerciseId) ? { exercise: library.find((e) => e.id === keep.exerciseId)!, rationale: keep.rationale } : null;
         if (!sel || !sel.exercise) {
           const penalised = new Set([...usedIds, ...avoid]);
-          sel = selectForSlot(library, slot, profile, penalised, rnd);
+          sel = selectForSlot(library.filter((e) => !inSession.has(e.id)), slot, profile, penalised, rnd);
           // If avoiding leaves nothing, fall back to the previous choice rather than dropping the slot.
-          if (!sel && keep) sel = { exercise: library.find((e) => e.id === keep.exerciseId)!, rationale: keep.rationale };
+          if (!sel && keep && !inSession.has(keep.exerciseId)) sel = { exercise: library.find((e) => e.id === keep.exerciseId)!, rationale: keep.rationale };
           if (sel && avoid.has(sel.exercise.id) === false && keep && sel.exercise.id !== keep.exerciseId) sel = { ...sel, rationale: `${sel.rationale} Rotated in this block to train the same muscles a new way.` };
         }
         if (!sel) return;
         const ex = sel.exercise;
         const p = prescribe(profile.primaryGoal, slot.role, profile.experience, ex.mechanics === "compound");
+        if (rotation === 1 && (slot.role === "secondary" || slot.role === "accessory")) p.repRange = undulate(p.repRange);
         p.restSeconds = restFor(ex, { role: slot.role, goal: profile.primaryGoal, topReps: p.repRange[1], experience: profile.experience }).seconds;
         const lower = LOWER_PATTERNS.has(ex.pattern) || ex.primaryMuscles.some((m) => ["quads", "hamstrings", "glutes"].includes(m));
         let sets = buildSets(p, { e1rmKg: e1rm.get(ex.id), volumeScalar: 1, intensityScalar: 1, isDeload: false, lowerBody: lower, includeWarmup: slot.role === "primary" });
@@ -112,21 +114,23 @@ export function generateProgramme(profile: TrainingProfile, library: ExerciseSum
   if (opts.previousPlan) rationale.push(previous ? "This block continues your last one: the main lifts carry over with loads set from what you actually lifted, and accessories rotate so nothing goes stale." : "New block after your last programme: the split changed with your schedule, so exercises were re-selected; loads still start from your logged strength.");
   layout.forEach((block, mi) => {
     let blockSessions = buildBlock(mi + blockOffset, 0, previous);
-    let midSessions = variety === "high" && block.build >= 3 ? buildBlock(mi, 1, blockSessions) : null;
+    // Week B: same anchor lifts, different accessories at a different rep range. Alternating A and B keeps each accessory
+    // coming back every other week, often enough to progress it, while no two consecutive weeks feel the same.
+    let midSessions = variety !== "steady" && block.build >= 2 ? buildBlock(mi + blockOffset, 1, blockSessions) : null;
     const weeks: PlannedWeek[] = [];
     for (let w = 0; w < block.build; w++) {
       const volumeScalar = 1 + w * 0.1 + mi * 0.05;
       const intensityScalar = 1 + w * 0.02 + mi * 0.03;
-      const base = midSessions && w >= 2 ? midSessions : blockSessions;
+      const base = midSessions && w % 2 === 1 ? midSessions : blockSessions;
       weeks.push({ weekNumber: weekNumber++, isDeload: false, intensityScalar: round2(intensityScalar), volumeScalar: round2(volumeScalar), sessions: scaleSessions(base, volumeScalar, intensityScalar, false, e1rm, library, profile) });
     }
-    if (block.deload) weeks.push({ weekNumber: weekNumber++, isDeload: true, intensityScalar: 0.9, volumeScalar: 0.5, sessions: scaleSessions(midSessions ?? blockSessions, 0.5, 0.9, true, e1rm, library, profile) });
+    if (block.deload) weeks.push({ weekNumber: weekNumber++, isDeload: true, intensityScalar: 0.9, volumeScalar: 0.5, sessions: scaleSessions(blockSessions, 0.5, 0.9, true, e1rm, library, profile) });
     mesocycles.push({ index: mi, name: opts.previousPlan ? `Block ${mi + 1 + blockOffset}` : (mesoNames[mi] ?? `Block ${mi + 1}`), focus: mi === 0 ? "Learn the movements and find your working weights." : mi === 1 ? "Add sets and load week over week." : "Push intensity, then consolidate with a deload.", weeks });
-    previous = midSessions ?? blockSessions;
+    previous = blockSessions;
   });
   if (variety === "steady") rationale.push("You asked for a steady programme, so every exercise stays the same for the whole plan and progress is easy to track.");
-  else if (variety === "high") rationale.push("Main lifts stay fixed inside each block so you can practise and progress them; accessories rotate every two weeks and main-lift variations change between blocks to keep it fresh.");
-  else rationale.push("Main lifts repeat all block so the skill and the load can build; accessories rotate each block so the same muscles get trained through new movements.");
+  else if (variety === "high") rationale.push("Main lifts stay fixed inside each block so you can practise and progress them. Accessories alternate between two sets of exercises week to week at different rep ranges, and main-lift variations change between blocks.");
+  else rationale.push("Main lifts repeat all block so the skill and the load can build. Accessories alternate week to week between two sets of exercises at different rep ranges, so no two weeks in a row feel the same, and they rotate again each block.");
   rationale.push(`Volume ramps about 10% a week inside each block, then a deload at half volume and 10% lighter: the dose-response evidence rewards more volume with diminishing returns, and a light week (not a week off) keeps strength while fatigue clears.`);
   if (profile.injuries.length) rationale.push(`Exercises that load your ${profile.injuries.map((i) => i.region.replace("_", " ")).join(", ")} were excluded or down-weighted.`);
   if (profile.hatedExerciseIds.length) rationale.push(`${profile.hatedExerciseIds.length} exercise${profile.hatedExerciseIds.length > 1 ? "s" : ""} you dislike were never considered.`);
@@ -151,6 +155,9 @@ function scaleSessions(base: PlannedSession[], volumeScalar: number, intensitySc
     exercises: s.exercises.map((pe) => {
       const ex = byId.get(pe.exerciseId)!;
       const p = prescribe(profile.primaryGoal, pe.role, profile.experience, ex.mechanics === "compound");
+      // Keep the rep range the block chose for this exercise (a B-week accessory has its own), not the default for its role.
+      const chosen = pe.sets.find((x) => x.type === "working")?.repRange;
+      if (chosen) p.repRange = [chosen[0], chosen[1]];
       p.restSeconds = restFor(ex, { role: pe.role, goal: profile.primaryGoal, topReps: p.repRange[1], experience: profile.experience }).seconds;
       const lower = LOWER_PATTERNS.has(ex.pattern) || ex.primaryMuscles.some((m) => ["quads", "hamstrings", "glutes"].includes(m));
       const baseWorking = pe.sets.filter((x) => x.type === "working").length;
@@ -172,4 +179,16 @@ export function validatePlanAgainstLibrary(plan: ProgrammePlan, library: Exercis
   const errors: string[] = [];
   for (const m of plan.mesocycles) for (const w of m.weeks) for (const s of w.sessions) for (const e of s.exercises) if (!ids.has(e.exerciseId)) errors.push(`Unknown exercise ${e.exerciseId} in ${s.name} week ${w.weekNumber}`);
   return errors;
+}
+
+/**
+ * The B-week rep range for an accessory: heavier work moves lighter and lighter work moves heavier. Varying the rep
+ * range across the week trains the same muscle through a different stimulus without changing weekly volume
+ * (daily undulating periodisation matched or modestly beat fixed ranges in Grgic et al. 2017).
+ */
+export function undulate(range: [number, number]): [number, number] {
+  const top = range[1];
+  if (top <= 8) return [8, 12];
+  if (top <= 12) return [12, 15];
+  return [8, 12];
 }

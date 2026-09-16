@@ -2,26 +2,29 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, Check, ChevronDown, ChevronUp, Info, Repeat, WifiOff, ShieldAlert, AlertOctagon, Minus, Plus, RotateCcw, History, AlertTriangle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ChevronRight, ChevronDown, ChevronUp, Info, Repeat, WifiOff, ShieldAlert, AlertOctagon, Minus, Plus, RotateCcw, History, AlertTriangle } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { LoggedSet, PlannedSet, ExerciseSummary } from "@kettleworth/types";
 import { Badge, Button, Card, CardContent, Progress, Sheet, SheetContent, Segmented, Textarea, CoachPulse, Dialog, DialogContent, cn, toast, type PulseItem } from "@kettleworth/ui";
-import { kgToLb, lbToKg, round, restFor, loadModel, platesPerSide, describePlates, DEFAULT_BARS_KG, BAR_CHOICES_KG, BAR_CHOICES_LB, BAR_NAMES, type BarKind } from "@kettleworth/core";
+import { kgToLb, lbToKg, round, restFor, autoregulate, loadStep, loadModel, platesPerSide, describePlates, DEFAULT_BARS_KG, BAR_CHOICES_KG, BAR_CHOICES_LB, BAR_NAMES, type BarKind } from "@kettleworth/core";
 import { ExerciseMedia } from "@/components/library/media";
 import { RestTimer, ElapsedClock } from "./timer";
 import { FormCheck, type CheckCard } from "./form-check";
 import { RestDeck } from "./rest-deck";
 import { PRCelebration } from "./celebrate";
+import { LiftHistory, fmtKg, type LiftHistoryData } from "@/components/lifts/lift-history";
+import { dayMonth } from "@/lib/format";
 import { postResilient, flush, pending } from "@/lib/offline-queue";
 import { MuscleFigure } from "@/components/muscle-figure";
 
 type BarWeights = Partial<Record<BarKind, number>>;
 type Exercise = { id: string; slug: string; name: string; primaryMuscles: string[]; equipment: string[]; imageUrls: string[]; cues: string[]; instructions: string[]; commonMistakes: string[]; pattern: string; mechanics?: "compound" | "isolation"; category?: string; unilateral?: boolean };
 type Caution = { level: "info" | "warn" | "stop"; text: string };
-type Instance = { id: string; exerciseId: string; order: number; role: string; plannedSets: PlannedSet[]; loggedSets: LoggedSet[]; rationale: string; notes: string | null; exercise: Exercise; lastTime: LoggedSet[] | null; swappedReason: string | null; cautions: Caution[]; video: { provider: string; playbackId: string | null; isPlaceholder: boolean; status: string } | null };
-type Detail = { session: { id: string; name: string; status: string; startedAt: string | null; warmup: string[]; estimatedMinutes: number; focus: string[]; readinessScore: number | null; intensityScalar: number }; week: { weekNumber: number; isDeload: boolean } | null; instances: Instance[]; seenRest?: string[] };
+type Benchmark = { last: { date: string; sets: { weightKg: number | null; reps: number | null; rpe: number | null }[] } | null; bestWeight: { weightKg: number; reps: number; date: string } | null; bestE1rm: { e1rm: number; weightKg: number; reps: number; date: string } | null; sessions: number };
+type Instance = { benchmark?: Benchmark | null; id: string; exerciseId: string; order: number; role: string; plannedSets: PlannedSet[]; loggedSets: LoggedSet[]; rationale: string; notes: string | null; exercise: Exercise; lastTime: LoggedSet[] | null; swappedReason: string | null; cautions: Caution[]; video: { provider: string; playbackId: string | null; isPlaceholder: boolean; status: string } | null };
+type Detail = { session: { id: string; name: string; status: string; scheduledOn: string; startedAt: string | null; warmup: string[]; estimatedMinutes: number; focus: string[]; readinessScore: number | null; intensityScalar: number }; week: { weekNumber: number; isDeload: boolean } | null; instances: Instance[]; seenRest?: string[] };
 
-export function SessionPlayer({ detail, units, sex, barWeights: initialBars }: { detail: Detail; units: "metric" | "imperial"; sex?: "male" | "female" | "other" | null; barWeights?: BarWeights }) {
+export function SessionPlayer({ detail, units, sex, barWeights: initialBars, todayIso, autoStart = false }: { detail: Detail; units: "metric" | "imperial"; sex?: "male" | "female" | "other" | null; barWeights?: BarWeights; todayIso: string; autoStart?: boolean }) {
   const [barWeights, setBarWeights] = useState<BarWeights>(initialBars ?? {});
   async function saveBar(kind: BarKind, kg: number) {
     const next = { ...barWeights, [kind]: kg }; setBarWeights(next);
@@ -49,7 +52,9 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars }: {
 
   useEffect(() => { pending().then(setQueued); const on = () => flush().then(() => pending().then(setQueued)); window.addEventListener("online", on); return () => window.removeEventListener("online", on); }, []);
   // Start is idempotent: a planned session gets its readiness snapshot, an in-progress one gets its rest clocks refreshed.
-  useEffect(() => { if (session.status === "planned" || session.status === "in_progress") start(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // Only a session for today, or a missed one, starts on open. A future session is a preview until you choose to train it.
+  const preview = session.status === "planned" && session.scheduledOn > todayIso;
+  useEffect(() => { if (session.status === "in_progress" || (session.status === "planned" && (session.scheduledOn <= todayIso || autoStart))) start(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function start() {
     setStarting(true);
@@ -63,6 +68,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars }: {
   }
 
   const logSet = useCallback(async (inst: Instance, set: PlannedSet, values: { weightKg: number | null; reps: number | null; rpe: number | null; barKg?: number | null }, confirmed = false): Promise<{ ok: true } | { ok: false; reason: string }> => {
+    if (session.status === "planned") await start();
     const logged: LoggedSet = { setNumber: set.setNumber, reps: values.reps, weightKg: values.weightKg, rpe: values.rpe, durationSeconds: null, completed: true, loggedAt: new Date().toISOString(), ...(values.barKg != null ? { barKg: values.barKg } : {}), ...(confirmed ? { confirmed: true } : {}) };
     const r = await postResilient<{ pr: { headline: string; detail: string; value: number } | null }>(`/api/instance/${inst.id}/log`, logged);
     if (!r.ok && "needsConfirmation" in r) return { ok: false, reason: r.reason };
@@ -76,12 +82,29 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars }: {
     if (target && values.reps != null) read = values.reps > target[1] ? `${values.reps} reps beats the ${target[0]} to ${target[1]} target. Add load next set if RPE allows.` : values.reps < target[0] ? `${values.reps} reps is under the ${target[0]} to ${target[1]} range. Drop 5 to 7% for the next set.` : `${values.reps} reps, inside the ${target[0]} to ${target[1]} range.${rpeGap != null ? (rpeGap <= -1 ? " RPE says you had more: nudge the load up." : rpeGap >= 1.5 ? " RPE ran hot: hold or ease the load." : " Effort on target.") : ""}`;
     if (confirmed) read += " Logged as unusual: it will not count as a record until you repeat it.";
     if (prediction != null && values.reps != null) { const hit = Math.abs(prediction - values.reps) <= 1; read += hit ? ` You called ${prediction} and got ${values.reps}: good self-knowledge, +10 Growth.` : ` You called ${prediction}, got ${values.reps}. Calibration improves with every honest set.`; fetch("/api/rest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: session.id, kind: "predict", itemId: `predict-hit-${inst.id}-${set.setNumber}`, correct: hit, detail: { predicted: prediction, actual: values.reps } }) }).catch(() => {}); setPrediction(null); }
+    // Watch the set that was just lifted and move the weight for the sets that remain, with the reason and a way to keep the old weight.
+    if (set.type === "working" && values.weightKg != null) {
+      const lm = loadModel({ name: inst.exercise.name, equipment: inst.exercise.equipment as never, unilateral: !!inst.exercise.unilateral });
+      const step = loadStep(lm.kind, units, lm.kind === "handheld" ? lm.implement : undefined);
+      const doneNumbers = new Set([...inst.loggedSets.filter((l) => l.completed).map((l) => l.setNumber), set.setNumber]);
+      const remaining = inst.plannedSets.filter((ps) => ps.type === "working" && ps.setNumber > set.setNumber && !doneNumbers.has(ps.setNumber));
+      const adj = autoregulate({ weightKg: values.weightKg, reps: values.reps, rpe: values.rpe }, { repRange: set.repRange, reps: set.reps, targetRpe: set.targetRpe, weightKg: set.weightKg }, { step, units });
+      if (adj.action !== "hold" && adj.nextWeightKg != null && remaining.length) {
+        const before = remaining[0]!.weightKg ?? values.weightKg;
+        const apply = (kg: number) => setInstances((prev) => prev.map((i) => (i.id === inst.id ? { ...i, plannedSets: i.plannedSets.map((ps) => (remaining.some((r) => r.setNumber === ps.setNumber) ? { ...ps, weightKg: kg } : ps)) } : i)));
+        apply(adj.nextWeightKg);
+        fetch(`/api/instance/${inst.id}/adjust`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ afterSetNumber: set.setNumber, weightKg: adj.nextWeightKg, reason: adj.reason }) }).catch(() => {});
+        const shown = `${round(units === "metric" ? before : kgToLb(before), 1)} ${units === "metric" ? "kg" : "lb"}`;
+        toast.message(adj.action === "up" ? "Heavier next set" : "Lighter next set", { description: adj.reason, duration: 9000, action: { label: `Keep ${shown}`, onClick: () => { apply(before); fetch(`/api/instance/${inst.id}/adjust`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ afterSetNumber: set.setNumber, weightKg: before, reason: "Kept the planned weight" }) }).catch(() => {}); } } });
+        read = adj.reason.charAt(0).toUpperCase() + adj.reason.slice(1);
+      }
+    }
     setLive([{ text: read, tone: target && values.reps != null && values.reps < target[0] ? "amber" : "signal" }]);
     const isLast = set.setNumber === inst.plannedSets[inst.plannedSets.length - 1]!.setNumber;
     if (!isLast) setRest(set.restSeconds);
     else if (idx < instances.length - 1) { setRest(Math.min(set.restSeconds, 90)); }
     return { ok: true };
-  }, [idx, instances.length, units, prediction, session.id]);
+  }, [idx, instances.length, units, prediction, session.id, session.status]);
 
   async function resetExercise() {
     const r = await fetch(`/api/instance/${cur!.id}/reset`, { method: "POST" });
@@ -122,6 +145,12 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars }: {
         <Link href="/app" className="inline-flex items-center gap-1 text-sm text-fg-muted hover:text-fg"><ArrowLeft className="size-4" /> Today</Link>
         <div className="flex items-center gap-3 text-xs">{queued > 0 && <Badge tone="amber"><WifiOff className="size-3" /> {queued} queued</Badge>}<ElapsedClock since={session.startedAt} /><button type="button" onClick={() => setResetOpen(true)} className="inline-flex items-center gap-1 text-fg-subtle hover:text-fg" aria-label="Restart session"><RotateCcw className="size-3.5" /> Restart</button></div>
       </div>
+      {preview && !autoStart ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-sky-soft px-4 py-3 ring-1 ring-sky/25">
+          <p className="text-sm"><span className="font-medium">Previewing the session for {whenLabelClient(session.scheduledOn, todayIso)}.</span> <span className="text-fg-muted">Nothing starts until you log a set.</span></p>
+          <Button size="sm" variant="secondary" loading={starting} onClick={() => start()}>Train it today</Button>
+        </div>
+      ) : null}
       <div><div className="flex items-center gap-2 text-xs text-fg-subtle"><span>{session.name}</span>{detail.week && <span>· Week {detail.week.weekNumber}</span>}{session.readinessScore != null && <Badge tone={session.intensityScalar < 1 ? "amber" : "signal"}>Readiness {session.readinessScore}</Badge>}</div><Progress value={(doneSets / Math.max(1, totalSets)) * 100} className="mt-2" label="Session progress" /></div>
       <CoachPulse label="Live" items={live.length ? live : [{ text: session.intensityScalar < 1 ? `Loads eased ${Math.round((1 - session.intensityScalar) * 100)}% for today's readiness. ${doneSets}/${totalSets} sets.` : `Watching every set. ${doneSets}/${totalSets} done.`, tone: "ember" }]} />
 
@@ -251,6 +280,7 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
   return (
     <section className="relative overflow-hidden rounded-3xl bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-surface)_92%,var(--color-ember)),var(--color-surface))] p-3 ring-1 ring-white/[0.06] min-[360px]:p-4 sm:p-5" aria-label="Log sets">
       <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 size-64 rounded-full bg-ember/10 blur-3xl" />
+      <Benchmark inst={inst} units={units} onUse={(weightKg, reps, rpeVal) => { setW(toField(weightKg)); setR(reps != null ? String(reps) : ""); if (rpeVal != null) setRpe(rpeVal); }} />
       {/* Set track */}
       <ol className="flex items-center gap-1.5" aria-label="Sets">
         {sets.map((s) => { const l = doneOf(s.setNumber); const cur = s.setNumber === focus; return (
@@ -266,7 +296,6 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
         <motion.div key={set.setNumber} initial={reduce ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={reduce ? undefined : { opacity: 0, x: -12 }} transition={{ duration: 0.22 }} className="mt-4">
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <div className="text-2xs uppercase tracking-[0.14em] text-fg-subtle">{set.type === "warmup" ? "Warm-up" : `Set ${set.setNumber} of ${sets.length}`}{target ? <span className="text-ember"> · target {target}{set.targetRpe ? ` @ ${set.targetRpe}` : ""}</span> : null}</div>
-            {last ? <button type="button" onClick={() => { setW(toField(last.weightKg)); setR(String(last.reps ?? "")); setRpe(last.rpe ?? rpe); }} className="inline-flex items-center gap-1 text-2xs uppercase tracking-[0.14em] text-fg-subtle hover:text-fg"><History className="size-3" /> last {disp(last.weightKg) || "bw"} × {last.reps}{last.rpe ? ` @ ${last.rpe}` : ""}</button> : null}
           </div>
 
           {/* Phones: one full-width dial per value, so a four-digit weight never clips. Wider screens: side by side. */}
@@ -379,6 +408,59 @@ function FinishForm({ sessionId, onDone }: { sessionId: string; units: "metric" 
       <Scale label="Enjoyment" value={mood} set={setMood} lo="dreaded it" hi="loved it" />
       <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Anything worth remembering? (optional)" />
       <Button className="w-full" size="lg" onClick={submit} loading={busy}>Save session</Button>
+    </div>
+  );
+}
+
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+function whenLabelClient(dateIso: string, todayIso: string): string {
+  const d = new Date(`${dateIso}T12:00:00Z`), t = new Date(`${todayIso}T12:00:00Z`);
+  const days = Math.round((d.getTime() - t.getTime()) / 86400000);
+  return days === 1 ? "tomorrow" : WEEKDAYS[d.getUTCDay()]!;
+}
+
+/**
+ * The benchmark for this lift, right where the numbers are entered: every set from last time (tap one to use it), the
+ * heaviest set and the best estimated max, and the full history a tap away.
+ */
+function Benchmark({ inst, units, onUse }: { inst: Instance; units: "metric" | "imperial"; onUse: (weightKg: number | null, reps: number | null, rpe: number | null) => void }) {
+  const [open, setOpen] = useState(false);
+  const [data, setData] = useState<LiftHistoryData | null>(null);
+  const b = inst.benchmark;
+  const unit = units === "metric" ? "kg" : "lb";
+  async function openHistory() {
+    setOpen(true);
+    if (!data) { const r = await fetch(`/api/exercise/${inst.exerciseId}/history`); if (r.ok) setData(await r.json()); }
+  }
+  return (
+    <div className="mb-3 rounded-2xl bg-black/25 p-3 ring-1 ring-white/[0.06]">
+      {b?.last ? (
+        <>
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">Last time · {dayMonth(b.last.date)}</span>
+            <button type="button" onClick={openHistory} className="inline-flex items-center gap-1 text-xs text-ember hover:underline">History <ChevronRight className="size-3.5" /></button>
+          </div>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {b.last.sets.map((x, i) => (
+              <button key={i} type="button" onClick={() => onUse(x.weightKg, x.reps, x.rpe)} aria-label={`Use ${fmtKg(x.weightKg, units)} ${unit} for ${x.reps} reps`} className="inline-flex h-8 items-center rounded-full bg-white/[0.05] px-3 text-sm tabular text-fg ring-1 ring-white/10 transition-colors hover:bg-white/10 active:scale-95">
+                {fmtKg(x.weightKg, units)} × {x.reps}{x.rpe ? <span className="ml-1 text-2xs text-fg-subtle">@{x.rpe}</span> : null}
+              </button>))}
+          </div>
+          {b.bestWeight || b.bestE1rm ? (
+            <div className="mt-2.5 grid grid-cols-2 gap-2 border-t border-white/5 pt-2.5">
+              <div className="min-w-0"><div className="text-[10px] uppercase tracking-[0.12em] text-fg-subtle">Heaviest</div><div className="truncate text-sm font-medium tabular">{b.bestWeight ? `${fmtKg(b.bestWeight.weightKg, units)} ${unit} × ${b.bestWeight.reps}` : "-"}</div></div>
+              <div className="min-w-0"><div className="text-[10px] uppercase tracking-[0.12em] text-fg-subtle">Best max</div><div className="truncate text-sm font-medium tabular">{b.bestE1rm ? `${fmtKg(b.bestE1rm.e1rm, units)} ${unit}` : "-"}</div></div>
+            </div>
+          ) : null}
+        </>
+      ) : (
+        <div className="flex items-center justify-between gap-3"><p className="text-sm text-fg-muted">First time on this lift. Today&apos;s sets become your benchmark.</p></div>
+      )}
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent title={inst.exercise.name} description="Every session you have logged for this lift.">
+          {data ? <LiftHistory data={data} units={units} /> : <p className="py-8 text-center text-sm text-fg-subtle">Loading your history</p>}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

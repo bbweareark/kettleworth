@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { ArrowRight, Flame, Play, Sparkles } from "lucide-react";
 import { Badge, Button, Card, CardContent, CoachPulse, CountUp, Ring, Sparkline, type PulseItem } from "@kettleworth/ui";
 import { requireUser } from "@/lib/session";
-import { getProfile, getActiveProgramme, getTodaySession, upcomingSessions, getReadiness, getProgress, ensureNutritionPlan, connectedProviders, activitiesForDay, getSessionDetail, hasUnreadLetter, listPhotos, runWeeklyAdaptation, currentWeekState, questBoard } from "@kettleworth/api";
+import { getProfile, getActiveProgramme, todayState, sessionSummary, upcomingSessions, getReadiness, getProgress, ensureNutritionPlan, connectedProviders, activitiesForDay, getSessionDetail, hasUnreadLetter, listPhotos, runWeeklyAdaptation, currentWeekState, questBoard } from "@kettleworth/api";
 import { kgToLb, ritualNudges, loadModel } from "@kettleworth/core";
 import { ActivityLog } from "@/components/today/activity-log";
 import { HeroSession } from "@/components/app/hero-session";
@@ -11,6 +11,8 @@ import { sessionArt } from "@/lib/art";
 import { OfflineWarmup } from "@/components/app/offline-warmup";
 import { WeeklyCheckIn } from "@/components/today/check-in";
 import { QuestBoard } from "@/components/today/quest-board";
+import { DoneHero, RestHero, whenLabel } from "@/components/app/day-hero";
+import { localTodayIso } from "@/lib/local-date";
 
 export const dynamic = "force-dynamic";
 
@@ -20,13 +22,16 @@ export default async function Today() {
   if (!rec?.onboardingCompletedAt) redirect("/app/onboarding");
   await runWeeklyAdaptation(user.id).catch((e) => console.warn("weekly adaptation", e));
   const weekState = await currentWeekState(user.id);
-  const quests = await questBoard(user.id).catch(() => null);
-  const [prog, today, upcoming, readiness, progress, nutrition, providers, activities] = await Promise.all([getActiveProgramme(user.id), getTodaySession(user.id), upcomingSessions(user.id, 7), getReadiness(user.id), getProgress(user.id), ensureNutritionPlan(user.id), connectedProviders(user.id), activitiesForDay(user.id)]);
+  const todayIso = await localTodayIso();
+  const quests = await questBoard(user.id, todayIso).catch(() => null);
+  const [prog, state, upcoming, readiness, progress, nutrition, providers, activities] = await Promise.all([getActiveProgramme(user.id), todayState(user.id, todayIso), upcomingSessions(user.id, 7), getReadiness(user.id), getProgress(user.id), ensureNutritionPlan(user.id), connectedProviders(user.id), activitiesForDay(user.id)]);
+  // Only a session you can actually do now gets the big start or continue card. A finished one is celebrated; tomorrow's is previewed.
+  const today = state.kind === "in_progress" || state.kind === "today" || state.kind === "overdue" ? state.session : null;
   const detail = today ? await getSessionDetail(user.id, today.id) : null;
+  const doneSummary = state.kind === "done" ? await sessionSummary(user.id, state.session.id) : null;
   const [unread, photos] = await Promise.all([hasUnreadLetter(user.id), listPhotos(user.id)]);
-  const todayIso = new Date().toISOString().slice(0, 10);
   const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
-  const nudges = ritualNudges(rec.profile, { now: new Date(), weighedInToday: progress.measurements.some((m) => m.measuredOn === todayIso), photoThisWeek: photos.some((p) => p.takenOn >= weekAgo), sessionToday: !!today && (today as { isToday?: boolean }).isToday === true, sessionDone: today?.status === "completed", letterUnread: unread });
+  const nudges = ritualNudges(rec.profile, { now: new Date(), weighedInToday: progress.measurements.some((m) => m.measuredOn === todayIso), photoThisWeek: photos.some((p) => p.takenOn >= weekAgo), sessionToday: state.kind === "today" || (state.kind === "in_progress" && !state.stale), sessionDone: state.kind === "done", letterUnread: unread });
   const units = rec.profile.units;
   const w = (kg: number) => Math.round(units === "metric" ? kg : kgToLb(kg));
   const u = units === "metric" ? "kg" : "lb";
@@ -66,13 +71,17 @@ export default async function Today() {
         </CardContent></Card>
       ) : today ? (
         <HeroSession
-          session={{ name: today.name, status: today.status, minutes: today.estimatedMinutes, focus: today.focus, label: today.status === "in_progress" ? "In progress" : (today as { isOverdue?: boolean }).isOverdue ? "Overdue" : (today as { isToday?: boolean }).isToday ? "Today" : new Date(today.scheduledOn).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }) }}
+          session={{ name: today.name, status: today.status, minutes: today.estimatedMinutes, focus: today.focus, label: state.kind === "in_progress" ? (state.stale ? `Unfinished from ${whenLabel(today.scheduledOn, todayIso) === "tomorrow" ? "yesterday" : new Date(`${today.scheduledOn}T12:00:00Z`).toLocaleDateString("en-GB", { weekday: "long", timeZone: "UTC" })}` : "In progress") : state.kind === "overdue" ? "From yesterday" : "Today" }}
           readiness={{ score: readiness.score, band: readiness.band, line: readiness.reasons[readiness.reasons.length - 1] ?? "" }}
           exercises={(detail?.instances ?? []).map((i) => { const w = i.plannedSets.filter((s) => s.type === "working"); const f = w[0]; const done = i.loggedSets.filter((l) => l.completed && w.some((x) => x.setNumber === l.setNumber)).length; return { id: i.id, name: i.exercise.name, role: i.role, sets: w.length, reps: f?.repRange ? `${f.repRange[0]}-${f.repRange[1]}` : String(f?.reps ?? ""), image: i.exercise.imageUrls[0], care: i.cautions.some((c) => c.level !== "info"), done, complete: w.length > 0 && done >= w.length }; })}
           live={today.status === "in_progress" && detail ? (() => { const inst = detail.instances; const per = inst.map((i) => { const w = i.plannedSets.filter((s) => s.type === "working"); return { total: w.length, done: i.loggedSets.filter((l) => l.completed && w.some((x) => x.setNumber === l.setNumber)).length, logs: i.loggedSets.filter((l) => l.completed).map((l) => { const lm = loadModel({ name: i.exercise.name, equipment: i.exercise.equipment as never, unilateral: !!i.exercise.unilateral }); return { ...l, each: lm.kind === "handheld" && lm.count === 2 }; }) }; }); const setsTotal = per.reduce((a, x) => a + x.total, 0); const setsDone = per.reduce((a, x) => a + x.done, 0); const currentIndex = Math.max(0, per.findIndex((x) => x.done < x.total)); const last = per.flatMap((x) => x.logs).sort((a, b) => b.loggedAt.localeCompare(a.loggedAt))[0]; return { setsDone, setsTotal, currentIndex: currentIndex === -1 ? inst.length - 1 : currentIndex, elapsedMin: today.startedAt ? Math.max(0, Math.round((Date.now() - new Date(today.startedAt).getTime()) / 60000)) : 0, lastSet: last ? `${last.weightKg != null ? `${units === "metric" ? last.weightKg : Math.round(last.weightKg * 2.2046)} ${u}${last.each ? " each" : ""} × ` : ""}${last.reps ?? "?"}${last.rpe ? ` @ RPE ${last.rpe}` : ""}` : null }; })() : null}
           week={{ done: progress.recentSessions.filter((s) => s.scheduledOn >= new Date(Date.now() - ((new Date().getDay() + 6) % 7) * 86400000).toISOString().slice(0, 10)).length, planned: prog?.daysPerWeek ?? 0 }}
-          cta={today.status === "in_progress" ? "Continue" : "Start session"} href={`/app/session/${today.id}`} art={sessionArt(today.name, rec.profile.sex)}
+          cta={state.kind === "in_progress" ? (state.stale ? "Pick it up" : "Continue") : "Start session"} href={`/app/session/${today.id}`} art={sessionArt(today.name, rec.profile.sex)}
         />
+      ) : state.kind === "done" ? (
+        <DoneHero name={state.session.name} art={sessionArt(state.session.name, rec.profile.sex)} summary={doneSummary} next={state.next} todayIso={todayIso} unit={units === "metric" ? "kg" : "lb"} />
+      ) : state.kind === "rest" ? (
+        <RestHero art={sessionArt(state.next.name, rec.profile.sex)} next={state.next} todayIso={todayIso} />
       ) : (
         <Card><CardContent className="flex items-center justify-between gap-4"><div><h2 className="font-display text-xl font-semibold">Block complete.</h2><p className="text-sm text-fg-muted">Time to build the next one.</p></div><Button asChild><Link href="/app/programme/new?continue=1">Build next block <ArrowRight /></Link></Button></CardContent></Card>
       )}

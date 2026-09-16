@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import { db, programme, mesocycle, week, trainingSession, exerciseInstance, auditLog, estimatedMax } from "@kettleworth/db";
-import { generateProgramme, validatePlanAgainstLibrary } from "@kettleworth/core";
+import { generateProgramme, validatePlanAgainstLibrary, substitutesFor, undulate, restFor } from "@kettleworth/core";
 import type { ProgrammePlan } from "@kettleworth/types";
 import { getProfile } from "./profile";
 import { libraryForEngine, getExercisesByIds } from "./library";
@@ -99,4 +99,55 @@ export async function getWeekSessions(userId: string, weekId: string) {
 }
 export async function getSessionsByIds(ids: string[]) {
   return ids.length ? db().select().from(trainingSession).where(inArray(trainingSession.id, ids)) : [];
+}
+
+/**
+ * Bring a programme built under the old rules up to the current variety rules, for sessions that have not happened:
+ *  - B weeks (every second week of a block, deloads excluded) swap each secondary and accessory exercise for a close
+ *    substitute that trains the same muscles, at the B-week rep range; anchor lifts stay exactly as they are.
+ *  - Any session that lists the same exercise twice gets the second one replaced.
+ * Idempotent per programme (recorded in the audit log) and never touches a started or finished session.
+ */
+export async function diversifyProgramme(userId: string, todayIso = new Date().toISOString().slice(0, 10)): Promise<{ swapped: number; deduped: number; skipped?: string }> {
+  const prog = await getActiveProgramme(userId);
+  if (!prog) return { swapped: 0, deduped: 0, skipped: "no active programme" };
+  const programmeId = prog.id;
+  const [done] = await db().select({ id: auditLog.id }).from(auditLog).where(and(eq(auditLog.userId, userId), eq(auditLog.action, "programme.diversified"), eq(auditLog.target, programmeId))).limit(1);
+  if (done) return { swapped: 0, deduped: 0, skipped: "already diversified" };
+  const rec = await getProfile(userId);
+  if (!rec) return { swapped: 0, deduped: 0, skipped: "no profile" };
+  const profile = rec.profile;
+  const library = await libraryForEngine();
+  const byId = new Map(library.map((e) => [e.id, e]));
+  const weeks = await db().select().from(week).where(eq(week.programmeId, programmeId)).orderBy(asc(week.weekNumber));
+  const firstWeekOfMeso = new Map<string, number>();
+  for (const w of weeks) if (!firstWeekOfMeso.has(w.mesocycleId)) firstWeekOfMeso.set(w.mesocycleId, w.weekNumber);
+  const isBWeek = (w: typeof weeks[number]) => !w.isDeload && (w.weekNumber - firstWeekOfMeso.get(w.mesocycleId)!) % 2 === 1;
+  const sessions = await db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), eq(trainingSession.programmeId, programmeId), eq(trainingSession.status, "planned"), sql`${trainingSession.scheduledOn} > ${todayIso}`));
+  let swapped = 0, deduped = 0;
+  for (const sess of sessions) {
+    const wk = weeks.find((w) => w.id === sess.weekId);
+    const insts = await db().select().from(exerciseInstance).where(eq(exerciseInstance.sessionId, sess.id)).orderBy(asc(exerciseInstance.order));
+    const inSession = new Set<string>();
+    for (const inst of insts) {
+      const current = byId.get(inst.exerciseId);
+      const dup = inSession.has(inst.exerciseId);
+      const rotate = !!wk && isBWeek(wk) && (inst.role === "secondary" || inst.role === "accessory");
+      if (!current || (!dup && !rotate)) { inSession.add(inst.exerciseId); continue; }
+      const pick = substitutesFor(library, current, profile, 12).map((x) => x.exercise).find((e) => !inSession.has(e.id) && !insts.some((o) => o.exerciseId === e.id));
+      if (!pick) { inSession.add(inst.exerciseId); continue; }
+      const planned = inst.plannedSets.map((ps) => {
+        if (ps.type !== "working") return ps;
+        const range = rotate && ps.repRange ? undulate(ps.repRange) : ps.repRange;
+        const rest = restFor(pick, { role: inst.role as never, goal: profile.primaryGoal, topReps: range?.[1] ?? ps.reps ?? 10, experience: profile.experience }).seconds;
+        return { ...ps, repRange: range, weightKg: null, restSeconds: rest };
+      }).filter((ps) => ps.type === "working" || !rotate);
+      const reason = dup ? `${pick.name}: replaces a repeat of ${current.name} in this session.` : `${pick.name}: this week's variation for ${current.primaryMuscles.map((m) => m.replace("_", " ")).join(" and ")}, at a different rep range so the same muscles get a fresh stimulus.`;
+      await db().update(exerciseInstance).set({ exerciseId: pick.id, originalExerciseId: inst.originalExerciseId ?? inst.exerciseId, plannedSets: planned as never, rationale: reason }).where(eq(exerciseInstance.id, inst.id));
+      inSession.add(pick.id);
+      if (dup) deduped++; else swapped++;
+    }
+  }
+  await db().insert(auditLog).values({ userId, action: "programme.diversified", target: programmeId, meta: { swapped, deduped } });
+  return { swapped, deduped };
 }

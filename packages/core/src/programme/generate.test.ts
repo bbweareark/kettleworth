@@ -87,19 +87,35 @@ describe("generateProgramme", () => {
 });
 
 describe("variety", () => {
-  it("keeps primaries and rotates accessories between blocks (balanced)", () => {
+  it("keeps primaries all block, alternates accessories week to week, and rotates them between blocks (balanced)", () => {
     const p = TrainingProfile.parse({ daysPerWeek: 4, timelineWeeks: 12, varietyPreference: "balanced", goals: ["muscle"], primaryGoal: "muscle" });
     const plan = generateProgramme(p, lib, { seed: "v" });
-    const b0 = plan.mesocycles[0]!.weeks[0]!.sessions, b1 = plan.mesocycles[1]!.weeks[0]!.sessions;
-    for (let d = 0; d < b0.length; d++) {
-      const prim0 = b0[d]!.exercises.filter((e) => e.role === "primary").map((e) => e.exerciseId);
-      const prim1 = b1[d]!.exercises.filter((e) => e.role === "primary").map((e) => e.exerciseId);
-      expect(prim1).toEqual(prim0);
+    const wk = (m: number, w: number) => plan.mesocycles[m]!.weeks[w]!.sessions;
+    const prim = (ss: ReturnType<typeof wk>) => ss.map((x) => x.exercises.filter((e) => e.role === "primary").map((e) => e.exerciseId));
+    const acc = (ss: ReturnType<typeof wk>) => new Set(ss.flatMap((x) => x.exercises.filter((e) => e.role !== "primary" && e.role !== "mobility").map((e) => e.exerciseId)));
+    // Anchors: identical every week of a block and into the next block.
+    expect(prim(wk(0, 1))).toEqual(prim(wk(0, 0)));
+    expect(prim(wk(1, 0))).toEqual(prim(wk(0, 0)));
+    // Week B is not a copy of week A.
+    const a = acc(wk(0, 0)), b = acc(wk(0, 1));
+    expect([...b].some((id) => !a.has(id))).toBe(true);
+    // And A comes back in week 3, so accessories repeat often enough to progress.
+    expect(acc(wk(0, 2))).toEqual(a);
+    // The next block does not simply replay this one's first week. (This small fixture has too few exercises to demand
+    // brand-new ones; the real library does.)
+    const lists = (m: number, w: number) => wk(m, w).map((x) => x.exercises.filter((e) => e.role !== "primary").map((e) => e.exerciseId).join(","));
+    expect(lists(1, 0)).not.toEqual(lists(0, 0));
+    expect(plan.rationale.join(" ")).toMatch(/alternate week to week/);
+  });
+  it("moves accessory rep ranges on B weeks and never repeats an exercise inside a session", () => {
+    const p = TrainingProfile.parse({ daysPerWeek: 3, timelineWeeks: 12, varietyPreference: "balanced", goals: ["muscle"], primaryGoal: "muscle" });
+    const plan = generateProgramme(p, lib, { seed: "u" });
+    const ranges = (w: number) => plan.mesocycles[0]!.weeks[w]!.sessions.flatMap((x) => x.exercises.filter((e) => e.role === "accessory").map((e) => e.sets.find((st) => st.type === "working")?.repRange?.join("-")));
+    expect(ranges(1)).not.toEqual(ranges(0));
+    for (const m of plan.mesocycles) for (const w of m.weeks) for (const sess of w.sessions) {
+      const ids = sess.exercises.map((e) => e.exerciseId);
+      expect(new Set(ids).size).toBe(ids.length);
     }
-    const acc0 = new Set(b0.flatMap((s) => s.exercises.filter((e) => e.role === "accessory").map((e) => e.exerciseId)));
-    const acc1 = b1.flatMap((s) => s.exercises.filter((e) => e.role === "accessory").map((e) => e.exerciseId));
-    expect(acc1.some((id) => !acc0.has(id))).toBe(true);
-    expect(plan.rationale.join(" ")).toMatch(/accessories rotate/);
   });
   it("steady keeps everything identical across blocks", () => {
     const p = TrainingProfile.parse({ daysPerWeek: 3, timelineWeeks: 8, varietyPreference: "steady" });
