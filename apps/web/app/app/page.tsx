@@ -3,13 +3,14 @@ import { redirect } from "next/navigation";
 import { ArrowRight, Flame, Play, Sparkles } from "lucide-react";
 import { Badge, Button, Card, CardContent, CoachPulse, CountUp, Ring, Sparkline, type PulseItem } from "@kettleworth/ui";
 import { requireUser } from "@/lib/session";
-import { getProfile, getActiveProgramme, getTodaySession, upcomingSessions, getReadiness, getProgress, ensureNutritionPlan, connectedProviders, activitiesForDay, getSessionDetail, hasUnreadLetter, listPhotos, runWeeklyAdaptation, currentWeekState } from "@kettleworth/api";
+import { getProfile, getActiveProgramme, getTodaySession, upcomingSessions, getReadiness, getProgress, ensureNutritionPlan, connectedProviders, activitiesForDay, getSessionDetail, hasUnreadLetter, listPhotos, runWeeklyAdaptation, currentWeekState, questBoard } from "@kettleworth/api";
 import { kgToLb, ritualNudges } from "@kettleworth/core";
 import { ActivityLog } from "@/components/today/activity-log";
 import { HeroSession } from "@/components/app/hero-session";
 import { sessionArt } from "@/lib/art";
 import { OfflineWarmup } from "@/components/app/offline-warmup";
 import { WeeklyCheckIn } from "@/components/today/check-in";
+import { QuestBoard } from "@/components/today/quest-board";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +20,7 @@ export default async function Today() {
   if (!rec?.onboardingCompletedAt) redirect("/app/onboarding");
   await runWeeklyAdaptation(user.id).catch((e) => console.warn("weekly adaptation", e));
   const weekState = await currentWeekState(user.id);
+  const quests = await questBoard(user.id).catch(() => null);
   const [prog, today, upcoming, readiness, progress, nutrition, providers, activities] = await Promise.all([getActiveProgramme(user.id), getTodaySession(user.id), upcomingSessions(user.id, 7), getReadiness(user.id), getProgress(user.id), ensureNutritionPlan(user.id), connectedProviders(user.id), activitiesForDay(user.id)]);
   const detail = today ? await getSessionDetail(user.id, today.id) : null;
   const [unread, photos] = await Promise.all([hasUnreadLetter(user.id), listPhotos(user.id)]);
@@ -54,6 +56,7 @@ export default async function Today() {
       <OfflineWarmup sessionHref={today ? `/app/session/${today.id}` : null} images={[...(today ? [sessionArt(today.name, rec.profile.sex)] : []), ...(detail?.instances ?? []).map((i) => i.exercise.imageUrls[0]).filter((u): u is string => !!u)]} />
       <CoachPulse avatar="/art/seal.png" items={pulse} />
       {weekState && weekState.hasPrevious && !weekState.week.checkin && !weekState.week.isDeload ? <WeeklyCheckIn weekNumber={weekState.week.weekNumber} applied={weekState.week.adaptations} /> : null}
+      {quests ? <QuestBoard board={quests} todayIso={todayIso} /> : null}
       {nudges.length ? <ul className="flex flex-wrap gap-2">{nudges.map((n) => (<li key={n.id} className={`flex items-center gap-3 rounded-xl px-3.5 py-2 text-sm ring-1 ring-white/[0.05] ${n.tone === "amber" ? "bg-amber-soft" : n.tone === "signal" ? "bg-signal-soft" : n.tone === "ember" ? "bg-ember-soft" : "bg-surface/60"}`}><span>{n.text}</span>{n.action ? <Link href={n.action.href} className="font-medium text-ember hover:underline">{n.action.label}</Link> : null}</li>))}</ul> : null}
 
       {!prog ? (

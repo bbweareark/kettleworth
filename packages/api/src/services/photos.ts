@@ -71,6 +71,7 @@ export async function applyAnalysis(userId: string, photoId: string, opts: { pri
 }
 
 import { physiqueTimeline, growthPoints, trend } from "@kettleworth/core";
+import { sideQuestDates } from "./quests";
 import { bodyMeasurement, trainingSession, personalRecord, exerciseInstance, healthSample, restActivity, profile as profileTable } from "@kettleworth/db";
 import { inArray } from "drizzle-orm";
 import { asc, sql } from "drizzle-orm";
@@ -92,7 +93,8 @@ export async function physiqueProgress(userId: string) {
   const photoSets = new Set(photos.filter((p) => p.analysis).map((p) => p.takenOn)).size;
   const [rest] = await db().select({ n: sql<number>`count(*)::int` }).from(restActivity).where(and(eq(restActivity.userId, userId), sql`(${restActivity.kind} <> 'quiz' or ${restActivity.correct} = true)`));
   const [prof] = await db().select({ step: profileTable.onboardingStep, done: profileTable.onboardingCompletedAt }).from(profileTable).where(eq(profileTable.userId, userId)).limit(1);
-  const growth = growthPoints({ sessionsCompleted: sessions.length, prs: prs?.n ?? 0, weighIns: measurements.filter((m) => m.weightKg != null).length, photoSets, streakWeeks: weeklyStreak(sessions.map((s) => s.d)), setsLogged: sets?.n ?? 0, activitiesLogged: acts?.n ?? 0, restLearned: rest?.n ?? 0, intakeSteps: prof?.step ?? 0, intakeComplete: !!prof?.done });
+  const sideDates = (await sideQuestDates([userId]))[userId] ?? [];
+  const growth = growthPoints({ sideQuests: sideDates.length, sessionsCompleted: sessions.length, prs: prs?.n ?? 0, weighIns: measurements.filter((m) => m.weightKg != null).length, photoSets, streakWeeks: weeklyStreak([...sessions.map((s) => s.d), ...sideDates]), setsLogged: sets?.n ?? 0, activitiesLogged: acts?.n ?? 0, restLearned: rest?.n ?? 0, intakeSteps: prof?.step ?? 0, intakeComplete: !!prof?.done });
   const byDate = photos.reduce<Record<string, typeof photos>>((a, p) => { (a[p.takenOn] ??= []).push(p); return a; }, {});
   const dates = Object.keys(byDate).sort();
   const compare = dates.length >= 2 ? { before: byDate[dates[0]!]!.find((p) => p.pose === "front") ?? byDate[dates[0]!]![0]!, after: byDate[dates[dates.length - 1]!]!.find((p) => p.pose === "front") ?? byDate[dates[dates.length - 1]!]![0]! } : null;
@@ -122,13 +124,15 @@ export async function growthForUsers(ids: string[]): Promise<Record<string, { to
     db().select({ u: restActivity.userId, n: sql<number>`count(*)::int` }).from(restActivity).where(and(inArray(restActivity.userId, ids), sql`(${restActivity.kind} <> 'quiz' or ${restActivity.correct} = true)`)).groupBy(restActivity.userId),
     db().select({ u: profileTable.userId, step: profileTable.onboardingStep, done: profileTable.onboardingCompletedAt }).from(profileTable).where(inArray(profileTable.userId, ids)),
   ]);
+  const sideByUser = await sideQuestDates(ids);
   const n = (rows: { u: string; n: number }[], u: string) => rows.find((r) => r.u === u)?.n ?? 0;
   const out: Record<string, { total: number; level: number; streakWeeks: number }> = {};
   for (const u of ids) {
     const mine = sess.filter((s) => s.u === u);
     const prof = profs.find((p) => p.u === u);
-    const g = growthPoints({ sessionsCompleted: mine.length, prs: n(prs, u), weighIns: n(weigh, u), photoSets: 0, streakWeeks: weeklyStreak(mine.map((s) => s.d)), setsLogged: n(sets, u), activitiesLogged: n(acts, u), restLearned: n(rest, u), intakeSteps: prof?.step ?? 0, intakeComplete: !!prof?.done });
-    out[u] = { total: g.total, level: g.level, streakWeeks: weeklyStreak(mine.map((s) => s.d)) };
+    const side = sideByUser[u] ?? [];
+    const g = growthPoints({ sideQuests: side.length, sessionsCompleted: mine.length, prs: n(prs, u), weighIns: n(weigh, u), photoSets: 0, streakWeeks: weeklyStreak([...mine.map((s) => s.d), ...side]), setsLogged: n(sets, u), activitiesLogged: n(acts, u), restLearned: n(rest, u), intakeSteps: prof?.step ?? 0, intakeComplete: !!prof?.done });
+    out[u] = { total: g.total, level: g.level, streakWeeks: weeklyStreak([...mine.map((s) => s.d), ...side]) };
   }
   return out;
 }

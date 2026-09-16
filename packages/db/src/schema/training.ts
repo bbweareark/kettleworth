@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, jsonb, real, uuid, integer, boolean, index, date } from "drizzle-orm/pg-core";
+import { boolean, date, index, integer, jsonb, pgTable, real, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { exercise } from "./library";
 import type { PlannedSet, LoggedSet, ProgrammePlan, Adaptation, Muscle } from "@kettleworth/types";
@@ -127,3 +127,17 @@ export const restItem = pgTable("rest_item", {
   generatedBy: text("generated_by").notNull().default("ai"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [index("rest_item_kind_idx").on(t.kind, t.createdAt)]);
+
+/** Quest log: the day's main quest (the assigned session) and any side quest offered when it was missed. */
+export const questLog = pgTable("quest_log", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  onDate: date("on_date").notNull(),
+  kind: text("kind").$type<"main" | "side">().notNull(),
+  status: text("status").$type<"asked" | "completed" | "declined">().notNull().default("asked"),
+  sessionId: uuid("session_id").references(() => trainingSession.id, { onDelete: "set null" }),
+  payload: jsonb("payload").$type<Record<string, unknown>>(),
+  points: integer("points").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  completedAt: timestamp("completed_at"),
+}, (t) => [index("quest_log_user_idx").on(t.userId, t.onDate)]);
