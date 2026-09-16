@@ -59,6 +59,8 @@ export async function generateAndSaveProgramme(userId: string, opts: { startDate
       }
     }
     await tx.insert(auditLog).values({ userId, action: prev ? "programme.extended" : "programme.generated", target: p!.id, meta: { seed, from: prev?.id ?? null, generatedBy: aiAvailable() ? "rules+ai" : "rules" } });
+    // Built with week-to-week variety already, so the one-time catch-up pass must leave it alone.
+    await tx.insert(auditLog).values({ userId, action: "programme.diversified", target: p!.id, meta: { swapped: 0, deduped: 0, builtIn: true } });
     return p!;
   });
 }

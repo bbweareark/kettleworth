@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { ArrowRight, Flame, Play, Sparkles } from "lucide-react";
 import { Badge, Button, Card, CardContent, CoachPulse, CountUp, Ring, Sparkline, type PulseItem } from "@kettleworth/ui";
 import { requireUser } from "@/lib/session";
-import { getProfile, getActiveProgramme, todayState, sessionSummary, upcomingSessions, getReadiness, getProgress, ensureNutritionPlan, connectedProviders, activitiesForDay, getSessionDetail, hasUnreadLetter, listPhotos, runWeeklyAdaptation, currentWeekState, questBoard } from "@kettleworth/api";
+import { getProfile, getActiveProgramme, todayState, sessionSummary, upcomingSessions, getReadiness, getProgress, ensureNutritionPlan, connectedProviders, activitiesForDay, getSessionDetail, hasUnreadLetter, listPhotos, runWeeklyAdaptation, currentWeekState, questBoard, diversifyProgramme } from "@kettleworth/api";
 import { kgToLb, ritualNudges, loadModel } from "@kettleworth/core";
 import { ActivityLog } from "@/components/today/activity-log";
 import { HeroSession } from "@/components/app/hero-session";
@@ -23,6 +23,8 @@ export default async function Today() {
   await runWeeklyAdaptation(user.id).catch((e) => console.warn("weekly adaptation", e));
   const weekState = await currentWeekState(user.id);
   const todayIso = await localTodayIso();
+  // One-time pass that brings programmes built before week-to-week variety in line with it. Skips once done.
+  await diversifyProgramme(user.id, todayIso).catch((e) => console.warn("diversify", e));
   const quests = await questBoard(user.id, todayIso).catch(() => null);
   const [prog, state, upcoming, readiness, progress, nutrition, providers, activities] = await Promise.all([getActiveProgramme(user.id), todayState(user.id, todayIso), upcomingSessions(user.id, 7), getReadiness(user.id), getProgress(user.id), ensureNutritionPlan(user.id), connectedProviders(user.id), activitiesForDay(user.id)]);
   // Only a session you can actually do now gets the big start or continue card. A finished one is celebrated; tomorrow's is previewed.
