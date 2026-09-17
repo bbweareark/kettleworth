@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { db, trainingSession, exerciseInstance, exercise, exerciseVideo, personalRecord, estimatedMax, substitution, week, restActivity, auditLog } from "@kettleworth/db";
-import { restFor } from "@kettleworth/core";
+import { restFor, planDay, isUntouched, type DayPlan } from "@kettleworth/core";
 import { LoggedSet, type PlannedSet } from "@kettleworth/types";
 import { decideProgression, estimate1RM, substitutesFor, detectPR, loadMultiplier, type SetRecord, type PRKind } from "@kettleworth/core";
 import { getProfile } from "./profile";
@@ -17,35 +17,36 @@ export async function getTodaySession(userId: string) {
 }
 
 type SessionRow = typeof trainingSession.$inferSelect;
-export type TodayState =
-  | { kind: "in_progress"; session: SessionRow; stale: boolean }
-  | { kind: "today"; session: SessionRow }
-  | { kind: "overdue"; session: SessionRow }
-  | { kind: "done"; session: SessionRow; next: SessionRow | null }
-  | { kind: "rest"; next: SessionRow }
-  | { kind: "none" };
+export type TodaySession = SessionRow & { startedOn: string | null; completedOn: string | null; loggedSets: number };
+export type TodayState = DayPlan<TodaySession>;
+
+/** A timestamp as a calendar date in the lifter's time zone (the server runs in UTC). */
+function localDate(d: Date | null, tz: string | undefined): string | null {
+  if (!d) return null;
+  try { if (tz) return new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(d); } catch {}
+  return d.toISOString().slice(0, 10);
+}
 
 /**
- * What Today should lead with, judged on the lifter's own calendar date. A finished session is celebrated as done and
- * the next one is only previewed; tomorrow's workout is never offered as something to continue. Sessions missed more
- * than a day ago stop crowding the screen (the quest board handles yesterday).
+ * What Today leads with, judged on the lifter's own calendar date by the shared day plan. Sessions that were opened and
+ * left without a logged set go back to planned, so nothing in the app calls them paused.
  */
-export async function todayState(userId: string, todayIso: string): Promise<TodayState> {
-  const yesterday = new Date(new Date(`${todayIso}T12:00:00Z`).getTime() - 86400000).toISOString().slice(0, 10);
-  const [inProgress] = await db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "in_progress"))).orderBy(desc(trainingSession.startedAt)).limit(1);
-  const todays = await db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), eq(trainingSession.scheduledOn, todayIso)));
-  const [next] = await db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "planned"), sql`${trainingSession.scheduledOn} > ${todayIso}`)).orderBy(asc(trainingSession.scheduledOn)).limit(1);
-  const startedToday = (s: SessionRow) => !!s.startedAt && s.startedAt.getTime() > Date.now() - 16 * 3600000;
-  if (inProgress && startedToday(inProgress)) return { kind: "in_progress", session: inProgress, stale: false };
-  const plannedToday = todays.find((s) => s.status === "planned");
-  if (plannedToday) return { kind: "today", session: plannedToday };
-  const doneToday = todays.filter((s) => s.status === "completed").sort((a, b) => (b.completedAt?.getTime() ?? 0) - (a.completedAt?.getTime() ?? 0))[0];
-  if (doneToday) return { kind: "done", session: doneToday, next: next ?? null };
-  if (inProgress) return { kind: "in_progress", session: inProgress, stale: true };
-  const [overdue] = await db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "planned"), eq(trainingSession.scheduledOn, yesterday))).limit(1);
-  if (overdue) return { kind: "overdue", session: overdue };
-  if (next) return { kind: "rest", next };
-  return { kind: "none" };
+export async function todayState(userId: string, todayIso: string, tz?: string): Promise<TodayState> {
+  const shift = (days: number) => new Date(new Date(`${todayIso}T12:00:00Z`).getTime() + days * 86400000).toISOString().slice(0, 10);
+  const rows = await db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), sql`(${trainingSession.status} = 'in_progress' or (${trainingSession.scheduledOn} between ${shift(-7)} and ${shift(21)}))`));
+  const ids = rows.filter((r) => r.status === "in_progress").map((r) => r.id);
+  const counts = new Map<string, number>();
+  if (ids.length) {
+    const inst = await db().select({ sessionId: exerciseInstance.sessionId, logged: exerciseInstance.loggedSets }).from(exerciseInstance).where(inArray(exerciseInstance.sessionId, ids));
+    for (const i of inst) counts.set(i.sessionId, (counts.get(i.sessionId) ?? 0) + i.logged.filter((l) => l.completed).length);
+  }
+  const sessions = rows.map((r) => Object.assign(r, { startedOn: localDate(r.startedAt, tz), completedOn: localDate(r.completedAt, tz), loggedSets: counts.get(r.id) ?? 0 }));
+  const untouched = sessions.filter((r) => isUntouched(r, todayIso));
+  if (untouched.length) {
+    await db().update(trainingSession).set({ status: "planned", startedAt: null }).where(and(eq(trainingSession.userId, userId), inArray(trainingSession.id, untouched.map((u) => u.id))));
+    for (const u of untouched) { u.status = "planned"; u.startedAt = null; u.startedOn = null; }
+  }
+  return planDay(sessions, todayIso);
 }
 
 export async function getSessionDetail(userId: string, sessionId: string) {
@@ -231,10 +232,9 @@ export async function skipSession(userId: string, sessionId: string) {
 export async function recentSessions(userId: string, limit = 10) {
   return db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "completed"))).orderBy(desc(trainingSession.completedAt)).limit(limit);
 }
-export async function upcomingSessions(userId: string, days = 14) {
-  const today = new Date().toISOString().slice(0, 10);
-  const until = new Date(Date.now() + days * 86400000).toISOString().slice(0, 10);
-  return db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "planned"), lte(trainingSession.scheduledOn, until))).orderBy(asc(trainingSession.scheduledOn));
+export async function upcomingSessions(userId: string, days = 14, todayIso = new Date().toISOString().slice(0, 10)) {
+  const until = new Date(new Date(`${todayIso}T12:00:00Z`).getTime() + days * 86400000).toISOString().slice(0, 10);
+  return db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "planned"), sql`${trainingSession.scheduledOn} > ${todayIso}`, lte(trainingSession.scheduledOn, until))).orderBy(asc(trainingSession.scheduledOn));
 }
 export { toSummary };
 
@@ -416,4 +416,15 @@ export async function adjustRemainingLoads(userId: string, instanceId: string, a
   await db().update(exerciseInstance).set({ plannedSets: planned }).where(eq(exerciseInstance.id, instanceId));
   await db().insert(auditLog).values({ userId, action: "session.autoregulate", target: instanceId, meta: { afterSetNumber, weightKg, reason } }).catch(() => {});
   return { changed };
+}
+
+/** The sessions between two dates with their exercises in order, for a plain "this week" list. */
+export async function sessionsWithExercises(userId: string, fromIso: string, toIso: string) {
+  const rows = await db().select().from(trainingSession).where(and(eq(trainingSession.userId, userId), gte(trainingSession.scheduledOn, fromIso), lte(trainingSession.scheduledOn, toIso))).orderBy(asc(trainingSession.scheduledOn));
+  if (!rows.length) return [];
+  const inst = await db().select({ sessionId: exerciseInstance.sessionId, order: exerciseInstance.order, name: exercise.name, planned: exerciseInstance.plannedSets }).from(exerciseInstance).innerJoin(exercise, eq(exercise.id, exerciseInstance.exerciseId)).where(inArray(exerciseInstance.sessionId, rows.map((r) => r.id))).orderBy(asc(exerciseInstance.order));
+  return rows.map((r) => ({
+    id: r.id, name: r.name, scheduledOn: r.scheduledOn, status: r.status, estimatedMinutes: r.estimatedMinutes,
+    exercises: inst.filter((i) => i.sessionId === r.id).map((i) => { const w = i.planned.filter((p) => p.type === "working"); const f = w[0]; return { name: i.name, sets: w.length, reps: f?.repRange ? `${f.repRange[0]}-${f.repRange[1]}` : f?.reps != null ? String(f.reps) : f?.durationSeconds ? `${f.durationSeconds}s` : "" }; }),
+  }));
 }

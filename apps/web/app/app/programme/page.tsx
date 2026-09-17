@@ -2,7 +2,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { CheckCircle2, Circle, Clock, Sparkles, XCircle } from "lucide-react";
 import { requireUser } from "@/lib/session";
-import { getProfile, getProgrammeOverview } from "@kettleworth/api";
+import { getProfile, getProgrammeOverview, todayState, sessionsWithExercises } from "@kettleworth/api";
+import { localTodayIso, localTimeZone } from "@/lib/local-date";
+import { ThisWeek } from "@/components/programme/this-week";
 import { Badge, Button, Card, CardContent, Progress, cn } from "@kettleworth/ui";
 import { VolumeChart } from "@/components/programme/volume-chart";
 import { ProgrammeCalendar } from "@/components/programme/calendar";
@@ -14,7 +16,13 @@ export default async function Programme() {
   const user = await requireUser();
   const rec = await getProfile(user.id);
   if (!rec?.onboardingCompletedAt) redirect("/app/onboarding");
-  const o = await getProgrammeOverview(user.id);
+  const [todayIso, tz] = await Promise.all([localTodayIso(), localTimeZone()]);
+  // Settle today's plan first so sessions opened and abandoned without a set no longer read as in progress.
+  const dayPlan = await todayState(user.id, todayIso, tz);
+  const shift = (n: number) => new Date(new Date(`${todayIso}T12:00:00Z`).getTime() + n * 86400000).toISOString().slice(0, 10);
+  const dow = (new Date(`${todayIso}T12:00:00Z`).getUTCDay() + 6) % 7;
+  const [o, weekSessions] = await Promise.all([getProgrammeOverview(user.id), sessionsWithExercises(user.id, shift(-dow), shift(6 - dow))]);
+  const openMissedId = dayPlan.kind === "catch_up" ? dayPlan.session.id : dayPlan.kind === "rest" ? dayPlan.missed?.id ?? null : null;
   if (!o) redirect("/app/programme/new");
   const { programme: p, weeks, sessions, exercises, currentWeek, mesocycles } = o;
   const pct = o.totalSessions ? (o.completedSessions / o.totalSessions) * 100 : 0;
@@ -35,7 +43,9 @@ export default async function Programme() {
         <div className="p-4"><div className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">Block</div><div className="font-display mt-1 truncate text-2xl font-semibold tracking-tighter">{mesocycles.find((m) => m.id === currentWeek?.mesocycleId)?.name ?? mesocycles[0]?.name}</div></div>
       </div>
       <Progress value={pct} className="h-1" />
+      <ThisWeek sessions={weekSessions} todayIso={todayIso} openMissedId={openMissedId} />
       <section className="rounded-3xl bg-surface/40 p-5 ring-1 ring-white/[0.04]">
+        <h2 className="mb-3 font-display text-base font-semibold">Whole block</h2>
         <ProgrammeCalendar weeks={weeks} sessions={sessions} mesocycles={mesocycles} currentWeekId={currentWeek?.id ?? null} />
       </section>
       <div className="grid gap-4 lg:grid-cols-2">

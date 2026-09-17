@@ -4,7 +4,7 @@ import { ArrowRight, Flame, Play, Sparkles } from "lucide-react";
 import { Badge, Button, Card, CardContent, CoachPulse, CountUp, Ring, Sparkline, type PulseItem } from "@kettleworth/ui";
 import { requireUser } from "@/lib/session";
 import { getProfile, getActiveProgramme, todayState, sessionSummary, upcomingSessions, getReadiness, getProgress, ensureNutritionPlan, connectedProviders, activitiesForDay, getSessionDetail, hasUnreadLetter, listPhotos, runWeeklyAdaptation, currentWeekState, questBoard, diversifyProgramme } from "@kettleworth/api";
-import { kgToLb, ritualNudges, loadModel } from "@kettleworth/core";
+import { kgToLb, ritualNudges, loadModel, pastDayLabel } from "@kettleworth/core";
 import { ActivityLog } from "@/components/today/activity-log";
 import { HeroSession } from "@/components/app/hero-session";
 import { sessionArt } from "@/lib/art";
@@ -12,7 +12,7 @@ import { OfflineWarmup } from "@/components/app/offline-warmup";
 import { WeeklyCheckIn } from "@/components/today/check-in";
 import { QuestBoard } from "@/components/today/quest-board";
 import { DoneHero, RestHero, whenLabel } from "@/components/app/day-hero";
-import { localTodayIso } from "@/lib/local-date";
+import { localTodayIso, localTimeZone } from "@/lib/local-date";
 
 export const dynamic = "force-dynamic";
 
@@ -22,18 +22,18 @@ export default async function Today() {
   if (!rec?.onboardingCompletedAt) redirect("/app/onboarding");
   await runWeeklyAdaptation(user.id).catch((e) => console.warn("weekly adaptation", e));
   const weekState = await currentWeekState(user.id);
-  const todayIso = await localTodayIso();
+  const [todayIso, tz] = await Promise.all([localTodayIso(), localTimeZone()]);
   // One-time pass that brings programmes built before week-to-week variety in line with it. Skips once done.
   await diversifyProgramme(user.id, todayIso).catch((e) => console.warn("diversify", e));
-  const quests = await questBoard(user.id, todayIso).catch(() => null);
-  const [prog, state, upcoming, readiness, progress, nutrition, providers, activities] = await Promise.all([getActiveProgramme(user.id), todayState(user.id, todayIso), upcomingSessions(user.id, 7), getReadiness(user.id), getProgress(user.id), ensureNutritionPlan(user.id), connectedProviders(user.id), activitiesForDay(user.id)]);
+  const quests = await questBoard(user.id, todayIso, tz).catch(() => null);
+  const [prog, state, upcoming, readiness, progress, nutrition, providers, activities] = await Promise.all([getActiveProgramme(user.id), todayState(user.id, todayIso, tz), upcomingSessions(user.id, 7, todayIso), getReadiness(user.id), getProgress(user.id), ensureNutritionPlan(user.id), connectedProviders(user.id), activitiesForDay(user.id)]);
   // Only a session you can actually do now gets the big start or continue card. A finished one is celebrated; tomorrow's is previewed.
-  const today = state.kind === "in_progress" || state.kind === "today" || state.kind === "overdue" ? state.session : null;
+  const today = state.kind === "in_progress" || state.kind === "today" || state.kind === "catch_up" ? state.session : null;
   const detail = today ? await getSessionDetail(user.id, today.id) : null;
   const doneSummary = state.kind === "done" ? await sessionSummary(user.id, state.session.id) : null;
   const [unread, photos] = await Promise.all([hasUnreadLetter(user.id), listPhotos(user.id)]);
   const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
-  const nudges = ritualNudges(rec.profile, { now: new Date(), weighedInToday: progress.measurements.some((m) => m.measuredOn === todayIso), photoThisWeek: photos.some((p) => p.takenOn >= weekAgo), sessionToday: state.kind === "today" || (state.kind === "in_progress" && !state.stale), sessionDone: state.kind === "done", letterUnread: unread });
+  const nudges = ritualNudges(rec.profile, { now: new Date(), weighedInToday: progress.measurements.some((m) => m.measuredOn === todayIso), photoThisWeek: photos.some((p) => p.takenOn >= weekAgo), sessionToday: state.kind === "today" || (state.kind === "in_progress" && state.session.scheduledOn === todayIso), sessionDone: state.kind === "done", letterUnread: unread });
   const units = rec.profile.units;
   const w = (kg: number) => Math.round(units === "metric" ? kg : kgToLb(kg));
   const u = units === "metric" ? "kg" : "lb";
@@ -63,7 +63,6 @@ export default async function Today() {
       <OfflineWarmup sessionHref={today ? `/app/session/${today.id}` : null} images={[...(today ? [sessionArt(today.name, rec.profile.sex)] : []), ...(detail?.instances ?? []).map((i) => i.exercise.imageUrls[0]).filter((u): u is string => !!u)]} />
       <CoachPulse avatar="/art/seal.png" items={pulse} />
       {weekState && weekState.hasPrevious && !weekState.week.checkin && !weekState.week.isDeload ? <WeeklyCheckIn weekNumber={weekState.week.weekNumber} applied={weekState.week.adaptations} /> : null}
-      {quests ? <QuestBoard board={quests} todayIso={todayIso} /> : null}
       {nudges.length ? <ul className="flex flex-wrap gap-2">{nudges.map((n) => (<li key={n.id} className={`flex items-center gap-3 rounded-xl px-3.5 py-2 text-sm ring-1 ring-white/[0.05] ${n.tone === "amber" ? "bg-amber-soft" : n.tone === "signal" ? "bg-signal-soft" : n.tone === "ember" ? "bg-ember-soft" : "bg-surface/60"}`}><span>{n.text}</span>{n.action ? <Link href={n.action.href} className="font-medium text-ember hover:underline">{n.action.label}</Link> : null}</li>))}</ul> : null}
 
       {!prog ? (
@@ -73,21 +72,22 @@ export default async function Today() {
         </CardContent></Card>
       ) : today ? (
         <HeroSession
-          session={{ name: today.name, status: today.status, minutes: today.estimatedMinutes, focus: today.focus, label: state.kind === "in_progress" ? (state.stale ? `Unfinished from ${whenLabel(today.scheduledOn, todayIso) === "tomorrow" ? "yesterday" : new Date(`${today.scheduledOn}T12:00:00Z`).toLocaleDateString("en-GB", { weekday: "long", timeZone: "UTC" })}` : "In progress") : state.kind === "overdue" ? "From yesterday" : "Today" }}
+          session={{ name: today.name, status: today.status, minutes: today.estimatedMinutes, focus: today.focus, label: state.kind === "in_progress" ? (today.scheduledOn < todayIso ? `Started ${pastDayLabel(today.scheduledOn, todayIso)}` : "In progress") : state.kind === "catch_up" ? `Missed ${pastDayLabel(today.scheduledOn, todayIso)} · do it today` : "Today" }}
           readiness={{ score: readiness.score, band: readiness.band, line: readiness.reasons[readiness.reasons.length - 1] ?? "" }}
           exercises={(detail?.instances ?? []).map((i) => { const w = i.plannedSets.filter((s) => s.type === "working"); const f = w[0]; const done = i.loggedSets.filter((l) => l.completed && w.some((x) => x.setNumber === l.setNumber)).length; return { id: i.id, name: i.exercise.name, role: i.role, sets: w.length, reps: f?.repRange ? `${f.repRange[0]}-${f.repRange[1]}` : String(f?.reps ?? ""), image: i.exercise.imageUrls[0], care: i.cautions.some((c) => c.level !== "info"), done, complete: w.length > 0 && done >= w.length }; })}
           live={today.status === "in_progress" && detail ? (() => { const inst = detail.instances; const per = inst.map((i) => { const w = i.plannedSets.filter((s) => s.type === "working"); return { total: w.length, done: i.loggedSets.filter((l) => l.completed && w.some((x) => x.setNumber === l.setNumber)).length, logs: i.loggedSets.filter((l) => l.completed).map((l) => { const lm = loadModel({ name: i.exercise.name, equipment: i.exercise.equipment as never, unilateral: !!i.exercise.unilateral }); return { ...l, each: lm.kind === "handheld" && lm.count === 2 }; }) }; }); const setsTotal = per.reduce((a, x) => a + x.total, 0); const setsDone = per.reduce((a, x) => a + x.done, 0); const currentIndex = Math.max(0, per.findIndex((x) => x.done < x.total)); const last = per.flatMap((x) => x.logs).sort((a, b) => b.loggedAt.localeCompare(a.loggedAt))[0]; return { setsDone, setsTotal, currentIndex: currentIndex === -1 ? inst.length - 1 : currentIndex, elapsedMin: today.startedAt ? Math.max(0, Math.round((Date.now() - new Date(today.startedAt).getTime()) / 60000)) : 0, lastSet: last ? `${last.weightKg != null ? `${units === "metric" ? last.weightKg : Math.round(last.weightKg * 2.2046)} ${u}${last.each ? " each" : ""} × ` : ""}${last.reps ?? "?"}${last.rpe ? ` @ RPE ${last.rpe}` : ""}` : null }; })() : null}
           week={{ done: progress.recentSessions.filter((s) => s.scheduledOn >= new Date(Date.now() - ((new Date().getDay() + 6) % 7) * 86400000).toISOString().slice(0, 10)).length, planned: prog?.daysPerWeek ?? 0 }}
-          cta={state.kind === "in_progress" ? (state.stale ? "Pick it up" : "Continue") : "Start session"} href={`/app/session/${today.id}`} art={sessionArt(today.name, rec.profile.sex)}
+          cta={state.kind === "in_progress" ? "Continue" : state.kind === "catch_up" ? "Train it today" : "Start session"} href={`/app/session/${today.id}`} art={sessionArt(today.name, rec.profile.sex)}
         />
       ) : state.kind === "done" ? (
         <DoneHero name={state.session.name} art={sessionArt(state.session.name, rec.profile.sex)} summary={doneSummary} next={state.next} todayIso={todayIso} unit={units === "metric" ? "kg" : "lb"} />
       ) : state.kind === "rest" ? (
-        <RestHero art={sessionArt(state.next.name, rec.profile.sex)} next={state.next} todayIso={todayIso} />
+        <RestHero art={sessionArt((state.next ?? state.missed)!.name, rec.profile.sex)} next={state.next} missed={state.missed} todayIso={todayIso} />
       ) : (
         <Card><CardContent className="flex items-center justify-between gap-4"><div><h2 className="font-display text-xl font-semibold">Block complete.</h2><p className="text-sm text-fg-muted">Time to build the next one.</p></div><Button asChild><Link href="/app/programme/new?continue=1">Build next block <ArrowRight /></Link></Button></CardContent></Card>
       )}
 
+      {quests ? <QuestBoard board={quests} todayIso={todayIso} /> : null}
       <div className="grid grid-cols-2 divide-x divide-border rounded-2xl bg-surface/50 ring-1 ring-white/[0.04] lg:grid-cols-4">
         <Tile label="Sessions" value={progress.completedSessions} hint={prog ? `of ${prog.totalWeeks * prog.daysPerWeek}` : undefined} spark={progress.weeklyTonnage.map((x) => x.kg)} />
         <Tile label={`Volume · ${u}`} value={w(progress.tonnageThisWeek)} hint={progress.tonnageLastWeek && progress.tonnageThisWeek ? `${progress.tonnageThisWeek >= progress.tonnageLastWeek ? "+" : ""}${Math.round(((progress.tonnageThisWeek - progress.tonnageLastWeek) / progress.tonnageLastWeek) * 100)}% wk/wk` : progress.tonnageLastWeek ? `${w(progress.tonnageLastWeek)} last week` : "this week"} spark={progress.weeklyTonnage.map((x) => x.kg)} tone="sky" />
@@ -98,7 +98,7 @@ export default async function Today() {
       <div className="grid gap-3 lg:grid-cols-3">
         <Card className="lg:col-span-2"><CardContent className="p-4">
           <div className="mb-2 flex items-center justify-between"><h3 className="font-display text-base font-semibold">Week ahead</h3><Link href="/app/programme" className="text-xs text-ember hover:underline">Programme</Link></div>
-          {upcoming.length ? (<ul className="grid gap-2 sm:grid-cols-2">{upcoming.slice(0, 4).map((s) => (<li key={s.id}><Link href={`/app/session/${s.id}`} className="flex items-center justify-between rounded-lg border border-border px-3 py-2.5 text-sm transition-colors hover:border-border-strong hover:bg-surface-2"><span><span className="block font-medium">{s.name}</span><span className="text-xs text-fg-subtle">{new Date(s.scheduledOn).toLocaleDateString("en-GB", { weekday: "long" })} · {s.estimatedMinutes} min</span></span><ArrowRight className="size-4 text-fg-subtle" /></Link></li>))}</ul>) : <p className="text-sm text-fg-muted">Generate a programme to fill your week.</p>}
+          {upcoming.length ? (<ul className="grid gap-2 sm:grid-cols-2">{upcoming.slice(0, 4).map((s) => (<li key={s.id}><Link href={`/app/session/${s.id}`} className="flex items-center justify-between rounded-lg border border-border px-3 py-2.5 text-sm transition-colors hover:border-border-strong hover:bg-surface-2"><span><span className="block font-medium">{s.name}</span><span className="text-xs text-fg-subtle">{whenLabel(s.scheduledOn, todayIso).replace(/^tomorrow$/, "Tomorrow")} · {s.estimatedMinutes} min</span></span><ArrowRight className="size-4 text-fg-subtle" /></Link></li>))}</ul>) : <p className="text-sm text-fg-muted">Generate a programme to fill your week.</p>}
         </CardContent></Card>
         <div className="space-y-3">
           <ActivityLog initial={activities} />

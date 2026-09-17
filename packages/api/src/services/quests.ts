@@ -3,6 +3,7 @@ import { db, questLog, trainingSession, exerciseInstance, exercise, auditLog } f
 import { buildSideQuest, weeklyStreak, MAIN_QUEST_POINTS, SIDE_QUEST_POINTS, type SideQuest } from "@kettleworth/core";
 import { getProfile } from "./profile";
 import { libraryForEngine } from "./library";
+import { todayState } from "./session";
 
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 /** Monday and Sunday of the week a date falls in, so "this week" means the same thing everywhere in the app. */
@@ -26,11 +27,11 @@ export type QuestBoard = {
 };
 
 /** The day's quest board: the assigned session, whether to ask about it, and any side quest already offered. */
-export async function questBoard(userId: string, todayIso = iso(new Date())): Promise<QuestBoard> {
+export async function questBoard(userId: string, todayIso = iso(new Date()), tz?: string): Promise<QuestBoard> {
   const weekAgo = iso(new Date(Date.now() - 6 * 86400000));
-  const [open] = await db().select().from(trainingSession)
-    .where(and(eq(trainingSession.userId, userId), inArray(trainingSession.status, ["planned", "in_progress"]), sql`${trainingSession.scheduledOn} <= ${todayIso}`))
-    .orderBy(desc(trainingSession.scheduledOn)).limit(1);
+  // The main quest is whatever the day plan says today is about, so the board and the hero never disagree.
+  const plan = await todayState(userId, todayIso, tz);
+  const open = plan.kind === "in_progress" || plan.kind === "today" || plan.kind === "catch_up" || plan.kind === "done" ? plan.session : null;
   const logs = await db().select().from(questLog).where(and(eq(questLog.userId, userId), gte(questLog.onDate, weekAgo)));
   const todayLogs = logs.filter((l) => l.onDate === todayIso);
   const sideRow = todayLogs.find((l) => l.kind === "side");
@@ -40,7 +41,7 @@ export async function questBoard(userId: string, todayIso = iso(new Date())): Pr
   const weekSessions = await db().select({ d: trainingSession.scheduledOn, s: trainingSession.status }).from(trainingSession).where(and(eq(trainingSession.userId, userId), gte(trainingSession.scheduledOn, wk.from), lte(trainingSession.scheduledOn, wk.to)));
   return {
     main: open ? { sessionId: open.id, name: open.name, scheduledOn: open.scheduledOn, status: open.status, points: MAIN_QUEST_POINTS, overdue: open.scheduledOn < todayIso } : null,
-    canAsk: !!open,
+    canAsk: !!open && open.status !== "completed",
     asked: todayLogs.some((l) => l.kind === "main"),
     side: sideRow ? { id: sideRow.id, quest: sideRow.payload as unknown as SideQuest, status: sideRow.status } : null,
     streakWeeks: weeklyStreak([...done.map((d) => d.d), ...sideDates]),
@@ -54,8 +55,8 @@ export async function questBoard(userId: string, todayIso = iso(new Date())): Pr
  * Answer the evening question. "done" closes the session honestly, "swap" offers a ten minute side quest built from the
  * same muscles, and "not_yet" simply leaves the day open. Every answer is recorded so we never ask twice.
  */
-export async function answerSessionQuest(userId: string, answer: "done" | "not_yet" | "swap", todayIso = iso(new Date())): Promise<{ answer: string; side?: { id: string; quest: SideQuest } }> {
-  const board = await questBoard(userId, todayIso);
+export async function answerSessionQuest(userId: string, answer: "done" | "not_yet" | "swap", todayIso = iso(new Date()), tz?: string): Promise<{ answer: string; side?: { id: string; quest: SideQuest } }> {
+  const board = await questBoard(userId, todayIso, tz);
   if (!board.main) throw new Error("No open session to answer for");
   const sessionId = board.main.sessionId;
   await db().insert(questLog).values({ userId, onDate: todayIso, kind: "main", status: answer === "done" ? "completed" : "declined", sessionId, points: answer === "done" ? MAIN_QUEST_POINTS : 0, completedAt: answer === "done" ? new Date() : null });

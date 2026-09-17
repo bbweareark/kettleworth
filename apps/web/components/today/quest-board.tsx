@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Swords, Shield, Check, Timer, Flame, ChevronRight, Home } from "lucide-react";
-import { shouldAskAboutSession, type SideQuest } from "@kettleworth/core";
+import { shouldAskAboutSession, pastDayLabel, type SideQuest } from "@kettleworth/core";
 import { Button, cn, toast } from "@kettleworth/ui";
 
 type Board = {
@@ -70,7 +70,7 @@ export function QuestBoard({ board: initial, todayIso }: { board: Board; todayIs
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-2xs uppercase tracking-[0.16em] text-ember">Main quest</span>
-                {board.main.overdue && !mainDone ? <span className="rounded-full bg-amber-soft px-2 py-0.5 text-2xs uppercase tracking-[0.12em] text-amber">Yesterday's</span> : null}
+                {board.main.overdue && !mainDone ? <span className="rounded-full bg-amber-soft px-2 py-0.5 text-2xs uppercase tracking-[0.12em] text-amber">From {pastDayLabel(board.main.scheduledOn, todayIso)}</span> : null}
                 <span className="ml-auto font-display text-sm font-semibold tabular text-fg">+{board.main.points}</span>
               </div>
               <h3 className="mt-0.5 truncate font-display text-xl font-semibold tracking-tighter">{board.main.name}</h3>
@@ -82,7 +82,7 @@ export function QuestBoard({ board: initial, todayIso }: { board: Board; todayIs
             {ask && !mainDone ? (
               <motion.div initial={reduce ? false : { opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
                 <div className="mt-4 border-t border-white/10 pt-4">
-                  <p className="font-display text-base font-semibold tracking-tight">Did you train today?</p>
+                  <p className="font-display text-base font-semibold tracking-tight">{board.main.overdue ? `Did you do ${board.main.name} ${pastDayLabel(board.main.scheduledOn, todayIso)}?` : "Did you train today?"}</p>
                   <p className="text-sm text-fg-muted">Answer honestly. There is a way to keep the week alive either way.</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <Button size="sm" loading={busy === "done"} onClick={() => answer("done")}><Check className="size-4" />Yes, it's done</Button>

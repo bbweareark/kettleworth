@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Check, ChevronRight, Moon, Trophy } from "lucide-react";
+import { pastDayLabel } from "@kettleworth/core";
+import { MissedOffer } from "./missed-offer";
 
 type Next = { id: string; name: string; scheduledOn: string; estimatedMinutes: number } | null;
 const WEEKDAY = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -52,19 +54,20 @@ export function DoneHero({ name, art, summary, next, todayIso, unit }: { name: s
   );
 }
 
-/** Nothing scheduled today: rest is part of the plan, and the next session is one tap away if the day allows. */
-export function RestHero({ art, next, todayIso }: { art: string; next: NonNullable<Next>; todayIso: string }) {
+/** Nothing scheduled today: rest is part of the plan. A session missed earlier in the week is offered, never forced. */
+export function RestHero({ art, next, missed, todayIso }: { art: string; next: Next; missed?: { id: string; name: string; scheduledOn: string } | null; todayIso: string }) {
   return (
     <section className="relative overflow-hidden rounded-3xl ring-1 ring-white/[0.06]" aria-label="Rest day">
       <img src={art} alt="" aria-hidden className="absolute inset-0 size-full object-cover opacity-50 grayscale-[45%]" />
       <div aria-hidden className="absolute inset-0 bg-[linear-gradient(100deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_82%,transparent)_55%,color-mix(in_oklch,var(--color-bg)_50%,transparent)_100%)]" />
-      <div className="relative space-y-6 p-6 md:p-8">
+      <div className="relative space-y-5 p-6 md:p-8">
         <div>
           <span className="inline-flex items-center gap-1.5 text-2xs uppercase tracking-[0.16em] text-sky"><Moon className="size-3.5" /> Rest day</span>
-          <h2 className="mt-2 font-display text-4xl font-semibold leading-[0.95] tracking-tightest md:text-5xl">Recover on purpose.</h2>
-          <p className="mt-2 max-w-md text-sm text-fg-muted">Muscle is built between sessions. A walk, good food and early sleep are today's training.</p>
+          <h2 className="mt-2 font-display text-4xl font-semibold leading-[0.95] tracking-tightest md:text-5xl">No session today.</h2>
+          <p className="mt-2 max-w-md text-sm text-fg-muted">{next ? `Next up is ${next.name}, ${whenLabel(next.scheduledOn, todayIso)}.` : "Your block is nearly done."} Muscle is built between sessions: walk, eat well, sleep early.</p>
         </div>
-        <UpNext next={next} todayIso={todayIso} train />
+        {missed ? <MissedOffer id={missed.id} name={missed.name} when={pastDayLabel(missed.scheduledOn, todayIso)} nextLabel={next ? `${next.name} ${whenLabel(next.scheduledOn, todayIso)}` : null} /> : null}
+        {next ? <UpNext next={next} todayIso={todayIso} train={!missed} /> : null}
       </div>
     </section>
   );

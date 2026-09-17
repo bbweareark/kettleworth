@@ -12,3 +12,10 @@ export async function localTodayIso(): Promise<string> {
   } catch {}
   return new Date().toISOString().slice(0, 10);
 }
+
+/** The lifter's IANA time zone from the kw-tz cookie, if the phone has reported one. */
+export async function localTimeZone(): Promise<string | undefined> {
+  const tz = (await cookies()).get("kw-tz")?.value;
+  if (!tz) return undefined;
+  try { const z = decodeURIComponent(tz); new Intl.DateTimeFormat("en-CA", { timeZone: z }); return z; } catch { return undefined; }
+}
