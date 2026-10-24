@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img"><title>Kettleworth</title>
+  <circle cx="128" cy="128" r="128" fill="#1C1815"/>
+  <circle cx="128" cy="128" r="118" fill="none" stroke="#C9A97A" stroke-opacity="0.28" stroke-width="2"/>
+  <g fill="#C9A97A" transform="translate(128 128) scale(0.56) translate(-128 -128)">
+    <path d="M121 48 A96 96 0 0 0 121 240 Z"/>
+    <path d="M135 16 A96 96 0 0 1 135 208 Z"/>
+  </g>
+</svg>
