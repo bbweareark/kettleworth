@@ -55,7 +55,7 @@ export function BodyCheck({ initial, ai, priorityMuscles, sex = "male" }: { init
   return (
     <Card><CardContent className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div><h2 className="font-display text-lg font-semibold">Body check</h2><p className="text-xs text-fg-subtle">Private photos, read by the coach for build, balance and where to focus. Never shared, deleted with your account.</p></div>
+        <div><h2 className="font-display text-lg">Body check</h2><p className="text-xs text-fg-subtle">Private photos, read by the coach for build, balance and where to focus. Never shared, deleted with your account.</p></div>
         <div className="flex items-center gap-2">
           <ChipGroup>{(["front", "side", "back"] as const).map((p) => <Chip key={p} className="h-8 px-3 text-xs capitalize" selected={pose === p} onClick={() => setPose(p)}>{p}</Chip>)}</ChipGroup>
           <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" multiple hidden onChange={(e) => upload(e.target.files)} />

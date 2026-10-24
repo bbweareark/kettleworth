@@ -8,7 +8,7 @@ export function CardHeader({ className, ...p }: React.HTMLAttributes<HTMLDivElem
   return <div className={cn("flex items-start justify-between gap-4 p-5 pb-0", className)} {...p} />;
 }
 export function CardTitle({ className, ...p }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h3 className={cn("font-display text-lg font-semibold tracking-tighter", className)} {...p} />;
+  return <h3 className={cn("font-display text-lg tracking-tighter", className)} {...p} />;
 }
 export function CardDescription({ className, ...p }: React.HTMLAttributes<HTMLParagraphElement>) {
   return <p className={cn("text-sm text-fg-muted", className)} {...p} />;

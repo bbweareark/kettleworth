@@ -32,7 +32,7 @@ export function CoachPulse({ items, interval = 5200, className, label = "Coach",
       </span>
       <div className="relative min-h-6 min-w-0 flex-1">
         <AnimatePresence mode="wait" initial={false}>
-          <motion.p key={i} initial={reduce ? false : { opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0, y: -5 }} transition={{ duration: 0.32, ease: [0.25, 1, 0.5, 1] }} className="line-clamp-2 font-display text-base leading-snug tracking-tight text-fg md:line-clamp-1 md:text-lg"><span className="sr-only">{label}: </span>{cur.text}</motion.p>
+          <motion.p key={i} initial={reduce ? false : { opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0, y: -5 }} transition={{ duration: 0.32, ease: [0.25, 1, 0.5, 1] }} className="line-clamp-2 text-base leading-snug text-fg md:line-clamp-1 md:text-lg"><span className="sr-only">{label}: </span>{cur.text}</motion.p>
         </AnimatePresence>
       </div>
     </div>

@@ -27,7 +27,7 @@ export function ActivityLog({ initial }: { initial: Act[] }) {
   const total = acts.reduce((a, x) => a + x.durationMin, 0);
   return (
     <Card><CardContent>
-      <div className="mb-3 flex items-center justify-between"><h3 className="font-display text-base font-semibold">Other activity today</h3><Button size="sm" variant="secondary" onClick={() => setOpen(true)}><Plus /> Log</Button></div>
+      <div className="mb-3 flex items-center justify-between"><h3 className="font-display text-base">Other activity today</h3><Button size="sm" variant="secondary" onClick={() => setOpen(true)}><Plus /> Log</Button></div>
       {acts.length ? (<ul className="space-y-2">{acts.map((a) => { const I = icon(a.payload?.type); return (<li key={a.id} className="flex items-center gap-3 text-sm"><I className="size-4 text-ember" /><span className="flex-1 capitalize">{(a.payload?.type ?? "workout").replace("_", " ")}{a.payload?.distanceKm ? ` · ${a.payload.distanceKm} km` : ""}</span><span className="tabular text-fg-muted">{Math.round(a.durationMin)} min{a.payload?.calories ? ` · ${a.payload.calories} kcal` : ""}</span><span className="text-2xs uppercase text-fg-subtle">{a.provider}</span></li>); })}</ul>) : <p className="text-sm text-fg-muted">Runs, rides, classes, sport. Log it and today's loads recalibrate.</p>}
       {total >= 45 && <p className="mt-3 text-xs text-amber">{total} min done: next session's loads eased.</p>}
       <Sheet open={open} onOpenChange={setOpen}><SheetContent title="Log activity" description="Anything that wasn't a Kettleworth session.">

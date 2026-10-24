@@ -163,7 +163,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
           <div className="flex gap-3 p-4 pb-0 sm:flex-col sm:pb-4 sm:pr-0"><ExerciseMedia name={cur.exercise.name} images={cur.exercise.imageUrls} video={cur.video} compact className="aspect-[4/3] min-w-0 flex-1 sm:aspect-square sm:flex-none" /><MuscleFigure muscles={cur.exercise.primaryMuscles} sex={sex} size="md" /></div>
           <CardContent className="space-y-2">
             <div className="flex items-center gap-2"><Badge tone={cur.role === "primary" ? "ember" : "neutral"} className="capitalize">{cur.role}</Badge><span className="text-xs text-fg-subtle">Exercise {idx + 1} of {instances.length}</span>{cur.swappedReason && <Badge tone="amber">Swapped</Badge>}</div>
-            <h1 className="font-display text-3xl font-semibold tracking-tightest">{cur.exercise.name}</h1>
+            <h1 className="font-display text-3xl tracking-tightest">{cur.exercise.name}</h1>
             <PrescriptionNumerals sets={cur.plannedSets} />
             {cur.notes ? <p className="text-xs text-amber">{cur.notes}</p> : null}
             <div className="flex flex-wrap gap-2 pt-1"><Button size="sm" variant="secondary" onClick={() => setShowInfo((s) => !s)} aria-expanded={showInfo}><Info /> How to {showInfo ? <ChevronUp /> : <ChevronDown />}</Button><Button size="sm" variant="secondary" onClick={() => setSwapOpen(true)}><Repeat /> Swap</Button></div>
@@ -199,7 +199,7 @@ function PrescriptionNumerals({ sets }: { sets: PlannedSet[] }) {
   if (f.targetRpe) cells.push([String(f.targetRpe), "rpe"]);
   cells.push([`${Math.round(f.restSeconds / 60 * 10) / 10}`, "min rest"]);
   if (f.tempo) cells.push([f.tempo, "tempo"]);
-  return <div className="flex flex-wrap gap-x-5 gap-y-1">{cells.map(([v, l]) => <div key={l}><span className="font-display text-2xl font-semibold tabular tracking-tighter">{v}</span><span className="ml-1 text-2xs uppercase tracking-label text-fg-subtle">{l}</span></div>)}</div>;
+  return <div className="flex flex-wrap gap-x-5 gap-y-1">{cells.map(([v, l]) => <div key={l}><span className="font-display text-2xl tabular tracking-tighter">{v}</span><span className="ml-1 text-2xs uppercase tracking-label text-fg-subtle">{l}</span></div>)}</div>;
 }
 function describePrescription(sets: PlannedSet[]): string {
   const w = sets.filter((s) => s.type === "working");
@@ -313,7 +313,7 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
                 <div className="mt-1.5 flex items-center gap-1.5 min-[360px]:gap-2">
                   <button type="button" onClick={() => nudge(k, -1)} className="grid size-11 shrink-0 touch-manipulation place-items-center rounded-xl bg-white/[0.06] text-fg-muted transition-transform hover:bg-white/10 active:scale-90 min-[360px]:size-12" aria-label={k === "w" ? "Lighter" : "Fewer"}><Minus className="size-5" /></button>
                   <label className="flex min-w-0 flex-1 cursor-text items-baseline justify-center gap-1.5 rounded-xl py-1 focus-within:bg-white/[0.04]">
-                    <input aria-label={k === "w" ? model.label : "Reps"} inputMode={k === "w" ? "decimal" : "numeric"} enterKeyHint="done" value={val} onChange={(e) => (k === "w" ? setW : setR)(e.target.value.replace(/[^0-9.]/g, "").slice(0, 6))} placeholder="0" style={{ width: `${Math.max(1, (val || "0").length) + 0.4}ch` }} className="min-w-0 bg-transparent text-right font-display text-[clamp(1.875rem,10vw,2.5rem)] font-semibold leading-none tabular tracking-tight text-fg caret-ember placeholder:text-fg-subtle/50 focus:outline-none" />
+                    <input aria-label={k === "w" ? model.label : "Reps"} inputMode={k === "w" ? "decimal" : "numeric"} enterKeyHint="done" value={val} onChange={(e) => (k === "w" ? setW : setR)(e.target.value.replace(/[^0-9.]/g, "").slice(0, 6))} placeholder="0" style={{ width: `${Math.max(1, (val || "0").length) + 0.4}ch` }} className="min-w-0 bg-transparent text-right font-display text-[clamp(1.875rem,10vw,2.5rem)] leading-none tabular tracking-tight text-fg caret-ember placeholder:text-fg-subtle/50 focus:outline-none" />
                     <span className="shrink-0 whitespace-nowrap text-sm text-fg-subtle">{u}</span>
                   </label>
                   <button type="button" onClick={() => nudge(k, 1)} className="grid size-11 shrink-0 touch-manipulation place-items-center rounded-xl bg-white/[0.06] text-fg-muted transition-transform hover:bg-white/10 active:scale-90 min-[360px]:size-12" aria-label={k === "w" ? "Heavier" : "More"}><Plus className="size-5" /></button>
@@ -336,7 +336,7 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
           <div className="mt-3 rounded-2xl bg-well-strong p-3 ring-1 ring-border" role="radiogroup" aria-label="Effort">
             <div className="flex items-center justify-between"><span className="text-2xs uppercase tracking-label text-fg-subtle">Effort</span><span className="text-2xs text-fg-subtle">{rpe != null ? (rpe >= 10 ? "RPE 10 · nothing left" : `RPE ${rpe} · ${RPE_WORDS[Math.round(rpe)] ?? ""} in the tank`) : "how hard was it"}</span></div>
             <div className="mt-2 grid grid-cols-5 gap-1.5">{[6, 7, 8, 9, 10].map((n) => (
-              <button key={n} type="button" role="radio" aria-checked={rpe === n} onClick={() => setRpe(n)} className={cn("flex h-12 min-w-0 touch-manipulation flex-col items-center justify-center rounded-xl transition-all", rpe === n ? "bg-ember text-ember-fg shadow-glow" : "bg-white/[0.05] text-fg-muted hover:bg-white/10")}><span className="font-display text-lg font-semibold leading-tight tabular">{n}</span><span className="whitespace-nowrap text-[9px] uppercase tracking-wide opacity-80">{RPE_WORDS[n]}</span></button>))}</div>
+              <button key={n} type="button" role="radio" aria-checked={rpe === n} onClick={() => setRpe(n)} className={cn("flex h-12 min-w-0 touch-manipulation flex-col items-center justify-center rounded-xl transition-all", rpe === n ? "bg-ember text-ember-fg shadow-glow" : "bg-white/[0.05] text-fg-muted hover:bg-white/10")}><span className="font-display text-lg leading-tight tabular">{n}</span><span className="whitespace-nowrap text-[9px] uppercase tracking-wide opacity-80">{RPE_WORDS[n]}</span></button>))}</div>
           </div>
 
           {challenge ? (
@@ -395,7 +395,7 @@ function FinishForm({ sessionId, onDone }: { sessionId: string; units: "metric" 
   );
   if (result) return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-signal-soft p-4"><div className="font-display text-lg font-semibold">Session logged.</div><p className="text-sm text-fg-muted">Here's what changes next time, and why.</p></div>
+      <div className="rounded-xl bg-signal-soft p-4"><div className="font-display text-lg">Session logged.</div><p className="text-sm text-fg-muted">Here's what changes next time, and why.</p></div>
       <ul className="space-y-2">{result.changes.map((c) => (<li key={c.name} className="rounded-lg border border-border p-3 text-sm"><div className="flex items-center justify-between"><span className="font-medium">{c.name}</span><Badge tone={c.change === "up" ? "signal" : c.change === "down" ? "amber" : "neutral"}>{c.change === "up" ? "Load up" : c.change === "down" ? "Load down" : "Hold"}</Badge></div><p className="mt-1 text-fg-muted">{c.reason}</p></li>))}{!result.changes.length && <li className="text-sm text-fg-subtle">Log weights next time and the plan will progress them for you.</li>}</ul>
       <Button className="w-full" size="lg" onClick={onDone}>Done</Button>
     </div>

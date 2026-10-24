@@ -28,7 +28,7 @@ export function GenerateProgramme({ summary, profile, ai, continueFrom = false, 
   }
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <div><p className="eyebrow">Programme</p><h1 className="font-display text-3xl font-semibold tracking-tighter md:text-4xl">{continueFrom ? "Next block." : "Let's build your block."}</h1></div>
+      <div><p className="eyebrow">Programme</p><h1 className="font-display text-3xl tracking-tighter md:text-4xl">{continueFrom ? "Next block." : "Let's build your block."}</h1></div>
       <Card><CardContent className="space-y-4">
         <p className="text-fg-muted">{continueFrom ? "Your main lifts carry over with loads set from what you logged; accessories rotate so the same muscles get a new stimulus. Pick how long the next block should run." : summary ?? `A ${profile.daysPerWeek}-day plan for ${profile.primaryGoal.replace("_", " ")} over ${profile.timelineWeeks} weeks.`}</p>
         <Segmented value={String(weeks)} onChange={(v) => setWeeks(Number(v))} options={[{ value: "4", label: "4 weeks" }, { value: "8", label: "8 weeks" }, { value: "12", label: "12 weeks" }, { value: "16", label: "16 weeks" }]} label="Block length" />

@@ -6,11 +6,11 @@ import { Loader2 } from "lucide-react";
 import { cn } from "../lib/cn";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg font-medium transition-[background,transform,box-shadow,color] duration-(--dur-fast) ease-out select-none disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-normal transition-[background,transform,box-shadow,color] duration-(--dur-fast) ease-out select-none disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        primary: "bg-ember text-ember-fg hover:bg-ember-hover shadow-glow",
+        primary: "bg-ember text-ember-fg hover:bg-ember-hover",
         secondary: "bg-surface-2 text-fg hover:bg-surface-3 border border-border",
         ghost: "text-fg-muted hover:text-fg hover:bg-surface-2",
         outline: "border border-border-strong text-fg hover:bg-surface-2",

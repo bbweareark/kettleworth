@@ -63,10 +63,10 @@ export function DrinkBuilder({ initial, dailyTarget, busy, onLog }: { initial?: 
         <div className="hidden min-w-[13rem] flex-col justify-between rounded-2xl bg-well-strong p-4 ring-1 ring-border md:flex">
           <div>
             <div className="text-2xs uppercase tracking-label text-fg-subtle">Calories</div>
-            <div className="flex items-baseline gap-1"><CountUp key={result.calories} value={result.calories} duration={reduce ? 0 : 450} className="font-display text-5xl font-semibold tracking-tightest" /><span className="text-sm text-fg-subtle">kcal</span></div>
+            <div className="flex items-baseline gap-1"><CountUp key={result.calories} value={result.calories} duration={reduce ? 0 : 450} className="font-display text-5xl tracking-tightest" /><span className="text-sm text-fg-subtle">kcal</span></div>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"><motion.div className="h-full rounded-full bg-ember" animate={{ width: `${share * 100}%` }} transition={{ duration: reduce ? 0 : 0.35 }} /></div>
             <div className="mt-1 text-2xs text-fg-subtle">{Math.round(share * 100)}% of today's {dailyTarget} kcal</div>
-            <div className="mt-3 grid grid-cols-3 gap-2 text-center">{[["P", result.proteinG], ["C", result.carbsG], ["F", result.fatG]].map(([k, v]) => <div key={k as string} className="rounded-lg bg-white/[0.04] py-1.5"><div className="font-display text-sm font-semibold tabular">{v}</div><div className="text-[10px] uppercase tracking-wider text-fg-subtle">{k === "P" ? "protein" : k === "C" ? "carbs" : "fat"}</div></div>)}</div>
+            <div className="mt-3 grid grid-cols-3 gap-2 text-center">{[["P", result.proteinG], ["C", result.carbsG], ["F", result.fatG]].map(([k, v]) => <div key={k as string} className="rounded-lg bg-white/[0.04] py-1.5"><div className="font-display text-sm tabular">{v}</div><div className="text-[10px] uppercase tracking-wider text-fg-subtle">{k === "P" ? "protein" : k === "C" ? "carbs" : "fat"}</div></div>)}</div>
             {result.breakdown.length ? <ul className="mt-3 space-y-1 text-xs text-fg-muted">{result.breakdown.map((b) => <li key={b.label} className="flex justify-between gap-3"><span className="truncate">{b.label}</span><span className="tabular">{b.calories}</span></li>)}</ul> : <p className="mt-3 text-xs text-fg-subtle">Next to nothing. Hydration counts.</p>}
           </div>
           <Button className="mt-4 w-full" loading={busy} onClick={() => onLog(order)}>Log {result.calories} kcal</Button>
@@ -77,7 +77,7 @@ export function DrinkBuilder({ initial, dailyTarget, busy, onLog }: { initial?: 
       <div className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom))] z-10 rounded-2xl bg-surface/95 p-3 ring-1 ring-border-strong backdrop-blur md:hidden">
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
-            <div className="flex items-baseline gap-1.5"><CountUp key={result.calories} value={result.calories} duration={reduce ? 0 : 350} className="font-display text-3xl font-semibold tracking-tightest" /><span className="text-xs text-fg-subtle">kcal · {Math.round(share * 100)}% of today</span></div>
+            <div className="flex items-baseline gap-1.5"><CountUp key={result.calories} value={result.calories} duration={reduce ? 0 : 350} className="font-display text-3xl tracking-tightest" /><span className="text-xs text-fg-subtle">kcal · {Math.round(share * 100)}% of today</span></div>
             <div className="truncate text-2xs text-fg-subtle">{result.breakdown.length ? result.breakdown.map((b) => `${b.label.split(",")[0]} ${b.calories}`).join(" · ") : "Next to nothing"}</div>
           </div>
           <Button loading={busy} onClick={() => onLog(order)}>Log</Button>
@@ -100,7 +100,7 @@ function Stepper({ label, unit, value, min, max, onChange }: { label: string; un
       <div className="mb-1.5 text-2xs uppercase tracking-label text-fg-subtle">{label}</div>
       <div className="inline-flex items-center gap-1 rounded-full bg-white/[0.04] p-1 ring-1 ring-border">
         <button type="button" aria-label={`Less ${label.toLowerCase()}`} disabled={value <= min} onClick={() => onChange(Math.max(min, value - 1))} className="grid size-8 place-items-center rounded-full text-fg-muted hover:bg-white/10 disabled:opacity-30"><Minus className="size-3.5" /></button>
-        <span className="min-w-[3.5rem] text-center font-display text-sm font-semibold tabular">{value}{unit ? <span className="ml-1 text-2xs font-normal text-fg-subtle">{unit}</span> : null}</span>
+        <span className="min-w-[3.5rem] text-center font-display text-sm tabular">{value}{unit ? <span className="ml-1 text-2xs font-normal text-fg-subtle">{unit}</span> : null}</span>
         <button type="button" aria-label={`More ${label.toLowerCase()}`} disabled={value >= max} onClick={() => onChange(Math.min(max, value + 1))} className="grid size-8 place-items-center rounded-full text-fg-muted hover:bg-white/10 disabled:opacity-30"><Plus className="size-3.5" /></button>
       </div>
     </div>

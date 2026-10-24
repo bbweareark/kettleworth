@@ -1,0 +1,12 @@
+<svg fill="#ffffff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="Kettleworth"><title>Kettleworth logo</title>
+  <!--
+    One plate, split by a line of light, the right half lifted by exactly one increment.
+    That is the whole product: the load goes up in the smallest honest step, and the
+    gap is where the engine decides. Left half sits low, right half sits a step high,
+    so the mark reads left to right as progress.
+  -->
+  <g fill="#ffffff">
+    <path d="M121 48 A96 96 0 0 0 121 240 Z"/>
+    <path d="M135 16 A96 96 0 0 1 135 208 Z"/>
+  </g>
+</svg>

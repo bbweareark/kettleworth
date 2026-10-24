@@ -102,7 +102,7 @@ export function ProductCard({ product, busy, onLog, onCancel }: { product: Produ
         {product.imageUrl ? <img src={product.imageUrl} alt="" className="size-16 shrink-0 rounded-xl bg-white object-contain p-1" /> : <div className="grid size-16 shrink-0 place-items-center rounded-xl bg-white/[0.05]"><ScanBarcode className="size-6 text-fg-subtle" /></div>}
         <div className="min-w-0 flex-1">
           <div className="text-2xs uppercase tracking-label text-signal">From the label</div>
-          <div className="truncate font-display text-lg font-semibold tracking-tight">{product.name}</div>
+          <div className="truncate font-display text-lg tracking-tight">{product.name}</div>
           <div className="text-xs text-fg-subtle">{product.brand ?? "Unknown brand"} · {product.per100.calories} kcal per 100 {product.unit}{product.servingLabel ? ` · serving ${product.servingLabel}` : ""}</div>
         </div>
       </div>
@@ -114,7 +114,7 @@ export function ProductCard({ product, busy, onLog, onCancel }: { product: Produ
           <label className="flex items-center gap-2 text-sm"><Input inputMode="decimal" value={String(amount)} onChange={(e) => setAmount(Math.max(0, Number(e.target.value.replace(/[^0-9.]/g, "")) || 0))} className="h-9 w-24" aria-label={`Amount in ${product.unit}`} />{product.unit}</label>
         )}
       </div>
-      <div className="grid grid-cols-4 gap-2 text-center">{[["kcal", m.calories], ["protein", m.proteinG], ["carbs", m.carbsG], ["fat", m.fatG]].map(([l, v]) => <div key={l as string} className="rounded-xl bg-white/[0.04] py-2"><div className="font-display text-lg font-semibold tabular">{v}</div><div className="text-[10px] uppercase tracking-wider text-fg-subtle">{l}</div></div>)}</div>
+      <div className="grid grid-cols-4 gap-2 text-center">{[["kcal", m.calories], ["protein", m.proteinG], ["carbs", m.carbsG], ["fat", m.fatG]].map(([l, v]) => <div key={l as string} className="rounded-xl bg-white/[0.04] py-2"><div className="font-display text-lg tabular">{v}</div><div className="text-[10px] uppercase tracking-wider text-fg-subtle">{l}</div></div>)}</div>
       {product.per100.sugarG != null && product.per100.sugarG * k >= 1 ? <p className="text-xs text-fg-subtle">Includes {Math.round(product.per100.sugarG * k)} g sugar.</p> : null}
       <div className="flex justify-between gap-2"><Button variant="ghost" onClick={onCancel}>Scan another</Button><Button loading={busy} disabled={qty <= 0} onClick={() => onLog(qty, m, `${label}, ${Math.round(qty)} ${product.unit}`)}>Log {m.calories} kcal</Button></div>
     </div>
@@ -139,7 +139,7 @@ export function PhotoButton({ busy, onPhoto }: { busy: boolean; onPhoto: (f: Fil
       <input ref={input} type="file" accept="image/*" capture="environment" className="sr-only" aria-label="Photograph your food" onChange={(e) => { const f = e.target.files?.[0]; if (f) onPhoto(f); e.target.value = ""; }} />
       <button type="button" disabled={busy} onClick={() => input.current?.click()} className="group relative flex min-h-36 flex-col items-start justify-end overflow-hidden rounded-2xl bg-[linear-gradient(140deg,color-mix(in_oklch,var(--color-ember)_22%,transparent),transparent_70%)] p-4 text-left ring-1 ring-ember/25 transition-transform active:scale-[0.99] disabled:opacity-60">
         <div className="mb-auto grid size-11 place-items-center rounded-xl bg-ember-soft">{busy ? <Loader2 className="size-5 animate-spin text-ember" /> : <Camera className="size-5 text-ember" />}</div>
-        <div className="mt-4 font-display text-lg font-semibold tracking-tight">{busy ? "Reading your plate" : "Photograph your plate"}</div>
+        <div className="mt-4 font-display text-lg tracking-tight">{busy ? "Reading your plate" : "Photograph your plate"}</div>
         <div className="text-xs text-fg-muted">{busy ? "Identifying each item and its portion" : "Every item and portion, itemised"}</div>
         <ImagePlus aria-hidden className="absolute -right-3 -top-3 size-24 text-white/[0.03]" />
       </button>

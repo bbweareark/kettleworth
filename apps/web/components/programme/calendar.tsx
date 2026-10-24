@@ -23,7 +23,7 @@ export function ProgrammeCalendar({ weeks, sessions, mesocycles, currentWeekId }
           return (
             <div key={w.id} className={cn("grid grid-cols-[6rem_3rem_repeat(7,1fr)] items-center gap-1 rounded-md py-1.5", currentWeekId === w.id && "bg-ember-soft/60")}>
               <span className="truncate text-xs font-medium text-fg-muted">{first ? meso?.name : ""}</span>
-              <span className={cn("font-display text-sm font-semibold tabular", w.isDeload ? "text-amber" : "text-fg")}>{w.weekNumber}{w.isDeload ? "·d" : ""}</span>
+              <span className={cn("font-display text-sm tabular", w.isDeload ? "text-amber" : "text-fg")}>{w.weekNumber}{w.isDeload ? "·d" : ""}</span>
               {days.map((_, di) => {
                 const s = ws.find((x) => dayIndex(x.scheduledOn) === di);
                 if (!s) return <span key={di} className="mx-auto size-2 rounded-full bg-white/[0.06]" />;

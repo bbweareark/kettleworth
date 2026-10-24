@@ -7,7 +7,7 @@ export function Stat({ label, value, unit, delta, tone, className, hint }: { lab
     <div className={cn("space-y-1", className)}>
       <div className="text-xs font-medium uppercase tracking-wide text-fg-subtle">{label}</div>
       <div className="flex items-baseline gap-1.5">
-        <span className="font-display text-2xl font-semibold tabular tracking-tighter">{value}</span>
+        <span className="font-display text-2xl tabular tracking-tighter">{value}</span>
         {unit ? <span className="text-sm text-fg-muted">{unit}</span> : null}
       </div>
       {delta ? <div className={cn("text-xs font-medium tabular", toneClass)}>{delta}</div> : hint ? <div className="text-xs text-fg-subtle">{hint}</div> : null}

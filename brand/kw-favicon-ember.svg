@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img"><title>Kettleworth</title>
+  <rect width="256" height="256" rx="40" fill="#141110"/>
+  <g fill="#C9A97A" transform="translate(128 128) scale(0.80) translate(-128 -128)">
+    <path d="M118 52 A92 92 0 0 0 118 236 Z"/>
+    <path d="M138 20 A92 92 0 0 1 138 204 Z"/>
+  </g>
+</svg>

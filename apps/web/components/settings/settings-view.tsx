@@ -37,18 +37,18 @@ export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { 
   const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <div><p className="eyebrow">Settings</p><h1 className="font-display text-3xl font-semibold tracking-tighter md:text-4xl">{user.name}</h1><p className="text-fg-muted">{user.email}</p></div>
+      <div><p className="eyebrow">Settings</p><h1 className="font-display text-3xl tracking-tighter md:text-4xl">{user.name}</h1><p className="text-fg-muted">{user.email}</p></div>
       <Card><CardContent className="space-y-3">
-        <div><h2 className="font-display text-lg font-semibold">Bars</h2><p className="text-sm text-fg-muted">Barbell weights are logged as the total, bar included. Set your gym's bars once and the session screen shows the plates to load on each side. Dumbbells are always the number on one dumbbell.</p></div>
+        <div><h2 className="font-display text-lg">Bars</h2><p className="text-sm text-fg-muted">Barbell weights are logged as the total, bar included. Set your gym's bars once and the session screen shows the plates to load on each side. Dumbbells are always the number on one dumbbell.</p></div>
         <div className="grid gap-3 sm:grid-cols-2">
           {(Object.keys(BAR_NAMES) as BarKind[]).map((kind) => { const imperial = (p.units ?? "metric") === "imperial"; const choices = (imperial ? BAR_CHOICES_LB : BAR_CHOICES_KG)[kind]; const current = p.barWeights?.[kind] ?? DEFAULT_BARS_KG[imperial ? "imperial" : "metric"][kind]; const currentDisp = Math.round((imperial ? kgToLb(current) : current) * 10) / 10; return (
             <Field key={kind} label={BAR_NAMES[kind]}><ChipGroup>{choices.map((c) => <Chip key={c} className="h-8 px-3 text-xs" selected={Math.abs(currentDisp - c) < 0.2} onClick={() => set({ barWeights: { ...(p.barWeights ?? {}), [kind]: imperial ? Math.round(lbToKg(c) * 100) / 100 : c } })}>{c === 0 ? "Not counted" : `${c} ${imperial ? "lb" : "kg"}`}</Chip>)}</ChipGroup></Field>); })}
         </div>
       </CardContent></Card>
-      <Card><CardContent className="space-y-3"><h2 className="font-display text-lg font-semibold">Appearance</h2><Segmented value={theme} onChange={applyTheme} options={[{ value: "dark", label: <span className="flex items-center gap-1.5"><Moon className="size-3.5" /> Iron</span> }, { value: "light", label: <span className="flex items-center gap-1.5"><Sun className="size-3.5" /> Chalk</span> }]} label="Theme" /></CardContent></Card>
+      <Card><CardContent className="space-y-3"><h2 className="font-display text-lg">Appearance</h2><Segmented value={theme} onChange={applyTheme} options={[{ value: "dark", label: <span className="flex items-center gap-1.5"><Moon className="size-3.5" /> Iron</span> }, { value: "light", label: <span className="flex items-center gap-1.5"><Sun className="size-3.5" /> Chalk</span> }]} label="Theme" /></CardContent></Card>
       {profile && (
         <Card><CardContent className="space-y-5">
-          <div><h2 className="font-display text-lg font-semibold">Training profile</h2>{aiSummary ? <p className="mt-1 text-sm text-fg-muted">{aiSummary}</p> : null}<p className="mt-1 text-xs text-fg-subtle">{ai ? "Coach: live" : "Coach: templated on this server"}</p></div>
+          <div><h2 className="font-display text-lg">Training profile</h2>{aiSummary ? <p className="mt-1 text-sm text-fg-muted">{aiSummary}</p> : null}<p className="mt-1 text-xs text-fg-subtle">{ai ? "Coach: live" : "Coach: templated on this server"}</p></div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Units"><Segmented value={p.units ?? "metric"} onChange={(v) => set({ units: v })} options={[{ value: "metric", label: "kg · cm" }, { value: "imperial", label: "lb · ft" }]} label="Units" /></Field>
             <Field label="Days per week"><ChipGroup>{[1, 2, 3, 4, 5, 6, 7].map((d) => <Chip key={d} className="h-8 px-3 text-xs" selected={p.daysPerWeek === d} onClick={() => set({ daysPerWeek: d })}>{d}</Chip>)}</ChipGroup></Field>
@@ -61,7 +61,7 @@ export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { 
         </CardContent></Card>
       )}
       <Card id="rituals"><CardContent className="space-y-5">
-        <div><h2 className="font-display text-lg font-semibold">Rituals</h2><p className="text-sm text-fg-muted">The moments the app shows up. Set them once and the coach keeps them.</p></div>
+        <div><h2 className="font-display text-lg">Rituals</h2><p className="text-sm text-fg-muted">The moments the app shows up. Set them once and the coach keeps them.</p></div>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Wake time"><Input type="time" value={rit.wakeTime ?? ""} onChange={(e) => setRit({ wakeTime: e.target.value || undefined })} /></Field>
           <Field label="Evening reflection"><Input type="time" value={rit.reflectionTime ?? ""} onChange={(e) => setRit({ reflectionTime: e.target.value || undefined })} /></Field>
@@ -72,13 +72,13 @@ export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { 
         <Button onClick={save} loading={busy === "save"}>Save rituals</Button>
       </CardContent></Card>
       <Card id="life"><CardContent className="space-y-4">
-        <div><h2 className="font-display text-lg font-semibold">Life mode</h2><p className="text-sm text-fg-muted">Life changes; the plan should flex, not break. Current: <span className="font-medium capitalize text-fg">{p.lifeMode?.mode ?? "normal"}</span>{p.lifeMode?.until ? ` until ${p.lifeMode.until}` : ""}.</p></div>
+        <div><h2 className="font-display text-lg">Life mode</h2><p className="text-sm text-fg-muted">Life changes; the plan should flex, not break. Current: <span className="font-medium capitalize text-fg">{p.lifeMode?.mode ?? "normal"}</span>{p.lifeMode?.until ? ` until ${p.lifeMode.until}` : ""}.</p></div>
         <div className="grid gap-2 sm:grid-cols-3">{([["travel", Plane, "Travelling", "Bodyweight and band versions"], ["ill", Thermometer, "Ill", "Pause without losing your streak"], ["injured", Bandage, "Injured", "Add the injury below; swaps apply"], ["busy", Clock, "Busy", "Main lifts only, 30 minutes"], ["newborn", Baby, "New parent", "Two short sessions a week"], ["normal", CircleDot, "Back to normal", "Restore the full plan"]] as const).map(([m, I, l, d]) => (
           <button key={m} type="button" onClick={() => lifeMode(m)} disabled={busy?.startsWith("mode")} aria-pressed={(p.lifeMode?.mode ?? "normal") === m} className={`flex items-start gap-3 rounded-xl border p-3 text-left transition-colors ${(p.lifeMode?.mode ?? "normal") === m ? "border-ember bg-ember-soft" : "border-border hover:border-border-strong"}`}><I className="mt-0.5 size-4 shrink-0 text-ember" /><span><span className="block text-sm font-medium">{l}</span><span className="text-xs text-fg-muted">{d}</span></span></button>))}</div>
         <Field label="Until (optional)" hint="Leave blank for two weeks; you can switch back any time."><Input type="date" value={modeUntil} onChange={(e) => setModeUntil(e.target.value)} className="max-w-[200px]" /></Field>
       </CardContent></Card>
       <Card><CardContent className="space-y-4">
-        <h2 className="font-display text-lg font-semibold">Your data</h2>
+        <h2 className="font-display text-lg">Your data</h2>
         <p className="text-sm text-fg-muted">Export everything we hold about you as JSON, or delete your account. Deleting revokes {providerCount} connected provider{providerCount === 1 ? "" : "s"}, removes all synced health data and cannot be undone.</p>
         <div className="flex flex-wrap gap-2"><Button asChild variant="secondary"><a href="/api/account/export" download><Download /> Export my data</a></Button><Button variant="ghost" onClick={async () => { await authClient.signOut(); window.location.href = "/"; }}><LogOut /> Sign out</Button></div>
         <div className="rounded-lg border border-rose/30 p-4"><div className="mb-2 text-sm font-medium text-rose">Delete account</div><div className="flex flex-wrap items-center gap-2"><Input className="max-w-[200px]" placeholder='Type "DELETE"' value={confirmText} onChange={(e) => setConfirmText(e.target.value)} aria-label="Type DELETE to confirm" /><Button variant="danger" disabled={confirmText !== "DELETE"} loading={busy === "delete"} onClick={del}><Trash2 /> Delete permanently</Button></div></div>

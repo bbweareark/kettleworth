@@ -13,6 +13,18 @@ change extends this design instead of starting a new one. Values live in `DESIGN
 | 6 · Motion | **Reveal on enter** spine + 2 signature moments | [scrolltide.co](https://www.scrolltide.co/) — Emberkiri, Cinder (Hero Section) | Reveal-on-enter is the cheap correct default. Signature moments: hero line clip-reveal, and a slow ember gradient drift behind the closing CTA. Everything else is a plain reveal, so the page reads as designed rather than templated. |
 | 5 · Icons & imagery | **Lucide** inline · **3dicons.co V1** expressive · **Higgsfield** art | [3dicons.co](https://3dicons.co/) · Higgsfield MCP | 3dicons ships exactly the vocabulary a training app needs (Fire, Trophy, Chart, Target, Clock). Higgsfield is connected, so section art is generated to the DNA palette rather than stocked. |
 
+## Round 2 — Path B revamp of the signed-in app
+
+The first pass applied ORYZO's colours to the app but kept its structure and its typeface, so
+the app still read as the old app repainted. This round took **Path B** on the authenticated
+surfaces, on branch `revamp/app-surfaces`.
+
+| Pillar | Choice | Reference | What was taken |
+|---|---|---|---|
+| 7 · DNA (app) | **Auros — abyssal terminal** | [styles.refero.design/style/21cfe0c1…](https://styles.refero.design/style/21cfe0c1-778d-4613-9f47-a5718eb929b3) then measured live on [auros.global](https://auros.global) | One display weight at every size, display line-height exactly 1.0, tracking -0.047em measured off their H1, buttons at weight 400 with 6px radius and no shadow, two radii total, large stats as the hero of a data surface. Nothing of their teal palette, their gradient, their brand. |
+| 7 · Typeface | **Clash Display 600 + Switzer 400/500/600** | [fontshare.com](https://www.fontshare.com) | Inter Tight and Inter are on the skill's ban list and were the main reason the app still looked generated. Auros's own face is Matter (commercial); its style page names Satoshi as the close free match, and Clash Display from the same library carries the weight this product needs. Self-hosted, 71KB total. |
+| 5 · Icons (app) | **3dicons.co V1**, CC0 | [3dicons.co](https://3dicons.co/) | Five renders (fire, target, chart, clock, tools) at the `dynamic` angle, self-hosted at 2x, unified into the warm palette by one filter chain. Placed on empty states and the quest board only; Lucide still owns inline affordances. |
+
 ## Applied behind the login, too
 
 | Surface | What changed |

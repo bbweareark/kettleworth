@@ -93,7 +93,7 @@ export function SiteHeader({ signedIn }: { signedIn: boolean }) {
                 {LINKS.map((l) => (
                   <li key={l.href}>
                     <SheetClose asChild>
-                      <Link href={l.href} aria-current={isCurrent(l.href) ? "page" : undefined} className="flex h-14 items-center rounded-xl px-3 font-display text-2xl font-semibold tracking-tighter text-fg transition-colors hover:bg-surface-2">
+                      <Link href={l.href} aria-current={isCurrent(l.href) ? "page" : undefined} className="flex h-14 items-center rounded-xl px-3 font-display text-2xl tracking-tighter text-fg transition-colors hover:bg-surface-2">
                         {l.label}
                       </Link>
                     </SheetClose>

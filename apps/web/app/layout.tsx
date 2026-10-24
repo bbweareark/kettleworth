@@ -1,13 +1,33 @@
 import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
-import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { Toaster } from "@kettleworth/ui";
 import { TooltipProvider } from "@kettleworth/ui";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
-const interTight = Inter_Tight({ subsets: ["latin"], variable: "--font-inter-tight", display: "swap", weight: ["500", "600", "700"] });
-const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap", weight: ["400", "500", "600"] });
+/*
+ * Clash Display + Switzer, both Fontshare, free for commercial use, self-hosted as variable
+ * woff2 (14KB + 16KB, well inside the 120KB budget). Inter and Inter Tight are gone: they are
+ * the fonts every generated interface reaches for, and they carried no tone for a product
+ * about lifting heavy things in a dark room.
+ *
+ * adjustFontFallback matches the fallback's metrics so swapping in the real face causes no
+ * layout shift.
+ */
+const display = localFont({
+  src: [{ path: "./fonts/clash-display-600.woff2", weight: "600", style: "normal" }],
+  variable: "--font-clash",
+  display: "swap",
+});
+const text = localFont({
+  src: [
+    { path: "./fonts/switzer-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/switzer-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/switzer-600.woff2", weight: "600", style: "normal" },
+  ],
+  variable: "--font-switzer",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
@@ -23,7 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // Theme is read on the server from a cookie, so the first paint is already right and no inline script is needed.
   const theme = (await cookies()).get("kw-theme")?.value === "light" ? "light" : "dark";
   return (
-    <html lang="en" data-theme={theme} suppressHydrationWarning className={`${inter.variable} ${interTight.variable} ${mono.variable}`} style={{ ["--font-sans" as string]: "var(--font-inter), ui-sans-serif, system-ui", ["--font-display" as string]: "var(--font-inter-tight), var(--font-inter), ui-sans-serif", ["--font-mono" as string]: "var(--font-jetbrains), ui-monospace" }}>
+    <html lang="en" data-theme={theme} suppressHydrationWarning className={`${display.variable} ${text.variable}`}>
       <body className="min-h-dvh bg-bg text-fg">
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster position="top-center" toastOptions={{ className: "!bg-bg-elevated !border-border !text-fg !shadow-pop !rounded-xl" }} />
