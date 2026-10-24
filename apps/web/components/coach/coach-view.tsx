@@ -45,13 +45,13 @@ export function CoachView({ letters, history, ai, name }: { letters: Letter[]; h
     <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr]">
       <section className="space-y-4">
         <div className="relative overflow-hidden rounded-3xl p-6 ring-1 ring-border"><img src="/art/coach.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-85" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_75%,transparent)_60%,transparent_100%)]" />
-        <div className="flex items-end justify-between gap-3"><div><p className="eyebrow">Sunday letter</p><h1 className="font-display text-4xl font-semibold tracking-tightest">Your week, read back.</h1></div><Button size="sm" variant="secondary" onClick={generate} loading={gen}><Mail /> Write this week's</Button></div></div>
+        <div className="flex items-end justify-between gap-3"><div><p className="eyebrow">Sunday letter</p><h1 className="font-display text-4xl tracking-tightest">Your week, read back.</h1></div><Button size="sm" variant="secondary" onClick={generate} loading={gen}><Mail /> Write this week's</Button></div></div>
         {letters.length === 0 ? <div className="relative overflow-hidden rounded-2xl p-5 ring-1 ring-border"><img src="/art/letter.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-70" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_70%,transparent)_100%)]" /><p className="max-w-sm text-sm text-fg-muted">Every Sunday evening the coach writes you a short letter: what moved, what stalled, what changes next week and why. Complete a session and write the first one now.</p></div> : (
           <div className="space-y-2">{letters.map((l) => (
             <article key={l.id} className={cn("relative overflow-hidden rounded-2xl ring-1 ring-border transition-colors", open === l.id ? "bg-surface/70" : "bg-surface/30 hover:bg-surface/50")}>
               {open === l.id ? <><img src="/art/letter.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-40" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-bg)_60%,transparent)_0%,var(--color-bg)_40%)]" /></> : null}
               <button type="button" onClick={() => setOpen(open === l.id ? null : l.id)} className="flex w-full items-center justify-between gap-3 p-5 text-left">
-                <div><div className="text-2xs uppercase tracking-label text-fg-subtle">Week of {dayMonth(l.weekStartsOn, true)}</div><h2 className="font-display text-xl font-semibold tracking-tighter">{l.headline}</h2></div>
+                <div><div className="text-2xs uppercase tracking-label text-fg-subtle">Week of {dayMonth(l.weekStartsOn, true)}</div><h2 className="font-display text-xl tracking-tighter">{l.headline}</h2></div>
                 {!l.readAt && <Badge tone="amber">New</Badge>}
               </button>
               <AnimatePresence initial={false}>{open === l.id && (
@@ -66,7 +66,7 @@ export function CoachView({ letters, history, ai, name }: { letters: Letter[]; h
       </section>
       <section className="relative flex min-h-[560px] flex-col overflow-hidden rounded-3xl ring-1 ring-border">
         <img src="/art/coach-chat.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-60" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-bg)_55%,transparent)_0%,color-mix(in_oklch,var(--color-bg)_92%,transparent)_35%,var(--color-bg)_100%)]" />
-        <div className="border-b border-border p-5"><p className="eyebrow">Talk to the coach</p><h2 className="font-display text-xl font-semibold tracking-tighter">Ask anything about your training, {name}.</h2><p className="mt-1 text-xs text-fg-subtle">Grounded in your profile, plan, logs and readiness. Changes go through the rules engine and are shown here.</p></div>
+        <div className="border-b border-border p-5"><p className="eyebrow">Talk to the coach</p><h2 className="font-display text-xl tracking-tighter">Ask anything about your training, {name}.</h2><p className="mt-1 text-xs text-fg-subtle">Grounded in your profile, plan, logs and readiness. Changes go through the rules engine and are shown here.</p></div>
         <div className="flex-1 space-y-3 overflow-y-auto p-5">
           {msgs.length === 0 && <div className="flex flex-wrap gap-2">{suggestions.map((s) => <button key={s} type="button" onClick={() => setText(s)} className="rounded-full border border-border px-3 py-1.5 text-xs text-fg-muted hover:border-border-strong hover:text-fg">{s}</button>)}</div>}
           {msgs.map((m) => (

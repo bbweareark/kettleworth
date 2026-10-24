@@ -15,7 +15,7 @@ export function EstimateCard({ items: initial, note, source, busy, onLog, onCanc
     <div className="space-y-3 rounded-2xl bg-well p-4 ring-1 ring-border">
       <div className="flex items-baseline justify-between gap-3">
         <div className="text-2xs uppercase tracking-label text-fg-subtle">{source === "photo" ? "Read from your photo" : source === "drink" ? "Calculated" : "Smart estimate"}</div>
-        <div className="font-display text-2xl font-semibold tabular">{Math.round(total.calories)}<span className="ml-1 text-sm font-normal text-fg-subtle">kcal</span></div>
+        <div className="font-display text-2xl tabular">{Math.round(total.calories)}<span className="ml-1 text-sm font-normal text-fg-subtle">kcal</span></div>
       </div>
       {portionsVisible > 1 ? <p className="rounded-xl bg-sky-soft px-3 py-2 text-sm text-fg">{portionsVisible} identical portions in the photo. These numbers are for one of them.</p> : null}
       <ul className="space-y-2">
@@ -24,7 +24,7 @@ export function EstimateCard({ items: initial, note, source, busy, onLog, onCanc
             <div className="flex items-start gap-2">
               <span className={cn("mt-1.5 size-2 shrink-0 rounded-full", r.confidence === "high" ? "bg-signal" : r.confidence === "medium" ? "bg-amber" : "bg-rose")} title={`${r.confidence} confidence`} aria-label={`${r.confidence} confidence`} />
               <div className="min-w-0 flex-1">
-                <div className="flex items-baseline justify-between gap-2"><span className="truncate text-sm font-medium">{r.name}</span><span className="shrink-0 font-display text-sm font-semibold tabular">{Math.round(r.calories * r.scale)}</span></div>
+                <div className="flex items-baseline justify-between gap-2"><span className="truncate text-sm font-medium">{r.name}</span><span className="shrink-0 font-display text-sm tabular">{Math.round(r.calories * r.scale)}</span></div>
                 <div className="text-xs text-fg-subtle">{r.portion} · P {Math.round(r.proteinG * r.scale)} · C {Math.round(r.carbsG * r.scale)} · F {Math.round(r.fatG * r.scale)}</div>
                 {r.breakdown?.length ? <div className="mt-1 text-xs text-fg-muted">{r.breakdown.map((b) => `${b.label} ${b.calories}`).join(" · ")}</div> : null}
                 {r.keep ? <div className="mt-2 flex gap-1" role="radiogroup" aria-label={`Portion of ${r.name}`}>{SCALES.map((s) => <button key={s} type="button" role="radio" aria-checked={r.scale === s} onClick={() => setRows((x) => x.map((y, k) => (k === i ? { ...y, scale: s } : y)))} className={cn("h-7 rounded-full px-2.5 text-xs tabular ring-1", r.scale === s ? "bg-fg text-bg ring-fg" : "text-fg-muted ring-border-strong hover:text-fg")}>{s === 1 ? (portionsVisible > 1 ? "One portion" : "As shown") : s === 0.25 ? "¼" : s === 0.5 ? "½" : `${s}×`}</button>)}</div> : null}

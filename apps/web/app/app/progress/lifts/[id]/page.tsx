@@ -16,7 +16,7 @@ export default async function LiftPage({ params }: { params: Promise<{ id: strin
   return (
     <div className="mx-auto max-w-2xl space-y-5">
       <Link href="/app/progress" className="inline-flex items-center gap-1 text-sm text-fg-muted hover:text-fg"><ArrowLeft className="size-4" /> Progress</Link>
-      <div><p className="eyebrow">Lift history</p><h1 className="font-display text-3xl font-semibold tracking-tighter">{data.exercise.name}</h1></div>
+      <div><p className="eyebrow">Lift history</p><h1 className="font-display text-3xl tracking-tighter">{data.exercise.name}</h1></div>
       <LiftHistory data={JSON.parse(JSON.stringify(data))} units={rec?.profile.units ?? "metric"} />
     </div>
   );

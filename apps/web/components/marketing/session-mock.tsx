@@ -9,7 +9,7 @@ export function SessionMock() {
       <div className="mb-4 flex items-center justify-between text-xs text-fg-subtle"><span>Lower A · Week 3</span><span className="tabular">32:10</span></div>
       <Progress value={45} className="mb-5" />
       <div className="mb-1 flex items-center gap-2"><Badge tone="outline">Primary</Badge><span className="text-xs text-fg-subtle">Exercise 2 of 6</span></div>
-      <h3 className="font-display text-2xl font-semibold tracking-tighter">Barbell Back Squat</h3>
+      <h3 className="font-display text-2xl tracking-tighter">Barbell Back Squat</h3>
       <p className="mt-1 text-sm text-fg-muted">5 × 3 to 5 @ RPE 8 · 3 min rest</p>
       <div className="mt-4 space-y-2">
         {sets.map((s) => (

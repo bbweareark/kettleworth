@@ -20,7 +20,7 @@ function UpNext({ next, todayIso, train }: { next: Next; todayIso: string; train
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
       <Link href={`/app/session/${next.id}`} className="group inline-flex items-center gap-3 rounded-2xl bg-black/35 px-4 py-3 ring-1 ring-border-strong backdrop-blur transition-colors hover:bg-black/50">
-        <span><span className="block text-2xs uppercase tracking-label text-white/60">Up next · {whenLabel(next.scheduledOn, todayIso)}</span><span className="block font-display text-lg font-semibold tracking-tight text-white">{next.name}</span></span>
+        <span><span className="block text-2xs uppercase tracking-label text-white/60">Up next · {whenLabel(next.scheduledOn, todayIso)}</span><span className="block font-display text-lg tracking-tight text-white">{next.name}</span></span>
         <span className="inline-flex items-center gap-1 text-sm text-white/70 group-hover:text-white">Preview <ChevronRight className="size-4" /></span>
       </Link>
       {train ? <Link href={`/app/session/${next.id}?start=1`} className="text-sm text-white/60 underline-offset-4 hover:text-white hover:underline">Train today instead</Link> : null}
@@ -38,13 +38,13 @@ export function DoneHero({ name, art, summary, next, todayIso, unit }: { name: s
       <div className="relative space-y-6 p-6 md:p-8">
         <div>
           <span className="inline-flex items-center gap-1.5 text-2xs uppercase tracking-label text-signal"><Check className="size-3.5" /> Done for today</span>
-          <h2 className="mt-2 font-display text-4xl font-semibold leading-[0.95] tracking-tightest md:text-5xl">{name}, done.</h2>
+          <h2 className="mt-2 font-display text-4xl leading-[0.95] tracking-tightest md:text-5xl">{name}, done.</h2>
           <p className="mt-2 max-w-md text-sm text-fg-muted">The work is in. Eat, sleep, and let it turn into strength.</p>
         </div>
         {summary ? (
           <dl className="grid max-w-lg grid-cols-2 gap-3 sm:grid-cols-4">
             {[["Sets", String(summary.sets)], [`Volume · ${unit}`, vol.toLocaleString("en-GB")], ["Minutes", summary.minutes != null ? String(summary.minutes) : "-"], ["Records", String(summary.records)]].map(([l, v]) => (
-              <div key={l} className="rounded-2xl bg-well-strong px-3 py-2.5 ring-1 ring-border"><dt className="text-2xs uppercase tracking-label text-fg-subtle">{l}</dt><dd className="mt-0.5 flex items-center gap-1.5 font-display text-2xl font-semibold tabular tracking-tight">{l === "Records" && summary.records > 0 ? <Trophy className="size-4 text-ember" /> : null}{v}</dd></div>
+              <div key={l} className="rounded-2xl bg-well-strong px-3 py-2.5 ring-1 ring-border"><dt className="text-2xs uppercase tracking-label text-fg-subtle">{l}</dt><dd className="mt-0.5 flex items-center gap-1.5 font-display text-2xl tabular tracking-tight">{l === "Records" && summary.records > 0 ? <Trophy className="size-4 text-ember" /> : null}{v}</dd></div>
             ))}
           </dl>
         ) : null}
@@ -63,7 +63,7 @@ export function RestHero({ art, next, missed, todayIso }: { art: string; next: N
       <div className="relative space-y-5 p-6 md:p-8">
         <div>
           <span className="inline-flex items-center gap-1.5 text-2xs uppercase tracking-label text-sky"><Moon className="size-3.5" /> Rest day</span>
-          <h2 className="mt-2 font-display text-4xl font-semibold leading-[0.95] tracking-tightest md:text-5xl">No session today.</h2>
+          <h2 className="mt-2 font-display text-4xl leading-[0.95] tracking-tightest md:text-5xl">No session today.</h2>
           <p className="mt-2 max-w-md text-sm text-fg-muted">{next ? `Next up is ${next.name}, ${whenLabel(next.scheduledOn, todayIso)}.` : "Your block is nearly done."} Muscle is built between sessions: walk, eat well, sleep early.</p>
         </div>
         {missed ? <MissedOffer id={missed.id} name={missed.name} when={pastDayLabel(missed.scheduledOn, todayIso)} nextLabel={next ? `${next.name} ${whenLabel(next.scheduledOn, todayIso)}` : null} /> : null}

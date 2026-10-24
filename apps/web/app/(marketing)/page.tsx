@@ -34,7 +34,7 @@ export default async function Landing() {
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal className="space-y-6">
             <p className="eyebrow">Today's session</p>
-            <h2 className="font-display text-3xl font-semibold text-balance md:text-4xl">One exercise at a time. Timers, targets, and the reason behind every set.</h2>
+            <h2 className="font-display text-3xl text-balance md:text-4xl">One exercise at a time. Timers, targets, and the reason behind every set.</h2>
             <p className="measure text-lg text-fg-muted">Two taps to log a set. Rest counted for you. Demo inline. Swaps that respect your kit and your injuries.</p>
             <ul className="space-y-3 text-fg-muted">
               {proof.map((t) => (
@@ -64,7 +64,7 @@ export default async function Landing() {
         <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_45%,transparent)_50%,var(--color-bg)_100%)]" />
         <Reveal className="page text-center">
           <p className="eyebrow">Every week</p>
-          <h2 className="mx-auto mt-4 max-w-3xl font-display text-4xl font-semibold tracking-tightest text-balance md:text-6xl">
+          <h2 className="mx-auto mt-4 max-w-3xl font-display text-4xl tracking-tightest text-balance md:text-6xl">
             Hit every rep and the bar goes up. Sleep badly and today eases off. Nothing is silent.
           </h2>
         </Reveal>
@@ -74,7 +74,7 @@ export default async function Landing() {
         <div className="page">
           <Reveal className="mb-12 max-w-2xl space-y-3">
             <p className="eyebrow">What's inside</p>
-            <h2 className="font-display text-3xl font-semibold text-balance md:text-4xl">Everything a great coach does, integrated rather than bolted on.</h2>
+            <h2 className="font-display text-3xl text-balance md:text-4xl">Everything a great coach does, integrated rather than bolted on.</h2>
           </Reveal>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {pillars.map((p, i) => (
@@ -84,7 +84,7 @@ export default async function Landing() {
                     <div aria-hidden className="grid size-11 place-items-center rounded-xl bg-surface-2 text-fg-muted ring-1 ring-border">
                       <p.icon className="size-5" />
                     </div>
-                    <h3 className="font-display text-lg font-semibold">{p.title}</h3>
+                    <h3 className="font-display text-lg">{p.title}</h3>
                     <p className="text-sm text-fg-muted">{p.body}</p>
                   </CardContent>
                 </Card>
@@ -100,7 +100,7 @@ export default async function Landing() {
             <div className="surface flex flex-wrap items-center gap-8 rounded-3xl p-8">
               <Ring value={0.82} size={132} stroke={12} tone="signal" label="Readiness 82">
                 <div className="text-center">
-                  <div className="font-display text-3xl font-semibold tabular">82</div>
+                  <div className="font-display text-3xl tabular">82</div>
                   <div className="text-2xs uppercase tracking-label text-fg-subtle">Readiness</div>
                 </div>
               </Ring>
@@ -113,7 +113,7 @@ export default async function Landing() {
           </Reveal>
           <Reveal delay={80} className="order-1 space-y-6 lg:order-2">
             <p className="eyebrow">Explainable by design</p>
-            <h2 className="font-display text-3xl font-semibold text-balance md:text-4xl">The engine proposes. The evidence decides. You always see why.</h2>
+            <h2 className="font-display text-3xl text-balance md:text-4xl">The engine proposes. The evidence decides. You always see why.</h2>
             <p className="measure text-lg text-fg-muted">A rules engine owns the maths. The coach does the explaining. Every change arrives with its reason attached.</p>
           </Reveal>
         </div>
@@ -141,7 +141,7 @@ export default async function Landing() {
         </div>
         <Reveal className="page text-center">
           <p className="eyebrow">Start today</p>
-          <h2 className="mx-auto mt-4 max-w-3xl font-display text-4xl font-semibold tracking-tightest text-balance md:text-6xl">
+          <h2 className="mx-auto mt-4 max-w-3xl font-display text-4xl tracking-tightest text-balance md:text-6xl">
             Your first block is twenty questions away.
           </h2>
           <p className="measure mx-auto mt-5 text-lg text-fg-muted">

@@ -42,7 +42,7 @@ export function FormCheck({ exerciseId, name, cards, image, onReady }: { exercis
         <div className="min-w-0 flex-1">
           <div className="mb-2 flex items-center gap-2"><span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-2xs font-bold uppercase tracking-label", S.chip)}><I className="size-3" /> {S.label}</span><span className="text-2xs text-fg-subtle">{i + 1} / {cards.length}</span></div>
           <AnimatePresence mode="wait" initial={false}>
-            <motion.p key={i} initial={reduce ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={reduce ? undefined : { opacity: 0, x: -12 }} transition={{ duration: 0.22 }} className="font-display text-xl font-semibold leading-snug tracking-tighter md:text-2xl">{c.text}</motion.p>
+            <motion.p key={i} initial={reduce ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={reduce ? undefined : { opacity: 0, x: -12 }} transition={{ duration: 0.22 }} className="font-display text-xl leading-snug tracking-tighter md:text-2xl">{c.text}</motion.p>
           </AnimatePresence>
         </div>
       </div>

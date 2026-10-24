@@ -41,7 +41,7 @@ export function AuthForm({ mode, providers }: { mode: "sign-in" | "sign-up"; pro
 
   if (magicSent) return (
     <div className="surface rounded-2xl p-6 text-center">
-      <h1 className="font-display text-xl font-semibold">Check your email</h1>
+      <h1 className="font-display text-xl">Check your email</h1>
       <p className="mt-2 text-sm text-fg-muted">We sent a sign-in link to <span className="text-fg">{email}</span>. It expires in 15 minutes.</p>
       <p className="mt-4 text-xs text-fg-subtle">Running locally without an email provider? The link is printed in the server console.</p>
     </div>
@@ -49,7 +49,7 @@ export function AuthForm({ mode, providers }: { mode: "sign-in" | "sign-up"; pro
 
   return (
     <div className="space-y-6">
-      <div><h1 className="font-display text-2xl font-semibold tracking-tighter">{mode === "sign-up" ? "Create your account" : "Welcome back"}</h1><p className="mt-1 text-sm text-fg-muted">{mode === "sign-up" ? "Free while we're in early access." : "Sign in to pick up your programme."}</p></div>
+      <div><h1 className="font-display text-2xl tracking-tighter">{mode === "sign-up" ? "Create your account" : "Welcome back"}</h1><p className="mt-1 text-sm text-fg-muted">{mode === "sign-up" ? "Free while we're in early access." : "Sign in to pick up your programme."}</p></div>
       {providers.length ? (
         <div className="grid gap-2">
           {providers.includes("google") && <Button type="button" variant="secondary" size="lg" loading={busy === "google"} onClick={() => social("google")}>Continue with Google</Button>}

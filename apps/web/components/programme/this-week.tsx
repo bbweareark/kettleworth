@@ -16,7 +16,7 @@ export function ThisWeek({ sessions, todayIso, openMissedId }: { sessions: Sess[
   const nextId = sessions.find((s) => s.scheduledOn > todayIso && s.status === "planned")?.id;
   return (
     <section className="rounded-3xl bg-surface/40 p-4 ring-1 ring-border sm:p-5" aria-label="This week">
-      <div className="mb-3 flex items-baseline justify-between gap-2"><h2 className="font-display text-lg font-semibold tracking-tight">This week</h2><span className="text-xs text-fg-subtle">Tap a day to see or start it</span></div>
+      <div className="mb-3 flex items-baseline justify-between gap-2"><h2 className="font-display text-lg tracking-tight">This week</h2><span className="text-xs text-fg-subtle">Tap a day to see or start it</span></div>
       <ol className="space-y-2">
         {days.map((day) => {
           const list = sessions.filter((s) => s.scheduledOn === day);
@@ -43,7 +43,7 @@ export function ThisWeek({ sessions, todayIso, openMissedId }: { sessions: Sess[
                     <span className="ml-auto whitespace-nowrap text-xs text-fg-subtle">{s.estimatedMinutes} min</span>
                     <ChevronRight className="size-4 shrink-0 text-fg-subtle group-hover:text-fg" />
                   </div>
-                  <p className={cn("mt-1 font-display text-lg font-semibold tracking-tight", muted && "text-fg-muted")}>{s.name}</p>
+                  <p className={cn("mt-1 font-display text-lg tracking-tight", muted && "text-fg-muted")}>{s.name}</p>
                   {s.exercises.length && !muted ? (
                     <ul className="mt-2 divide-y divide-white/[0.05] text-sm">
                       {s.exercises.map((e, k) => <li key={k} className="flex items-baseline justify-between gap-3 py-1.5"><span className="min-w-0 text-fg-muted">{e.name}</span>{e.sets ? <span className="shrink-0 tabular text-xs text-fg-subtle">{e.sets} × {e.reps}</span> : null}</li>)}

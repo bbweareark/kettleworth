@@ -23,7 +23,7 @@ export function SheetContent({ className, children, title, description, side = "
         <div className="mx-auto mt-3 h-1 w-10 rounded-full bg-surface-3 sm:hidden" aria-hidden />
         <div className="flex items-start justify-between gap-4 px-5 pb-3 pt-4">
           <div>
-            <D.Title className="font-display text-xl font-semibold tracking-tighter">{title}</D.Title>
+            <D.Title className="font-display text-xl tracking-tighter">{title}</D.Title>
             {description ? <D.Description className="mt-1 text-sm text-fg-muted">{description}</D.Description> : <D.Description className="sr-only">{title}</D.Description>}
           </div>
           <D.Close className="rounded-md p-1 text-fg-muted hover:bg-surface-2 hover:text-fg" aria-label="Close"><X className="size-5" /></D.Close>

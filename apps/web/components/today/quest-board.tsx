@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Swords, Shield, Check, Timer, Flame, ChevronRight, Home } from "lucide-react";
 import { shouldAskAboutSession, pastDayLabel, type SideQuest } from "@kettleworth/core";
 import { Button, cn, toast } from "@kettleworth/ui";
+import { Icon3D } from "@/components/app/icon-3d";
 
 type Board = {
   main: { sessionId: string; name: string; scheduledOn: string; status: string; points: number; overdue: boolean } | null;
@@ -66,14 +67,14 @@ export function QuestBoard({ board: initial, todayIso }: { board: Board; todayIs
       {board.main ? (
         <div className={cn("relative overflow-hidden rounded-2xl p-4 ring-1 transition-colors", mainDone ? "bg-signal-soft ring-signal/30" : "bg-[linear-gradient(120deg,color-mix(in_oklch,var(--color-ember)_14%,transparent),transparent)] ring-ember/25")}>
           <div className="flex items-start gap-3">
-            <div className={cn("grid size-10 shrink-0 place-items-center rounded-xl", mainDone ? "bg-signal/20" : "bg-ember-soft")}>{mainDone ? <Check className="size-5 text-signal" /> : <Swords className="size-5 text-ember" />}</div>
+            <div className="shrink-0">{mainDone ? <div className="grid size-12 place-items-center rounded-xl bg-signal/20"><Check className="size-6 text-signal" /></div> : <Icon3D name="target" size="sm" />}</div>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-2xs uppercase tracking-label text-ember">Main quest</span>
                 {board.main.overdue && !mainDone ? <span className="rounded-full bg-amber-soft px-2 py-0.5 text-2xs uppercase tracking-label text-amber">From {pastDayLabel(board.main.scheduledOn, todayIso)}</span> : null}
-                <span className="ml-auto font-display text-sm font-semibold tabular text-fg">+{board.main.points}</span>
+                <span className="ml-auto font-display text-sm tabular text-fg">+{board.main.points}</span>
               </div>
-              <h3 className="mt-0.5 truncate font-display text-xl font-semibold tracking-tighter">{board.main.name}</h3>
+              <h3 className="mt-0.5 truncate font-display text-xl tracking-tighter">{board.main.name}</h3>
               {!mainDone ? <Link href={`/app/session/${board.main.sessionId}`} className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-ember hover:underline">Open the session <ChevronRight className="size-4" /></Link> : <p className="mt-1 text-sm text-signal">Complete. Full Growth claimed.</p>}
             </div>
           </div>
@@ -82,7 +83,7 @@ export function QuestBoard({ board: initial, todayIso }: { board: Board; todayIs
             {ask && !mainDone ? (
               <motion.div initial={reduce ? false : { opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
                 <div className="mt-4 border-t border-border-strong pt-4">
-                  <p className="font-display text-base font-semibold tracking-tight">{board.main.overdue ? `Did you do ${board.main.name} ${pastDayLabel(board.main.scheduledOn, todayIso)}?` : "Did you train today?"}</p>
+                  <p className="font-display text-base tracking-tight">{board.main.overdue ? `Did you do ${board.main.name} ${pastDayLabel(board.main.scheduledOn, todayIso)}?` : "Did you train today?"}</p>
                   <p className="text-sm text-fg-muted">Answer honestly. There is a way to keep the week alive either way.</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <Button size="sm" loading={busy === "done"} onClick={() => answer("done")}><Check className="size-4" />Yes, it's done</Button>
@@ -119,13 +120,13 @@ function SideQuestCard({ quest, done, claimed, busy, onClaim }: { quest: SideQue
   return (
     <div className={cn("rounded-2xl p-4 ring-1", done ? "bg-signal-soft ring-signal/30" : "bg-well ring-border")}>
       <div className="flex items-start gap-3">
-        <div className={cn("grid size-10 shrink-0 place-items-center rounded-xl", done ? "bg-signal/20" : "bg-sky-soft")}>{done ? <Check className="size-5 text-signal" /> : <Timer className="size-5 text-sky" />}</div>
+        <div className="shrink-0">{done ? <div className="grid size-12 place-items-center rounded-xl bg-signal/20"><Check className="size-6 text-signal" /></div> : <Icon3D name="clock" size="sm" />}</div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-2xs uppercase tracking-label text-sky">Side quest</span>
-            <span className="ml-auto font-display text-sm font-semibold tabular">+{quest.points}</span>
+            <span className="ml-auto font-display text-sm tabular">+{quest.points}</span>
           </div>
-          <h3 className="mt-0.5 font-display text-xl font-semibold tracking-tighter">{quest.title}</h3>
+          <h3 className="mt-0.5 font-display text-xl tracking-tighter">{quest.title}</h3>
           <p className="mt-1 text-sm text-fg-muted">{quest.rounds} rounds, about {quest.minutes} minutes. {quest.why}</p>
         </div>
       </div>

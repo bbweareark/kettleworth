@@ -67,7 +67,7 @@ function QuizCard({ quiz, sessionId, onDone, onNext }: { quiz: Quiz | null; sess
   return (
     <div>
       <div className="mb-2 flex items-center justify-between text-2xs uppercase tracking-label text-fg-subtle"><span>Quiz · {quiz.tag}</span>{picked == null ? <span className={cn("tabular", left <= 5 && "text-rose")}>{left}s</span> : null}</div>
-      <p className="font-display text-lg font-semibold leading-snug tracking-tighter">{quiz.q}</p>
+      <p className="font-display text-lg leading-snug tracking-tighter">{quiz.q}</p>
       <div className="mt-3 grid gap-1.5">{quiz.options.map((o, i) => (
         <button key={i} type="button" disabled={picked != null} onClick={() => answer(i)} className={cn("rounded-lg border px-3 py-2 text-left text-sm transition-colors", picked == null ? "border-border bg-surface/40 hover:border-border-strong" : i === quiz.answer ? "border-signal bg-signal-soft" : i === picked ? "border-rose bg-rose-soft" : "border-border opacity-50")}>
           <span className="flex items-center gap-2">{picked != null && i === quiz.answer ? <Check className="size-4 text-signal" /> : picked === i ? <X className="size-4 text-rose" /> : null}{o}</span>
@@ -91,7 +91,7 @@ function BreatheCard({ restSeconds, sessionId }: { restSeconds: number; sessionI
   return (
     <div className="flex items-center gap-5">
       <div className="grid size-24 shrink-0 place-items-center"><motion.div animate={reduce ? {} : { scale }} transition={{ duration: 1, ease: "linear" }} className="size-14 rounded-full bg-sky/70 shadow-[0_0_40px_var(--color-sky)]" /></div>
-      <div><div className="text-2xs uppercase tracking-label text-fg-subtle">Breathe · {pat.inhale}-{pat.hold}-{pat.exhale} · cycle {cycles + 1} of {pat.cycles}</div><div className="font-display text-3xl font-semibold tracking-tighter">{phase}</div><p className="mt-1 text-sm text-fg-muted">Nose in, long exhale. Slower breathing brings heart rate down faster between sets, so the next set starts fresher.</p></div>
+      <div><div className="text-2xs uppercase tracking-label text-fg-subtle">Breathe · {pat.inhale}-{pat.hold}-{pat.exhale} · cycle {cycles + 1} of {pat.cycles}</div><div className="font-display text-3xl tracking-tighter">{phase}</div><p className="mt-1 text-sm text-fg-muted">Nose in, long exhale. Slower breathing brings heart rate down faster between sets, so the next set starts fresher.</p></div>
     </div>
   );
 }
@@ -104,7 +104,7 @@ function PredictCard({ nextSet, sessionId, onPrediction }: { nextSet: Props["nex
   return (
     <div>
       <div className="text-2xs uppercase tracking-label text-fg-subtle">Call your next set</div>
-      <p className="font-display text-lg font-semibold tracking-tighter">How many reps will you get?</p>
+      <p className="font-display text-lg tracking-tighter">How many reps will you get?</p>
       <p className="text-sm text-fg-muted">Target {lo} to {hi}. Calling it honestly trains the skill that makes RPE useful. Within one rep earns Growth.</p>
       <div className="mt-3 flex flex-wrap gap-1.5">{opts.map((n) => <button key={n} type="button" disabled={v != null} onClick={() => { setV(n); onPrediction?.(n); record({ sessionId, kind: "predict", itemId: `predict-${Date.now()}`, correct: null, detail: { predicted: n, lo, hi } }); }} className={cn("size-10 rounded-full text-sm font-medium tabular", v === n ? "bg-ember text-ember-fg" : "bg-surface/50 hover:bg-white/10")}>{n}</button>)}</div>
       {v != null && <p className="mt-2 text-sm text-signal">Locked in: {v}. Log the set and we'll compare.</p>}
@@ -117,5 +117,5 @@ function TipCard({ tips, fact, onMoreFacts }: { tips: CheckCard[]; fact?: Fact; 
   const items = [...(fact ? [{ kind: "fact", text: fact.text }] : []), ...tips];
   const c = items[i % Math.max(1, items.length)];
   if (!c) return null;
-  return (<div><div className="text-2xs uppercase tracking-label text-fg-subtle">{c.kind === "fact" ? "Did you know" : c.kind === "cue" ? "Cue" : c.kind === "mistake" ? "Avoid" : "For you"}</div><p className="mt-1 font-display text-lg font-semibold leading-snug tracking-tighter">{c.text}</p><div className="mt-2 flex gap-2">{items.length > 1 && <Button size="sm" variant="ghost" onClick={() => setI((x) => x + 1)}>Next</Button>}{c.kind === "fact" && <Button size="sm" variant="ghost" onClick={onMoreFacts}>Another fact</Button>}</div></div>);
+  return (<div><div className="text-2xs uppercase tracking-label text-fg-subtle">{c.kind === "fact" ? "Did you know" : c.kind === "cue" ? "Cue" : c.kind === "mistake" ? "Avoid" : "For you"}</div><p className="mt-1 font-display text-lg leading-snug tracking-tighter">{c.text}</p><div className="mt-2 flex gap-2">{items.length > 1 && <Button size="sm" variant="ghost" onClick={() => setI((x) => x + 1)}>Next</Button>}{c.kind === "fact" && <Button size="sm" variant="ghost" onClick={onMoreFacts}>Another fact</Button>}</div></div>);
 }

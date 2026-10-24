@@ -30,13 +30,13 @@ export function HeroSession({ session, readiness, exercises, cta, href, art, liv
               <span className="mx-2 opacity-40">|</span>{session.minutes} min · {session.focus.slice(0, 3).map((m) => m.replace("_", " ")).join(" · ")}
             </span>
           </div>
-          <h2 className="font-display text-5xl font-semibold leading-[0.95] tracking-tightest md:text-6xl">{session.name}</h2>
+          <h2 className="font-display text-5xl leading-[0.95] tracking-tightest md:text-6xl">{session.name}</h2>
           {live && current ? <p className="mt-3 text-sm text-fg-muted"><span className="text-fg">Now:</span> {current.name}, set {Math.min((current.done ?? 0) + 1, current.sets)} of {current.sets}.{live.lastSet ? ` Last set ${live.lastSet}.` : ""}</p> : readiness.score != null ? <p className="mt-3 max-w-md text-sm text-fg-muted">{readiness.line}</p> : null}
           <ol className="mt-6 flex gap-5 overflow-x-auto pb-2 scrollbar-none" aria-label="Session map">
             {exercises.map((e, i) => { const isCur = live && i === live.currentIndex; const isDone = !!e.complete; return (
               <li key={e.id} className={cn("flex shrink-0 flex-col gap-1 border-l border-border-strong pl-3 first:border-0 first:pl-0 transition-opacity", isDone && "opacity-45")}>
                 <span className={cn("flex items-center gap-1 text-2xs uppercase tracking-label", isCur ? "text-ember" : "text-fg-subtle")}>{isDone ? <Check className="size-3 text-signal" /> : null}{isCur ? "now" : String(i + 1).padStart(2, "0")}{e.care ? " · care" : ""}</span>
-                <span className={cn("font-display text-2xl font-semibold tabular tracking-tighter", isCur && "text-fg")}>{live && !isDone ? <>{e.done ?? 0}<span className="text-fg-subtle">/</span>{e.sets}</> : <>{e.sets}<span className="text-fg-subtle">×</span>{e.reps}</>}</span>
+                <span className={cn("font-display text-2xl tabular tracking-tighter", isCur && "text-fg")}>{live && !isDone ? <>{e.done ?? 0}<span className="text-fg-subtle">/</span>{e.sets}</> : <>{e.sets}<span className="text-fg-subtle">×</span>{e.reps}</>}</span>
                 <span className={cn("max-w-[9rem] truncate text-xs", isCur ? "text-fg" : "text-fg-muted")}>{e.name}</span>
                 {isCur ? <span className="h-0.5 w-8 rounded-full bg-ember" /> : null}
               </li>); })}
@@ -44,7 +44,7 @@ export function HeroSession({ session, readiness, exercises, cta, href, art, liv
           <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2"><Link href={href} className="inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-lg bg-fg px-6 text-base font-semibold text-bg transition-transform hover:scale-[1.02] active:scale-[0.98]">{cta} <Play className="size-4" /></Link><Link href="/app/programme" className="inline-flex h-12 items-center gap-1 whitespace-nowrap px-3 text-sm text-fg-muted hover:text-fg">Week plan <ChevronRight className="size-4" /></Link></div>
         </div>
         <Ring value={dial.value} size={168} stroke={10} tone={tone} label={`${dial.label} ${dial.big}`}>
-          <div className="text-center"><div className="font-display text-5xl font-semibold tracking-tightest"><CountUp value={Number(dial.big)} /></div><div className="mx-auto max-w-[7rem] text-2xs uppercase tracking-label text-fg-subtle">{dial.label}</div></div>
+          <div className="text-center"><div className="font-display text-5xl tracking-tightest"><CountUp value={Number(dial.big)} /></div><div className="mx-auto max-w-[7rem] text-2xs uppercase tracking-label text-fg-subtle">{dial.label}</div></div>
         </Ring>
       </div>
     </section>

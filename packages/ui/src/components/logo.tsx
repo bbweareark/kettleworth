@@ -41,7 +41,7 @@ export function Logo({ className, withWordmark = true, size = 26 }: { className?
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       <BrandMark size={size} />
-      {withWordmark ? <span className="font-display text-lg font-semibold tracking-tighter">Kettleworth</span> : null}
+      {withWordmark ? <span className="font-display text-lg tracking-tighter">Kettleworth</span> : null}
     </span>
   );
 }

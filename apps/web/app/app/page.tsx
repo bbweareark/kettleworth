@@ -58,7 +58,7 @@ export default async function Today() {
   return (
     <AppStack>
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <div><p className="eyebrow">{new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}</p><h1 className="font-display text-3xl font-semibold tracking-tighter md:text-4xl">{greet}, {firstName}.</h1></div>
+        <div><p className="eyebrow">{new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}</p><h1 className="font-display text-3xl tracking-tighter md:text-4xl">{greet}, {firstName}.</h1></div>
         {progress.streakWeeks > 0 && <Badge tone="amber"><Flame className="size-3" /> {progress.streakWeeks}-week streak</Badge>}
       </div>
       <OfflineWarmup sessionHref={today ? `/app/session/${today.id}` : null} images={[...(today ? [sessionArt(today.name, rec.profile.sex)] : []), ...(detail?.instances ?? []).map((i) => i.exercise.imageUrls[0]).filter((u): u is string => !!u)]} />
@@ -68,7 +68,7 @@ export default async function Today() {
 
       {!prog ? (
         <Card className="animate-fade-up"><CardContent className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
-          <div><h2 className="font-display text-xl font-semibold">Profile ready. Let's build the block.</h2><p className="mt-1 text-sm text-fg-muted">{rec.aiSummary ?? "A periodised plan from your goals, schedule and equipment."}</p></div>
+          <div><h2 className="font-display text-xl">Profile ready. Let's build the block.</h2><p className="mt-1 text-sm text-fg-muted">{rec.aiSummary ?? "A periodised plan from your goals, schedule and equipment."}</p></div>
           <Button asChild size="lg"><Link href="/app/programme/new">Generate programme <Sparkles /></Link></Button>
         </CardContent></Card>
       ) : today ? (
@@ -85,7 +85,7 @@ export default async function Today() {
       ) : state.kind === "rest" ? (
         <RestHero art={sessionArt((state.next ?? state.missed)!.name, rec.profile.sex)} next={state.next} missed={state.missed} todayIso={todayIso} />
       ) : (
-        <Card><CardContent className="flex items-center justify-between gap-4"><div><h2 className="font-display text-xl font-semibold">Block complete.</h2><p className="text-sm text-fg-muted">Time to build the next one.</p></div><Button asChild><Link href="/app/programme/new?continue=1">Build next block <ArrowRight /></Link></Button></CardContent></Card>
+        <Card><CardContent className="flex items-center justify-between gap-4"><div><h2 className="font-display text-xl">Block complete.</h2><p className="text-sm text-fg-muted">Time to build the next one.</p></div><Button asChild><Link href="/app/programme/new?continue=1">Build next block <ArrowRight /></Link></Button></CardContent></Card>
       )}
 
       {quests ? <QuestBoard board={quests} todayIso={todayIso} /> : null}
@@ -98,7 +98,7 @@ export default async function Today() {
 
       <div className="grid gap-3 lg:grid-cols-3">
         <Card className="lg:col-span-2"><CardContent className="p-4">
-          <div className="mb-2 flex items-center justify-between"><h3 className="font-display text-base font-semibold">Week ahead</h3><Link href="/app/programme" className="text-xs text-ember hover:underline">Programme</Link></div>
+          <div className="mb-2 flex items-center justify-between"><h3 className="font-display text-base">Week ahead</h3><Link href="/app/programme" className="text-xs text-ember hover:underline">Programme</Link></div>
           {upcoming.length ? (<ul className="grid gap-2 sm:grid-cols-2">{upcoming.slice(0, 4).map((s) => (<li key={s.id}><Link href={`/app/session/${s.id}`} className="flex items-center justify-between rounded-lg border border-border px-3 py-2.5 text-sm transition-colors hover:border-border-strong hover:bg-surface-2"><span><span className="block font-medium">{s.name}</span><span className="text-xs text-fg-subtle">{whenLabel(s.scheduledOn, todayIso).replace(/^tomorrow$/, "Tomorrow")} · {s.estimatedMinutes} min</span></span><ArrowRight className="size-4 text-fg-subtle" /></Link></li>))}</ul>) : <p className="text-sm text-fg-muted">Generate a programme to fill your week.</p>}
         </CardContent></Card>
         <div className="space-y-3">
@@ -113,7 +113,7 @@ export default async function Today() {
 function Tile({ label, value, hint, spark, tone = "ember" }: { label: string; value: number; hint?: string; spark?: number[]; tone?: "ember" | "signal" | "sky" | "amber" }) {
   return (
     <div className="flex items-end justify-between gap-2 p-4">
-      <div><div className="text-2xs uppercase tracking-label text-fg-subtle">{label}</div><div className="font-display mt-1 text-4xl font-semibold tracking-tightest"><CountUp value={value} /></div>{hint ? <div className="mt-0.5 text-xs text-fg-subtle">{hint}</div> : null}</div>
+      <div><div className="text-2xs uppercase tracking-label text-fg-subtle">{label}</div><div className="font-display mt-1 text-4xl tracking-tightest"><CountUp value={value} /></div>{hint ? <div className="mt-0.5 text-xs text-fg-subtle">{hint}</div> : null}</div>
       {spark && spark.length > 1 ? <Sparkline points={spark} tone={tone} /> : null}
     </div>
   );

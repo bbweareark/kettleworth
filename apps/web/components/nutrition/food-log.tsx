@@ -92,7 +92,7 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="eyebrow">Today's log</div>
-          <div className="mt-1 flex items-baseline gap-2"><span className="font-display text-4xl font-semibold tracking-tightest tabular">{Math.round(tot.calories)}</span><span className="text-sm text-fg-subtle">of {targets.calories} kcal</span></div>
+          <div className="mt-1 flex items-baseline gap-2"><span className="font-display text-4xl tracking-tightest tabular">{Math.round(tot.calories)}</span><span className="text-sm text-fg-subtle">of {targets.calories} kcal</span></div>
         </div>
         <div className={cn("rounded-full px-3 py-1 text-sm tabular", left >= 0 ? "bg-signal-soft text-signal" : "bg-amber-soft text-amber")}>{left >= 0 ? `${left} kcal left` : `${-left} kcal over`}</div>
       </div>
@@ -148,7 +148,7 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
                 <div className="grid gap-3 sm:grid-cols-2">
                   <button type="button" onClick={() => setScanning(true)} className="group relative flex min-h-36 flex-col items-start justify-end overflow-hidden rounded-2xl bg-[linear-gradient(140deg,color-mix(in_oklch,var(--color-signal)_18%,transparent),transparent_70%)] p-4 text-left ring-1 ring-signal/25 transition-transform active:scale-[0.99]">
                     <div className="mb-auto grid size-11 place-items-center rounded-xl bg-signal-soft"><ScanBarcode className="size-5 text-signal" /></div>
-                    <div className="mt-4 font-display text-lg font-semibold tracking-tight">Scan a barcode</div>
+                    <div className="mt-4 font-display text-lg tracking-tight">Scan a barcode</div>
                     <div className="text-xs text-fg-muted">Exact values from the label, for anything packaged</div>
                   </button>
                   <PhotoButton busy={busy === "photo"} onPhoto={async (f) => { try { const img = await preparePhoto(f); await runEstimate({ image: img }, "photo"); } catch { toast.error("Couldn't read that photo"); setBusy(null); } }} />

@@ -9,7 +9,13 @@ pillar.
 
 - Primary source: **ORYZO AI — "Darkroom product editorial"** —
   https://styles.refero.design/style/1f204e95-454a-437e-845b-c1b169d35607
-- Secondary: none. One DNA, carried everywhere.
+  Carries identity: the warm near-black ground, the single ember, cream over white.
+- Secondary source: **Auros — "Abyssal terminal"** —
+  https://styles.refero.design/style/21cfe0c1-778d-4613-9f47-a5718eb929b3
+  Carries structure for the signed-in app, where ORYZO's 100vh showcase rhythm is wrong.
+  Measured live on auros.global: display at weight 500 with line-height exactly 1.0 and
+  tracking -2.44px at 51.79px (-0.047em); buttons at weight 400, 6px radius, no shadow;
+  section padding 160px top / 80px bottom. Two radii are the entire shape vocabulary.
 - Tone: **disciplined, warm, exacting**
 - Platform: web (installable PWA), phone-first
 
@@ -60,9 +66,23 @@ signal (done) / amber (attention, missed, streak) / rose (danger) / sky (rest, r
 
 ## Typography
 
-- Display: **Inter Tight** — 600. Tracking `-0.025em`, tightest `-0.04em` at hero scale.
-- Text: **Inter** — 400/500/600.
-- Mono: **JetBrains Mono** — weights/reps/load readouts only.
+- Display: **Clash Display 600** — Fontshare, free for commercial use, self-hosted woff2 (15KB).
+- Text: **Switzer 400/500/600** — Fontshare, free for commercial use, self-hosted (56KB).
+- No mono family. Readouts use the display face with `font-variant-numeric: tabular-nums`,
+  which is the instrument look without a dev-tool tell.
+- **Total font payload 71KB**, inside the 120KB budget. `font-display: swap` with Next's
+  metric-matched fallback, so there is no load-time layout shift.
+
+**Why these:** Inter Tight and Inter were the previous faces. They are the fonts every
+generated interface reaches for, they carry no tone, and they are the single loudest reason
+the app still read as a template. Auros's own face is Matter (Displaay, commercial); its
+Refero page names Satoshi as the close free match, and the same Fontshare library carries
+Clash Display, which has the weight and the tight geometry this product needs. Licence:
+Fontshare free commercial, recorded here.
+
+**One display weight, every size.** Auros sets theirs at 500 because Matter is dense; Clash
+Display is lighter-stemmed, so Kettleworth's is 600. The uniform weight is the point: no
+bold, no light, so large type reads as engineered rather than shouted.
 
 | Token | Size / line-height / tracking | Use |
 |---|---|---|
@@ -95,8 +115,9 @@ Base unit 4px. Ramp: 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 · 128 · 
 
 ## Radius & elevation
 
-`--radius-sm 4px` · `md 6px` · `lg 8px` · `xl 12px` · `2xl 16px` · `3xl 20px` · `full 9999px`.
-Containers never go below `--radius-xl` (12px): the geometry is deliberately chunky.
+**Two values are the entire shape vocabulary** (Auros): **6px** for controls, **16px** for
+panels. The ramp names are kept so nothing downstream breaks, but `sm`/`md`/`lg` all resolve
+to 6px and `xl`/`2xl`/`3xl` all resolve to 16px.
 
 **Lane: crisp hairlines, not soft elevation.** Depth comes from the surface stack
 (`bg → surface → surface-2`) plus a 1px inset top highlight. The two shadow tokens that remain
@@ -155,9 +176,11 @@ theme the reader has chosen.
 ## Icons
 
 - Inline UI: **Lucide**, 1.5px stroke, 20px default (16px in dense rows). One set, no mixing.
-- Expressive (landing feature grid, empty states): **3dicons.co** V1 — single camera angle,
-  single light direction, tinted to ember/neutral. Budget ≤150KB each, lazy below the fold,
-  explicit width/height, `aria-hidden` when decorative.
+- Expressive (empty states, quest board): **3dicons.co V1**, licence **CC0** (no attribution
+  required), self-hosted in `/public/icons3d` at 2x (16–25KB each). Always the `dynamic`
+  angle so the light direction matches across the set. The set ships in mixed stock colours,
+  so `Icon3D` maps every render into the warm ember family with one filter chain — otherwise
+  a purple pie chart next to a pink target reads as clip art.
 
 ## Imagery
 

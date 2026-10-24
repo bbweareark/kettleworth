@@ -2,7 +2,7 @@ export const metadata = { title: "Privacy" };
 export default function Privacy() {
   return (
     <main className="page max-w-3xl py-12 space-y-6">
-      <h1 className="font-display text-3xl font-semibold tracking-tighter">Privacy policy</h1>
+      <h1 className="font-display text-3xl tracking-tighter">Privacy policy</h1>
       <p className="text-xs text-fg-subtle">Last updated 13 September 2026. Early-access version; a lawyer-reviewed policy replaces this before public launch.</p>
       {[
         ["What we collect", "Account details (name, email), the training profile you give us (body metrics, goals, schedule, equipment, preferences, injuries, medical flags, diet), what you log (sets, sessions, food, measurements), and, only when you connect a provider, the health data types you switch on (sleep, HRV, heart rate, activity, workouts, weight)."],
@@ -14,7 +14,7 @@ export default function Privacy() {
         ["Your rights", "Export all your data as JSON from Settings at any time. Delete your account from Settings: this revokes every connected provider, deletes synced data and removes your records. Disconnecting a provider deletes that provider's data immediately. GDPR/UK GDPR requests: hello@kettleworth.app."],
         ["Retention", "Data is kept while your account exists. Server logs are kept for 30 days."],
         ["Not medical advice", "Kettleworth provides general fitness and nutrition guidance. It does not diagnose or treat conditions. Consult a professional before starting a programme, especially with a medical condition, pregnancy, or a history of disordered eating."],
-      ].map(([h, b]) => (<section key={h}><h2 className="font-display text-lg font-semibold">{h}</h2><p className="mt-1 text-fg-muted">{b}</p></section>))}
+      ].map(([h, b]) => (<section key={h}><h2 className="font-display text-lg">{h}</h2><p className="mt-1 text-fg-muted">{b}</p></section>))}
     </main>
   );
 }

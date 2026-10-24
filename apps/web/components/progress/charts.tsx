@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { cn } from "@kettleworth/ui";
 import { dayMonth } from "@/lib/dates";
+import { Icon3D, type Icon3DName } from "@/components/app/icon-3d";
 
 /**
  * Progress charts, built for a phone first: compact axes that never steal a third of the width, date labels a person
@@ -26,12 +27,15 @@ export function weekStart(isoWeekKey: string): string {
 export const compact = (n: number) => (Math.abs(n) >= 10000 ? `${Math.round(n / 1000)}k` : Math.abs(n) >= 1000 ? `${Math.round(n / 100) / 10}k` : String(Math.round(n * 10) / 10));
 
 /** What to show before there are two points: the number that exists, and when the line will appear. */
-export function NotYet({ value, label, hint }: { value?: string | null; label: string; hint: string }) {
+export function NotYet({ value, label, hint, icon = "chart" }: { value?: string | null; label: string; hint: string; icon?: Icon3DName }) {
   return (
-    <div className="flex min-h-32 flex-col justify-center rounded-2xl bg-well px-4 py-5 ring-1 ring-border">
-      {value ? <div className="font-display text-3xl font-semibold tabular tracking-tight">{value}</div> : null}
-      <div className="text-2xs uppercase tracking-label text-fg-subtle">{label}</div>
-      <p className="mt-1.5 text-sm text-fg-muted">{hint}</p>
+    <div className="flex min-h-32 items-center gap-4 rounded-2xl bg-well px-4 py-5 ring-1 ring-border">
+      <Icon3D name={icon} size="md" />
+      <div className="min-w-0">
+        {value ? <div className="font-display text-3xl tabular tracking-tight">{value}</div> : null}
+        <div className="text-2xs uppercase tracking-label text-fg-subtle">{label}</div>
+        <p className="mt-1.5 text-sm text-fg-muted">{hint}</p>
+      </div>
     </div>
   );
 }

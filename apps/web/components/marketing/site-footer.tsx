@@ -21,7 +21,7 @@ export function SiteFooter() {
       <div className="page pb-10 pt-14 md:pb-12 md:pt-20">
         <Reveal>
           <p className="eyebrow">Kettleworth</p>
-          <p className="mt-4 max-w-md text-balance font-display text-2xl font-semibold tracking-tighter md:text-3xl">
+          <p className="mt-4 max-w-md text-balance font-display text-2xl tracking-tighter md:text-3xl">
             Train on purpose. The plan adapts; the standard does not.
           </p>
         </Reveal>
@@ -59,7 +59,7 @@ export function SiteFooter() {
             textLength="1000"
             lengthAdjust="spacingAndGlyphs"
             fill="currentColor"
-            className="fill-fg/[0.05] font-display text-[150px] font-semibold"
+            className="fill-fg/[0.05] font-display text-[150px]"
           >
             KETTLEWORTH
           </text>

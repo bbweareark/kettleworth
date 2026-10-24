@@ -39,7 +39,7 @@ export function Hero() {
         <div>
           <p className="eyebrow animate-fade-up">Personal trainer · Nutritionist · Training crew</p>
 
-          <h1 className="mt-6 font-display text-hero font-semibold text-balance">
+          <h1 className="mt-6 font-display text-hero text-balance">
             {LINES.map((line, i) => (
               <span key={line} className="block overflow-hidden pb-[0.06em]">
                 <span className="block animate-line-up" style={{ animationDelay: `${120 + i * 70}ms` }}>{line}</span>

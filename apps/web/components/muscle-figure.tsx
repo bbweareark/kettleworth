@@ -70,7 +70,7 @@ export function MuscleGrid({ setsByMuscle, lastWeek, sex, className }: { setsByM
           <img src={figureSrc(sex, lit ? g : null, BACK_VIEW.has(g) ? "back" : "front")} alt="" className={cn("aspect-[3/4] w-full object-cover object-top", !lit && "opacity-40 saturate-50")} />
           <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.75))] p-2">
             <div className="text-2xs uppercase tracking-label text-fg-subtle">{GROUP_LABEL[g]}</div>
-            <div className="flex items-baseline gap-1"><span className={cn("font-display text-xl font-semibold tabular", lit ? "text-fg" : "text-fg-subtle")}>{n}</span><span className="text-2xs text-fg-subtle">sets</span>{d !== 0 && lastWeek ? <span className={cn("ml-auto text-2xs tabular", d > 0 ? "text-signal" : "text-amber")}>{d > 0 ? "+" : ""}{d}</span> : null}</div>
+            <div className="flex items-baseline gap-1"><span className={cn("font-display text-xl tabular", lit ? "text-fg" : "text-fg-subtle")}>{n}</span><span className="text-2xs text-fg-subtle">sets</span>{d !== 0 && lastWeek ? <span className={cn("ml-auto text-2xs tabular", d > 0 ? "text-signal" : "text-amber")}>{d > 0 ? "+" : ""}{d}</span> : null}</div>
           </div>
         </div>); })}
     </div>
