@@ -8,6 +8,7 @@ import { ThisWeek } from "@/components/programme/this-week";
 import { Badge, Button, Card, CardContent, Progress, cn } from "@kettleworth/ui";
 import { VolumeChart } from "@/components/programme/volume-chart";
 import { ProgrammeCalendar } from "@/components/programme/calendar";
+import { AppStack } from "@/components/app/stack";
 
 export const metadata = { title: "Programme" };
 export const dynamic = "force-dynamic";
@@ -29,7 +30,7 @@ export default async function Programme() {
   const byWeek = new Map(weeks.map((w) => [w.id, sessions.filter((s) => s.weekId === w.id)]));
   const plan = p.plan;
   return (
-    <div className="space-y-6">
+    <AppStack>
       <div className="relative -mx-4 -mt-6 overflow-hidden px-4 pb-8 pt-10 sm:-mx-6 sm:px-6 lg:-mt-8 lg:rounded-3xl lg:ring-1 lg:ring-border">
         <img src="/art/programme.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-80" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_80%,transparent)_50%,color-mix(in_oklch,var(--color-bg)_40%,transparent)_100%)]" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,transparent_50%,var(--color-bg)_100%)]" />
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -53,6 +54,6 @@ export default async function Programme() {
         <div className="rounded-2xl bg-surface/40 p-5 ring-1 ring-border"><h3 className="mb-3 font-display text-base font-semibold">Weekly sets per muscle</h3><VolumeChart data={plan.weeklyVolumeBySet} /></div>
       </div>
       <details><summary className="cursor-pointer text-sm font-medium text-fg-muted">Exercise index ({Object.keys(exercises).length})</summary><ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{Object.values(exercises).sort((a, b) => a.name.localeCompare(b.name)).map((e) => <li key={e.id}><Link href={`/library/${e.slug}`} className="text-sm text-ember hover:underline">{e.name}</Link><span className="ml-2 text-xs text-fg-subtle capitalize">{e.primaryMuscles.map((m) => m.replace("_", " ")).join(", ")}</span></li>)}</ul></details>
-    </div>
+    </AppStack>
   );
 }

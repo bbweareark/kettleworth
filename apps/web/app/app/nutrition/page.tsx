@@ -6,6 +6,7 @@ import { Card, CardContent, Stat } from "@kettleworth/ui";
 import { MealPlanView } from "@/components/nutrition/meal-plan";
 import { FoodLogView } from "@/components/nutrition/food-log";
 import { MacroRings } from "@/components/nutrition/macro-rings";
+import { AppStack } from "@/components/app/stack";
 
 export const metadata = { title: "Nutrition" };
 export const dynamic = "force-dynamic";
@@ -19,7 +20,7 @@ export default async function Nutrition() {
   const [mp, log] = await Promise.all([getOrBuildMealPlan(user.id), foodLogForDay(user.id, today)]);
   const t = targets;
   return (
-    <div className="space-y-6">
+    <AppStack>
       <div><p className="eyebrow">Nutrition</p><h1 className="font-display text-3xl font-semibold tracking-tighter md:text-4xl">Fuel that matches the training.</h1></div>
       {t.warnings.length ? <div className="flex items-start gap-2 rounded-lg border border-amber/40 bg-amber-soft p-3 text-sm"><AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber" /><div>{t.warnings.map((w) => <p key={w}>{w}</p>)}</div></div> : null}
       <section className="relative grid gap-6 overflow-hidden rounded-3xl p-6 ring-1 ring-border md:grid-cols-[auto_1fr] md:items-center">
@@ -33,6 +34,6 @@ export default async function Nutrition() {
       <FoodLogView date={today} initial={log.map((l) => ({ id: l.id, slot: l.slot, label: l.label, macros: l.macros, servings: l.servings, source: l.source as "manual" }))} targets={t} recipes={Object.values(mp.recipes).map((r) => ({ id: r.id, name: r.name, macros: r.macros }))} />
       <MealPlanView initial={{ weekStartsOn: mp.weekStartsOn, plan: mp.plan, coachNote: mp.coachNote }} recipes={Object.fromEntries(Object.values(mp.recipes).map((r) => [r.id, { id: r.id, name: r.name, description: r.description, prepMinutes: r.prepMinutes, steps: r.steps, ingredients: r.ingredients, macros: r.macros, tags: r.tags }]))} targets={t} />
       <p className="text-xs text-fg-subtle">Kettleworth gives general nutrition guidance, not medical advice. If you have a medical condition, are pregnant, or have a history of disordered eating, please work with a registered dietitian.</p>
-    </div>
+    </AppStack>
   );
 }

@@ -2,7 +2,7 @@
 import { dayMonth } from "@/lib/format";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Mail, Send, Sparkles, Check, X } from "lucide-react";
 import { Button, Textarea, Badge, CoachPulse, cn, toast } from "@kettleworth/ui";
 
@@ -10,6 +10,7 @@ type Letter = { id: string; weekStartsOn: string; headline: string; body: string
 type Msg = { id: string; role: "user" | "coach"; content: string; actions: { type: string; summary: string; applied: boolean }[]; at: string };
 
 export function CoachView({ letters, history, ai, name }: { letters: Letter[]; history: Msg[]; ai: boolean; name: string }) {
+  const reduce = useReducedMotion();
   const router = useRouter();
   const [msgs, setMsgs] = useState(history);
   const [text, setText] = useState("");
@@ -51,10 +52,10 @@ export function CoachView({ letters, history, ai, name }: { letters: Letter[]; h
               {open === l.id ? <><img src="/art/letter.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-40" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-bg)_60%,transparent)_0%,var(--color-bg)_40%)]" /></> : null}
               <button type="button" onClick={() => setOpen(open === l.id ? null : l.id)} className="flex w-full items-center justify-between gap-3 p-5 text-left">
                 <div><div className="text-2xs uppercase tracking-label text-fg-subtle">Week of {dayMonth(l.weekStartsOn, true)}</div><h2 className="font-display text-xl font-semibold tracking-tighter">{l.headline}</h2></div>
-                {!l.readAt && <Badge tone="ember">New</Badge>}
+                {!l.readAt && <Badge tone="amber">New</Badge>}
               </button>
               <AnimatePresence initial={false}>{open === l.id && (
-                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                <motion.div initial={reduce ? false : { height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }} className="overflow-hidden">
                   <div className="prose-coach px-5 pb-5 text-[15px] leading-relaxed text-fg-muted">{l.body.split("\n\n").map((p, i) => <p key={i}>{p}</p>)}
                     {l.adaptations.length ? <ul className="mt-4 space-y-1.5 border-t border-border pt-4 text-sm">{l.adaptations.map((a, i) => <li key={i} className="flex gap-2"><Sparkles className="mt-0.5 size-3.5 shrink-0 text-ember" />{a.reason}</li>)}</ul> : null}
                     <p className="mt-3 text-2xs text-fg-subtle">{l.generatedBy === "rules" ? "Written from your numbers by the rules engine." : "Written by the coach from your numbers."}</p>

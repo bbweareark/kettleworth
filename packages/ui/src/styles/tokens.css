@@ -45,6 +45,7 @@
   /* Rhythm. Marketing sections breathe; in-app stacks stay dense. */
   --spacing-section: clamp(4rem, 10vw, 9.5rem);
   --spacing-app-section: clamp(1.25rem, 4vw, 2rem);
+  --spacing-section-y: clamp(4rem, 10vw, 9.5rem);
   --container-content: 72rem;
 
   /* Semantic colours (resolved from CSS vars so themes can swap them) */
@@ -61,6 +62,7 @@
   --color-fg-muted: var(--kw-fg-muted);
   --color-fg-subtle: var(--kw-fg-subtle);
   --color-fg-inverse: var(--kw-fg-inverse);
+  --color-fg-on-fill: oklch(98% 0 0);
   --color-ember: var(--kw-ember);
   --color-ember-hover: var(--kw-ember-hover);
   --color-ember-soft: var(--kw-ember-soft);
@@ -96,12 +98,16 @@
   --animate-fade-up: fade-up var(--dur-slow) var(--ease-out) both;
   --animate-line-up: line-up var(--dur-hero) var(--ease-out) both;
   --animate-ember-drift: ember-drift 18s ease-in-out infinite;
+  --animate-fade-in: fade-in var(--dur-base) var(--ease-out) both;
+  --animate-sheet-in: sheet-in var(--dur-base) var(--ease-out) both;
   --animate-pulse-soft: pulse-soft 2s ease-in-out infinite;
   --animate-ring: ring 0.9s var(--ease-out-quart) both;
 }
 
 @keyframes fade-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheet-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @keyframes line-up { from { transform: translateY(105%); } to { transform: translateY(0); } }
 @keyframes ember-drift { 0%, 100% { transform: translate3d(-6%, 0, 0) scale(1.05); } 50% { transform: translate3d(6%, -4%, 0) scale(1.15); } }
 @keyframes ring { from { stroke-dashoffset: var(--ring-len); } to { stroke-dashoffset: var(--ring-offset); } }
@@ -174,6 +180,46 @@
   --kw-series-4: oklch(56% 0.09 320);
   --kw-series-5: oklch(64% 0.11 80);
   --kw-series-6: oklch(55% 0.13 22);
+}
+
+
+/*
+ * Tailwind resolves the --color-* aliases once, at :root, so a nested [data-theme] island
+ * would keep the root theme's colours even though its --kw-* values changed. Re-pointing the
+ * aliases on the theme selectors themselves makes dark islands (photographic sections that
+ * must always read dark, whatever the reader's theme) actually work.
+ */
+[data-theme="dark"], [data-theme="light"] {
+  --color-bg: var(--kw-bg);
+  --color-bg-elevated: var(--kw-bg-elevated);
+  --color-surface: var(--kw-surface);
+  --color-surface-2: var(--kw-surface-2);
+  --color-surface-3: var(--kw-surface-3);
+  --color-border: var(--kw-border);
+  --color-well: var(--kw-well);
+  --color-well-strong: var(--kw-well-strong);
+  --color-border-strong: var(--kw-border-strong);
+  --color-fg: var(--kw-fg);
+  --color-fg-muted: var(--kw-fg-muted);
+  --color-fg-subtle: var(--kw-fg-subtle);
+  --color-fg-inverse: var(--kw-fg-inverse);
+  --color-ember: var(--kw-ember);
+  --color-ember-hover: var(--kw-ember-hover);
+  --color-ember-soft: var(--kw-ember-soft);
+  --color-ember-fg: var(--kw-ember-fg);
+  --color-signal: var(--kw-signal);
+  --color-signal-soft: var(--kw-signal-soft);
+  --color-amber: var(--kw-amber);
+  --color-amber-soft: var(--kw-amber-soft);
+  --color-rose: var(--kw-rose);
+  --color-rose-soft: var(--kw-rose-soft);
+  --color-sky: var(--kw-sky);
+  --color-series-1: var(--kw-series-1);
+  --color-series-2: var(--kw-series-2);
+  --color-series-3: var(--kw-series-3);
+  --color-series-4: var(--kw-series-4);
+  --color-series-5: var(--kw-series-5);
+  --color-series-6: var(--kw-series-6);
 }
 
 @layer base {

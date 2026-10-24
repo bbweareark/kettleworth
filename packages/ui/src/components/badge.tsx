@@ -10,6 +10,7 @@ const badge = cva("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 tex
       signal: "bg-signal-soft text-signal",
       amber: "bg-amber-soft text-amber",
       rose: "bg-rose-soft text-rose",
+      sky: "bg-sky/12 text-sky",
       outline: "border border-border text-fg-muted",
     },
   },

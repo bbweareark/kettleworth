@@ -13,6 +13,7 @@ import { WeeklyCheckIn } from "@/components/today/check-in";
 import { QuestBoard } from "@/components/today/quest-board";
 import { DoneHero, RestHero, whenLabel } from "@/components/app/day-hero";
 import { localTodayIso, localTimeZone } from "@/lib/local-date";
+import { AppStack } from "@/components/app/stack";
 
 export const dynamic = "force-dynamic";
 
@@ -55,10 +56,10 @@ export default async function Today() {
   pulse.push({ text: `Nutrition target ${nutrition.targets.calories} kcal · ${nutrition.targets.proteinG} g protein, ${activities.length ? "adjusted for today's activity" : "recalibrated weekly from your weigh-ins"}.`, tone: "neutral" });
 
   return (
-    <div className="space-y-5">
+    <AppStack>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div><p className="eyebrow">{new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}</p><h1 className="font-display text-3xl font-semibold tracking-tighter md:text-4xl">{greet}, {firstName}.</h1></div>
-        {progress.streakWeeks > 0 && <Badge tone="ember"><Flame className="size-3" /> {progress.streakWeeks}-week streak</Badge>}
+        {progress.streakWeeks > 0 && <Badge tone="amber"><Flame className="size-3" /> {progress.streakWeeks}-week streak</Badge>}
       </div>
       <OfflineWarmup sessionHref={today ? `/app/session/${today.id}` : null} images={[...(today ? [sessionArt(today.name, rec.profile.sex)] : []), ...(detail?.instances ?? []).map((i) => i.exercise.imageUrls[0]).filter((u): u is string => !!u)]} />
       <CoachPulse avatar="/art/seal.png" items={pulse} />
@@ -105,7 +106,7 @@ export default async function Today() {
           {!providers.length && <Link href="/app/connected" className="block rounded-xl border border-dashed border-border-strong p-4 text-sm text-fg-muted transition-colors hover:border-ember hover:text-fg">Connect Whoop, Oura, Garmin, Fitbit, Polar or Strava and readiness calibrates itself every morning.</Link>}
         </div>
       </div>
-    </div>
+    </AppStack>
   );
 }
 

@@ -11,10 +11,10 @@ export const SheetClose = D.Close;
 export function SheetContent({ className, children, title, description, side = "bottom", ...p }: D.DialogContentProps & { title: string; description?: string; side?: "bottom" | "right" }) {
   return (
     <D.Portal>
-      <D.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" />
+      <D.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm motion-safe:data-[state=open]:animate-fade-in" />
       <D.Content
         className={cn(
-          "fixed z-50 flex flex-col bg-bg-elevated border-border shadow-pop focus:outline-none",
+          "fixed z-50 flex flex-col bg-bg-elevated border-border shadow-pop focus:outline-none motion-safe:data-[state=open]:animate-sheet-in",
           side === "bottom" ? "inset-x-0 bottom-0 max-h-[92dvh] rounded-t-3xl border-t sm:inset-y-0 sm:left-auto sm:right-0 sm:max-h-none sm:w-[440px] sm:rounded-none sm:border-l" : "inset-y-0 right-0 w-full max-w-[480px] border-l",
           className,
         )}

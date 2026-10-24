@@ -8,7 +8,7 @@ export function SessionMock() {
     <div className="surface mx-auto w-full max-w-sm rounded-3xl p-5" aria-hidden>
       <div className="mb-4 flex items-center justify-between text-xs text-fg-subtle"><span>Lower A · Week 3</span><span className="tabular">32:10</span></div>
       <Progress value={45} className="mb-5" />
-      <div className="mb-1 flex items-center gap-2"><Badge tone="ember">Primary</Badge><span className="text-xs text-fg-subtle">Exercise 2 of 6</span></div>
+      <div className="mb-1 flex items-center gap-2"><Badge tone="outline">Primary</Badge><span className="text-xs text-fg-subtle">Exercise 2 of 6</span></div>
       <h3 className="font-display text-2xl font-semibold tracking-tighter">Barbell Back Squat</h3>
       <p className="mt-1 text-sm text-fg-muted">5 × 3 to 5 @ RPE 8 · 3 min rest</p>
       <div className="mt-4 space-y-2">
@@ -22,7 +22,7 @@ export function SessionMock() {
           </div>
         ))}
       </div>
-      <div className="mt-4 flex items-center justify-between rounded-xl bg-ember-soft px-4 py-3"><div className="flex items-center gap-2 text-sm"><Timer className="size-4 text-ember" /> Rest</div><span className="font-mono text-2xl font-semibold tabular text-ember">1:42</span></div>
+      <div className="mt-4 flex items-center justify-between rounded-xl bg-sky/12 px-4 py-3"><div className="flex items-center gap-2 text-sm"><Timer className="size-4 text-sky" /> Rest</div><span className="font-mono text-2xl font-semibold tabular text-sky">1:42</span></div>
       <p className="mt-3 text-xs text-fg-muted">You hit 5 reps at RPE 7 last week, so squat is up 2.5 kg.</p>
     </div>
   );

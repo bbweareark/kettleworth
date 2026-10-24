@@ -13,6 +13,16 @@ change extends this design instead of starting a new one. Values live in `DESIGN
 | 6 · Motion | **Reveal on enter** spine + 2 signature moments | [scrolltide.co](https://www.scrolltide.co/) — Emberkiri, Cinder (Hero Section) | Reveal-on-enter is the cheap correct default. Signature moments: hero line clip-reveal, and a slow ember gradient drift behind the closing CTA. Everything else is a plain reveal, so the page reads as designed rather than templated. |
 | 5 · Icons & imagery | **Lucide** inline · **3dicons.co V1** expressive · **Higgsfield** art | [3dicons.co](https://3dicons.co/) · Higgsfield MCP | 3dicons ships exactly the vocabulary a training app needs (Fire, Trophy, Chart, Target, Clock). Higgsfield is connected, so section art is generated to the DNA palette rather than stocked. |
 
+## Applied behind the login, too
+
+| Surface | What changed |
+|---|---|
+| App nav | Side Bar + Tabs kept, but the two nav landmarks were both named "Main"; they are now Primary and Secondary. The current page is marked by an ember rail, not an ember fill, so the only filled ember on screen is still the primary action. Community and Connected apps were desktop-only and unreachable on a phone: they now live in a **More** sheet on the app bar, which replaced the lone settings gear. The sidebar is translucent to match the public header, and the z-index ladder is consistent. |
+| App motion | A dashboard should not animate on scroll, so app routes get `AppStack`: one quiet staggered arrival on mount, capped at six, pure CSS. Applied to Today, Programme, Progress and Nutrition. |
+| Accent discipline | Ember was simultaneously action, brand, nav selection, focus ring, rest timer and decoration. Streak, library pattern, build, calories and unread badges moved to amber/outline; the rest timer moved to sky. |
+| Components | Buttons now meet the 44px touch target (`md` 44, `lg` 52, `xl` 56) and their icons scale with size instead of being pinned to 16px inside a 56px button. |
+| Dialogs & sheets | The overlay carried `animate-in` from a plugin that is not installed, so it never animated. Replaced with real keyframes, gated behind `motion-safe`. |
+
 Picks made offline (gallery unreachable): **none** — all seven were read live. One refero
 detail page (Superhuman) failed to hydrate in the browser pane, so ORYZO was compared against
 it only by index description; ORYZO was the stronger match regardless.

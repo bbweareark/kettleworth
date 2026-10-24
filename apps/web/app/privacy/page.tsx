@@ -1,10 +1,7 @@
-import Link from "next/link";
-import { Logo } from "@kettleworth/ui";
 export const metadata = { title: "Privacy" };
 export default function Privacy() {
   return (
     <main className="page max-w-3xl py-12 space-y-6">
-      <Link href="/" aria-label="Kettleworth"><Logo /></Link>
       <h1 className="font-display text-3xl font-semibold tracking-tighter">Privacy policy</h1>
       <p className="text-xs text-fg-subtle">Last updated 13 September 2026. Early-access version; a lawyer-reviewed policy replaces this before public launch.</p>
       {[

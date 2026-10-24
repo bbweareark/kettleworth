@@ -12,6 +12,7 @@ import { Badge, Card, CardContent, Stat, EmptyState } from "@kettleworth/ui";
 import { kgToLb, round } from "@kettleworth/core";
 import { E1RMChart, TonnageChart, WeightChart, VolumeCompare } from "@/components/progress/charts";
 import { MeasurementForm } from "@/components/progress/measurement-form";
+import { AppStack } from "@/components/app/stack";
 
 export const metadata = { title: "Progress" };
 export const dynamic = "force-dynamic";
@@ -25,7 +26,7 @@ export default async function Progress() {
   const w = (kg: number | null | undefined) => (kg == null ? null : units === "metric" ? round(kg, 1) : round(kgToLb(kg), 1));
   const u = units === "metric" ? "kg" : "lb";
   return (
-    <div className="space-y-6">
+    <AppStack>
       <div><p className="eyebrow">Progress</p><h1 className="font-display text-3xl font-semibold tracking-tighter md:text-4xl">The numbers behind the work.</h1></div>
       <GrowthPanel growth={phys.growth} />
       <div className="grid grid-cols-2 divide-x divide-border rounded-2xl bg-surface/50 ring-1 ring-border sm:grid-cols-4">
@@ -61,6 +62,6 @@ export default async function Progress() {
         <Card><CardContent><h2 className="mb-3 flex items-center gap-2 font-display text-lg font-semibold"><Trophy className="size-4 text-ember" /> Personal records</h2>{p.prs.length ? <ul className="divide-y divide-border">{p.prs.map((pr) => <li key={pr.id} className="flex items-center justify-between py-2 text-sm"><span>{pr.name}</span><span className="tabular text-fg-muted">{w(pr.weightKg)} {u} × {pr.reps} · e1RM {w(pr.value)} {u}</span></li>)}</ul> : <p className="text-sm text-fg-subtle">Beat your best estimated 1RM on any lift and it lands here.</p>}</CardContent></Card>
         <Card><CardContent><h2 className="mb-3 flex items-center gap-2 font-display text-lg font-semibold"><Flame className="size-4 text-ember" /> Recent sessions</h2>{p.recentSessions.length ? <ul className="divide-y divide-border">{p.recentSessions.map((s, i) => <li key={i} className="flex items-center justify-between py-2 text-sm"><span>{s.name}</span><span className="flex items-center gap-2 text-fg-muted">{s.sessionRpe ? <Badge tone="outline">RPE {s.sessionRpe}</Badge> : null}{dayMonth(s.scheduledOn)}</span></li>)}</ul> : <p className="text-sm text-fg-subtle">No sessions completed yet.</p>}</CardContent></Card>
       </div>
-    </div>
+    </AppStack>
   );
 }

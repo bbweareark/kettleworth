@@ -53,8 +53,10 @@ Implemented as `--kw-*` CSS custom properties, exposed to Tailwind v4 as `--colo
 Dark is the default and is designed first. Light is re-picked, not inverted: the accent drops
 to 58% lightness so it stops vibrating on a pale ground.
 
-**Rule:** ember on a non-action is a bug. Status colours (signal/amber/rose/sky) are for state,
-never for actions.
+**Rule: ember means exactly two things — the primary action, and where you are.** The filled
+ember button, the current-page rail in the nav, and the focus ring. Nothing else. It is not a
+brand-emphasis colour, not a decorative wash, and not a status. Status is carried by
+signal (done) / amber (attention, missed, streak) / rose (danger) / sky (rest, recovery).
 
 ## Typography
 
@@ -115,15 +117,26 @@ shadows on cards".
 --dur-fast: 150ms   --dur-base: 240ms   --dur-slow: 420ms   --dur-hero: 600ms
 ```
 
-- Page spine: **reveal on enter** — 20px translate + fade as a section crosses ~15% of the
+- Public pages: **reveal on enter** — 20px translate + fade as a section crosses ~15% of the
   viewport, via `IntersectionObserver`, revealed once and never re-hidden.
 - Signature moments (max 2, landing page only):
   1. **Hero line reveal** — the headline's three lines clip-mask up, staggered 70ms.
   2. **Ember sweep on the pre-footer CTA** — a slow warm gradient drift behind the closing ask.
+- In-app pages: no scroll choreography. A dashboard is read, not watched, so app routes get a
+  single quiet arrival instead (`AppStack`): top-level sections fade up on mount, staggered
+  60ms and capped at six. Pure CSS, no JavaScript.
 - Micro-interactions 120–200ms. Stagger 60–70ms, capped at 6 items.
 - `transform` and `opacity` only. Never animate width/height/top/left/margin/box-shadow.
 - Everything is neutralised under `prefers-reduced-motion: reduce`, and reveal elements start
   **visible** so content reads with JS disabled or before hydration.
+
+## Theme islands
+
+Tailwind resolves the `--color-*` aliases once at `:root`, so a nested `[data-theme]` subtree
+would otherwise keep the root theme's colours. `tokens.css` re-points every alias on the theme
+selectors themselves, which makes **dark islands** work: the landing hero and the closing CTA
+carry `data-theme="dark"` so cream type always clears the photograph beneath it, whichever
+theme the reader has chosen.
 
 ## Components
 
