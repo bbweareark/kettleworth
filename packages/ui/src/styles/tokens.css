@@ -26,7 +26,11 @@
   --text-4xl--line-height: 3.25rem;
   --text-5xl: 4rem;
   --text-5xl--line-height: 4rem;
+  --text-hero: clamp(2.75rem, 9vw, 5.5rem);
+  --text-hero--line-height: 0.92;
+  --text-hero--letter-spacing: -0.04em;
   --tracking-tightest: -0.04em;
+  --tracking-label: 0.14em;
   --tracking-tighter: -0.025em;
 
   /* Radius */
@@ -36,6 +40,12 @@
   --radius-xl: 12px;
   --radius-2xl: 16px;
   --radius-3xl: 20px;
+  --radius-full: 9999px;
+
+  /* Rhythm. Marketing sections breathe; in-app stacks stay dense. */
+  --spacing-section: clamp(4rem, 10vw, 9.5rem);
+  --spacing-app-section: clamp(1.25rem, 4vw, 2rem);
+  --container-content: 72rem;
 
   /* Semantic colours (resolved from CSS vars so themes can swap them) */
   --color-bg: var(--kw-bg);
@@ -44,6 +54,8 @@
   --color-surface-2: var(--kw-surface-2);
   --color-surface-3: var(--kw-surface-3);
   --color-border: var(--kw-border);
+  --color-well: var(--kw-well);
+  --color-well-strong: var(--kw-well-strong);
   --color-border-strong: var(--kw-border-strong);
   --color-fg: var(--kw-fg);
   --color-fg-muted: var(--kw-fg-muted);
@@ -68,35 +80,47 @@
   --color-series-6: var(--kw-series-6);
 
   /* Elevation */
-  --shadow-card: 0 1px 0 0 var(--kw-highlight) inset, 0 12px 32px -16px rgb(0 0 0 / 0.55);
+  --shadow-card: 0 1px 0 0 var(--kw-highlight) inset;
   --shadow-pop: 0 1px 0 0 var(--kw-highlight) inset, 0 24px 60px -20px rgb(0 0 0 / 0.7);
   --shadow-glow: 0 0 0 1px color-mix(in oklch, var(--kw-ember) 35%, transparent), 0 10px 30px -14px color-mix(in oklch, var(--kw-ember) 30%, transparent);
 
   /* Motion */
-  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --animate-fade-up: fade-up 0.4s var(--ease-out-quart) both;
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --dur-fast: 150ms;
+  --dur-base: 240ms;
+  --dur-slow: 420ms;
+  --dur-hero: 600ms;
+  --animate-fade-up: fade-up var(--dur-slow) var(--ease-out) both;
+  --animate-line-up: line-up var(--dur-hero) var(--ease-out) both;
+  --animate-ember-drift: ember-drift 18s ease-in-out infinite;
   --animate-pulse-soft: pulse-soft 2s ease-in-out infinite;
   --animate-ring: ring 0.9s var(--ease-out-quart) both;
 }
 
 @keyframes fade-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+@keyframes line-up { from { transform: translateY(105%); } to { transform: translateY(0); } }
+@keyframes ember-drift { 0%, 100% { transform: translate3d(-6%, 0, 0) scale(1.05); } 50% { transform: translate3d(6%, -4%, 0) scale(1.15); } }
 @keyframes ring { from { stroke-dashoffset: var(--ring-len); } to { stroke-dashoffset: var(--ring-offset); } }
 
 :root, [data-theme="dark"] {
   color-scheme: dark;
-  --kw-bg: oklch(11.5% 0.005 60);
-  --kw-bg-elevated: oklch(14% 0.006 60);
-  --kw-surface: oklch(16.5% 0.006 60);
-  --kw-surface-2: oklch(20% 0.007 60);
-  --kw-surface-3: oklch(25% 0.008 60);
-  --kw-border: oklch(100% 0 0 / 0.06);
+  --kw-bg: oklch(11.5% 0.012 58);
+  --kw-bg-elevated: oklch(14% 0.014 58);
+  --kw-surface: oklch(17% 0.016 55);
+  --kw-surface-2: oklch(21% 0.018 52);
+  --kw-surface-3: oklch(26% 0.020 50);
+  --kw-border: oklch(100% 0 0 / 0.07);
   --kw-border-strong: oklch(100% 0 0 / 0.12);
   --kw-highlight: oklch(100% 0 0 / 0.04);
-  --kw-fg: oklch(94% 0.006 70);
-  --kw-fg-muted: oklch(68% 0.008 70);
-  --kw-fg-subtle: oklch(50% 0.008 70);
+  --kw-well: oklch(0% 0 0 / 0.22);
+  --kw-well-strong: oklch(0% 0 0 / 0.32);
+  --kw-fg: oklch(94% 0.012 72);
+  --kw-fg-muted: oklch(70% 0.012 72);
+  --kw-fg-subtle: oklch(56% 0.012 72);
   --kw-fg-inverse: oklch(12% 0.005 60);
   --kw-ember: oklch(76% 0.085 68);
   --kw-ember-hover: oklch(81% 0.085 70);
@@ -119,7 +143,7 @@
 
 [data-theme="light"] {
   color-scheme: light;
-  --kw-bg: oklch(97.5% 0.004 80);
+  --kw-bg: oklch(97.5% 0.006 78);
   --kw-bg-elevated: oklch(99% 0.002 80);
   --kw-surface: oklch(99% 0.002 80);
   --kw-surface-2: oklch(95% 0.005 80);
@@ -127,9 +151,11 @@
   --kw-border: oklch(0% 0 0 / 0.07);
   --kw-border-strong: oklch(0% 0 0 / 0.14);
   --kw-highlight: oklch(100% 0 0 / 0.5);
+  --kw-well: oklch(0% 0 0 / 0.035);
+  --kw-well-strong: oklch(0% 0 0 / 0.06);
   --kw-fg: oklch(20% 0.01 60);
   --kw-fg-muted: oklch(46% 0.01 60);
-  --kw-fg-subtle: oklch(60% 0.01 60);
+  --kw-fg-subtle: oklch(58% 0.01 60);
   --kw-fg-inverse: oklch(98% 0 0);
   --kw-ember: oklch(58% 0.10 62);
   --kw-ember-hover: oklch(53% 0.10 62);
@@ -167,3 +193,27 @@
 @utility glass { background: color-mix(in oklch, var(--color-bg) 70%, transparent); backdrop-filter: blur(16px) saturate(1.4); border: 1px solid var(--color-border); }
 @utility noise { position: relative; }
 @utility scrollbar-none { scrollbar-width: none; &::-webkit-scrollbar { display: none; } }
+
+/* Prose measure, so body copy never runs past a comfortable line length. */
+@utility measure { max-width: 62ch; }
+
+/* The DNA's section separator: a 1px dashed rule, never a solid box. */
+@utility rule-dashed { border: 0; border-top: 1px dashed var(--color-border-strong); }
+
+/* Scrim for type sitting over imagery. Always applied, never eyeballed. */
+@utility scrim {
+  background: linear-gradient(180deg, color-mix(in oklch, var(--color-bg) 35%, transparent) 0%, color-mix(in oklch, var(--color-bg) 75%, transparent) 55%, var(--color-bg) 100%);
+}
+
+/*
+ * Reveal on enter (the page spine).
+ * Content starts VISIBLE: the hidden state only applies once JS has marked the document
+ * ready, so the page reads with JS disabled, before hydration, and under reduced motion.
+ */
+@layer base {
+  [data-reveal] { transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out); transition-delay: var(--reveal-delay, 0ms); }
+  .js-reveal [data-reveal]:not([data-reveal="in"]) { opacity: 0; transform: translateY(20px); }
+  @media (prefers-reduced-motion: reduce) {
+    .js-reveal [data-reveal]:not([data-reveal="in"]) { opacity: 1; transform: none; }
+  }
+}

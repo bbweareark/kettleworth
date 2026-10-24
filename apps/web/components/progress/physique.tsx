@@ -18,7 +18,7 @@ export function GrowthPanel({ growth }: { growth: Growth }) {
   const pct = ((growth.total - prev) / Math.max(1, growth.nextLevelAt - prev)) * 100;
   const reduce = useReducedMotion();
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-surface via-bg-elevated to-bg p-6 ring-1 ring-white/[0.05]">
+    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-surface via-bg-elevated to-bg p-6 ring-1 ring-border">
       <div aria-hidden className="pointer-events-none absolute -left-20 -top-24 size-72 rounded-full bg-ember/20 blur-3xl" />
       <div className="relative flex flex-wrap items-end justify-between gap-6">
         <div>

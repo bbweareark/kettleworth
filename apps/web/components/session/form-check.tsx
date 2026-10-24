@@ -40,7 +40,7 @@ export function FormCheck({ exerciseId, name, cards, image, onReady }: { exercis
       <div className="relative flex items-start gap-4">
         {image ? <img src={image} alt="" className="hidden size-24 shrink-0 rounded-xl object-cover sm:block" /> : null}
         <div className="min-w-0 flex-1">
-          <div className="mb-2 flex items-center gap-2"><span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-2xs font-bold uppercase tracking-[0.14em]", S.chip)}><I className="size-3" /> {S.label}</span><span className="text-2xs text-fg-subtle">{i + 1} / {cards.length}</span></div>
+          <div className="mb-2 flex items-center gap-2"><span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-2xs font-bold uppercase tracking-label", S.chip)}><I className="size-3" /> {S.label}</span><span className="text-2xs text-fg-subtle">{i + 1} / {cards.length}</span></div>
           <AnimatePresence mode="wait" initial={false}>
             <motion.p key={i} initial={reduce ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={reduce ? undefined : { opacity: 0, x: -12 }} transition={{ duration: 0.22 }} className="font-display text-xl font-semibold leading-snug tracking-tighter md:text-2xl">{c.text}</motion.p>
           </AnimatePresence>
@@ -61,9 +61,9 @@ export function RestTip({ cards }: { cards: CheckCard[] }) {
   useEffect(() => { if (reduce || cards.length < 2) return; const t = setInterval(() => setI((x) => (x + 1) % cards.length), 6000); return () => clearInterval(t); }, [cards.length, reduce]);
   const c = cards[i]; if (!c) return null; const S = STYLE[c.kind]; const I = S.icon;
   return (
-    <div className="mt-4 flex items-start gap-3 rounded-xl bg-black/20 p-3 text-sm">
+    <div className="mt-4 flex items-start gap-3 rounded-xl bg-well p-3 text-sm">
       <span className={cn("grid size-7 shrink-0 place-items-center rounded-full", S.chip)}><I className="size-3.5" /></span>
-      <div className="min-w-0"><div className="text-2xs font-semibold uppercase tracking-[0.14em] text-fg-subtle">While you rest · {S.label}</div><AnimatePresence mode="wait" initial={false}><motion.p key={i} initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={reduce ? undefined : { opacity: 0 }} className="text-fg">{c.text}</motion.p></AnimatePresence></div>
+      <div className="min-w-0"><div className="text-2xs font-semibold uppercase tracking-label text-fg-subtle">While you rest · {S.label}</div><AnimatePresence mode="wait" initial={false}><motion.p key={i} initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={reduce ? undefined : { opacity: 0 }} className="text-fg">{c.text}</motion.p></AnimatePresence></div>
     </div>
   );
 }

@@ -39,7 +39,7 @@ export function DrinkBuilder({ initial, dailyTarget, busy, onLog }: { initial?: 
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {DRINKS.filter((x) => x.group === group).map((x) => { const Icon = ICON[x.id] ?? GROUPS.find((g) => g.id === x.group)!.Icon; const on = x.id === order.drink; return (
-          <button key={x.id} type="button" aria-pressed={on} onClick={() => pick(x.id)} className={cn("flex items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm ring-1 transition-all active:scale-[0.98]", on ? "bg-ember-soft ring-ember/40 text-fg" : "bg-white/[0.03] ring-white/[0.06] text-fg-muted hover:text-fg")}><Icon className={cn("size-4 shrink-0", on && "text-ember")} /><span className="truncate">{x.name}</span></button>); })}
+          <button key={x.id} type="button" aria-pressed={on} onClick={() => pick(x.id)} className={cn("flex items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm ring-1 transition-all active:scale-[0.98]", on ? "bg-ember-soft ring-ember/40 text-fg" : "bg-white/[0.03] ring-border text-fg-muted hover:text-fg")}><Icon className={cn("size-4 shrink-0", on && "text-ember")} /><span className="truncate">{x.name}</span></button>); })}
       </div>
 
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
@@ -60,9 +60,9 @@ export function DrinkBuilder({ initial, dailyTarget, busy, onLog }: { initial?: 
         </div>
 
         {/* The meter */}
-        <div className="hidden min-w-[13rem] flex-col justify-between rounded-2xl bg-black/30 p-4 ring-1 ring-white/[0.06] md:flex">
+        <div className="hidden min-w-[13rem] flex-col justify-between rounded-2xl bg-well-strong p-4 ring-1 ring-border md:flex">
           <div>
-            <div className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">Calories</div>
+            <div className="text-2xs uppercase tracking-label text-fg-subtle">Calories</div>
             <div className="flex items-baseline gap-1"><CountUp key={result.calories} value={result.calories} duration={reduce ? 0 : 450} className="font-display text-5xl font-semibold tracking-tightest" /><span className="text-sm text-fg-subtle">kcal</span></div>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"><motion.div className="h-full rounded-full bg-ember" animate={{ width: `${share * 100}%` }} transition={{ duration: reduce ? 0 : 0.35 }} /></div>
             <div className="mt-1 text-2xs text-fg-subtle">{Math.round(share * 100)}% of today's {dailyTarget} kcal</div>
@@ -74,7 +74,7 @@ export function DrinkBuilder({ initial, dailyTarget, busy, onLog }: { initial?: 
       </div>
 
       {/* Phones: one meter that follows you down the builder, with where the calories come from */}
-      <div className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom))] z-10 rounded-2xl bg-surface/95 p-3 ring-1 ring-white/10 backdrop-blur md:hidden">
+      <div className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom))] z-10 rounded-2xl bg-surface/95 p-3 ring-1 ring-border-strong backdrop-blur md:hidden">
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
             <div className="flex items-baseline gap-1.5"><CountUp key={result.calories} value={result.calories} duration={reduce ? 0 : 350} className="font-display text-3xl font-semibold tracking-tightest" /><span className="text-xs text-fg-subtle">kcal · {Math.round(share * 100)}% of today</span></div>
@@ -89,16 +89,16 @@ export function DrinkBuilder({ initial, dailyTarget, busy, onLog }: { initial?: 
 }
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><div className="mb-1.5 text-2xs uppercase tracking-[0.16em] text-fg-subtle">{label}</div><div className="flex flex-wrap gap-1.5">{children}</div></div>;
+  return <div><div className="mb-1.5 text-2xs uppercase tracking-label text-fg-subtle">{label}</div><div className="flex flex-wrap gap-1.5">{children}</div></div>;
 }
 function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; children: React.ReactNode }) {
-  return <button type="button" aria-pressed={on} onClick={onClick} className={cn("inline-flex h-9 items-center rounded-full px-3 text-sm ring-1 transition-colors", on ? "bg-ember text-ember-fg ring-ember" : "bg-white/[0.04] text-fg-muted ring-white/[0.07] hover:text-fg")}>{children}</button>;
+  return <button type="button" aria-pressed={on} onClick={onClick} className={cn("inline-flex h-9 items-center rounded-full px-3 text-sm ring-1 transition-colors", on ? "bg-ember text-ember-fg ring-ember" : "bg-white/[0.04] text-fg-muted ring-border hover:text-fg")}>{children}</button>;
 }
 function Stepper({ label, unit, value, min, max, onChange }: { label: string; unit: string; value: number; min: number; max: number; onChange: (v: number) => void }) {
   return (
     <div>
-      <div className="mb-1.5 text-2xs uppercase tracking-[0.16em] text-fg-subtle">{label}</div>
-      <div className="inline-flex items-center gap-1 rounded-full bg-white/[0.04] p-1 ring-1 ring-white/[0.07]">
+      <div className="mb-1.5 text-2xs uppercase tracking-label text-fg-subtle">{label}</div>
+      <div className="inline-flex items-center gap-1 rounded-full bg-white/[0.04] p-1 ring-1 ring-border">
         <button type="button" aria-label={`Less ${label.toLowerCase()}`} disabled={value <= min} onClick={() => onChange(Math.max(min, value - 1))} className="grid size-8 place-items-center rounded-full text-fg-muted hover:bg-white/10 disabled:opacity-30"><Minus className="size-3.5" /></button>
         <span className="min-w-[3.5rem] text-center font-display text-sm font-semibold tabular">{value}{unit ? <span className="ml-1 text-2xs font-normal text-fg-subtle">{unit}</span> : null}</span>
         <button type="button" aria-label={`More ${label.toLowerCase()}`} disabled={value >= max} onClick={() => onChange(Math.min(max, value + 1))} className="grid size-8 place-items-center rounded-full text-fg-muted hover:bg-white/10 disabled:opacity-30"><Plus className="size-3.5" /></button>

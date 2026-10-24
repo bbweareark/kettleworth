@@ -63,7 +63,7 @@ export function BarcodeScanner({ onProduct, onClose }: { onProduct: (p: Product)
 
   return (
     <div className="space-y-3">
-      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-black ring-1 ring-white/10">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-black ring-1 ring-border-strong">
         <video ref={video} playsInline muted className={cn("size-full object-cover", state !== "scanning" && "opacity-30")} />
         {state === "scanning" ? (
           <div aria-hidden className="pointer-events-none absolute inset-0 grid place-items-center">
@@ -97,19 +97,19 @@ export function ProductCard({ product, busy, onLog, onCancel }: { product: Produ
   const brandShort = product.brand?.replace(/\b(services|limited|ltd|plc|inc|sa\/nv|sa|nv|gmbh|llc|uk|group|company|co)\b\.?/gi, "").replace(/\s+/g, " ").trim() ?? "";
   const label = brandShort && !product.name.toLowerCase().includes(brandShort.toLowerCase()) ? `${brandShort} ${product.name}` : product.name;
   return (
-    <div className="space-y-4 rounded-2xl bg-black/25 p-4 ring-1 ring-white/[0.07]">
+    <div className="space-y-4 rounded-2xl bg-well p-4 ring-1 ring-border">
       <div className="flex items-start gap-3">
         {product.imageUrl ? <img src={product.imageUrl} alt="" className="size-16 shrink-0 rounded-xl bg-white object-contain p-1" /> : <div className="grid size-16 shrink-0 place-items-center rounded-xl bg-white/[0.05]"><ScanBarcode className="size-6 text-fg-subtle" /></div>}
         <div className="min-w-0 flex-1">
-          <div className="text-2xs uppercase tracking-[0.16em] text-signal">From the label</div>
+          <div className="text-2xs uppercase tracking-label text-signal">From the label</div>
           <div className="truncate font-display text-lg font-semibold tracking-tight">{product.name}</div>
           <div className="text-xs text-fg-subtle">{product.brand ?? "Unknown brand"} · {product.per100.calories} kcal per 100 {product.unit}{product.servingLabel ? ` · serving ${product.servingLabel}` : ""}</div>
         </div>
       </div>
       <div className="flex flex-wrap items-end gap-3">
-        {serving ? <div className="inline-flex rounded-full bg-white/[0.04] p-1 ring-1 ring-white/[0.07]">{(["serving", "amount"] as const).map((x) => <button key={x} type="button" onClick={() => setMode(x)} className={cn("h-8 rounded-full px-3 text-sm", mode === x ? "bg-fg text-bg" : "text-fg-muted")}>{x === "serving" ? "Servings" : product.unit === "ml" ? "Millilitres" : "Grams"}</button>)}</div> : null}
+        {serving ? <div className="inline-flex rounded-full bg-white/[0.04] p-1 ring-1 ring-border">{(["serving", "amount"] as const).map((x) => <button key={x} type="button" onClick={() => setMode(x)} className={cn("h-8 rounded-full px-3 text-sm", mode === x ? "bg-fg text-bg" : "text-fg-muted")}>{x === "serving" ? "Servings" : product.unit === "ml" ? "Millilitres" : "Grams"}</button>)}</div> : null}
         {mode === "serving" && serving ? (
-          <div className="flex gap-1">{[0.5, 1, 1.5, 2, 3].map((s) => <button key={s} type="button" onClick={() => setServings(s)} className={cn("h-9 min-w-10 rounded-full px-3 text-sm tabular ring-1", servings === s ? "bg-ember text-ember-fg ring-ember" : "text-fg-muted ring-white/10")}>{s}</button>)}</div>
+          <div className="flex gap-1">{[0.5, 1, 1.5, 2, 3].map((s) => <button key={s} type="button" onClick={() => setServings(s)} className={cn("h-9 min-w-10 rounded-full px-3 text-sm tabular ring-1", servings === s ? "bg-ember text-ember-fg ring-ember" : "text-fg-muted ring-border-strong")}>{s}</button>)}</div>
         ) : (
           <label className="flex items-center gap-2 text-sm"><Input inputMode="decimal" value={String(amount)} onChange={(e) => setAmount(Math.max(0, Number(e.target.value.replace(/[^0-9.]/g, "")) || 0))} className="h-9 w-24" aria-label={`Amount in ${product.unit}`} />{product.unit}</label>
         )}

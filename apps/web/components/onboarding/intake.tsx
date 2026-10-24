@@ -121,12 +121,12 @@ export function Intake({ initial, step, name, ai }: { initial: TrainingProfile |
         <div aria-hidden className="absolute inset-y-0 right-0 hidden w-32 bg-[linear-gradient(90deg,transparent,var(--color-bg))] lg:block" />
         <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5 lg:p-8">
           <ol className="flex items-center gap-1.5" aria-label="Chapters">{CHAPTERS.map((c, k) => <li key={c} className={cn("h-1 rounded-full transition-all", k < chapterIdx ? "w-6 bg-ember" : k === chapterIdx ? "w-10 bg-fg" : "w-3 bg-white/25")} title={c} />)}</ol>
-          <div className="flex items-center gap-3"><AnimatePresence mode="popLayout" initial={false}><motion.span key={earned} initial={reduce ? false : { opacity: 0, y: 8, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8 }} className="rounded-full bg-black/40 px-2.5 py-1 text-2xs uppercase tracking-[0.16em] text-ember backdrop-blur" title="Showing up counts: every answered step earns Growth">{earned} Growth</motion.span></AnimatePresence><span className="text-2xs uppercase tracking-[0.18em] text-white/70">{Math.min(i + 1, STEPS.length)} / {STEPS.length}</span></div>
+          <div className="flex items-center gap-3"><AnimatePresence mode="popLayout" initial={false}><motion.span key={earned} initial={reduce ? false : { opacity: 0, y: 8, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8 }} className="rounded-full bg-black/40 px-2.5 py-1 text-2xs uppercase tracking-label text-ember backdrop-blur" title="Showing up counts: every answered step earns Growth">{earned} Growth</motion.span></AnimatePresence><span className="text-2xs uppercase tracking-label text-white/70">{Math.min(i + 1, STEPS.length)} / {STEPS.length}</span></div>
         </div>
         <div className="absolute inset-x-0 bottom-0 p-5 lg:p-10">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={stepDef.id} initial={reduce ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0, y: -8 }} transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}>
-              <div className="text-2xs uppercase tracking-[0.18em] text-ember">Chapter {chapterIdx + 1} · {j.chapter}</div>
+              <div className="text-2xs uppercase tracking-label text-ember">Chapter {chapterIdx + 1} · {j.chapter}</div>
               <h1 className="mt-2 max-w-md font-display text-3xl font-semibold leading-[1.02] tracking-tightest text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.6)] md:text-4xl lg:text-5xl">{j.headline}</h1>
               <p className="mt-2 hidden max-w-sm text-sm text-white/75 lg:block">{j.sub}</p>
             </motion.div>
@@ -142,7 +142,7 @@ export function Intake({ initial, step, name, ai }: { initial: TrainingProfile |
             <motion.div key={followUp ? "follow" : stepDef.id} {...anim} className="space-y-5">
               <div className="flex items-start gap-3"><BrandSeal size={36} className="mt-0.5 shrink-0" /><Typed key={followUp ? followUp.question : coachLine} text={followUp ? followUp.question : coachLine} reduce={!!reduce} className="pt-1.5 font-display text-lg leading-snug tracking-tight text-fg md:text-xl" /></div>
               {thinking ? <div className="ml-11 flex gap-1 px-2 py-2" aria-label="Coach is thinking"><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle" /><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle [animation-delay:150ms]" /><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle [animation-delay:300ms]" /></div> : null}
-              <div className="rounded-3xl bg-surface/60 p-5 ring-1 ring-white/[0.06] backdrop-blur md:p-6">
+              <div className="rounded-3xl bg-surface/60 p-5 ring-1 ring-border backdrop-blur md:p-6">
                 <div className="space-y-5">
                   {followUp ? (
                     <>

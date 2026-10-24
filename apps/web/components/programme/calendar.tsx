@@ -15,7 +15,7 @@ export function ProgrammeCalendar({ weeks, sessions, mesocycles, currentWeekId }
   return (
     <div className="overflow-x-auto">
       <div className="min-w-[520px]">
-        <div className="mb-2 grid grid-cols-[6rem_3rem_repeat(7,1fr)] items-center gap-1 text-2xs uppercase tracking-[0.16em] text-fg-subtle"><span>Block</span><span>Wk</span>{days.map((d, i) => <span key={i} className="text-center">{d}</span>)}</div>
+        <div className="mb-2 grid grid-cols-[6rem_3rem_repeat(7,1fr)] items-center gap-1 text-2xs uppercase tracking-label text-fg-subtle"><span>Block</span><span>Wk</span>{days.map((d, i) => <span key={i} className="text-center">{d}</span>)}</div>
         {weeks.map((w) => {
           const meso = mesocycles.find((m) => m.id === w.mesocycleId);
           const first = weeks.find((x) => x.mesocycleId === w.mesocycleId)?.id === w.id;
@@ -32,7 +32,7 @@ export function ProgrammeCalendar({ weeks, sessions, mesocycles, currentWeekId }
               })}
             </div>);
         })}
-        <div className="mt-3 flex flex-wrap gap-4 text-2xs uppercase tracking-[0.16em] text-fg-subtle"><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-signal" /> done</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-fg/80" /> planned</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-rose/70" /> missed</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-white/20" /> skipped</span><span className="flex items-center gap-1.5"><span className="text-amber">·d</span> deload</span></div>
+        <div className="mt-3 flex flex-wrap gap-4 text-2xs uppercase tracking-label text-fg-subtle"><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-signal" /> done</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-fg/80" /> planned</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-rose/70" /> missed</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-white/20" /> skipped</span><span className="flex items-center gap-1.5"><span className="text-amber">·d</span> deload</span></div>
       </div>
     </div>
   );

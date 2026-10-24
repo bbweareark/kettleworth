@@ -35,11 +35,11 @@ export function MuscleFigure({ muscles, sex, className, size = "md", caption = t
   const dim = size === "sm" ? "size-16" : size === "lg" ? "size-56" : "size-28";
   return (
     <figure className={cn("flex shrink-0 flex-col items-center gap-1.5", className)}>
-      <div className={cn("relative overflow-hidden rounded-2xl ring-1 ring-white/[0.06]", dim)}>
+      <div className={cn("relative overflow-hidden rounded-2xl ring-1 ring-border", dim)}>
         <img src={figureSrc(sex, lead)} alt={lead ? `${GROUP_LABEL[lead]} lit on a bronze figure` : "Bronze figure"} className="size-full object-cover object-top" />
         <div aria-hidden className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_45%,transparent_40%,rgba(0,0,0,0.35)_100%)]" />
       </div>
-      {caption && groups.length ? <figcaption className="max-w-[9rem] text-center text-2xs uppercase tracking-[0.14em] text-fg-subtle">{groups.map((g) => GROUP_LABEL[g]).join(" · ")}</figcaption> : null}
+      {caption && groups.length ? <figcaption className="max-w-[9rem] text-center text-2xs uppercase tracking-label text-fg-subtle">{groups.map((g) => GROUP_LABEL[g]).join(" · ")}</figcaption> : null}
     </figure>
   );
 }
@@ -52,7 +52,7 @@ export function MuscleMap({ muscles, sex, className }: { muscles: string[]; sex?
   return (
     <div className={cn("flex gap-2", className)}>
       {[["front", front], ["back", back]].map(([view, g]) => (
-        <div key={view as string} className="relative aspect-[3/4] w-1/2 overflow-hidden rounded-2xl ring-1 ring-white/[0.06]"><img src={figureSrc(sex, g as MuscleGroup | null, view as "front" | "back")} alt="" className="size-full object-cover object-top" /></div>
+        <div key={view as string} className="relative aspect-[3/4] w-1/2 overflow-hidden rounded-2xl ring-1 ring-border"><img src={figureSrc(sex, g as MuscleGroup | null, view as "front" | "back")} alt="" className="size-full object-cover object-top" /></div>
       ))}
     </div>
   );
@@ -66,10 +66,10 @@ export function MuscleGrid({ setsByMuscle, lastWeek, sex, className }: { setsByM
   return (
     <div className={cn("grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6", className)}>
       {ALL_GROUPS.map((g) => { const n = now[g] ?? 0; const d = n - (prev[g] ?? 0); const lit = n > 0; return (
-        <div key={g} className={cn("relative overflow-hidden rounded-2xl ring-1 transition-all", lit ? "ring-ember/30" : "ring-white/[0.05]")}>
+        <div key={g} className={cn("relative overflow-hidden rounded-2xl ring-1 transition-all", lit ? "ring-ember/30" : "ring-border")}>
           <img src={figureSrc(sex, lit ? g : null, BACK_VIEW.has(g) ? "back" : "front")} alt="" className={cn("aspect-[3/4] w-full object-cover object-top", !lit && "opacity-40 saturate-50")} />
           <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.75))] p-2">
-            <div className="text-2xs uppercase tracking-[0.14em] text-fg-subtle">{GROUP_LABEL[g]}</div>
+            <div className="text-2xs uppercase tracking-label text-fg-subtle">{GROUP_LABEL[g]}</div>
             <div className="flex items-baseline gap-1"><span className={cn("font-display text-xl font-semibold tabular", lit ? "text-fg" : "text-fg-subtle")}>{n}</span><span className="text-2xs text-fg-subtle">sets</span>{d !== 0 && lastWeek ? <span className={cn("ml-auto text-2xs tabular", d > 0 ? "text-signal" : "text-amber")}>{d > 0 ? "+" : ""}{d}</span> : null}</div>
           </div>
         </div>); })}

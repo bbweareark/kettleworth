@@ -28,9 +28,9 @@ export const compact = (n: number) => (Math.abs(n) >= 10000 ? `${Math.round(n / 
 /** What to show before there are two points: the number that exists, and when the line will appear. */
 export function NotYet({ value, label, hint }: { value?: string | null; label: string; hint: string }) {
   return (
-    <div className="flex min-h-32 flex-col justify-center rounded-2xl bg-black/20 px-4 py-5 ring-1 ring-white/[0.05]">
+    <div className="flex min-h-32 flex-col justify-center rounded-2xl bg-well px-4 py-5 ring-1 ring-border">
       {value ? <div className="font-display text-3xl font-semibold tabular tracking-tight">{value}</div> : null}
-      <div className="text-2xs uppercase tracking-[0.14em] text-fg-subtle">{label}</div>
+      <div className="text-2xs uppercase tracking-label text-fg-subtle">{label}</div>
       <p className="mt-1.5 text-sm text-fg-muted">{hint}</p>
     </div>
   );
@@ -54,7 +54,7 @@ export function E1RMChart({ series, unit }: { series: { name: string; points: { 
       </LineChart></ResponsiveContainer></div>
       <div className="mt-2 flex flex-wrap gap-1.5" role="group" aria-label="Lifts shown">
         {ranked.map((s, i) => { const on = shown.includes(s.name); return (
-          <button key={s.name} type="button" aria-pressed={on} onClick={() => setShown((x) => (on ? x.filter((n) => n !== s.name) : [...x, s.name]))} className={cn("inline-flex h-7 max-w-full items-center gap-1.5 rounded-full px-2.5 text-xs ring-1 transition-colors", on ? "bg-white/[0.06] text-fg ring-white/15" : "text-fg-subtle ring-white/[0.06]")}>
+          <button key={s.name} type="button" aria-pressed={on} onClick={() => setShown((x) => (on ? x.filter((n) => n !== s.name) : [...x, s.name]))} className={cn("inline-flex h-7 max-w-full items-center gap-1.5 rounded-full px-2.5 text-xs ring-1 transition-colors", on ? "bg-white/[0.06] text-fg ring-border-strong" : "text-fg-subtle ring-border")}>
             <span className="size-2 shrink-0 rounded-full" style={{ background: on ? SERIES[i % SERIES.length] : "var(--color-surface-3)" }} /><span className="truncate">{s.name}</span>
           </button>); })}
       </div>

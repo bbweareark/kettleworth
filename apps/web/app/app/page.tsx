@@ -63,7 +63,7 @@ export default async function Today() {
       <OfflineWarmup sessionHref={today ? `/app/session/${today.id}` : null} images={[...(today ? [sessionArt(today.name, rec.profile.sex)] : []), ...(detail?.instances ?? []).map((i) => i.exercise.imageUrls[0]).filter((u): u is string => !!u)]} />
       <CoachPulse avatar="/art/seal.png" items={pulse} />
       {weekState && weekState.hasPrevious && !weekState.week.checkin && !weekState.week.isDeload ? <WeeklyCheckIn weekNumber={weekState.week.weekNumber} applied={weekState.week.adaptations} /> : null}
-      {nudges.length ? <ul className="flex flex-wrap gap-2">{nudges.map((n) => (<li key={n.id} className={`flex items-center gap-3 rounded-xl px-3.5 py-2 text-sm ring-1 ring-white/[0.05] ${n.tone === "amber" ? "bg-amber-soft" : n.tone === "signal" ? "bg-signal-soft" : n.tone === "ember" ? "bg-ember-soft" : "bg-surface/60"}`}><span>{n.text}</span>{n.action ? <Link href={n.action.href} className="font-medium text-ember hover:underline">{n.action.label}</Link> : null}</li>))}</ul> : null}
+      {nudges.length ? <ul className="flex flex-wrap gap-2">{nudges.map((n) => (<li key={n.id} className={`flex items-center gap-3 rounded-xl px-3.5 py-2 text-sm ring-1 ring-border ${n.tone === "amber" ? "bg-amber-soft" : n.tone === "signal" ? "bg-signal-soft" : n.tone === "ember" ? "bg-ember-soft" : "bg-surface/60"}`}><span>{n.text}</span>{n.action ? <Link href={n.action.href} className="font-medium text-ember hover:underline">{n.action.label}</Link> : null}</li>))}</ul> : null}
 
       {!prog ? (
         <Card className="animate-fade-up"><CardContent className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
@@ -88,7 +88,7 @@ export default async function Today() {
       )}
 
       {quests ? <QuestBoard board={quests} todayIso={todayIso} /> : null}
-      <div className="grid grid-cols-2 divide-x divide-border rounded-2xl bg-surface/50 ring-1 ring-white/[0.04] lg:grid-cols-4">
+      <div className="grid grid-cols-2 divide-x divide-border rounded-2xl bg-surface/50 ring-1 ring-border lg:grid-cols-4">
         <Tile label="Sessions" value={progress.completedSessions} hint={prog ? `of ${prog.totalWeeks * prog.daysPerWeek}` : undefined} spark={progress.weeklyTonnage.map((x) => x.kg)} />
         <Tile label={`Volume · ${u}`} value={w(progress.tonnageThisWeek)} hint={progress.tonnageLastWeek && progress.tonnageThisWeek ? `${progress.tonnageThisWeek >= progress.tonnageLastWeek ? "+" : ""}${Math.round(((progress.tonnageThisWeek - progress.tonnageLastWeek) / progress.tonnageLastWeek) * 100)}% wk/wk` : progress.tonnageLastWeek ? `${w(progress.tonnageLastWeek)} last week` : "this week"} spark={progress.weeklyTonnage.map((x) => x.kg)} tone="sky" />
         <Tile label="Calories" value={nutrition.targets.calories} hint={`${nutrition.targets.proteinG} g protein`} />
@@ -112,7 +112,7 @@ export default async function Today() {
 function Tile({ label, value, hint, spark, tone = "ember" }: { label: string; value: number; hint?: string; spark?: number[]; tone?: "ember" | "signal" | "sky" | "amber" }) {
   return (
     <div className="flex items-end justify-between gap-2 p-4">
-      <div><div className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">{label}</div><div className="font-display mt-1 text-4xl font-semibold tracking-tightest"><CountUp value={value} /></div>{hint ? <div className="mt-0.5 text-xs text-fg-subtle">{hint}</div> : null}</div>
+      <div><div className="text-2xs uppercase tracking-label text-fg-subtle">{label}</div><div className="font-display mt-1 text-4xl font-semibold tracking-tightest"><CountUp value={value} /></div>{hint ? <div className="mt-0.5 text-xs text-fg-subtle">{hint}</div> : null}</div>
       {spark && spark.length > 1 ? <Sparkline points={spark} tone={tone} /> : null}
     </div>
   );

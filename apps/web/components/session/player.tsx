@@ -199,7 +199,7 @@ function PrescriptionNumerals({ sets }: { sets: PlannedSet[] }) {
   if (f.targetRpe) cells.push([String(f.targetRpe), "rpe"]);
   cells.push([`${Math.round(f.restSeconds / 60 * 10) / 10}`, "min rest"]);
   if (f.tempo) cells.push([f.tempo, "tempo"]);
-  return <div className="flex flex-wrap gap-x-5 gap-y-1">{cells.map(([v, l]) => <div key={l}><span className="font-display text-2xl font-semibold tabular tracking-tighter">{v}</span><span className="ml-1 text-2xs uppercase tracking-[0.16em] text-fg-subtle">{l}</span></div>)}</div>;
+  return <div className="flex flex-wrap gap-x-5 gap-y-1">{cells.map(([v, l]) => <div key={l}><span className="font-display text-2xl font-semibold tabular tracking-tighter">{v}</span><span className="ml-1 text-2xs uppercase tracking-label text-fg-subtle">{l}</span></div>)}</div>;
 }
 function describePrescription(sets: PlannedSet[]): string {
   const w = sets.filter((s) => s.type === "working");
@@ -278,14 +278,14 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
   })();
   const planHint = set.weightKg != null ? `plan ${disp(set.weightKg)} ${unit}${model.kind === "handheld" ? ` ${model.hint}` : ""}` : model.hint;
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-surface)_92%,var(--color-ember)),var(--color-surface))] p-3 ring-1 ring-white/[0.06] min-[360px]:p-4 sm:p-5" aria-label="Log sets">
+    <section className="relative overflow-hidden rounded-3xl bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-surface)_92%,var(--color-ember)),var(--color-surface))] p-3 ring-1 ring-border min-[360px]:p-4 sm:p-5" aria-label="Log sets">
       <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 size-64 rounded-full bg-ember/10 blur-3xl" />
       <Benchmark inst={inst} units={units} onUse={(weightKg, reps, rpeVal) => { setW(toField(weightKg)); setR(reps != null ? String(reps) : ""); if (rpeVal != null) setRpe(rpeVal); }} />
       {/* Set track */}
       <ol className="flex items-center gap-1.5" aria-label="Sets">
         {sets.map((s) => { const l = doneOf(s.setNumber); const cur = s.setNumber === focus; return (
           <li key={s.setNumber} className="flex-1">
-            <button type="button" onClick={() => setFocus(s.setNumber)} aria-current={cur ? "step" : undefined} className={cn("flex h-11 w-full flex-col items-center justify-center rounded-xl text-2xs uppercase tracking-[0.12em] transition-all", l ? "bg-signal-soft text-signal ring-1 ring-signal/30" : cur ? "bg-ember text-ember-fg shadow-glow" : "bg-black/25 text-fg-subtle ring-1 ring-white/[0.06]")}>
+            <button type="button" onClick={() => setFocus(s.setNumber)} aria-current={cur ? "step" : undefined} className={cn("flex h-11 w-full flex-col items-center justify-center rounded-xl text-2xs uppercase tracking-label transition-all", l ? "bg-signal-soft text-signal ring-1 ring-signal/30" : cur ? "bg-ember text-ember-fg shadow-glow" : "bg-well text-fg-subtle ring-1 ring-border")}>
               <span>{s.type === "warmup" ? "warm" : `set ${s.setNumber}`}</span>
               {l ? <span className="font-display text-sm normal-case tracking-tight tabular">{disp(l.weightKg) || "bw"}×{l.reps ?? "-"}</span> : null}
             </button>
@@ -295,17 +295,17 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
       <AnimatePresence mode="wait" initial={false}>
         <motion.div key={set.setNumber} initial={reduce ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={reduce ? undefined : { opacity: 0, x: -12 }} transition={{ duration: 0.22 }} className="mt-4">
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-            <div className="text-2xs uppercase tracking-[0.14em] text-fg-subtle">{set.type === "warmup" ? "Warm-up" : `Set ${set.setNumber} of ${sets.length}`}{target ? <span className="text-ember"> · target {target}{set.targetRpe ? ` @ ${set.targetRpe}` : ""}</span> : null}</div>
+            <div className="text-2xs uppercase tracking-label text-fg-subtle">{set.type === "warmup" ? "Warm-up" : `Set ${set.setNumber} of ${sets.length}`}{target ? <span className="text-ember"> · target {target}{set.targetRpe ? ` @ ${set.targetRpe}` : ""}</span> : null}</div>
           </div>
 
           {/* Phones: one full-width dial per value, so a four-digit weight never clips. Wider screens: side by side. */}
           <div className="mt-3 grid gap-2.5 sm:grid-cols-2 sm:gap-3">
             {([["w", model.label, w, sideMode ? `${unit} a side` : unit, planHint], ["r", "Reps", r, "reps", target ? `aim ${target}` : ""]] as const).map(([k, label, val, u, hint]) => (
-              <div key={k} className="rounded-2xl bg-black/30 px-2.5 py-2.5 ring-1 ring-white/[0.06] sm:px-3 sm:py-3">
+              <div key={k} className="rounded-2xl bg-well-strong px-2.5 py-2.5 ring-1 ring-border sm:px-3 sm:py-3">
                 <div className="flex min-h-7 items-center justify-between gap-2 px-1">
-                  <span className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">{label}</span>
+                  <span className="text-2xs uppercase tracking-label text-fg-subtle">{label}</span>
                   {k === "w" && model.kind === "bar" ? (
-                    <span role="radiogroup" aria-label="Total or per side" className="inline-flex rounded-full bg-white/[0.05] p-0.5 ring-1 ring-white/[0.06]">
+                    <span role="radiogroup" aria-label="Total or per side" className="inline-flex rounded-full bg-white/[0.05] p-0.5 ring-1 ring-border">
                       {(["total", "side"] as const).map((m) => <button key={m} type="button" role="radio" aria-checked={entry === m} onClick={() => switchEntry(m)} className={cn("h-6 rounded-full px-2.5 text-2xs font-medium transition-colors", entry === m ? "bg-fg text-bg" : "text-fg-muted")}>{m === "total" ? "Total" : "Per side"}</button>)}
                     </span>
                   ) : <span className="truncate text-2xs text-fg-subtle">{hint}</span>}
@@ -320,21 +320,21 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
                 </div>
                 {k === "w" && (model.kind === "bar" || makeup) ? (
                   <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 px-1 text-xs">
-                    {model.kind === "bar" ? <button type="button" onClick={() => setBarOpen((o) => !o)} aria-expanded={barOpen} className="inline-flex h-6 items-center gap-1 rounded-full bg-white/[0.06] px-2 text-2xs text-fg-muted ring-1 ring-white/[0.06] hover:text-fg">{BAR_NAMES[model.bar]} {barDisp} {unit}<ChevronDown className={cn("size-3 transition-transform", barOpen && "rotate-180")} /></button> : null}
+                    {model.kind === "bar" ? <button type="button" onClick={() => setBarOpen((o) => !o)} aria-expanded={barOpen} className="inline-flex h-6 items-center gap-1 rounded-full bg-white/[0.06] px-2 text-2xs text-fg-muted ring-1 ring-border hover:text-fg">{BAR_NAMES[model.bar]} {barDisp} {unit}<ChevronDown className={cn("size-3 transition-transform", barOpen && "rotate-180")} /></button> : null}
                     {makeup ? <span className="min-w-0 text-fg-subtle">{makeup}</span> : null}
                   </div>
                 ) : null}
                 {k === "w" && model.kind === "bar" && barOpen ? (
                   <div className="mt-2 flex flex-wrap gap-1.5 px-1" role="radiogroup" aria-label={`${BAR_NAMES[model.bar]} weight`}>
                     {(metric ? BAR_CHOICES_KG : BAR_CHOICES_LB)[model.bar].map((c) => { const kg = metric ? c : round(lbToKg(c), 2); const on = Math.abs(barDisp - c) < 0.2; return (
-                      <button key={c} type="button" role="radio" aria-checked={on} onClick={() => { const totalDisp = fieldToTotalDisp(w); onBarChange(model.bar, kg); setBarOpen(false); if (sideMode && totalDisp != null) setW(String(Math.max(0, round((totalDisp - c) / 2, 2)))); }} className={cn("h-8 rounded-full px-3 text-xs tabular ring-1", on ? "bg-ember text-ember-fg ring-ember" : "text-fg-muted ring-white/10 hover:text-fg")}>{c === 0 ? "Not counted" : `${c} ${unit}`}</button>); })}
+                      <button key={c} type="button" role="radio" aria-checked={on} onClick={() => { const totalDisp = fieldToTotalDisp(w); onBarChange(model.bar, kg); setBarOpen(false); if (sideMode && totalDisp != null) setW(String(Math.max(0, round((totalDisp - c) / 2, 2)))); }} className={cn("h-8 rounded-full px-3 text-xs tabular ring-1", on ? "bg-ember text-ember-fg ring-ember" : "text-fg-muted ring-border-strong hover:text-fg")}>{c === 0 ? "Not counted" : `${c} ${unit}`}</button>); })}
                   </div>
                 ) : null}
               </div>))}
           </div>
 
-          <div className="mt-3 rounded-2xl bg-black/30 p-3 ring-1 ring-white/[0.06]" role="radiogroup" aria-label="Effort">
-            <div className="flex items-center justify-between"><span className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">Effort</span><span className="text-2xs text-fg-subtle">{rpe != null ? (rpe >= 10 ? "RPE 10 · nothing left" : `RPE ${rpe} · ${RPE_WORDS[Math.round(rpe)] ?? ""} in the tank`) : "how hard was it"}</span></div>
+          <div className="mt-3 rounded-2xl bg-well-strong p-3 ring-1 ring-border" role="radiogroup" aria-label="Effort">
+            <div className="flex items-center justify-between"><span className="text-2xs uppercase tracking-label text-fg-subtle">Effort</span><span className="text-2xs text-fg-subtle">{rpe != null ? (rpe >= 10 ? "RPE 10 · nothing left" : `RPE ${rpe} · ${RPE_WORDS[Math.round(rpe)] ?? ""} in the tank`) : "how hard was it"}</span></div>
             <div className="mt-2 grid grid-cols-5 gap-1.5">{[6, 7, 8, 9, 10].map((n) => (
               <button key={n} type="button" role="radio" aria-checked={rpe === n} onClick={() => setRpe(n)} className={cn("flex h-12 min-w-0 touch-manipulation flex-col items-center justify-center rounded-xl transition-all", rpe === n ? "bg-ember text-ember-fg shadow-glow" : "bg-white/[0.05] text-fg-muted hover:bg-white/10")}><span className="font-display text-lg font-semibold leading-tight tabular">{n}</span><span className="whitespace-nowrap text-[9px] uppercase tracking-wide opacity-80">{RPE_WORDS[n]}</span></button>))}</div>
           </div>
@@ -433,23 +433,23 @@ function Benchmark({ inst, units, onUse }: { inst: Instance; units: "metric" | "
     if (!data) { const r = await fetch(`/api/exercise/${inst.exerciseId}/history`); if (r.ok) setData(await r.json()); }
   }
   return (
-    <div className="mb-3 rounded-2xl bg-black/25 p-3 ring-1 ring-white/[0.06]">
+    <div className="mb-3 rounded-2xl bg-well p-3 ring-1 ring-border">
       {b?.last ? (
         <>
           <div className="flex items-center justify-between gap-2">
-            <span className="text-2xs uppercase tracking-[0.16em] text-fg-subtle">Last time · {dayMonth(b.last.date)}</span>
+            <span className="text-2xs uppercase tracking-label text-fg-subtle">Last time · {dayMonth(b.last.date)}</span>
             <button type="button" onClick={openHistory} className="inline-flex items-center gap-1 text-xs text-ember hover:underline">History <ChevronRight className="size-3.5" /></button>
           </div>
           <div className="mt-2 flex flex-wrap gap-1.5">
             {b.last.sets.map((x, i) => (
-              <button key={i} type="button" onClick={() => onUse(x.weightKg, x.reps, x.rpe)} aria-label={`Use ${fmtKg(x.weightKg, units)} ${unit} for ${x.reps} reps`} className="inline-flex h-8 items-center rounded-full bg-white/[0.05] px-3 text-sm tabular text-fg ring-1 ring-white/10 transition-colors hover:bg-white/10 active:scale-95">
+              <button key={i} type="button" onClick={() => onUse(x.weightKg, x.reps, x.rpe)} aria-label={`Use ${fmtKg(x.weightKg, units)} ${unit} for ${x.reps} reps`} className="inline-flex h-8 items-center rounded-full bg-white/[0.05] px-3 text-sm tabular text-fg ring-1 ring-border-strong transition-colors hover:bg-white/10 active:scale-95">
                 {fmtKg(x.weightKg, units)} × {x.reps}{x.rpe ? <span className="ml-1 text-2xs text-fg-subtle">@{x.rpe}</span> : null}
               </button>))}
           </div>
           {b.bestWeight || b.bestE1rm ? (
-            <div className="mt-2.5 grid grid-cols-2 gap-2 border-t border-white/5 pt-2.5">
-              <div className="min-w-0"><div className="text-[10px] uppercase tracking-[0.12em] text-fg-subtle">Heaviest</div><div className="truncate text-sm font-medium tabular">{b.bestWeight ? `${fmtKg(b.bestWeight.weightKg, units)} ${unit} × ${b.bestWeight.reps}` : "-"}</div></div>
-              <div className="min-w-0"><div className="text-[10px] uppercase tracking-[0.12em] text-fg-subtle">Best max</div><div className="truncate text-sm font-medium tabular">{b.bestE1rm ? `${fmtKg(b.bestE1rm.e1rm, units)} ${unit}` : "-"}</div></div>
+            <div className="mt-2.5 grid grid-cols-2 gap-2 border-t border-border pt-2.5">
+              <div className="min-w-0"><div className="text-[10px] uppercase tracking-label text-fg-subtle">Heaviest</div><div className="truncate text-sm font-medium tabular">{b.bestWeight ? `${fmtKg(b.bestWeight.weightKg, units)} ${unit} × ${b.bestWeight.reps}` : "-"}</div></div>
+              <div className="min-w-0"><div className="text-[10px] uppercase tracking-label text-fg-subtle">Best max</div><div className="truncate text-sm font-medium tabular">{b.bestE1rm ? `${fmtKg(b.bestE1rm.e1rm, units)} ${unit}` : "-"}</div></div>
             </div>
           ) : null}
         </>

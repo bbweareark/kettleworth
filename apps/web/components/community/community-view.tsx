@@ -42,7 +42,7 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
 
   return (
     <div className="space-y-8">
-      <div className="relative overflow-hidden rounded-3xl p-8 ring-1 ring-white/[0.06] md:p-10">
+      <div className="relative overflow-hidden rounded-3xl p-8 ring-1 ring-border md:p-10">
         <img src="/art/community.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-85" />
         <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_78%,transparent)_50%,color-mix(in_oklch,var(--color-bg)_25%,transparent)_100%)]" />
         <p className="eyebrow">Community</p>
@@ -57,7 +57,7 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
       {/* Stats strip */}
       <div className="grid grid-cols-3 gap-3">
         {[{ I: Users, n: p.partners.length, l: "Partners" }, { I: Flame, n: p.groups.filter((g) => g.joined).length, l: "Groups" }, { I: Trophy, n: p.challenges.filter((c) => c.joined).length, l: "Challenges" }].map((s, i) => (
-          <motion.div key={s.l} {...stagger(i)} className="rounded-2xl bg-surface/50 p-4 ring-1 ring-white/[0.05]"><s.I className="size-4 text-ember" /><div className="mt-2 font-display text-3xl font-semibold tabular">{s.n}</div><div className="text-xs text-fg-subtle">{s.l}</div></motion.div>
+          <motion.div key={s.l} {...stagger(i)} className="rounded-2xl bg-surface/50 p-4 ring-1 ring-border"><s.I className="size-4 text-ember" /><div className="mt-2 font-display text-3xl font-semibold tabular">{s.n}</div><div className="text-xs text-fg-subtle">{s.l}</div></motion.div>
         ))}
       </div>
 
@@ -79,15 +79,15 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
           {p.partners.length ? (
             <div className="space-y-2"><p className="eyebrow">Your partners</p>
               <div className="grid gap-2 sm:grid-cols-2">{p.partners.map((pt) => (
-                <div key={pt.matchId} className="flex items-center gap-3 rounded-2xl bg-surface/50 p-3 ring-1 ring-white/[0.05]"><Avatar name={pt.displayName} /><div className="flex-1"><div className="text-sm font-medium">{pt.displayName}</div><div className="text-xs text-fg-muted">{pt.sessionsThisWeek} session{pt.sessionsThisWeek === 1 ? "" : "s"} this week · level {pt.growthLevel}{pt.streakWeeks ? ` · ${pt.streakWeeks} wk streak` : ""}</div></div><Button size="sm" variant="ghost" onClick={() => setChat(pt)}><MessageSquare className="size-4" />Message</Button></div>))}</div>
+                <div key={pt.matchId} className="flex items-center gap-3 rounded-2xl bg-surface/50 p-3 ring-1 ring-border"><Avatar name={pt.displayName} /><div className="flex-1"><div className="text-sm font-medium">{pt.displayName}</div><div className="text-xs text-fg-muted">{pt.sessionsThisWeek} session{pt.sessionsThisWeek === 1 ? "" : "s"} this week · level {pt.growthLevel}{pt.streakWeeks ? ` · ${pt.streakWeeks} wk streak` : ""}</div></div><Button size="sm" variant="ghost" onClick={() => setChat(pt)}><MessageSquare className="size-4" />Message</Button></div>))}</div>
             </div>
           ) : null}
           <div className="space-y-2"><p className="eyebrow">Suggested for you</p>
-            {p.matchReason ? <div className="rounded-2xl bg-surface/50 p-5 ring-1 ring-white/[0.05]"><Shield className="size-5 text-ember" /><p className="mt-2 text-sm text-fg-muted">{p.matchReason}</p><Button size="sm" className="mt-3" onClick={() => setEditing(true)}>{p.me ? "Change visibility" : "Create profile"}</Button></div>
-            : p.matches.length === 0 ? <div className="rounded-2xl bg-surface/50 p-5 ring-1 ring-white/[0.05]"><p className="text-sm text-fg-muted">No one close enough yet. Matches appear as members with your goals and schedule opt in.</p></div>
+            {p.matchReason ? <div className="rounded-2xl bg-surface/50 p-5 ring-1 ring-border"><Shield className="size-5 text-ember" /><p className="mt-2 text-sm text-fg-muted">{p.matchReason}</p><Button size="sm" className="mt-3" onClick={() => setEditing(true)}>{p.me ? "Change visibility" : "Create profile"}</Button></div>
+            : p.matches.length === 0 ? <div className="rounded-2xl bg-surface/50 p-5 ring-1 ring-border"><p className="text-sm text-fg-muted">No one close enough yet. Matches appear as members with your goals and schedule opt in.</p></div>
             : <div className="grid gap-3 sm:grid-cols-2">{p.matches.map((m, i) => (
-              <motion.div key={m.userId} {...stagger(i)} className="relative overflow-hidden rounded-2xl bg-surface/50 p-4 ring-1 ring-white/[0.05]">
-                <div className="flex items-start gap-3"><Avatar name={m.displayName} size={44} /><div className="min-w-0 flex-1"><div className="flex items-center gap-2"><span className="truncate font-medium">{m.displayName}</span><span className="ml-auto rounded-full bg-ember-soft px-2 py-0.5 font-display text-xs font-semibold tabular text-ember">{m.score}%</span></div><div className="truncate text-xs text-fg-muted">@{m.handle}{m.city ? ` · ${m.city}` : ""}{m.level ? ` · ${m.level}` : ""}</div><div className="mt-0.5 text-2xs uppercase tracking-[0.14em] text-ember">Level {m.growthLevel} · {m.growth} Growth{m.streakWeeks ? ` · ${m.streakWeeks} wk streak` : ""}</div></div></div>
+              <motion.div key={m.userId} {...stagger(i)} className="relative overflow-hidden rounded-2xl bg-surface/50 p-4 ring-1 ring-border">
+                <div className="flex items-start gap-3"><Avatar name={m.displayName} size={44} /><div className="min-w-0 flex-1"><div className="flex items-center gap-2"><span className="truncate font-medium">{m.displayName}</span><span className="ml-auto rounded-full bg-ember-soft px-2 py-0.5 font-display text-xs font-semibold tabular text-ember">{m.score}%</span></div><div className="truncate text-xs text-fg-muted">@{m.handle}{m.city ? ` · ${m.city}` : ""}{m.level ? ` · ${m.level}` : ""}</div><div className="mt-0.5 text-2xs uppercase tracking-label text-ember">Level {m.growthLevel} · {m.growth} Growth{m.streakWeeks ? ` · ${m.streakWeeks} wk streak` : ""}</div></div></div>
                 <div className="mt-3 flex flex-wrap gap-1.5">{m.reasons.slice(0, 3).map((r) => <span key={r} className="rounded-full bg-surface-2 px-2 py-0.5 text-2xs text-fg-muted">{r}</span>)}</div>
                 <div className="mt-3 flex items-center gap-2">
                   {m.status === "accepted" ? <span className="text-xs text-signal">Partners</span> : m.status === "suggested" && m.initiatedByMe ? <span className="text-xs text-fg-subtle">Request sent</span> : m.status === "suggested" ? <Button size="sm" loading={busy === m.userId} onClick={() => run(m.userId, () => api("partner", { userId: m.userId }), "You're partners")}>Accept</Button> : <Button size="sm" loading={busy === m.userId} onClick={() => run(m.userId, () => api("partner", { userId: m.userId }), "Request sent")}>Train together</Button>}
@@ -100,9 +100,9 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
 
         <TabsContent value="groups" className="mt-4 space-y-3">
           <div className="flex items-center justify-between"><p className="eyebrow">Groups</p><Button size="sm" variant="ghost" onClick={() => setNewGroup(true)}><Plus className="size-4" />New group</Button></div>
-          {p.groups.length === 0 ? <div className="rounded-2xl bg-surface/50 p-5 ring-1 ring-white/[0.05]"><p className="text-sm text-fg-muted">No groups yet. Start one for your gym, your city or your split.</p></div> : null}
+          {p.groups.length === 0 ? <div className="rounded-2xl bg-surface/50 p-5 ring-1 ring-border"><p className="text-sm text-fg-muted">No groups yet. Start one for your gym, your city or your split.</p></div> : null}
           <div className="grid gap-3 sm:grid-cols-2">{p.groups.map((g, i) => (
-            <motion.div key={g.id} {...stagger(i)} className="flex flex-col rounded-2xl bg-surface/50 p-4 ring-1 ring-white/[0.05]">
+            <motion.div key={g.id} {...stagger(i)} className="flex flex-col rounded-2xl bg-surface/50 p-4 ring-1 ring-border">
               <div className="font-display text-lg font-semibold tracking-tight">{g.name}</div>
               {g.description ? <p className="mt-1 line-clamp-2 text-sm text-fg-muted">{g.description}</p> : null}
               <div className="mt-3 flex items-center gap-2 text-xs text-fg-subtle"><Users className="size-3.5" />{g.memberCount} member{g.memberCount === 1 ? "" : "s"}
@@ -114,12 +114,12 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
           <div className="space-y-3">
             <div className="flex items-end justify-between gap-3"><p className="eyebrow">Growth board</p><span className="text-2xs text-fg-subtle">Every session, set, weigh-in, check-in and answered question counts.</span></div>
             {p.growthBoard.length ? <ol className="grid gap-1.5 sm:grid-cols-2">{p.growthBoard.slice(0, 10).map((b, j) => (
-              <li key={b.userId} className={cn("flex items-center gap-3 rounded-xl px-3 py-2 text-sm ring-1 ring-white/[0.05]", b.me ? "bg-ember-soft" : "bg-surface/50")}><span className="w-4 text-right font-display text-xs text-fg-subtle tabular">{j + 1}</span><Avatar name={b.displayName} size={26} /><span className="min-w-0 flex-1 truncate">{b.displayName}{b.me ? " (you)" : ""}<span className="ml-2 text-2xs uppercase tracking-[0.12em] text-fg-subtle">lvl {b.level}{b.streakWeeks ? ` · ${b.streakWeeks} wk` : ""}</span></span><span className="font-display font-semibold tabular">{b.growth}</span></li>))}</ol>
+              <li key={b.userId} className={cn("flex items-center gap-3 rounded-xl px-3 py-2 text-sm ring-1 ring-border", b.me ? "bg-ember-soft" : "bg-surface/50")}><span className="w-4 text-right font-display text-xs text-fg-subtle tabular">{j + 1}</span><Avatar name={b.displayName} size={26} /><span className="min-w-0 flex-1 truncate">{b.displayName}{b.me ? " (you)" : ""}<span className="ml-2 text-2xs uppercase tracking-label text-fg-subtle">lvl {b.level}{b.streakWeeks ? ` · ${b.streakWeeks} wk` : ""}</span></span><span className="font-display font-semibold tabular">{b.growth}</span></li>))}</ol>
             : <p className="text-sm text-fg-muted">Set your profile to members-only to appear on the board.</p>}
           </div>
           <p className="eyebrow">Challenges</p>
           <div className="grid gap-3 md:grid-cols-2">{p.challenges.map((c, i) => (
-            <motion.div key={c.id} {...stagger(i)} className="rounded-2xl bg-surface/50 p-4 ring-1 ring-white/[0.05]">
+            <motion.div key={c.id} {...stagger(i)} className="rounded-2xl bg-surface/50 p-4 ring-1 ring-border">
               <div className="flex items-start gap-3"><div className="grid size-10 shrink-0 place-items-center rounded-xl bg-ember-soft"><Trophy className="size-5 text-ember" /></div><div className="flex-1"><div className="font-display text-lg font-semibold tracking-tight">{c.name}</div><div className="text-xs text-fg-muted">Completed sessions · {now == null ? "" : `${daysLeft(c.endsOn, now)} day${daysLeft(c.endsOn, now) === 1 ? "" : "s"} left`} · {c.participants} in</div></div>
                 <Button size="sm" variant={c.joined ? "ghost" : "primary"} loading={busy === c.id} onClick={() => run(c.id, () => api("challenges/join", { challengeId: c.id, join: !c.joined }), c.joined ? "Left challenge" : "You're in")}>{c.joined ? "Leave" : "Join"}</Button></div>
               {c.board.length ? <ol className="mt-4 space-y-1.5">{c.board.slice(0, 5).map((b, j) => (

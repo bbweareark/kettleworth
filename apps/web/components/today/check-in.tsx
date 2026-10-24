@@ -29,7 +29,7 @@ export function WeeklyCheckIn({ weekNumber, applied }: { weekNumber: number; app
     { k: "ease" as const, I: Wind, t: "Ease off", d: "Loads drop 8% this week." },
   ];
   return (
-    <motion.section initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="relative overflow-hidden rounded-2xl bg-surface/50 p-5 ring-1 ring-white/[0.06]">
+    <motion.section initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="relative overflow-hidden rounded-2xl bg-surface/50 p-5 ring-1 ring-border">
       <div className="mb-3 flex items-center gap-2"><Sparkles className="size-4 text-ember" /><span className="eyebrow">Week {weekNumber} check-in</span></div>
       {result ? (
         <div><h3 className="font-display text-xl font-semibold tracking-tighter">Applied.</h3><ul className="mt-2 space-y-1.5 text-sm text-fg-muted">{summarise(result).map((t, i) => <li key={i} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-ember" />{t}</li>)}</ul></div>

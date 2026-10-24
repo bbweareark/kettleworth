@@ -22,7 +22,7 @@ export function CoachPulse({ items, interval = 5200, className, label = "Coach",
   return (
     <div className={cn("flex min-w-0 items-center gap-4 py-2", className)} role="status" aria-live="polite">
       <span aria-hidden className="relative grid shrink-0 place-items-center" style={{ width: size, height: size }}>
-        {avatar ? <img src={avatar} alt="" className="size-9 rounded-full object-cover ring-1 ring-white/[0.08]" /> : <BrandSeal size={36} />}
+        {avatar ? <img src={avatar} alt="" className="size-9 rounded-full object-cover ring-1 ring-border" /> : <BrandSeal size={36} />}
         {items.length > 1 && !reduce ? (
           <svg className="absolute inset-0 -rotate-90" viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
             <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="currentColor" strokeWidth="1" className="text-white/[0.07]" />
