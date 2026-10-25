@@ -97,7 +97,7 @@ export function ProductCard({ product, busy, onLog, onCancel }: { product: Produ
   const brandShort = product.brand?.replace(/\b(services|limited|ltd|plc|inc|sa\/nv|sa|nv|gmbh|llc|uk|group|company|co)\b\.?/gi, "").replace(/\s+/g, " ").trim() ?? "";
   const label = brandShort && !product.name.toLowerCase().includes(brandShort.toLowerCase()) ? `${brandShort} ${product.name}` : product.name;
   return (
-    <div className="space-y-4 rounded-2xl bg-well p-4 ring-1 ring-border">
+    <div className="space-y-4 rounded-2xl p-4 ring-1 ring-border">
       <div className="flex items-start gap-3">
         {product.imageUrl ? <img src={product.imageUrl} alt="" className="size-16 shrink-0 rounded-xl bg-white object-contain p-1" /> : <div className="grid size-16 shrink-0 place-items-center rounded-xl bg-white/[0.05]"><ScanBarcode className="size-6 text-fg-subtle" /></div>}
         <div className="min-w-0 flex-1">

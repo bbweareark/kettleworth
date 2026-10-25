@@ -70,7 +70,7 @@ export async function applyAnalysis(userId: string, photoId: string, opts: { pri
   return upsertProfile(userId, patch);
 }
 
-import { physiqueTimeline, growthPoints, trend } from "@kettleworth/core";
+import { physiqueTimeline, growthPoints, trend, DRILL_MAX_SOLVES } from "@kettleworth/core";
 import { sideQuestDates } from "./quests";
 import { bodyMeasurement, trainingSession, personalRecord, exerciseInstance, healthSample, restActivity, profile as profileTable } from "@kettleworth/db";
 import { inArray } from "drizzle-orm";
@@ -91,10 +91,13 @@ export async function physiqueProgress(userId: string) {
   const [sets] = await db().select({ n: sql<number>`coalesce(sum(jsonb_array_length(${exerciseInstance.loggedSets})),0)::int` }).from(exerciseInstance).innerJoin(trainingSession, eq(exerciseInstance.sessionId, trainingSession.id)).where(eq(trainingSession.userId, userId));
   const [acts] = await db().select({ n: sql<number>`count(*)::int` }).from(healthSample).where(and(eq(healthSample.userId, userId), eq(healthSample.metric, "workout"), eq(healthSample.provider, "manual")));
   const photoSets = new Set(photos.filter((p) => p.analysis).map((p) => p.takenOn)).size;
-  const [rest] = await db().select({ n: sql<number>`count(*)::int` }).from(restActivity).where(and(eq(restActivity.userId, userId), sql`(${restActivity.kind} <> 'quiz' or ${restActivity.correct} = true)`));
+  // The drill has its own line and its own cap, so it must not inflate the rest-deck count.
+  const [rest] = await db().select({ n: sql<number>`count(*)::int` }).from(restActivity).where(and(eq(restActivity.userId, userId), sql`${restActivity.kind} <> 'drill'`, sql`(${restActivity.kind} <> 'quiz' or ${restActivity.correct} = true)`));
+  // Capped per session in SQL: six solves is the most any one session can ever be worth.
+  const [drills] = await db().execute<{ n: number }>(sql`select coalesce(sum(least(c, ${DRILL_MAX_SOLVES})), 0)::int as n from (select ${restActivity.sessionId} as sid, count(*)::int as c from ${restActivity} where ${restActivity.userId} = ${userId} and ${restActivity.kind} = 'drill' group by 1) t`) as unknown as { n: number }[];
   const [prof] = await db().select({ step: profileTable.onboardingStep, done: profileTable.onboardingCompletedAt }).from(profileTable).where(eq(profileTable.userId, userId)).limit(1);
   const sideDates = (await sideQuestDates([userId]))[userId] ?? [];
-  const growth = growthPoints({ sideQuests: sideDates.length, sessionsCompleted: sessions.length, prs: prs?.n ?? 0, weighIns: measurements.filter((m) => m.weightKg != null).length, photoSets, streakWeeks: weeklyStreak([...sessions.map((s) => s.d), ...sideDates]), setsLogged: sets?.n ?? 0, activitiesLogged: acts?.n ?? 0, restLearned: rest?.n ?? 0, intakeSteps: prof?.step ?? 0, intakeComplete: !!prof?.done });
+  const growth = growthPoints({ sideQuests: sideDates.length, sessionsCompleted: sessions.length, prs: prs?.n ?? 0, weighIns: measurements.filter((m) => m.weightKg != null).length, photoSets, streakWeeks: weeklyStreak([...sessions.map((s) => s.d), ...sideDates]), setsLogged: sets?.n ?? 0, activitiesLogged: acts?.n ?? 0, restLearned: rest?.n ?? 0, plateDrills: drills?.n ?? 0, intakeSteps: prof?.step ?? 0, intakeComplete: !!prof?.done });
   const byDate = photos.reduce<Record<string, typeof photos>>((a, p) => { (a[p.takenOn] ??= []).push(p); return a; }, {});
   const dates = Object.keys(byDate).sort();
   const compare = dates.length >= 2 ? { before: byDate[dates[0]!]!.find((p) => p.pose === "front") ?? byDate[dates[0]!]![0]!, after: byDate[dates[dates.length - 1]!]!.find((p) => p.pose === "front") ?? byDate[dates[dates.length - 1]!]![0]! } : null;

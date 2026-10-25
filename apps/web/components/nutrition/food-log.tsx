@@ -87,7 +87,7 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
   const pct = Math.min(1, tot.calories / Math.max(1, targets.calories));
 
   return (
-    <section className="space-y-4 rounded-3xl bg-surface/40 p-5 ring-1 ring-border md:p-6" aria-label="Food log">
+    <section className="space-y-4 rounded-3xl p-5 ring-1 ring-border md:p-6" aria-label="Food log">
       {/* Today's meter */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
@@ -99,7 +99,7 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
       <div className="h-2 overflow-hidden rounded-full bg-white/10"><motion.div className={cn("h-full rounded-full", left >= 0 ? "bg-ember" : "bg-amber")} animate={{ width: `${pct * 100}%` }} transition={{ duration: reduce ? 0 : 0.5 }} /></div>
       <div className="grid grid-cols-3 gap-2">
         {([["Protein", tot.proteinG, targets.proteinG, "bg-ember"], ["Carbs", tot.carbsG, targets.carbsG, "bg-sky"], ["Fat", tot.fatG, targets.fatG, "bg-amber"]] as const).map(([l, v, t, c]) => (
-          <div key={l} className="rounded-xl bg-well p-2.5"><div className="flex items-baseline justify-between text-xs"><span className="text-fg-subtle">{l}</span><span className="tabular text-fg-muted">{Math.round(v)} / {t} g</span></div><div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/10"><div className={cn("h-full rounded-full", c)} style={{ width: `${Math.min(100, (v / Math.max(1, t)) * 100)}%` }} /></div></div>
+          <div key={l} className="rounded-xl p-2.5"><div className="flex items-baseline justify-between text-xs"><span className="text-fg-subtle">{l}</span><span className="tabular text-fg-muted">{Math.round(v)} / {t} g</span></div><div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/10"><div className={cn("h-full rounded-full", c)} style={{ width: `${Math.min(100, (v / Math.max(1, t)) * 100)}%` }} /></div></div>
         ))}
       </div>
 
@@ -125,7 +125,7 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
       ) : <p className="text-sm text-fg-muted">Nothing logged yet. Start with what you're drinking.</p>}
 
       {/* Add */}
-      <div className="space-y-4 rounded-2xl bg-well p-4 ring-1 ring-border">
+      <div className="space-y-4 rounded-2xl p-4 ring-1 ring-border">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-2xs uppercase tracking-label text-fg-subtle">Add to</span>
           <div className="flex flex-wrap gap-1">{SLOTS.map((s) => <button key={s.v} type="button" aria-pressed={slot === s.v} onClick={() => setSlot(s.v)} className={cn("h-8 rounded-full px-3 text-xs ring-1", slot === s.v ? "bg-fg text-bg ring-fg" : "text-fg-muted ring-border-strong hover:text-fg")}>{s.l}</button>)}</div>

@@ -61,7 +61,7 @@ export function RestTip({ cards }: { cards: CheckCard[] }) {
   useEffect(() => { if (reduce || cards.length < 2) return; const t = setInterval(() => setI((x) => (x + 1) % cards.length), 6000); return () => clearInterval(t); }, [cards.length, reduce]);
   const c = cards[i]; if (!c) return null; const S = STYLE[c.kind]; const I = S.icon;
   return (
-    <div className="mt-4 flex items-start gap-3 rounded-xl bg-well p-3 text-sm">
+    <div className="mt-4 flex items-start gap-3 rounded-xl p-3 text-sm">
       <span className={cn("grid size-7 shrink-0 place-items-center rounded-full", S.chip)}><I className="size-3.5" /></span>
       <div className="min-w-0"><div className="text-2xs font-semibold uppercase tracking-label text-fg-subtle">While you rest · {S.label}</div><AnimatePresence mode="wait" initial={false}><motion.p key={i} initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={reduce ? undefined : { opacity: 0 }} className="text-fg">{c.text}</motion.p></AnimatePresence></div>
     </div>

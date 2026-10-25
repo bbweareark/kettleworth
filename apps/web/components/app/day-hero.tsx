@@ -44,7 +44,7 @@ export function DoneHero({ name, art, summary, next, todayIso, unit }: { name: s
         {summary ? (
           <dl className="grid max-w-lg grid-cols-2 gap-3 sm:grid-cols-4">
             {[["Sets", String(summary.sets)], [`Volume · ${unit}`, vol.toLocaleString("en-GB")], ["Minutes", summary.minutes != null ? String(summary.minutes) : "-"], ["Records", String(summary.records)]].map(([l, v]) => (
-              <div key={l} className="rounded-2xl bg-well-strong px-3 py-2.5 ring-1 ring-border"><dt className="text-2xs uppercase tracking-label text-fg-subtle">{l}</dt><dd className="mt-0.5 flex items-center gap-1.5 font-display text-2xl tabular tracking-tight">{l === "Records" && summary.records > 0 ? <Trophy className="size-4 text-ember" /> : null}{v}</dd></div>
+              <div key={l} className="rounded-2xl px-3 py-2.5 ring-1 ring-border"><dt className="text-2xs uppercase tracking-label text-fg-subtle">{l}</dt><dd className="mt-0.5 flex items-center gap-1.5 font-display text-2xl tabular tracking-tight">{l === "Records" && summary.records > 0 ? <Trophy className="size-4 text-ember" /> : null}{v}</dd></div>
             ))}
           </dl>
         ) : null}

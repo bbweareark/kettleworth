@@ -19,7 +19,7 @@ export { fmtKg };
  * viewBox but strokes stay one pixel thick, and labels are HTML so they never squash on a narrow phone.
  */
 export function TrendChart({ points, units, className }: { points: { date: string; value: number }[]; units: "metric" | "imperial"; className?: string }) {
-  if (points.length < 2) return <p className={cn("rounded-2xl bg-well px-4 py-6 text-center text-sm text-fg-subtle", className)}>{points.length ? "One session so far. The trend appears after the next." : "No sets with 10 reps or fewer yet."}</p>;
+  if (points.length < 2) return <p className={cn("rounded-2xl px-4 py-6 text-center text-sm text-fg-subtle", className)}>{points.length ? "One session so far. The trend appears after the next." : "No sets with 10 reps or fewer yet."}</p>;
   const vals = points.map((p) => (units === "metric" ? p.value : kgToLb(p.value)));
   const min = Math.min(...vals), max = Math.max(...vals), span = Math.max(1, max - min);
   const W = 300, H = 100, pad = 8;
@@ -29,7 +29,7 @@ export function TrendChart({ points, units, className }: { points: { date: strin
   const unit = units === "metric" ? "kg" : "lb";
   const change = vals[vals.length - 1]! - vals[0]!;
   return (
-    <figure className={cn("rounded-2xl bg-well p-3 ring-1 ring-border", className)}>
+    <figure className={cn("rounded-2xl p-3 ring-1 ring-border", className)}>
       <figcaption className="mb-2 flex items-baseline justify-between gap-2 px-1">
         <span className="text-2xs uppercase tracking-label text-fg-subtle">Estimated max</span>
         <span className={cn("text-xs tabular", change >= 0 ? "text-signal" : "text-amber")}>{change >= 0 ? "+" : "\u2212"}{Math.abs(Math.round(change * 10) / 10)} {unit} over {points.length} sessions</span>
@@ -72,7 +72,7 @@ export function LiftHistory({ data, units }: { data: LiftHistoryData; units: "me
             </div>
           </li>
         ))}
-        {!data.history.length ? <li className="rounded-2xl bg-well px-4 py-6 text-center text-sm text-fg-subtle">Nothing logged for this lift yet.</li> : null}
+        {!data.history.length ? <li className="rounded-2xl px-4 py-6 text-center text-sm text-fg-subtle">Nothing logged for this lift yet.</li> : null}
       </ol>
     </div>
   );
@@ -80,7 +80,7 @@ export function LiftHistory({ data, units }: { data: LiftHistoryData; units: "me
 
 function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub: string }) {
   return (
-    <div className="min-w-0 rounded-2xl bg-well px-2.5 py-2.5 ring-1 ring-border">
+    <div className="min-w-0 rounded-2xl px-2.5 py-2.5 ring-1 ring-border">
       <div className="flex items-center gap-1 text-[10px] uppercase tracking-label text-fg-subtle">{icon}<span className="truncate">{label}</span></div>
       <div className="mt-1 truncate font-display text-base tabular tracking-tight sm:text-lg">{value}</div>
       <div className="truncate text-2xs text-fg-subtle">{sub || " "}</div>

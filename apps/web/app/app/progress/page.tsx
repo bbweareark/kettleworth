@@ -29,7 +29,7 @@ export default async function Progress() {
     <AppStack>
       <div><p className="eyebrow">Progress</p><h1 className="font-display text-3xl tracking-tighter md:text-4xl">The numbers behind the work.</h1></div>
       <GrowthPanel growth={phys.growth} />
-      <div className="grid grid-cols-2 divide-x divide-border rounded-2xl bg-surface/50 ring-1 ring-border sm:grid-cols-4">
+      <div className="grid grid-cols-2 divide-x divide-border rounded-2xl ring-1 ring-border sm:grid-cols-4">
         <div className="p-4"><Stat label="Sessions" value={p.completedSessions} /></div>
         <div className="p-4"><Stat label="Week streak" value={p.streakWeeks} hint={p.streakWeeks ? "Keep it alive" : "Start one"} /></div>
         <div className="p-4"><Stat label="Volume this week" value={w(p.tonnageThisWeek) ?? 0} unit={u} delta={p.tonnageLastWeek ? `${w(p.tonnageLastWeek)} ${u} last week` : undefined} /></div>

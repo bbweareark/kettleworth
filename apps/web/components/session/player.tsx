@@ -174,7 +174,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
 
       {!curDone && <FormCheck key={`check-${cur.id}`} exerciseId={cur.exerciseId} name={cur.exercise.name} cards={cards} image={cur.exercise.imageUrls[0]} />}
 
-      {rest != null ? <RestTimer key={rest + "-" + doneSets} seconds={rest} why={restWhy} onDone={() => setRest(null)} onSkip={() => setRest(null)}><RestDeck sessionId={session.id} seedKey={`${session.id}:${cur.id}:${doneSets}`} restSeconds={rest} seen={seenRest} onSeen={(id) => setSeenRest((s) => [...s, id])} tips={restCards} nextSet={(() => { const n = cur.plannedSets.find((ps) => !cur.loggedSets.some((l) => l.setNumber === ps.setNumber && l.completed)); return n ? { repRange: n.repRange, reps: n.reps } : null; })()} onPrediction={setPrediction} /></RestTimer> : null}
+      {rest != null ? <RestTimer key={rest + "-" + doneSets} seconds={rest} why={restWhy} onDone={() => setRest(null)} onSkip={() => setRest(null)}><RestDeck units={units} sessionId={session.id} seedKey={`${session.id}:${cur.id}:${doneSets}`} restSeconds={rest} seen={seenRest} onSeen={(id) => setSeenRest((s) => [...s, id])} tips={restCards} nextSet={(() => { const n = cur.plannedSets.find((ps) => !cur.loggedSets.some((l) => l.setNumber === ps.setNumber && l.completed)); return n ? { repRange: n.repRange, reps: n.reps } : null; })()} onPrediction={setPrediction} /></RestTimer> : null}
 
       <SetConsole key={`console-${cur.id}`} inst={cur} units={units} barWeights={barWeights} onBarChange={saveBar} onLog={(set, v, confirmed) => logSet(cur, set, v, confirmed)} onReset={resetExercise} />
 
@@ -285,7 +285,7 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
       <ol className="flex items-center gap-1.5" aria-label="Sets">
         {sets.map((s) => { const l = doneOf(s.setNumber); const cur = s.setNumber === focus; return (
           <li key={s.setNumber} className="flex-1">
-            <button type="button" onClick={() => setFocus(s.setNumber)} aria-current={cur ? "step" : undefined} className={cn("flex h-11 w-full flex-col items-center justify-center rounded-xl text-2xs uppercase tracking-label transition-all", l ? "bg-signal-soft text-signal ring-1 ring-signal/30" : cur ? "bg-ember text-ember-fg shadow-glow" : "bg-well text-fg-subtle ring-1 ring-border")}>
+            <button type="button" onClick={() => setFocus(s.setNumber)} aria-current={cur ? "step" : undefined} className={cn("flex h-11 w-full flex-col items-center justify-center rounded-xl text-2xs uppercase tracking-label transition-all", l ? "bg-signal-soft text-signal ring-1 ring-signal/30" : cur ? "bg-ember text-ember-fg shadow-glow" : "text-fg-subtle ring-1 ring-border")}>
               <span>{s.type === "warmup" ? "warm" : `set ${s.setNumber}`}</span>
               {l ? <span className="font-display text-sm normal-case tracking-tight tabular">{disp(l.weightKg) || "bw"}×{l.reps ?? "-"}</span> : null}
             </button>
@@ -301,7 +301,7 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
           {/* Phones: one full-width dial per value, so a four-digit weight never clips. Wider screens: side by side. */}
           <div className="mt-3 grid gap-2.5 sm:grid-cols-2 sm:gap-3">
             {([["w", model.label, w, sideMode ? `${unit} a side` : unit, planHint], ["r", "Reps", r, "reps", target ? `aim ${target}` : ""]] as const).map(([k, label, val, u, hint]) => (
-              <div key={k} className="rounded-2xl bg-well-strong px-2.5 py-2.5 ring-1 ring-border sm:px-3 sm:py-3">
+              <div key={k} className="rounded-2xl px-2.5 py-2.5 ring-1 ring-border sm:px-3 sm:py-3">
                 <div className="flex min-h-7 items-center justify-between gap-2 px-1">
                   <span className="text-2xs uppercase tracking-label text-fg-subtle">{label}</span>
                   {k === "w" && model.kind === "bar" ? (
@@ -333,7 +333,7 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
               </div>))}
           </div>
 
-          <div className="mt-3 rounded-2xl bg-well-strong p-3 ring-1 ring-border" role="radiogroup" aria-label="Effort">
+          <div className="mt-3 rounded-2xl p-3 ring-1 ring-border" role="radiogroup" aria-label="Effort">
             <div className="flex items-center justify-between"><span className="text-2xs uppercase tracking-label text-fg-subtle">Effort</span><span className="text-2xs text-fg-subtle">{rpe != null ? (rpe >= 10 ? "RPE 10 · nothing left" : `RPE ${rpe} · ${RPE_WORDS[Math.round(rpe)] ?? ""} in the tank`) : "how hard was it"}</span></div>
             <div className="mt-2 grid grid-cols-5 gap-1.5">{[6, 7, 8, 9, 10].map((n) => (
               <button key={n} type="button" role="radio" aria-checked={rpe === n} onClick={() => setRpe(n)} className={cn("flex h-12 min-w-0 touch-manipulation flex-col items-center justify-center rounded-xl transition-all", rpe === n ? "bg-ember text-ember-fg shadow-glow" : "bg-white/[0.05] text-fg-muted hover:bg-white/10")}><span className="font-display text-lg leading-tight tabular">{n}</span><span className="whitespace-nowrap text-[9px] uppercase tracking-wide opacity-80">{RPE_WORDS[n]}</span></button>))}</div>
@@ -433,7 +433,7 @@ function Benchmark({ inst, units, onUse }: { inst: Instance; units: "metric" | "
     if (!data) { const r = await fetch(`/api/exercise/${inst.exerciseId}/history`); if (r.ok) setData(await r.json()); }
   }
   return (
-    <div className="mb-3 rounded-2xl bg-well p-3 ring-1 ring-border">
+    <div className="mb-3 rounded-2xl p-3 ring-1 ring-border">
       {b?.last ? (
         <>
           <div className="flex items-center justify-between gap-2">

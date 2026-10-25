@@ -38,20 +38,20 @@ export default async function Programme() {
         <div className="flex gap-2"><Button asChild><Link href="/app/programme/new?continue=1">Extend: next block <Sparkles /></Link></Button><Button asChild variant="secondary"><Link href="/app/programme/new">Start over</Link></Button></div>
       </div>
       </div>
-      <div className="grid grid-cols-3 divide-x divide-border rounded-2xl bg-surface/50 ring-1 ring-border">
+      <div className="grid grid-cols-3 divide-x divide-border rounded-2xl ring-1 ring-border">
         <div className="p-4"><div className="text-2xs uppercase tracking-label text-fg-subtle">Done</div><div className="font-display mt-1 text-4xl tabular tracking-tightest">{o.completedSessions}<span className="text-lg text-fg-subtle">/{o.totalSessions}</span></div></div>
         <div className="p-4"><div className="text-2xs uppercase tracking-label text-fg-subtle">Week</div><div className="font-display mt-1 text-4xl tabular tracking-tightest">{currentWeek?.weekNumber ?? 1}<span className="text-lg text-fg-subtle">/{p.totalWeeks}</span></div></div>
         <div className="p-4"><div className="text-2xs uppercase tracking-label text-fg-subtle">Block</div><div className="font-display mt-1 truncate text-2xl tracking-tighter">{mesocycles.find((m) => m.id === currentWeek?.mesocycleId)?.name ?? mesocycles[0]?.name}</div></div>
       </div>
       <Progress value={pct} className="h-1" />
       <ThisWeek sessions={weekSessions} todayIso={todayIso} openMissedId={openMissedId} />
-      <section className="rounded-3xl bg-surface/40 p-5 ring-1 ring-border">
+      <section className="rounded-3xl p-5 ring-1 ring-border">
         <h2 className="mb-3 font-display text-base">Whole block</h2>
         <ProgrammeCalendar weeks={weeks} sessions={sessions} mesocycles={mesocycles} currentWeekId={currentWeek?.id ?? null} />
       </section>
       <div className="grid gap-4 lg:grid-cols-2">
-        <details className="rounded-2xl bg-surface/40 p-5 ring-1 ring-border"><summary className="cursor-pointer font-display text-base">Coach note</summary>{p.coachNote ? <div className="prose-coach mt-3 text-sm text-fg-muted">{p.coachNote.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}</div> : null}<h4 className="mt-4 text-2xs uppercase tracking-label text-fg-subtle">Why this programme</h4><ul className="mt-2 space-y-1.5 text-sm text-fg-muted">{p.rationale.map((r) => <li key={r} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-ember" />{r}</li>)}</ul></details>
-        <div className="rounded-2xl bg-surface/40 p-5 ring-1 ring-border"><h3 className="mb-3 font-display text-base">Weekly sets per muscle</h3><VolumeChart data={plan.weeklyVolumeBySet} /></div>
+        <details className="rounded-2xl p-5 ring-1 ring-border"><summary className="cursor-pointer font-display text-base">Coach note</summary>{p.coachNote ? <div className="prose-coach mt-3 text-sm text-fg-muted">{p.coachNote.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}</div> : null}<h4 className="mt-4 text-2xs uppercase tracking-label text-fg-subtle">Why this programme</h4><ul className="mt-2 space-y-1.5 text-sm text-fg-muted">{p.rationale.map((r) => <li key={r} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-ember" />{r}</li>)}</ul></details>
+        <div className="rounded-2xl p-5 ring-1 ring-border"><h3 className="mb-3 font-display text-base">Weekly sets per muscle</h3><VolumeChart data={plan.weeklyVolumeBySet} /></div>
       </div>
       <details><summary className="cursor-pointer text-sm font-medium text-fg-muted">Exercise index ({Object.keys(exercises).length})</summary><ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{Object.values(exercises).sort((a, b) => a.name.localeCompare(b.name)).map((e) => <li key={e.id}><Link href={`/library/${e.slug}`} className="text-sm text-ember hover:underline">{e.name}</Link><span className="ml-2 text-xs text-fg-subtle capitalize">{e.primaryMuscles.map((m) => m.replace("_", " ")).join(", ")}</span></li>)}</ul></details>
     </AppStack>

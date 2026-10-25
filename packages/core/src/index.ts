@@ -22,3 +22,4 @@ export * from "./nutrition/drinks";
 export * from "./load";
 export * from "./programme/autoregulate";
 export * from "./day-plan";
+export * from "./plate-drill";

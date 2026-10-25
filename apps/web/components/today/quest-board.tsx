@@ -58,7 +58,7 @@ export function QuestBoard({ board: initial, todayIso }: { board: Board; todayIs
     <section className="border-t border-rule pt-5" aria-label="Quest board">
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <span className="eyebrow">Quest board</span>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-well-strong px-2.5 py-1 text-2xs uppercase tracking-label text-fg-muted"><Shield className="size-3 text-ember" />{board.streakWeeks} week streak</span>
+        <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-2xs uppercase tracking-label text-fg-muted"><Shield className="size-3 text-ember" />{board.streakWeeks} week streak</span>
         <span className="ml-auto text-2xs uppercase tracking-label text-fg-subtle tabular">{board.weekDone} / {board.weekPlanned} this week</span>
       </div>
 
@@ -117,7 +117,7 @@ function SideQuestCard({ quest, done, claimed, busy, onClaim }: { quest: SideQue
   const complete = done || ticks.size >= total;
   const toggle = (k: string) => setTicks((s) => { const n = new Set(s); n.has(k) ? n.delete(k) : n.add(k); return n; });
   return (
-    <div className={cn("rounded-2xl p-4 ring-1", done ? "bg-signal-soft ring-signal/30" : "bg-well ring-border")}>
+    <div className={cn("rounded-2xl p-4 ring-1", done ? "bg-signal-soft ring-signal/30" : "ring-border")}>
       <div className="flex items-start gap-3">
         <div className="shrink-0 pt-0.5">{done ? <Check className="size-5 text-signal" /> : <Timer className="size-5 text-fg-subtle" strokeWidth={1.5} />}</div>
         <div className="min-w-0 flex-1">
@@ -131,7 +131,7 @@ function SideQuestCard({ quest, done, claimed, busy, onClaim }: { quest: SideQue
       </div>
       <ul className="mt-3 space-y-1.5">
         {quest.moves.map((m, i) => (
-          <li key={m.exerciseId} className="flex items-center gap-3 rounded-xl bg-surface/50 px-3 py-2">
+          <li key={m.exerciseId} className="flex items-center gap-3 rounded-xl px-3 py-2">
             <span className="w-4 text-center font-display text-xs text-fg-subtle tabular">{i + 1}</span>
             <span className="min-w-0 flex-1 truncate text-sm">{m.name}<span className="ml-2 text-fg-subtle">{m.reps ? `${m.reps} reps` : `${m.seconds}s`}</span></span>
             <span className="flex gap-1">{Array.from({ length: quest.rounds }, (_, r) => { const k = `${i}-${r}`; const on = done || ticks.has(k); return (

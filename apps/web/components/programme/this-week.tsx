@@ -15,7 +15,7 @@ export function ThisWeek({ sessions, todayIso, openMissedId }: { sessions: Sess[
   const days = Array.from({ length: 7 }, (_, i) => addDays(monday, i));
   const nextId = sessions.find((s) => s.scheduledOn > todayIso && s.status === "planned")?.id;
   return (
-    <section className="rounded-3xl bg-surface/40 p-4 ring-1 ring-border sm:p-5" aria-label="This week">
+    <section className="rounded-3xl p-4 ring-1 ring-border sm:p-5" aria-label="This week">
       <div className="mb-3 flex items-baseline justify-between gap-2"><h2 className="font-display text-lg tracking-tight">This week</h2><span className="text-xs text-fg-subtle">Tap a day to see or start it</span></div>
       <ol className="space-y-2">
         {days.map((day) => {

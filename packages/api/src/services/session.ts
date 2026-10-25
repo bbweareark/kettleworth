@@ -239,7 +239,7 @@ export async function upcomingSessions(userId: string, days = 14, todayIso = new
 export { toSummary };
 
 /** Rest Deck: record what the user did during a rest (quiz answer, breathing cycle, prediction) so it counts toward Growth and never repeats. */
-export async function recordRestActivity(userId: string, a: { sessionId?: string | null; kind: "quiz" | "fact" | "breathe" | "predict"; itemId?: string | null; correct?: boolean | null; detail?: Record<string, unknown> | null }) {
+export async function recordRestActivity(userId: string, a: { sessionId?: string | null; kind: "quiz" | "fact" | "breathe" | "predict" | "drill"; itemId?: string | null; correct?: boolean | null; detail?: Record<string, unknown> | null }) {
   const [row] = await db().insert(restActivity).values({ userId, sessionId: a.sessionId ?? null, kind: a.kind, itemId: a.itemId ?? null, correct: a.correct ?? null, detail: a.detail ?? null }).returning();
   return row!;
 }

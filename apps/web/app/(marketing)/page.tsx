@@ -67,7 +67,7 @@ export default async function Landing() {
       </section>
 
       {/* 2 — The conveyor: the one thing on the page that moves. */}
-      <section id="block" className="border-y border-rule bg-surface-2/40">
+      <section id="block" className="border-y border-rule">
         <div className="mx-auto w-full max-w-[1200px] px-4 py-section sm:px-6">
           <Conveyor />
         </div>

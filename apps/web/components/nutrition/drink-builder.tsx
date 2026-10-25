@@ -60,7 +60,7 @@ export function DrinkBuilder({ initial, dailyTarget, busy, onLog }: { initial?: 
         </div>
 
         {/* The meter */}
-        <div className="hidden min-w-[13rem] flex-col justify-between rounded-2xl bg-well-strong p-4 ring-1 ring-border md:flex">
+        <div className="hidden min-w-[13rem] flex-col justify-between rounded-2xl p-4 ring-1 ring-border md:flex">
           <div>
             <div className="text-2xs uppercase tracking-label text-fg-subtle">Calories</div>
             <div className="flex items-baseline gap-1"><CountUp key={result.calories} value={result.calories} duration={reduce ? 0 : 450} className="font-display text-5xl tracking-tightest" /><span className="text-sm text-fg-subtle">kcal</span></div>

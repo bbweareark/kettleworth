@@ -111,7 +111,7 @@ export const restActivity = pgTable("rest_activity", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
   sessionId: uuid("session_id").references(() => trainingSession.id, { onDelete: "cascade" }),
-  kind: text("kind").$type<"quiz" | "fact" | "breathe" | "predict">().notNull(),
+  kind: text("kind").$type<"quiz" | "fact" | "breathe" | "predict" | "drill">().notNull(),
   itemId: text("item_id"),
   correct: boolean("correct"),
   detail: jsonb("detail"),

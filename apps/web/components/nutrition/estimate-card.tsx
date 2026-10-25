@@ -12,7 +12,7 @@ export function EstimateCard({ items: initial, note, source, busy, onLog, onCanc
   const kept = rows.filter((r) => r.keep);
   const total = useMemo(() => kept.reduce((a, r) => ({ calories: a.calories + r.calories * r.scale, p: a.p + r.proteinG * r.scale, c: a.c + r.carbsG * r.scale, f: a.f + r.fatG * r.scale }), { calories: 0, p: 0, c: 0, f: 0 }), [kept]);
   return (
-    <div className="space-y-3 rounded-2xl bg-well p-4 ring-1 ring-border">
+    <div className="space-y-3 rounded-2xl p-4 ring-1 ring-border">
       <div className="flex items-baseline justify-between gap-3">
         <div className="text-2xs uppercase tracking-label text-fg-subtle">{source === "photo" ? "Read from your photo" : source === "drink" ? "Calculated" : "Smart estimate"}</div>
         <div className="font-display text-2xl tabular">{Math.round(total.calories)}<span className="ml-1 text-sm font-normal text-fg-subtle">kcal</span></div>
@@ -20,7 +20,7 @@ export function EstimateCard({ items: initial, note, source, busy, onLog, onCanc
       {portionsVisible > 1 ? <p className="rounded-xl bg-sky-soft px-3 py-2 text-sm text-fg">{portionsVisible} identical portions in the photo. These numbers are for one of them.</p> : null}
       <ul className="space-y-2">
         {rows.map((r, i) => (
-          <li key={`${r.name}-${i}`} className={cn("rounded-xl bg-surface/50 p-3 ring-1 ring-border transition-opacity", !r.keep && "opacity-40")}>
+          <li key={`${r.name}-${i}`} className={cn("rounded-xl p-3 ring-1 ring-border transition-opacity", !r.keep && "opacity-40")}>
             <div className="flex items-start gap-2">
               <span className={cn("mt-1.5 size-2 shrink-0 rounded-full", r.confidence === "high" ? "bg-signal" : r.confidence === "medium" ? "bg-amber" : "bg-rose")} title={`${r.confidence} confidence`} aria-label={`${r.confidence} confidence`} />
               <div className="min-w-0 flex-1">

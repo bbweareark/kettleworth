@@ -1,26 +1,29 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Brain, Wind, Target, Lightbulb, Check, X } from "lucide-react";
+import { Brain, Wind, Target, Lightbulb, Check, X, Weight } from "lucide-react";
 import { pickRestContent, breathingPattern, type Quiz, type Fact } from "@kettleworth/core";
 import { Button, cn } from "@kettleworth/ui";
 import type { CheckCard } from "./form-check";
+import { PlateDrill } from "./plate-drill";
 
 const QUIZ_SECONDS = 20;
-type Props = { sessionId: string; seedKey: string; restSeconds: number; seen: string[]; onSeen: (id: string) => void; tips: CheckCard[]; nextSet: { repRange: [number, number] | null; reps: number | null } | null; onPrediction?: (reps: number) => void };
+type Props = { sessionId: string; seedKey: string; restSeconds: number; seen: string[]; onSeen: (id: string) => void; tips: CheckCard[]; nextSet: { repRange: [number, number] | null; reps: number | null } | null; units?: "metric" | "imperial"; onPrediction?: (reps: number) => void };
 
 /**
  * Rest Deck: something worth doing while the clock runs. Content is real (the quiz is the evidence behind the user's plan),
  * timed to the rest, and every completed card is recorded so it counts toward Growth and never repeats.
  */
 type Served = { quiz: Quiz | null; fact: Fact | null };
+/** Solves are counted for the whole session so the drill cannot be farmed rest after rest. */
+let drillSolves = 0;
 async function fetchNext(exclude: string[]): Promise<Served | null> {
   try { const r = await fetch(`/api/rest/next?exclude=${encodeURIComponent(exclude.slice(-120).join(","))}`, { cache: "no-store" }); if (!r.ok) return null; return (await r.json()) as Served; } catch { return null; }
 }
 
 export function RestDeck(p: Props) {
   const initial = useMemo(() => pickRestContent(p.seedKey, p.seen, p.restSeconds), [p.seedKey, p.seen, p.restSeconds]);
-  const [mode, setMode] = useState<"quiz" | "fact" | "breathe" | "predict" | "tip">(initial.kind);
+  const [mode, setMode] = useState<"quiz" | "fact" | "breathe" | "predict" | "tip" | "drill">(initial.kind);
   // Served content: fetched fresh for every rest (the pool refills itself); the built-in bank covers offline.
   const [served, setServed] = useState<Served | null>(null);
   const shown = useRef<string[]>([]);
@@ -33,12 +36,21 @@ export function RestDeck(p: Props) {
     setServed(s);
   };
   useEffect(() => { void load(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [p.seedKey]);
-  const modes = [["quiz", Brain, "Quiz"], ["breathe", Wind, "Breathe"], ["predict", Target, "Call it"], ["tip", Lightbulb, "Tip"]] as const;
+  const modes = [["drill", Weight, "Plates"], ["quiz", Brain, "Quiz"], ["breathe", Wind, "Breathe"], ["predict", Target, "Call it"], ["tip", Lightbulb, "Tip"]] as const;
   return (
-    <div className="mt-4 rounded-2xl bg-well p-3">
-      <div className="mb-2 flex gap-1" role="tablist" aria-label="Rest deck">{modes.map(([m, I, l]) => <button key={m} role="tab" aria-selected={mode === m} type="button" onClick={() => setMode(m)} className={cn("inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-medium transition-colors", mode === m ? "bg-fg text-bg" : "text-fg-muted hover:bg-white/10 hover:text-fg")}><I className="size-3.5" />{l}</button>)}</div>
+    <div className="mt-4 border-t border-rule pt-3">
+      <div className="scrollbar-none -mx-1 mb-3 flex gap-1 overflow-x-auto px-1" role="tablist" aria-label="Rest deck">{modes.map(([m, I, l]) => <button key={m} role="tab" aria-selected={mode === m} type="button" onClick={() => setMode(m)} className={cn("inline-flex h-9 shrink-0 items-center gap-1.5 border px-3 text-xs uppercase tracking-label transition-colors", mode === m ? "border-rule-strong bg-fg text-bg" : "border-rule text-fg-muted hover:text-fg")}><I className="size-3.5" />{l}</button>)}</div>
       <AnimatePresence mode="wait" initial={false}>
         <motion.div key={mode} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
+          {mode === "drill" && (
+            <PlateDrill
+              seedKey={p.seedKey}
+              units={p.units ?? "metric"}
+              solvedThisSession={drillSolves}
+              restLeft={p.restSeconds}
+              onSolved={(pts) => { drillSolves += 1; void record({ sessionId: p.sessionId, kind: "drill", correct: true, detail: { points: pts } }); }}
+            />
+          )}
           {mode === "quiz" && (served ? <QuizCard key={served.quiz?.id ?? "none"} quiz={served.quiz} sessionId={p.sessionId} onDone={p.onSeen} onNext={load} /> : <Loading label="Picking a question" />)}
           {mode === "breathe" && <BreatheCard restSeconds={p.restSeconds} sessionId={p.sessionId} />}
           {mode === "predict" && <PredictCard nextSet={p.nextSet} sessionId={p.sessionId} onPrediction={p.onPrediction} />}
@@ -69,7 +81,7 @@ function QuizCard({ quiz, sessionId, onDone, onNext }: { quiz: Quiz | null; sess
       <div className="mb-2 flex items-center justify-between text-2xs uppercase tracking-label text-fg-subtle"><span>Quiz · {quiz.tag}</span>{picked == null ? <span className={cn("tabular", left <= 5 && "text-rose")}>{left}s</span> : null}</div>
       <p className="font-display text-lg leading-snug tracking-tighter">{quiz.q}</p>
       <div className="mt-3 grid gap-1.5">{quiz.options.map((o, i) => (
-        <button key={i} type="button" disabled={picked != null} onClick={() => answer(i)} className={cn("rounded-lg border px-3 py-2 text-left text-sm transition-colors", picked == null ? "border-border bg-surface/40 hover:border-border-strong" : i === quiz.answer ? "border-signal bg-signal-soft" : i === picked ? "border-rose bg-rose-soft" : "border-border opacity-50")}>
+        <button key={i} type="button" disabled={picked != null} onClick={() => answer(i)} className={cn("rounded-lg border px-3 py-2 text-left text-sm transition-colors", picked == null ? "border-border hover:border-border-strong" : i === quiz.answer ? "border-signal bg-signal-soft" : i === picked ? "border-rose bg-rose-soft" : "border-border opacity-50")}>
           <span className="flex items-center gap-2">{picked != null && i === quiz.answer ? <Check className="size-4 text-signal" /> : picked === i ? <X className="size-4 text-rose" /> : null}{o}</span>
         </button>))}</div>
       {picked != null && <><p className="mt-3 text-sm text-fg-muted"><span className={cn("font-medium", correct ? "text-signal" : "text-amber")}>{picked === -1 ? "Time." : correct ? "Right, +10 Growth." : "Not quite."}</span> {quiz.why}</p><Button size="sm" variant="ghost" className="mt-2" onClick={onNext}>Next question</Button></>}
@@ -106,7 +118,7 @@ function PredictCard({ nextSet, sessionId, onPrediction }: { nextSet: Props["nex
       <div className="text-2xs uppercase tracking-label text-fg-subtle">Call your next set</div>
       <p className="font-display text-lg tracking-tighter">How many reps will you get?</p>
       <p className="text-sm text-fg-muted">Target {lo} to {hi}. Calling it honestly trains the skill that makes RPE useful. Within one rep earns Growth.</p>
-      <div className="mt-3 flex flex-wrap gap-1.5">{opts.map((n) => <button key={n} type="button" disabled={v != null} onClick={() => { setV(n); onPrediction?.(n); record({ sessionId, kind: "predict", itemId: `predict-${Date.now()}`, correct: null, detail: { predicted: n, lo, hi } }); }} className={cn("size-10 rounded-full text-sm font-medium tabular", v === n ? "bg-ember text-ember-fg" : "bg-surface/50 hover:bg-white/10")}>{n}</button>)}</div>
+      <div className="mt-3 flex flex-wrap gap-1.5">{opts.map((n) => <button key={n} type="button" disabled={v != null} onClick={() => { setV(n); onPrediction?.(n); record({ sessionId, kind: "predict", itemId: `predict-${Date.now()}`, correct: null, detail: { predicted: n, lo, hi } }); }} className={cn("size-10 rounded-full text-sm font-medium tabular", v === n ? "bg-ember text-ember-fg" : "hover:bg-white/10")}>{n}</button>)}</div>
       {v != null && <p className="mt-2 text-sm text-signal">Locked in: {v}. Log the set and we'll compare.</p>}
     </div>
   );

@@ -29,6 +29,27 @@ passes. The portfolio had converged on warm-paper grounds (4 of 6), large-type f
 pill buttons (4 of 6) and a scroll-reveal spine (5 of 6). Kettleworth now uses a cool drafting
 ground, a grid footer, hard square buttons and a conveyor instead of a reveal.
 
+## Round 2 — the remaining app screens, and the rest game
+
+**Screens.** The fills are gone app-wide: 46 background-fill and backdrop-blur classes removed
+across 22 files, so content now sits on the ground with hairline rules doing the structural
+work, exactly as the DNA states. Radius and shadow were already neutralised at the token
+layer. Community's three stat boxes and its people and group cards became ruled rows. The
+rest panel lost its tinted surface for a heavy rule, and the rest deck's tab strip now scrolls
+instead of clipping its fifth tab on a phone.
+
+**Plate Drill** — the rest-period game, `packages/core/src/plate-drill.ts` (11 tests).
+Target weight and a bar; load one side from the rack. Three constraints shaped it:
+
+- *It must not compete with training.* It only exists inside a running rest timer, the clock
+  stays on screen above it, and Growth is capped at six solves per session (30 points against
+  a session's 100). The cap is enforced in SQL at the point the points are counted, not just
+  in the UI, so it cannot be farmed.
+- *It must calm, not spike.* No round timer, no penalty, no losable streak. The only clock is
+  the rest clock that was already running.
+- *It should make you better at the thing.* Racking a bar quickly is a real gym skill, so the
+  game is the skill.
+
 ## Replication score: 8/10
 
 Scored by comparing `design/refs/ours-landing/blueprint.md` against

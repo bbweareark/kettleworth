@@ -142,7 +142,7 @@ export function Intake({ initial, step, name, ai }: { initial: TrainingProfile |
             <motion.div key={followUp ? "follow" : stepDef.id} {...anim} className="space-y-5">
               <div className="flex items-start gap-3"><BrandSeal size={36} className="mt-0.5 shrink-0" /><Typed key={followUp ? followUp.question : coachLine} text={followUp ? followUp.question : coachLine} reduce={!!reduce} className="pt-1.5 font-display text-lg leading-snug tracking-tight text-fg md:text-xl" /></div>
               {thinking ? <div className="ml-11 flex gap-1 px-2 py-2" aria-label="Coach is thinking"><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle" /><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle [animation-delay:150ms]" /><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle [animation-delay:300ms]" /></div> : null}
-              <div className="rounded-3xl bg-surface/60 p-5 ring-1 ring-border backdrop-blur md:p-6">
+              <div className="rounded-3xl p-5 ring-1 ring-border backdrop-blur md:p-6">
                 <div className="space-y-5">
                   {followUp ? (
                     <>
