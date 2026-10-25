@@ -25,6 +25,14 @@ surfaces, on branch `revamp/app-surfaces`.
 | 7 · Typeface | **Clash Display 600 + Switzer 400/500/600** | [fontshare.com](https://www.fontshare.com) | Inter Tight and Inter are on the skill's ban list and were the main reason the app still looked generated. Auros's own face is Matter (commercial); its style page names Satoshi as the close free match, and Clash Display from the same library carries the weight this product needs. Self-hosted, 71KB total. |
 | 5 · Icons (app) | **3dicons.co V1**, CC0 | [3dicons.co](https://3dicons.co/) | Five renders (fire, target, chart, clock, tools) at the `dynamic` angle, self-hosted at 2x, unified into the warm palette by one filter chain. Placed on empty states and the quest board only; Lucide still owns inline affordances. |
 
+## Brand mark
+
+The old mark was a bronze K with a three-stop gradient, rejected as meaningless. The new one
+is **one plate, split by a line of light, the right half lifted by exactly one increment** —
+the product in a single move, avoiding every category cliche. The wordmark is **outlined**
+from Clash Display 600 rather than set as live text, so the logo renders identically with no
+font loaded. Geometry, lockup proportions and regeneration notes: `brand/README.md`.
+
 ## Applied behind the login, too
 
 | Surface | What changed |

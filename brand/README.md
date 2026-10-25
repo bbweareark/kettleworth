@@ -36,6 +36,10 @@ the step survive a 16px favicon.
 | `kw-maskable-ember.svg` | PWA maskable: mark inside the inner 56% safe zone. |
 | `kw-favicon-ember.svg` | Favicon source. |
 | `kw-seal.svg` | The mark in a dark disc, used where the coach speaks. |
+| `kw-wordmark.svg` | "Kettleworth" outlined from Clash Display 600. No live text. |
+| `kw-wordmark-uppercase.svg` | "KETTLEWORTH" outlined, for the oversized footer wordmark. |
+| `kw-lockup-horizontal.svg` | Mark + wordmark. Cap height is half the mark height; gap is 22% of it. |
+| `kw-lockup-stacked.svg` | Mark over wordmark, for square and narrow placements. |
 
 In the app the mark is a React component, `BrandMark` in `packages/ui/src/components/logo.tsx`,
 which draws the same geometry and takes its colour from `currentColor`.
@@ -61,11 +65,27 @@ Do not rotate it, do not mirror it (the step must rise to the right), do not clo
 do not add a gradient or a shadow, do not outline it, do not place it on a mid-tone where
 neither the cream nor the ember cut has 4.5:1.
 
+## The wordmark
+
+Outlined, not set. The glyphs were shaped with HarfBuzz using the font's own kerning, then
+converted to paths with fontTools, so the outlines are exactly what Clash Display 600 draws.
+
+This matters because live text renders in a fallback face for the instant before the font
+loads, and in the wrong face entirely if it never loads. The logo no longer depends on a
+network request: with every woff2 blocked, the header lockup and the footer wordmark still
+render correctly while the rest of the page falls back.
+
+In the app the wordmark is the `Wordmark` component, sized by **cap height** rather than
+bounding box, because cap height is what the eye measures a wordmark against. `Logo` composes
+`BrandMark` + `Wordmark` at the lockup's proportions and carries the accessible name.
+
+To regenerate after a font change: shape the string, convert with `SVGPathPen` under a
+`Transform(1, 0, 0, -1, x, 0)` to flip font units into SVG's y-down space, and take the tight
+bounds from a `BoundsPen`. HarfBuzz cannot read woff2, so unpack to TTF with fontTools first,
+or every glyph silently resolves to `.notdef`.
+
 ## Open items
 
-- The wordmark beside the mark is **live text in Clash Display 600**, not outlined paths.
-  That is correct for the app, which loads the font. Before any print or third-party vendor
-  use, outline it.
 - Trademark clearance has not been done. A professional search is worth doing before this is
   used commercially.
 
