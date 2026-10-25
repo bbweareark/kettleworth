@@ -1,0 +1,14 @@
+{
+  "app": "kettleworth",
+  "product": "AI fitness coach PWA: deterministic programme engine plus Claude narrative, chat and letters",
+  "mode": "Review",
+  "language": "TypeScript (Node 22)",
+  "stack": "Next.js 16 + React 19 monorepo; Postgres 16 (Neon) via Drizzle; better-auth self-hosted; Vercel; Anthropic, Resend, Mux, six wearable OAuth APIs",
+  "gates": {"g1": "WARN", "g2": "PASS", "g3": "FAIL", "g4": "WARN", "g5": "WARN"},
+  "decision": "IMPROVE",
+  "cost_per_paying_user_1m": "£34.52 as found; £0.83 target",
+  "infra_share_of_revenue_1m": "1151% as found; 28% target",
+  "weakest_exit": "Anthropic SDK structured-output calls and Mux-hosted video assets, both MEDIUM; everything else is one pg_dump",
+  "top_finding": "Every AI task runs ungated on an Opus-tier model for every user, including a weekly letter to every registered profile, so LLM spend is £401k of a £414k monthly bill at 1M users against £36k revenue.",
+  "first_fix": "Gate AI tasks behind entitlements() with a per-task model tier and per-user monthly cap inside packages/api/src/ai/client.ts, and restrict the weekly letter cron to users active in the last 14 days."
+}

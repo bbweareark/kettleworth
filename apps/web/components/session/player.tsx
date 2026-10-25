@@ -258,6 +258,8 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
   const [busy, setBusy] = useState(false);
   const [challenge, setChallenge] = useState<string | null>(null);
   useEffect(() => { const l = doneOf(set.setNumber); setW(toField(l?.weightKg ?? set.weightKg)); setR(l?.reps != null ? String(l.reps) : set.reps != null ? String(set.reps) : set.repRange ? String(set.repRange[1]) : ""); setRpe(l?.rpe ?? set.targetRpe ?? null); setChallenge(null); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [set.setNumber]);
+  // Which figure the key row drives. One pad, two targets (21st.dev Number Pad).
+  const [pad, setPad] = useState<"w" | "r">("w");
   const nudge = (which: "w" | "r", d: number) => { if (which === "w") setW((x) => String(Math.max(0, round((Number(x) || 0) + d * step, 2)))); else setR((x) => String(Math.max(0, (Number(x) || 0) + d))); };
   const values = () => { const t = fieldToTotalDisp(w); return { weightKg: t == null ? null : metric ? t : lbToKg(t), reps: r === "" ? null : Number(r), rpe, barKg: model.kind === "bar" ? barKg : null }; };
   const submit = async (confirmed = false) => { setBusy(true); const res = await onLog(set, values(), confirmed); setBusy(false); if (!res.ok) setChallenge(res.reason); else setChallenge(null); };
@@ -278,16 +280,16 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
   })();
   const planHint = set.weightKg != null ? `plan ${disp(set.weightKg)} ${unit}${model.kind === "handheld" ? ` ${model.hint}` : ""}` : model.hint;
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-surface)_92%,var(--color-ember)),var(--color-surface))] p-3 ring-1 ring-border min-[360px]:p-4 sm:p-5" aria-label="Log sets">
-      <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 size-64 rounded-full bg-ember/10 blur-3xl" />
+    <section className="border-t border-rule pt-4" aria-label="Log sets">
       <Benchmark inst={inst} units={units} onUse={(weightKg, reps, rpeVal) => { setW(toField(weightKg)); setR(reps != null ? String(reps) : ""); if (rpeVal != null) setRpe(rpeVal); }} />
       {/* Set track */}
-      <ol className="flex items-center gap-1.5" aria-label="Sets">
+      {/* Set track as hard hairline-separated cells: done is filled, the one you are on is ember. */}
+      <ol className="flex items-stretch gap-px bg-rule" aria-label="Sets">
         {sets.map((s) => { const l = doneOf(s.setNumber); const cur = s.setNumber === focus; return (
           <li key={s.setNumber} className="flex-1">
-            <button type="button" onClick={() => setFocus(s.setNumber)} aria-current={cur ? "step" : undefined} className={cn("flex h-11 w-full flex-col items-center justify-center rounded-xl text-2xs uppercase tracking-label transition-all", l ? "bg-signal-soft text-signal ring-1 ring-signal/30" : cur ? "bg-ember text-ember-fg shadow-glow" : "text-fg-subtle ring-1 ring-border")}>
+            <button type="button" onClick={() => setFocus(s.setNumber)} aria-current={cur ? "step" : undefined} className={cn("flex h-12 w-full flex-col items-center justify-center text-2xs uppercase tracking-label transition-colors", l ? "bg-fg text-bg" : cur ? "bg-ember text-ember-fg" : "bg-bg text-fg-subtle hover:text-fg")}>
               <span>{s.type === "warmup" ? "warm" : `set ${s.setNumber}`}</span>
-              {l ? <span className="font-display text-sm normal-case tracking-tight tabular">{disp(l.weightKg) || "bw"}×{l.reps ?? "-"}</span> : null}
+              {l ? <span className="font-display text-sm normal-case tabular">{disp(l.weightKg) || "bw"}×{l.reps ?? "-"}</span> : null}
             </button>
           </li>); })}
       </ol>
@@ -298,45 +300,78 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
             <div className="text-2xs uppercase tracking-label text-fg-subtle">{set.type === "warmup" ? "Warm-up" : `Set ${set.setNumber} of ${sets.length}`}{target ? <span className="text-ember"> · target {target}{set.targetRpe ? ` @ ${set.targetRpe}` : ""}</span> : null}</div>
           </div>
 
-          {/* Phones: one full-width dial per value, so a four-digit weight never clips. Wider screens: side by side. */}
-          <div className="mt-3 grid gap-2.5 sm:grid-cols-2 sm:gap-3">
-            {([["w", model.label, w, sideMode ? `${unit} a side` : unit, planHint], ["r", "Reps", r, "reps", target ? `aim ${target}` : ""]] as const).map(([k, label, val, u, hint]) => (
-              <div key={k} className="rounded-2xl px-2.5 py-2.5 ring-1 ring-border sm:px-3 sm:py-3">
-                <div className="flex min-h-7 items-center justify-between gap-2 px-1">
-                  <span className="text-2xs uppercase tracking-label text-fg-subtle">{label}</span>
-                  {k === "w" && model.kind === "bar" ? (
-                    <span role="radiogroup" aria-label="Total or per side" className="inline-flex rounded-full bg-white/[0.05] p-0.5 ring-1 ring-border">
-                      {(["total", "side"] as const).map((m) => <button key={m} type="button" role="radio" aria-checked={entry === m} onClick={() => switchEntry(m)} className={cn("h-6 rounded-full px-2.5 text-2xs font-medium transition-colors", entry === m ? "bg-fg text-bg" : "text-fg-muted")}>{m === "total" ? "Total" : "Per side"}</button>)}
-                    </span>
-                  ) : <span className="truncate text-2xs text-fg-subtle">{hint}</span>}
-                </div>
-                <div className="mt-1.5 flex items-center gap-1.5 min-[360px]:gap-2">
-                  <button type="button" onClick={() => nudge(k, -1)} className="grid size-11 shrink-0 touch-manipulation place-items-center rounded-xl bg-white/[0.06] text-fg-muted transition-transform hover:bg-white/10 active:scale-90 min-[360px]:size-12" aria-label={k === "w" ? "Lighter" : "Fewer"}><Minus className="size-5" /></button>
-                  <label className="flex min-w-0 flex-1 cursor-text items-baseline justify-center gap-1.5 rounded-xl py-1 focus-within:bg-white/[0.04]">
-                    <input aria-label={k === "w" ? model.label : "Reps"} inputMode={k === "w" ? "decimal" : "numeric"} enterKeyHint="done" value={val} onChange={(e) => (k === "w" ? setW : setR)(e.target.value.replace(/[^0-9.]/g, "").slice(0, 6))} placeholder="0" style={{ width: `${Math.max(1, (val || "0").length) + 0.4}ch` }} className="min-w-0 bg-transparent text-right font-display text-[clamp(1.875rem,10vw,2.5rem)] leading-none tabular tracking-tight text-fg caret-ember placeholder:text-fg-subtle/50 focus:outline-none" />
-                    <span className="shrink-0 whitespace-nowrap text-sm text-fg-subtle">{u}</span>
-                  </label>
-                  <button type="button" onClick={() => nudge(k, 1)} className="grid size-11 shrink-0 touch-manipulation place-items-center rounded-xl bg-white/[0.06] text-fg-muted transition-transform hover:bg-white/10 active:scale-90 min-[360px]:size-12" aria-label={k === "w" ? "Heavier" : "More"}><Plus className="size-5" /></button>
-                </div>
-                {k === "w" && (model.kind === "bar" || makeup) ? (
-                  <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 px-1 text-xs">
-                    {model.kind === "bar" ? <button type="button" onClick={() => setBarOpen((o) => !o)} aria-expanded={barOpen} className="inline-flex h-6 items-center gap-1 rounded-full bg-white/[0.06] px-2 text-2xs text-fg-muted ring-1 ring-border hover:text-fg">{BAR_NAMES[model.bar]} {barDisp} {unit}<ChevronDown className={cn("size-3 transition-transform", barOpen && "rotate-180")} /></button> : null}
-                    {makeup ? <span className="min-w-0 text-fg-subtle">{makeup}</span> : null}
-                  </div>
+          {/*
+            Readout and keys, the composition ported from 21st.dev's Number Pad
+            (design/refs/components-21st-numberpad). One figure dominates; tapping either
+            figure chooses which the keys drive. The old console stacked three equally
+            weighted boxes and ran 579px tall, so logging a set mid-set meant scrolling.
+          */}
+          <div className="mt-3 border-y-2 border-rule-strong">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-3 py-4">
+              <button type="button" onClick={() => setPad("w")} aria-pressed={pad === "w"} aria-label={`Enter ${model.label}`} className={cn("min-w-0 text-left transition-opacity", pad !== "w" && "opacity-45")}>
+                <span className="meta block truncate">{model.label}{sideMode ? " · a side" : ""}</span>
+                <span className="font-display block truncate text-[2.5rem] leading-none tabular">{w || "0"}</span>
+                <span className="meta block">{unit}</span>
+              </button>
+              <span aria-hidden className="pb-7 text-lg text-fg-subtle">×</span>
+              <button type="button" onClick={() => setPad("r")} aria-pressed={pad === "r"} aria-label="Enter reps" className={cn("min-w-0 text-right transition-opacity", pad !== "r" && "opacity-45")}>
+                <span className="meta block truncate">Reps{target ? ` · aim ${target}` : ""}</span>
+                <span className="font-display block truncate text-[2.5rem] leading-none tabular">{r || "0"}</span>
+                <span className="meta block">reps</span>
+              </button>
+            </div>
+            {model.kind === "bar" || makeup ? (
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-rule py-2 text-xs">
+                {model.kind === "bar" ? (
+                  <span role="radiogroup" aria-label="Total or per side" className="inline-flex">
+                    {(["total", "side"] as const).map((m) => (
+                      <button key={m} type="button" role="radio" aria-checked={entry === m} onClick={() => switchEntry(m)}
+                        className={cn("h-8 border px-2.5 text-[0.6875rem] uppercase tracking-label -ml-px first:ml-0", entry === m ? "border-rule-strong bg-fg text-bg" : "border-rule text-fg-muted")}>
+                        {m === "total" ? "Total" : "Per side"}
+                      </button>
+                    ))}
+                  </span>
                 ) : null}
-                {k === "w" && model.kind === "bar" && barOpen ? (
-                  <div className="mt-2 flex flex-wrap gap-1.5 px-1" role="radiogroup" aria-label={`${BAR_NAMES[model.bar]} weight`}>
-                    {(metric ? BAR_CHOICES_KG : BAR_CHOICES_LB)[model.bar].map((c) => { const kg = metric ? c : round(lbToKg(c), 2); const on = Math.abs(barDisp - c) < 0.2; return (
-                      <button key={c} type="button" role="radio" aria-checked={on} onClick={() => { const totalDisp = fieldToTotalDisp(w); onBarChange(model.bar, kg); setBarOpen(false); if (sideMode && totalDisp != null) setW(String(Math.max(0, round((totalDisp - c) / 2, 2)))); }} className={cn("h-8 rounded-full px-3 text-xs tabular ring-1", on ? "bg-ember text-ember-fg ring-ember" : "text-fg-muted ring-border-strong hover:text-fg")}>{c === 0 ? "Not counted" : `${c} ${unit}`}</button>); })}
-                  </div>
+                {model.kind === "bar" ? (
+                  <button type="button" onClick={() => setBarOpen((o) => !o)} aria-expanded={barOpen} className="h-8 text-fg-muted underline underline-offset-4 hover:text-fg">
+                    {BAR_NAMES[model.bar]} {barDisp} {unit}
+                  </button>
                 ) : null}
-              </div>))}
+                {makeup ? <span className="min-w-0 text-fg-subtle">{makeup}</span> : null}
+              </div>
+            ) : null}
+            {model.kind === "bar" && barOpen ? (
+              <div className="flex flex-wrap gap-1.5 border-t border-rule py-2" role="radiogroup" aria-label={`${BAR_NAMES[model.bar]} weight`}>
+                {(metric ? BAR_CHOICES_KG : BAR_CHOICES_LB)[model.bar].map((c) => { const kg = metric ? c : round(lbToKg(c), 2); const on = Math.abs(barDisp - c) < 0.2; return (
+                  <button key={c} type="button" role="radio" aria-checked={on} onClick={() => { const totalDisp = fieldToTotalDisp(w); onBarChange(model.bar, kg); setBarOpen(false); if (sideMode && totalDisp != null) setW(toField(metric ? totalDisp : lbToKg(totalDisp))); }}
+                    className={cn("h-9 border px-3 text-sm tabular", on ? "border-rule-strong bg-fg text-bg" : "border-rule text-fg-muted")}>{c}</button>); })}
+              </div>
+            ) : null}
           </div>
 
-          <div className="mt-3 rounded-2xl p-3 ring-1 ring-border" role="radiogroup" aria-label="Effort">
-            <div className="flex items-center justify-between"><span className="text-2xs uppercase tracking-label text-fg-subtle">Effort</span><span className="text-2xs text-fg-subtle">{rpe != null ? (rpe >= 10 ? "RPE 10 · nothing left" : `RPE ${rpe} · ${RPE_WORDS[Math.round(rpe)] ?? ""} in the tank`) : "how hard was it"}</span></div>
-            <div className="mt-2 grid grid-cols-5 gap-1.5">{[6, 7, 8, 9, 10].map((n) => (
-              <button key={n} type="button" role="radio" aria-checked={rpe === n} onClick={() => setRpe(n)} className={cn("flex h-12 min-w-0 touch-manipulation flex-col items-center justify-center rounded-xl transition-all", rpe === n ? "bg-ember text-ember-fg shadow-glow" : "bg-white/[0.05] text-fg-muted hover:bg-white/10")}><span className="font-display text-lg leading-tight tabular">{n}</span><span className="whitespace-nowrap text-[9px] uppercase tracking-wide opacity-80">{RPE_WORDS[n]}</span></button>))}</div>
+          <div className="mt-2.5 grid grid-cols-4 gap-1.5" aria-label={pad === "w" ? `Adjust ${model.label}` : "Adjust reps"}>
+            {[-2, -1, 1, 2].map((d) => (
+              <button key={d} type="button" onClick={() => nudge(pad, d)}
+                className="h-14 touch-manipulation border border-rule text-base tabular transition-colors hover:border-rule-strong hover:bg-fg hover:text-bg active:bg-fg active:text-bg">
+                {d > 0 ? "+" : "−"}{pad === "w" ? round(Math.abs(d) * step, 2) : Math.abs(d)}
+              </button>
+            ))}
+          </div>
+
+          {/* Effort in plain words. The old row read "8 · 2 LEFT IN THE TANK", which is jargon. */}
+          <div className="mt-3" role="radiogroup" aria-label="Effort">
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="meta">How hard was it</span>
+              <span className="meta">{rpe != null ? `RPE ${rpe}` : "Pick one"}</span>
+            </div>
+            <div className="mt-1.5 grid grid-cols-5 gap-1.5">
+              {([["Easy", 6], ["Light", 7], ["Right", 8], ["Hard", 9], ["Max", 10]] as const).map(([label, n]) => (
+                <button key={n} type="button" role="radio" aria-checked={rpe === n} onClick={() => setRpe(n)}
+                  className={cn("flex h-12 touch-manipulation items-center justify-center border text-sm transition-colors", rpe === n ? "border-rule-strong bg-fg text-bg" : "border-rule text-fg-muted hover:text-fg")}>
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {challenge ? (
@@ -347,7 +382,7 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
           ) : null}
 
           <div className="mt-3 flex items-center gap-2">
-            <Button className="h-13 flex-1 text-base shadow-glow" loading={busy} onClick={() => submit(false)} aria-label={done ? "Update set" : "Log set"}>{done ? "Update set" : "Log set"} <Check /></Button>
+            <Button className="h-13 flex-1" loading={busy} onClick={() => submit(false)} aria-label={done ? "Update set" : "Log set"}>{done ? "Update set" : "Log set"} <Check /></Button>
             {inst.loggedSets.some((l) => l.completed) ? <Button variant="ghost" onClick={onReset} aria-label="Restart exercise"><RotateCcw /></Button> : null}
           </div>
         </motion.div>

@@ -89,3 +89,64 @@ links, dark band. Recorded here so the rejection is on the record rather than si
 | **Footer is a 7-column grid of tiny links,** not a giant wordmark. | Measured. Also diverges from the five large-type footers already in this portfolio. |
 | **Motion is near-still, with one conveyor.** | The reference has 0 animations. Five of six apps in this portfolio use scroll-reveal; this one must not. |
 | **One accent, rationed.** | The reference allows exactly one chromatic note. Kettleworth's ember becomes it. |
+
+---
+
+## 5. 21st.dev — Number Pad, by Bankk roll (pillar 8)
+`design/refs/components-21st-numberpad/` · https://21st.dev/@bankkroll/components/number-pad
+
+**The composition I am porting:** one dominant readout at the top carrying the value and a
+quiet sub-line, a hard grid of equal keys beneath it, and a single commit action. The keys are
+the whole interface; there is no second competing control.
+
+Its own source needs a paid account, so what I port is the **composition from the preview and
+its description**, rethemed to Kettleworth tokens: square keys, no radius, no fill, hairline
+rules. None of its palette, radius or type comes across.
+
+**Why it fits the problem.** The set console measured **579px tall** on a phone, so logging a
+set mid-set meant scrolling. It stacked three equally weighted boxes (weight, reps, effort) so
+nothing dominated, and the effort row read as RPE jargon (`8 · 2 LEFT IN THE TANK`). The
+Number Pad's answer is: one readout dominates, everything else is a key.
+
+**What changes, against the measured problems**
+
+| Problem measured | Fix ported |
+|---|---|
+| 579px, needs scrolling one-handed | One screen: readout, key grid, effort row, commit bar |
+| Three boxes of equal weight | One dominant readout; the keys are secondary; nothing else competes |
+| Weight and reps are separate controls | One key grid, and tapping either figure in the readout chooses which it drives |
+| `RPE 8 · 2 LEFT IN THE TANK` | Three plain words, with the precise RPE kept small beneath |
+| Ringed boxes | Ruled rows and hard square keys, per the DNA |
+
+## 6. uupm.cc — baseline only (pillar 9)
+`design/refs/intel-uupm/` · https://uupm.cc
+
+Taken: its UX-guideline baseline as a completeness check — loading states, empty states and
+z-index discipline. **Nothing of its taste.** Its own front page recommends Inter, Space
+Grotesk and Playfair as font pairings and lists Glassmorphism, Neumorphism and Aurora UI as
+styles; all six are banned here, by `typography.md` and `anti-generic.md` respectively. The
+skill's own precedence rule says this skill wins, and it does.
+
+## 7. The rest game — loop reference, not a visual one
+`packages/core/src/word-rush.ts`
+
+The owner named the reference himself: "something like a flappy bird or temple run … really
+addictive, but also good to the cognitive skill, or learn a new language". That is a reference
+to a **loop**, not to a surface, so what is replicated is the mechanic and the pacing, and the
+surface stays on the DNA.
+
+**The one memorable idea of Flappy Bird:** the restart screen is the game screen. There is no
+menu, no score summary to dismiss, no "play again" buried in a dialog. The distance between
+failing and trying again is one tap on the spot your thumb already is.
+
+Ported: one input (two targets), the run-over screen as the start button, a visible best
+during the run, difficulty that rises continuously rather than in levels, death in one
+mistake, and the "one short of your best" callout.
+
+Not ported: its art, its physics, its sound, its endless-scroll background, and its lack of
+any purpose beyond itself — the words here are gym Spanish, so the run teaches.
+
+**Surface** is unchanged from section 5's Number Pad port: two large hard targets, one
+dominant readout, hairline rules, radius 0, no shadow. The only moving thing is a 2px bar
+reading the run clock, which turns ember under 30%. The rest deck's five modes use the same
+key grid, so the console and the deck read as one instrument.

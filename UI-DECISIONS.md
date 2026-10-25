@@ -20,6 +20,9 @@ Concept written before any gallery was opened: `design/CONCEPT.md`.
 | 6 · Motion | **Near-still + one conveyor** | [scrolltide.co](https://www.scrolltide.co/) (`design/refs/motion-scrolltide/`); conveyor from [figureandplot.com](https://www.figureandplot.com) (`design/refs/hero-figure-and-plot/`) | The DNA measures 0 animations, so the page is still. The one signature moment is Figure&Plot's horizontal conveyor, re-cast as the training block's weeks travelling under a fixed "now" marker. **No scroll-reveal spine** — five of six apps here already have one. |
 | 5 · Icons & imagery | **Flat line only** (Lucide 1.5px) | [3dicons.co](https://3dicons.co/) (`design/refs/icons-3dicons/`) — reviewed and declined | The DNA has no illustration whatsoever; a glossy 3D set would break the register. Recorded as a deliberate deviation. Imagery is the product's own photography, square and unframed. |
 
+| 8 · Components | **Number Pad** by Bankk roll | [21st.dev/@bankkroll/components/number-pad](https://21st.dev/@bankkroll/components/number-pad) | One dominant readout, a hard grid of equal keys, one commit action. Ported as composition only: its source is behind a paid account, and everything is rethemed to Kettleworth tokens. Nothing of its palette, radius or type. |
+| 9 · Design intelligence | **uupm.cc**, baseline only | [uupm.cc](https://uupm.cc) | Its UX-guideline baseline for loading, empty and z-index. **None of its taste**: its own examples name Inter, Space Grotesk and Playfair, and list Glassmorphism and Aurora UI. All banned here; the skill's precedence rule applies. |
+
 Picks made offline (source unreachable): **none** — all were opened and captured this session.
 
 ## Divergence from the rest of the portfolio
@@ -38,19 +41,47 @@ layer. Community's three stat boxes and its people and group cards became ruled 
 rest panel lost its tinted surface for a heavy rule, and the rest deck's tab strip now scrolls
 instead of clipping its fifth tab on a phone.
 
-**Plate Drill** — the rest-period game, `packages/core/src/plate-drill.ts` (11 tests).
-Target weight and a bar; load one side from the rack. Three constraints shaped it:
+**Word Rush** — the rest-period game, `packages/core/src/word-rush.ts` (10 tests). It replaces
+Plate Drill, which the owner judged not addictive: "something like a flappy bird or temple run
+… but also good to the cognitive skill, or learn a new language".
 
-- *It must not compete with training.* It only exists inside a running rest timer, the clock
-  stays on screen above it, and Growth is capped at six solves per session (30 points against
-  a session's 100). The cap is enforced in SQL at the point the points are counted, not just
-  in the UI, so it cannot be farmed.
-- *It must calm, not spike.* No round timer, no penalty, no losable streak. The only clock is
-  the rest clock that was already running.
-- *It should make you better at the thing.* Racking a bar quickly is a real gym skill, so the
-  game is the skill.
+Plate Drill's design brief had explicitly ruled out tension — no timer, no streak, no failure.
+That is exactly what made it calm and forgettable. The replacement takes the opposite position
+on tension and keeps the training guard, so the mechanic changes and the protection does not.
 
-## Verification log — Plate Drill on production
+Each Flappy Bird mechanic is mapped, not gestured at:
+
+| Flappy Bird | Word Rush |
+|---|---|
+| One input | Two targets, left or right. One thumb, no aiming |
+| Instant restart, no menu | The run-over screen **is** the start button |
+| A visible best to beat | Your best sits on screen during the run |
+| Difficulty rises every moment | The answer window shrinks 85ms per correct word, 3200ms down to a 1150ms floor |
+| Death in one mistake | One wrong answer, or one timeout, ends the run |
+| "So close" | Ending one short of your best is called out by name |
+
+The content is gym, body and food Spanish, and the decoy is drawn from the **same group** as
+the answer (chest against back, never chest against tomorrow), which is what makes it teach
+rather than test shape-matching. A test asserts that property over 100 generated questions.
+
+The training guard is carried over unchanged: the game exists only inside a running rest
+timer, the clock is `sticky` so it stays on screen while you play, Growth is capped at six
+scoring runs a session (30 points against a session's 100), the cap is enforced in SQL where
+the points are counted rather than in the UI, and a run under five words pays nothing so a
+lucky tap earns nothing.
+
+**Rest deck surface.** The five modes became a 5-up grid of hard hairline-separated keys, the
+same key language as the set console, which also ends the strip clipping its fifth tab. Quiz,
+Breathe, Call it and Tip had never been brought across from the old DNA and still carried
+`rounded-lg`, `rounded-full`, `bg-white/10` and a 40px glow; those are now ruled rows, a square
+that breathes, and a hard number pad. Switching tab pulls the chosen card's foot to the
+viewport foot, because on a phone the card previously opened entirely below the fold.
+
+## Verification log — Plate Drill on production (predecessor)
+
+Kept because the two bugs it found were real, and both fixes live on in Word Rush: the scoring
+path, the SQL cap and the leaderboard exclusion are the same code, now keyed on `drill` rows
+written by the new game.
 
 Run 25 Oct 2026 against https://kettleworth.vercel.app. Both runs used **throwaway accounts
 created and deleted for the purpose**, never the owner's own account: logging fake sets there
@@ -86,10 +117,26 @@ Final state of that account: 332 points, with Plate drill at 30 beside Showing u
 Sets logged at 2. That ratio is the design intent: a whole session of the game is worth less
 than a third of finishing the session itself.
 
-### Not covered
+### Run 3 — does each session get its own allowance?
 
-The cap is enforced per session. Solves spread across several sessions each get their own
-allowance, which is intended, and was verified locally but not on production.
+Verified on production after a deploy had settled: two sessions each at the cap returned
+**45**, not 30, so the allowance is per session as intended. The first attempt returned 30
+twice; that was a false negative from my own "deploy settled" check looking for text that was
+already on the page, not a product bug.
+
+## Verification log — Word Rush
+
+Run 25 Oct 2026 against a local build on an iPhone 15 viewport, driving the real UI.
+
+| Check | Observed |
+|---|---|
+| Start | Button measures 56px and starts a run. (An earlier "it is 14px and does nothing" was my own test selector: `/start/i` matched **Restart**, the first button on the page) |
+| Nine correct answers | Score read 9, window tightening each word |
+| One wrong answer | Run ended immediately, message "New best: 9." |
+| Scoring | Exactly **one** POST to `/api/rest`, `{kind:"drill", detail:{points:5, game:"word-rush"}}` |
+| Counter | Advanced 0/6 to 1/6 |
+| Sub-threshold run | A run ending at 0 produced **no** POST, so a lucky tap pays nothing |
+| Layout | Options land at y=279 in a 659px viewport, rest clock still visible at y=75, no horizontal scroll |
 
 ## Replication score: 8/10
 

@@ -32,13 +32,13 @@ export function physiqueTimeline(entries: PhysiqueEntry[]): PhysiquePoint[] {
 }
 
 /**
- * `plateDrills` is the **already per-session-capped** count of drill solves: the caller sums
+ * `plateDrills` is the **already per-session-capped** count of scoring rest-game runs: the caller sums
  * `least(solves, DRILL_MAX_SOLVES)` over each session. It must not be capped again here, or
  * every session collapses into a single allowance.
  */
 export type GrowthInputs = { sessionsCompleted: number; prs: number; weighIns: number; photoSets: number; streakWeeks: number; setsLogged: number; activitiesLogged: number; restLearned?: number; plateDrills?: number; intakeSteps?: number; intakeComplete?: boolean; sideQuests?: number };
 import { SIDE_QUEST_POINTS } from "./quests";
-import { DRILL_POINTS_PER_SOLVE } from "./plate-drill";
+import { GAME_POINTS_PER_RUN } from "./word-rush";
 export const INTAKE_STEP_POINTS = 15;
 export const INTAKE_COMPLETE_POINTS = 100;
 /** Growth points never decrease: every completed action adds. Weighted so consistency (sessions, streak) dominates. */
@@ -55,7 +55,7 @@ export function growthPoints(g: GrowthInputs): { total: number; breakdown: { lab
     { label: "Streak bonus", points: Math.min(10, g.streakWeeks) * 50 },
     { label: "Rest deck", points: (g.restLearned ?? 0) * 10 },
     // Capped at the source: six solves a session is the most the drill can ever be worth.
-    { label: "Plate drill", points: (g.plateDrills ?? 0) * DRILL_POINTS_PER_SOLVE },
+    { label: "Rest game", points: (g.plateDrills ?? 0) * GAME_POINTS_PER_RUN },
   ];
   const total = breakdown.reduce((a, b) => a + b.points, 0);
   // Levels widen: 500, 1200, 2100, 3200 ... (n^2 * 100 + 400n)

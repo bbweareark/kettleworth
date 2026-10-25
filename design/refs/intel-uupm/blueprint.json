@@ -1,0 +1,685 @@
+{
+  "title": "UI/UX Pro Max - AI-Powered Design Intelligence",
+  "url": "https://uupm.cc/",
+  "fonts": [
+    [
+      "DM Sans",
+      702
+    ],
+    [
+      "Space Grotesk",
+      65
+    ],
+    [
+      "ui-monospace",
+      33
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "UI UX Pro Max Design Intelligence",
+      "family": "Space Grotesk",
+      "size": "72px",
+      "weight": "700",
+      "lineHeight": "72px",
+      "letterSpacing": "normal",
+      "color": "rgb(248, 250, 252)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "Everything You Need for Beautiful UI",
+      "family": "Space Grotesk",
+      "size": "48px",
+      "weight": "700",
+      "lineHeight": "48px",
+      "letterSpacing": "normal",
+      "color": "rgb(248, 250, 252)",
+      "transform": "none"
+    },
+    "h3": {
+      "text": "Design Styles",
+      "family": "Space Grotesk",
+      "size": "20px",
+      "weight": "700",
+      "lineHeight": "28px",
+      "letterSpacing": "normal",
+      "color": "rgb(248, 250, 252)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "Searchable database of UI styles, color palettes, font pairings, chart",
+      "family": "DM Sans",
+      "size": "20px",
+      "weight": "400",
+      "lineHeight": "28px",
+      "letterSpacing": "normal",
+      "color": "rgb(148, 163, 184)",
+      "transform": "none"
+    },
+    "small": null,
+    "link": {
+      "text": "UI UX Pro Max",
+      "family": "DM Sans",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "rgb(15, 23, 42)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "border rgb(226, 232, 240)",
+      709
+    ],
+    [
+      "fg rgb(248, 250, 252)",
+      332
+    ],
+    [
+      "fg rgb(148, 163, 184)",
+      112
+    ],
+    [
+      "fg rgb(37, 99, 235)",
+      86
+    ],
+    [
+      "fg rgb(255, 255, 255)",
+      66
+    ],
+    [
+      "border rgba(255, 255, 255, 0.1)",
+      52
+    ],
+    [
+      "fg rgb(15, 23, 42)",
+      49
+    ],
+    [
+      "bg rgb(11, 11, 16)",
+      38
+    ],
+    [
+      "bg rgba(255, 255, 255, 0.08)",
+      35
+    ],
+    [
+      "border oklab(0.999994 0.0000455678 0.0000200868 / 0.2)",
+      24
+    ],
+    [
+      "fg lab(8.11897 0.811279 -12.254)",
+      23
+    ],
+    [
+      "bg oklab(0.54613 -0.0266538 -0.213537 / 0.2)",
+      21
+    ],
+    [
+      "fg lab(66.9756 -58.27 19.5419)",
+      17
+    ],
+    [
+      "bg rgba(17, 24, 39, 0.85)",
+      15
+    ],
+    [
+      "fg rgb(249, 115, 22)",
+      15
+    ],
+    [
+      "bg rgb(37, 99, 235)",
+      11
+    ],
+    [
+      "fg oklab(0.54613 -0.0266538 -0.213537 / 0.5)",
+      10
+    ],
+    [
+      "bg oklab(0.704878 0.125924 0.137906 / 0.2)",
+      9
+    ],
+    [
+      "bg lab(8.11897 0.811279 -12.254)",
+      9
+    ],
+    [
+      "fg lab(64.5597 64.3615 -12.7988)",
+      9
+    ]
+  ],
+  "bodyBg": "rgb(255, 255, 255)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 0,
+      "height": 8608,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(11, 11, 16)",
+      "maxWidth": "none",
+      "heading": "UI UX Pro Max Design Intelligence",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 4
+      },
+      "imageCount": 73
+    },
+    {
+      "top": 0,
+      "height": 900,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(11, 11, 16)",
+      "maxWidth": "none",
+      "heading": "UI UX Pro Max Design Intelligence",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "8px",
+        "children": 8
+      },
+      "imageCount": 14
+    },
+    {
+      "top": 900,
+      "height": 970,
+      "paddingTop": "96px",
+      "paddingBottom": "96px",
+      "bg": "rgb(11, 11, 16)",
+      "maxWidth": "none",
+      "heading": "Everything You Need for Beautiful UI",
+      "layout": {
+        "display": "grid",
+        "columns": "410.656px 410.672px 410.656px",
+        "gap": "24px",
+        "children": 6
+      },
+      "imageCount": 6
+    },
+    {
+      "top": 1870,
+      "height": 724,
+      "paddingTop": "96px",
+      "paddingBottom": "96px",
+      "bg": "rgb(18, 18, 24)",
+      "maxWidth": "none",
+      "heading": "8 Tech Stacks Supported",
+      "layout": {
+        "display": "grid",
+        "columns": "302px 302px 302px 302px",
+        "gap": "24px",
+        "children": 8
+      },
+      "imageCount": 8
+    },
+    {
+      "top": 2594,
+      "height": 2011,
+      "paddingTop": "96px",
+      "paddingBottom": "96px",
+      "bg": "rgb(11, 11, 16)",
+      "maxWidth": "none",
+      "heading": "How It Works",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "12px",
+        "children": 2
+      },
+      "imageCount": 11
+    },
+    {
+      "top": 4605,
+      "height": 1564,
+      "paddingTop": "96px",
+      "paddingBottom": "96px",
+      "bg": "rgb(18, 18, 24)",
+      "maxWidth": "none",
+      "heading": "39 Website Demos Gallery",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "24px",
+        "children": 2
+      },
+      "imageCount": 21
+    },
+    {
+      "top": 6169,
+      "height": 860,
+      "paddingTop": "96px",
+      "paddingBottom": "96px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Other Products",
+      "layout": {
+        "display": "grid",
+        "columns": "410.656px 410.672px 410.656px",
+        "gap": "24px",
+        "children": 6
+      },
+      "imageCount": 6
+    },
+    {
+      "top": 7029,
+      "height": 1005,
+      "paddingTop": "96px",
+      "paddingBottom": "96px",
+      "bg": "oklab(0.185056 0.00318746 -0.0117375 / 0.3)",
+      "maxWidth": "none",
+      "heading": "Build with Us",
+      "layout": {
+        "display": "grid",
+        "columns": "389.328px 389.328px 389.344px",
+        "gap": "24px",
+        "children": 3
+      },
+      "imageCount": 6
+    },
+    {
+      "top": 8034,
+      "height": 574,
+      "paddingTop": "96px",
+      "paddingBottom": "96px",
+      "bg": "rgb(18, 18, 24)",
+      "maxWidth": "none",
+      "heading": "Ready to Build Beautiful Interfaces?",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "16px",
+        "children": 2
+      },
+      "imageCount": 1
+    }
+  ],
+  "nav": {
+    "position": "fixed",
+    "top": 16,
+    "height": 66,
+    "bg": "oklab(0.209998 -0.00316383 -0.0338463 / 0.85)",
+    "backdrop": "blur(24px)",
+    "borderBottom": "1px solid oklab(0.999994 0.0000455678 0.0000200868 / 0.1)",
+    "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.25) 0px 25px 50px -12px",
+    "linkCount": 8,
+    "links": [
+      "UI UX Pro Max",
+      "Features",
+      "Stacks",
+      "Styles",
+      "Premium",
+      "Toggle theme",
+      "140.1k",
+      "Premium"
+    ],
+    "ctaCount": 1,
+    "ctaSamples": [
+      {
+        "text": "140.1k",
+        "bg": "oklab(0.277998 -0.00751148 -0.0321264 / 0.8)",
+        "color": "rgb(15, 23, 42)",
+        "radius": "3.35544e+07px",
+        "height": 34
+      }
+    ],
+    "logoLeft": 177,
+    "maxWidth": "1152px",
+    "padding": "0px",
+    "linkStyle": {
+      "text": "UI UX Pro Max",
+      "family": "DM Sans",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "rgb(15, 23, 42)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "SaaS",
+      "bg": "rgb(11, 11, 16)",
+      "color": "rgb(148, 163, 184)",
+      "border": "0px solid rgb(226, 232, 240)",
+      "radius": "8px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "6px 12px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "DM Sans",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 22
+    },
+    {
+      "text": "View Demo",
+      "bg": "rgb(37, 99, 235)",
+      "color": "rgb(255, 255, 255)",
+      "border": "0px solid rgb(226, 232, 240)",
+      "radius": "8px",
+      "shadow": "none",
+      "height": 40,
+      "padding": "8px 16px",
+      "fontSize": "16px",
+      "fontWeight": "500",
+      "family": "DM Sans",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 7
+    },
+    {
+      "text": "Show Prompt",
+      "bg": "oklab(0.999994 0.0000455678 0.0000200868 / 0.9)",
+      "color": "lab(8.11897 0.811279 -12.254)",
+      "border": "0px solid rgb(226, 232, 240)",
+      "radius": "8px",
+      "shadow": "none",
+      "height": 40,
+      "padding": "8px 16px",
+      "fontSize": "16px",
+      "fontWeight": "500",
+      "family": "DM Sans",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 6
+    },
+    {
+      "text": "How it Works",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(255, 255, 255)",
+      "border": "0px solid rgb(226, 232, 240)",
+      "radius": "12px",
+      "shadow": "none",
+      "height": 60,
+      "padding": "16px 32px",
+      "fontSize": "18px",
+      "fontWeight": "500",
+      "family": "DM Sans",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "View Demos",
+      "bg": "rgba(255, 255, 255, 0.05)",
+      "color": "rgb(248, 250, 252)",
+      "border": "1px solid rgba(255, 255, 255, 0.1)",
+      "radius": "16px",
+      "shadow": "none",
+      "height": 62,
+      "padding": "16px 32px",
+      "fontSize": "18px",
+      "fontWeight": "500",
+      "family": "DM Sans",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "UI UX Pro Max",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(15, 23, 42)",
+      "border": "0px solid rgb(226, 232, 240)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "0px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "DM Sans",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "140.1k",
+      "bg": "oklab(0.277998 -0.00751148 -0.0321264 / 0.8)",
+      "color": "rgb(15, 23, 42)",
+      "border": "1px solid lab(27.1134 -0.956401 -12.3224)",
+      "radius": "3.35544e+07px",
+      "shadow": "none",
+      "height": 34,
+      "padding": "6px 12px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "DM Sans",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Premium",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(255, 255, 255)",
+      "border": "0px solid rgb(226, 232, 240)",
+      "radius": "8px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "6px 12px",
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "family": "DM Sans",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": null,
+  "imagery": {
+    "count": 12,
+    "samples": [
+      {
+        "tag": "img",
+        "w": 726,
+        "h": 408,
+        "ratio": "1.78",
+        "radius": "8px",
+        "fit": "cover",
+        "alt": "Pet Grooming & Spa Demo",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 409,
+        "h": 230,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "SaaS Analytics Dashboard",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 409,
+        "h": 230,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Educational Platform",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 409,
+        "h": 230,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Pet Grooming & Spa",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 409,
+        "h": 230,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "AI Chatbot Platform",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 409,
+        "h": 230,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Luxury E-commerce",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 409,
+        "h": 230,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Fintech Crypto Dashboard",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 231,
+        "h": 48,
+        "ratio": "4.82",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "GoClaw logo",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 0,
+    "gradients": 31,
+    "blurBlobs": 6
+  },
+  "cards": {
+    "count": 29,
+    "sample": {
+      "bg": "rgba(255, 255, 255, 0.08)",
+      "border": "1px solid rgba(255, 255, 255, 0.1)",
+      "radius": "16px",
+      "shadow": "none",
+      "padding": "32px"
+    }
+  },
+  "footer": {
+    "height": 354,
+    "bg": "rgb(11, 11, 16)",
+    "paddingTop": "0px",
+    "paddingBottom": "0px",
+    "columns": 5,
+    "columnsTemplate": "217.594px 217.594px 217.609px 217.594px 217.609px",
+    "linkCount": 12,
+    "largestText": {
+      "text": "UI UX Pro Max",
+      "size": "18px",
+      "weight": "700",
+      "family": "Space Grotesk",
+      "color": "rgb(248, 250, 252)"
+    },
+    "borderTop": "1px solid rgb(30, 41, 59)"
+  },
+  "motion": {
+    "libs": [
+      "motion"
+    ],
+    "elementsWithTransition": 145,
+    "elementsWithAnimation": 2,
+    "transforms": 2,
+    "stickyElements": 0,
+    "videoCount": 0,
+    "canvasCount": 0,
+    "smoothScroll": "smooth"
+  },
+  "layout": {
+    "pageHeight": 8962,
+    "containerMaxWidths": [
+      [
+        "672px",
+        8
+      ],
+      [
+        "1280px",
+        6
+      ],
+      [
+        "1152px",
+        2
+      ],
+      [
+        "768px",
+        2
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "3.35544e+07px",
+        64
+      ],
+      [
+        "8px",
+        55
+      ],
+      [
+        "16px",
+        53
+      ],
+      [
+        "4px",
+        15
+      ],
+      [
+        "12px",
+        6
+      ],
+      [
+        "6px",
+        6
+      ]
+    ],
+    "shadows": [
+      "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.25) 0px 25px 50px -12px",
+      "rgba(0, 0, 0, 0.4) 0px 4px 6px -1px, rgba(0, 0, 0, 0.3) 0px 2px 4px -2px",
+      "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.1) 0px 8px 10px -6px",
+      "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px",
+      "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.54613 -0.0266538 -0.213537 / 0.25) 0px 10px 15px -3px, oklab(0.54613 -0.0266538 -0.213537 / 0.25) 0px 4px 6px -4px"
+    ],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": {
+    "height": 66,
+    "top": 16,
+    "bg": "oklab(0.209998 -0.00316383 -0.0338463 / 0.85)",
+    "backdrop": "blur(24px)",
+    "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.25) 0px 25px 50px -12px",
+    "position": "fixed"
+  },
+  "mobileNav": {
+    "height": 58,
+    "visibleControls": [
+      "A",
+      "Toggle theme",
+      "140.1k",
+      "Premium"
+    ],
+    "hasMenuButton": false
+  },
+  "label": "design intelligence / uupm",
+  "capturedAt": "2026-10-25T10:59:58.175Z"
+}

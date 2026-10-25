@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Brain, Wind, Target, Lightbulb, Check, X, Weight } from "lucide-react";
+import { Brain, Wind, Target, Lightbulb, Check, X, Zap } from "lucide-react";
 import { pickRestContent, breathingPattern, type Quiz, type Fact } from "@kettleworth/core";
 import { Button, cn } from "@kettleworth/ui";
 import type { CheckCard } from "./form-check";
-import { PlateDrill } from "./plate-drill";
+import { WordRush } from "./word-rush";
 
 const QUIZ_SECONDS = 20;
 type Props = { sessionId: string; seedKey: string; restSeconds: number; seen: string[]; onSeen: (id: string) => void; tips: CheckCard[]; nextSet: { repRange: [number, number] | null; reps: number | null } | null; units?: "metric" | "imperial"; onPrediction?: (reps: number) => void };
@@ -16,7 +16,7 @@ type Props = { sessionId: string; seedKey: string; restSeconds: number; seen: st
  */
 type Served = { quiz: Quiz | null; fact: Fact | null };
 /** Solves are counted for the whole session so the drill cannot be farmed rest after rest. */
-let drillSolves = 0;
+let scoringRuns = 0;
 async function fetchNext(exclude: string[]): Promise<Served | null> {
   try { const r = await fetch(`/api/rest/next?exclude=${encodeURIComponent(exclude.slice(-120).join(","))}`, { cache: "no-store" }); if (!r.ok) return null; return (await r.json()) as Served; } catch { return null; }
 }
@@ -36,19 +36,27 @@ export function RestDeck(p: Props) {
     setServed(s);
   };
   useEffect(() => { void load(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [p.seedKey]);
-  const modes = [["drill", Weight, "Plates"], ["quiz", Brain, "Quiz"], ["breathe", Wind, "Breathe"], ["predict", Target, "Call it"], ["tip", Lightbulb, "Tip"]] as const;
+  const modes = [["drill", Zap, "Rush"], ["quiz", Brain, "Quiz"], ["breathe", Wind, "Breathe"], ["predict", Target, "Call it"], ["tip", Lightbulb, "Tip"]] as const;
+  // The deck sits below the clock and the controls, so on a phone the chosen card starts off
+  // screen. Pull its foot to the viewport foot on every switch: clock stays up, card is in reach.
+  const panel = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const pick = (m: typeof mode) => {
+    setMode(m);
+    requestAnimationFrame(() => panel.current?.scrollIntoView({ block: "end", behavior: reduce ? "auto" : "smooth" }));
+  };
   return (
     <div className="mt-4 border-t border-rule pt-3">
-      <div className="scrollbar-none -mx-1 mb-3 flex gap-1 overflow-x-auto px-1" role="tablist" aria-label="Rest deck">{modes.map(([m, I, l]) => <button key={m} role="tab" aria-selected={mode === m} type="button" onClick={() => setMode(m)} className={cn("inline-flex h-9 shrink-0 items-center gap-1.5 border px-3 text-xs uppercase tracking-label transition-colors", mode === m ? "border-rule-strong bg-fg text-bg" : "border-rule text-fg-muted hover:text-fg")}><I className="size-3.5" />{l}</button>)}</div>
+      {/* five hard keys, equal width, hairline-separated: the same key language as the set console */}
+      <div className="mb-3 grid grid-cols-5 gap-px bg-rule" role="tablist" aria-label="Rest deck">{modes.map(([m, I, l]) => <button key={m} role="tab" aria-selected={mode === m} type="button" onClick={() => pick(m)} className={cn("flex h-13 flex-col items-center justify-center gap-1 text-2xs uppercase tracking-label transition-colors", mode === m ? "bg-fg text-bg" : "bg-bg text-fg-muted hover:text-fg")}><I className="size-3.5" />{l}</button>)}</div>
       <AnimatePresence mode="wait" initial={false}>
-        <motion.div key={mode} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
+        <motion.div ref={panel} key={mode} className="scroll-mb-24" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
           {mode === "drill" && (
-            <PlateDrill
+            <WordRush
               seedKey={p.seedKey}
-              units={p.units ?? "metric"}
-              solvedThisSession={drillSolves}
+              scoringRunsThisSession={scoringRuns}
               restLeft={p.restSeconds}
-              onSolved={(pts) => { drillSolves += 1; void record({ sessionId: p.sessionId, kind: "drill", correct: true, detail: { points: pts } }); }}
+              onScoringRun={(pts) => { scoringRuns += 1; void record({ sessionId: p.sessionId, kind: "drill", correct: true, detail: { points: pts, game: "word-rush" } }); }}
             />
           )}
           {mode === "quiz" && (served ? <QuizCard key={served.quiz?.id ?? "none"} quiz={served.quiz} sessionId={p.sessionId} onDone={p.onSeen} onNext={load} /> : <Loading label="Picking a question" />)}
@@ -62,7 +70,7 @@ export function RestDeck(p: Props) {
 }
 
 function Loading({ label }: { label: string }) {
-  return <div className="space-y-2 py-1" aria-busy><div className="text-2xs uppercase tracking-label text-fg-subtle">{label}</div><div className="h-5 w-3/4 animate-pulse rounded bg-white/10" /><div className="h-9 animate-pulse rounded-lg bg-white/5" /><div className="h-9 animate-pulse rounded-lg bg-white/5" /></div>;
+  return <div className="space-y-2 py-1" aria-busy><div className="meta">{label}</div><div className="h-5 w-3/4 animate-pulse bg-rule-strong" /><div className="h-11 animate-pulse bg-rule" /><div className="h-11 animate-pulse bg-rule" /></div>;
 }
 
 async function record(body: Record<string, unknown>) { try { await fetch("/api/rest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); } catch {} }
@@ -78,13 +86,13 @@ function QuizCard({ quiz, sessionId, onDone, onNext }: { quiz: Quiz | null; sess
   const correct = picked === quiz.answer;
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between text-2xs uppercase tracking-label text-fg-subtle"><span>Quiz · {quiz.tag}</span>{picked == null ? <span className={cn("tabular", left <= 5 && "text-rose")}>{left}s</span> : null}</div>
-      <p className="font-display text-lg leading-snug tracking-tighter">{quiz.q}</p>
-      <div className="mt-3 grid gap-1.5">{quiz.options.map((o, i) => (
-        <button key={i} type="button" disabled={picked != null} onClick={() => answer(i)} className={cn("rounded-lg border px-3 py-2 text-left text-sm transition-colors", picked == null ? "border-border hover:border-border-strong" : i === quiz.answer ? "border-signal bg-signal-soft" : i === picked ? "border-rose bg-rose-soft" : "border-border opacity-50")}>
-          <span className="flex items-center gap-2">{picked != null && i === quiz.answer ? <Check className="size-4 text-signal" /> : picked === i ? <X className="size-4 text-rose" /> : null}{o}</span>
+      <div className="mb-2 flex items-center justify-between border-b border-rule pb-2 meta"><span>Quiz · {quiz.tag}</span>{picked == null ? <span className={cn("tabular", left <= 5 && "text-ember")}>{left}s</span> : null}</div>
+      <p className="font-display text-xl leading-snug">{quiz.q}</p>
+      <div className="mt-3 grid gap-px bg-rule">{quiz.options.map((o, i) => (
+        <button key={i} type="button" disabled={picked != null} onClick={() => answer(i)} className={cn("px-3 py-3 text-left text-sm transition-colors", picked == null ? "bg-bg hover:bg-fg hover:text-bg" : i === quiz.answer ? "bg-fg text-bg" : i === picked ? "bg-bg text-ember" : "bg-bg opacity-45")}>
+          <span className="flex items-center gap-2">{picked != null && i === quiz.answer ? <Check className="size-4" /> : picked === i ? <X className="size-4" /> : null}{o}</span>
         </button>))}</div>
-      {picked != null && <><p className="mt-3 text-sm text-fg-muted"><span className={cn("font-medium", correct ? "text-signal" : "text-amber")}>{picked === -1 ? "Time." : correct ? "Right, +10 Growth." : "Not quite."}</span> {quiz.why}</p><Button size="sm" variant="ghost" className="mt-2" onClick={onNext}>Next question</Button></>}
+      {picked != null && <><p className="measure mt-3 text-sm text-fg-muted"><span className={cn("font-medium", correct ? "text-fg" : "text-ember")}>{picked === -1 ? "Time." : correct ? "Right, +10 Growth." : "Not quite."}</span> {quiz.why}</p><Button size="sm" variant="ghost" className="mt-2" onClick={onNext}>Next question</Button></>}
     </div>
   );
 }
@@ -102,8 +110,9 @@ function BreatheCard({ restSeconds, sessionId }: { restSeconds: number; sessionI
   const scale = phase === "Inhale" ? 1 + (t / pat.inhale) * 0.5 : phase === "Hold" ? 1.5 : 1.5 - ((t - pat.inhale - pat.hold) / pat.exhale) * 0.5;
   return (
     <div className="flex items-center gap-5">
-      <div className="grid size-24 shrink-0 place-items-center"><motion.div animate={reduce ? {} : { scale }} transition={{ duration: 1, ease: "linear" }} className="size-14 rounded-full bg-sky/70 shadow-[0_0_40px_var(--color-sky)]" /></div>
-      <div><div className="text-2xs uppercase tracking-label text-fg-subtle">Breathe · {pat.inhale}-{pat.hold}-{pat.exhale} · cycle {cycles + 1} of {pat.cycles}</div><div className="font-display text-3xl tracking-tighter">{phase}</div><p className="mt-1 text-sm text-fg-muted">Nose in, long exhale. Slower breathing brings heart rate down faster between sets, so the next set starts fresher.</p></div>
+      {/* a square that breathes, not a glowing orb: the DNA allows no shadow and no radius */}
+      <div className="grid size-24 shrink-0 place-items-center border border-rule"><motion.div animate={reduce ? {} : { scale }} transition={{ duration: 1, ease: "linear" }} className="size-12 bg-ember" /></div>
+      <div><div className="meta">Breathe · {pat.inhale}-{pat.hold}-{pat.exhale} · cycle {cycles + 1} of {pat.cycles}</div><div className="font-display text-3xl">{phase}</div><p className="measure mt-1 text-sm text-fg-muted">Nose in, long exhale. Slower breathing brings heart rate down faster between sets, so the next set starts fresher.</p></div>
     </div>
   );
 }
@@ -115,11 +124,11 @@ function PredictCard({ nextSet, sessionId, onPrediction }: { nextSet: Props["nex
   const opts = Array.from({ length: hi - lo + 3 }, (_, i) => lo - 1 + i).filter((n) => n > 0);
   return (
     <div>
-      <div className="text-2xs uppercase tracking-label text-fg-subtle">Call your next set</div>
-      <p className="font-display text-lg tracking-tighter">How many reps will you get?</p>
-      <p className="text-sm text-fg-muted">Target {lo} to {hi}. Calling it honestly trains the skill that makes RPE useful. Within one rep earns Growth.</p>
-      <div className="mt-3 flex flex-wrap gap-1.5">{opts.map((n) => <button key={n} type="button" disabled={v != null} onClick={() => { setV(n); onPrediction?.(n); record({ sessionId, kind: "predict", itemId: `predict-${Date.now()}`, correct: null, detail: { predicted: n, lo, hi } }); }} className={cn("size-10 rounded-full text-sm font-medium tabular", v === n ? "bg-ember text-ember-fg" : "hover:bg-white/10")}>{n}</button>)}</div>
-      {v != null && <p className="mt-2 text-sm text-signal">Locked in: {v}. Log the set and we'll compare.</p>}
+      <div className="meta">Call your next set</div>
+      <p className="font-display text-xl">How many reps will you get?</p>
+      <p className="measure text-sm text-fg-muted">Target {lo} to {hi}. Calling it honestly trains the skill that makes effort ratings useful. Within one rep earns Growth.</p>
+      <div className="mt-3 flex flex-wrap gap-px bg-rule p-px">{opts.map((n) => <button key={n} type="button" disabled={v != null} onClick={() => { setV(n); onPrediction?.(n); record({ sessionId, kind: "predict", itemId: `predict-${Date.now()}`, correct: null, detail: { predicted: n, lo, hi } }); }} className={cn("size-11 text-sm font-medium tabular transition-colors", v === n ? "bg-ember text-ember-fg" : "bg-bg hover:bg-fg hover:text-bg")}>{n}</button>)}</div>
+      {v != null && <p className="mt-2 text-sm">Locked in: {v}. Log the set and we'll compare.</p>}
     </div>
   );
 }
@@ -129,5 +138,5 @@ function TipCard({ tips, fact, onMoreFacts }: { tips: CheckCard[]; fact?: Fact; 
   const items = [...(fact ? [{ kind: "fact", text: fact.text }] : []), ...tips];
   const c = items[i % Math.max(1, items.length)];
   if (!c) return null;
-  return (<div><div className="text-2xs uppercase tracking-label text-fg-subtle">{c.kind === "fact" ? "Did you know" : c.kind === "cue" ? "Cue" : c.kind === "mistake" ? "Avoid" : "For you"}</div><p className="mt-1 font-display text-lg leading-snug tracking-tighter">{c.text}</p><div className="mt-2 flex gap-2">{items.length > 1 && <Button size="sm" variant="ghost" onClick={() => setI((x) => x + 1)}>Next</Button>}{c.kind === "fact" && <Button size="sm" variant="ghost" onClick={onMoreFacts}>Another fact</Button>}</div></div>);
+  return (<div><div className="meta">{c.kind === "fact" ? "Did you know" : c.kind === "cue" ? "Cue" : c.kind === "mistake" ? "Avoid" : "For you"}</div><p className="measure mt-1 font-display text-xl leading-snug">{c.text}</p><div className="mt-2 flex gap-2">{items.length > 1 && <Button size="sm" variant="ghost" onClick={() => setI((x) => x + 1)}>Next</Button>}{c.kind === "fact" && <Button size="sm" variant="ghost" onClick={onMoreFacts}>Another fact</Button>}</div></div>);
 }
