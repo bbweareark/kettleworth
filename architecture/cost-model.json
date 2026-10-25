@@ -1,0 +1,134 @@
+{
+  "app": "kettleworth (as found, 2026-10-25)",
+  "priced_on": "2026-10-25, reference ranges (unverified)",
+  "currency": "GBP",
+  "tiers": [1000, 100000, 1000000],
+  "revenue_per_paying_user_month": 3.0,
+  "paying_conversion_of_mau": 0.03,
+  "max_infra_share_of_revenue": 0.34,
+  "_revenue_note": "No price set (docs/BRIEF.md: 'Free for now', Stripe is Phase 1.5). monetize cheap-side default used: GBP 3 per paying user per month, 3% of MAU.",
+  "_price_note": "Priced on 2026-10-25 from references/cost-model.md order-of-magnitude ranges, converted to GBP at ~0.8/USD. LLM and Mux lines have no reference range; they are stated assumptions (Opus-class ~GBP 12/M input, 60/M output tokens; Mux ~GBP 0.001 per minute streamed) and are the first numbers to verify.",
+  "assumptions": {
+    "dau_ratio": 0.20,
+    "mau_ratio": 0.40,
+    "requests_per_dau_per_day": 80,
+    "storage_mb_per_user": 6,
+    "egress_mb_per_dau_per_day": 5,
+    "emails_per_mau_per_month": 5,
+    "jobs_per_dau_per_day": 1
+  },
+  "components": [
+    {
+      "name": "Web + API compute",
+      "provider": "Vercel (Next.js 16 serverless, region lhr1; apps/web/vercel.json, docs/DEPLOY.md)",
+      "model": "step",
+      "steps": [[0, 0], [5000, 16], [100000, 350], [1000000, 2800]],
+      "note": "Hobby -> Pro seat -> Pro + ~50M invocations -> Pro + ~480M invocations/month with multi-second AI and DB handlers (GB-hours dominate)"
+    },
+    {
+      "name": "PostgreSQL",
+      "provider": "Neon (docs/DEPLOY.md; plain Postgres 16 over postgres.js, packages/db/src/index.ts)",
+      "model": "step",
+      "steps": [[0, 0], [20000, 60], [200000, 300], [1000000, 1400]],
+      "note": "Free -> 2vCPU/8GB -> 4vCPU/16GB -> 8vCPU/32GB + read replica + ~1 TB of rows (exercise_instance, health_sample, ai_log)"
+    },
+    {
+      "name": "Progress photos stored as bytea in Postgres",
+      "provider": "Neon storage (PHOTO_STORAGE=db, packages/api/src/services/photos.ts)",
+      "model": "per_unit",
+      "unit": "gb_stored",
+      "price": 0.15,
+      "free": 0.5,
+      "note": "managed Postgres storage ~GBP 0.10-0.20 per GB-month; object storage would be ~0.012"
+    },
+    {
+      "name": "Egress",
+      "provider": "Vercel bandwidth (Pro includes 1 TB, then ~GBP 0.12/GB)",
+      "model": "per_unit",
+      "unit": "gb_egress",
+      "price": 0.12,
+      "free": 1024
+    },
+    {
+      "name": "Auth",
+      "provider": "self-hosted better-auth, users/sessions/hashes in Postgres (packages/api/src/auth.ts)",
+      "model": "per_mau",
+      "price": 0.0,
+      "free": 0
+    },
+    {
+      "name": "Transactional email",
+      "provider": "Resend (packages/api/src/email.ts): magic links + weekly letters",
+      "model": "per_unit",
+      "unit": "emails_k",
+      "price": 0.7,
+      "free": 3
+    },
+    {
+      "name": "LLM: weekly letter to every profile",
+      "provider": "Anthropic claude-opus-5 (apps/web/app/api/cron/weekly/route.ts loops ALL profiles; ~1.6k in / 0.3k out per call, 4.33 calls per registered user per month)",
+      "model": "per_unit",
+      "unit": "users",
+      "price": 0.147,
+      "note": "assumed Opus-class GBP 12/M input, 60/M output; system prompt cached"
+    },
+    {
+      "name": "LLM: coach chat, free to all",
+      "provider": "Anthropic claude-opus-5 (packages/api/src/services/coach.ts; ~3k context + 0.2k out, assumed 8 messages per MAU per month; BILLING_ENFORCED unset so no gating)",
+      "model": "per_unit",
+      "unit": "mau",
+      "price": 0.38
+    },
+    {
+      "name": "LLM: intake follow-ups, extraction, summary, programme note",
+      "provider": "Anthropic claude-opus-5 (packages/api/src/ai/tasks.ts; ~18 calls per new user, amortised over 12 months)",
+      "model": "per_unit",
+      "unit": "users",
+      "price": 0.03
+    },
+    {
+      "name": "LLM: body-photo analysis + meal photo/text estimates",
+      "provider": "Anthropic claude-opus-5 vision (analyseBodyPhotos, estimateMeal; assumed 0.3 photo sets + 5 meal estimates per MAU per month)",
+      "model": "per_unit",
+      "unit": "mau",
+      "price": 0.18
+    },
+    {
+      "name": "Video streaming",
+      "provider": "Mux (@mux/mux-player-react; assumed 0.5 min per DAU per day at ~GBP 0.001/min; YouTube embeds are free)",
+      "model": "per_unit",
+      "unit": "dau",
+      "price": 0.015
+    },
+    {
+      "name": "Wearable provider APIs",
+      "provider": "Oura, Whoop, Strava, Fitbit, Garmin, Polar OAuth (packages/integrations); free developer tiers, Garmin/Polar need partner approval",
+      "model": "fixed",
+      "price": 0
+    },
+    {
+      "name": "Redis",
+      "provider": "docker-compose.yml defines redis:7 but no code imports a Redis client; not deployed (docs/DEPLOY.md: 'Redis is not required')",
+      "model": "fixed",
+      "price": 0
+    },
+    {
+      "name": "Observability",
+      "provider": "PostHog + Sentry env vars exist but no SDK is imported; priced as if wired (hosted free tiers then usage)",
+      "model": "step",
+      "steps": [[0, 0], [100000, 40], [1000000, 300]]
+    },
+    {
+      "name": "Domain, TLS, DNS, CI minutes",
+      "provider": "registrar + GitHub Actions (.github/workflows/ci.yml)",
+      "model": "fixed",
+      "price": 5
+    },
+    {
+      "name": "Staging environment",
+      "provider": "Vercel preview + Neon branch, smaller",
+      "model": "step",
+      "steps": [[0, 0], [20000, 30], [300000, 120]]
+    }
+  ]
+}

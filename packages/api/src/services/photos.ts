@@ -118,13 +118,19 @@ export async function physiqueProgress(userId: string) {
 /** Growth and streak for many members in a few grouped queries (community cards and boards). */
 export async function growthForUsers(ids: string[]): Promise<Record<string, { total: number; level: number; streakWeeks: number }>> {
   if (!ids.length) return {};
-  const [sess, prs, sets, weigh, acts, rest, profs] = await Promise.all([
+  const [sess, prs, sets, weigh, acts, rest, drillRows, profs] = await Promise.all([
     db().select({ u: trainingSession.userId, d: trainingSession.scheduledOn }).from(trainingSession).where(and(inArray(trainingSession.userId, ids), eq(trainingSession.status, "completed"))),
     db().select({ u: personalRecord.userId, n: sql<number>`count(*)::int` }).from(personalRecord).where(inArray(personalRecord.userId, ids)).groupBy(personalRecord.userId),
     db().select({ u: trainingSession.userId, n: sql<number>`coalesce(sum(jsonb_array_length(${exerciseInstance.loggedSets})),0)::int` }).from(exerciseInstance).innerJoin(trainingSession, eq(exerciseInstance.sessionId, trainingSession.id)).where(inArray(trainingSession.userId, ids)).groupBy(trainingSession.userId),
     db().select({ u: bodyMeasurement.userId, n: sql<number>`count(*)::int` }).from(bodyMeasurement).where(and(inArray(bodyMeasurement.userId, ids), sql`${bodyMeasurement.weightKg} is not null`)).groupBy(bodyMeasurement.userId),
     db().select({ u: healthSample.userId, n: sql<number>`count(*)::int` }).from(healthSample).where(and(inArray(healthSample.userId, ids), eq(healthSample.metric, "workout"), eq(healthSample.provider, "manual"))).groupBy(healthSample.userId),
-    db().select({ u: restActivity.userId, n: sql<number>`count(*)::int` }).from(restActivity).where(and(inArray(restActivity.userId, ids), sql`(${restActivity.kind} <> 'quiz' or ${restActivity.correct} = true)`)).groupBy(restActivity.userId),
+    db().select({ u: restActivity.userId, n: sql<number>`count(*)::int` }).from(restActivity).where(and(inArray(restActivity.userId, ids), sql`${restActivity.kind} <> 'drill'`, sql`(${restActivity.kind} <> 'quiz' or ${restActivity.correct} = true)`)).groupBy(restActivity.userId),
+    // Same per-session cap as the personal breakdown, so the leaderboard cannot be gamed.
+    db().select({ u: restActivity.userId, n: sql<number>`coalesce(sum(least(c, ${DRILL_MAX_SOLVES})), 0)::int` }).from(
+      db().select({ u: restActivity.userId, sid: restActivity.sessionId, c: sql<number>`count(*)::int`.as("c") }).from(restActivity)
+        .where(and(inArray(restActivity.userId, ids), eq(restActivity.kind, "drill")))
+        .groupBy(restActivity.userId, restActivity.sessionId).as("d"),
+    ).groupBy(restActivity.userId),
     db().select({ u: profileTable.userId, step: profileTable.onboardingStep, done: profileTable.onboardingCompletedAt }).from(profileTable).where(inArray(profileTable.userId, ids)),
   ]);
   const sideByUser = await sideQuestDates(ids);
@@ -134,7 +140,7 @@ export async function growthForUsers(ids: string[]): Promise<Record<string, { to
     const mine = sess.filter((s) => s.u === u);
     const prof = profs.find((p) => p.u === u);
     const side = sideByUser[u] ?? [];
-    const g = growthPoints({ sideQuests: side.length, sessionsCompleted: mine.length, prs: n(prs, u), weighIns: n(weigh, u), photoSets: 0, streakWeeks: weeklyStreak([...mine.map((s) => s.d), ...side]), setsLogged: n(sets, u), activitiesLogged: n(acts, u), restLearned: n(rest, u), intakeSteps: prof?.step ?? 0, intakeComplete: !!prof?.done });
+    const g = growthPoints({ sideQuests: side.length, sessionsCompleted: mine.length, prs: n(prs, u), weighIns: n(weigh, u), photoSets: 0, streakWeeks: weeklyStreak([...mine.map((s) => s.d), ...side]), setsLogged: n(sets, u), activitiesLogged: n(acts, u), restLearned: n(rest, u), plateDrills: n(drillRows, u), intakeSteps: prof?.step ?? 0, intakeComplete: !!prof?.done });
     out[u] = { total: g.total, level: g.level, streakWeeks: weeklyStreak([...mine.map((s) => s.d), ...side]) };
   }
   return out;

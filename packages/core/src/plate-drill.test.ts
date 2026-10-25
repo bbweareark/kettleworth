@@ -81,3 +81,22 @@ describe("checkRound", () => {
     expect(wasteful.message).toContain("would do it");
   });
 });
+
+describe("growth points from the drill", () => {
+  it("gives each session its own allowance instead of one for all time", async () => {
+    const { growthPoints } = await import("./physique");
+    const base = { sessionsCompleted: 0, prs: 0, weighIns: 0, photoSets: 0, streakWeeks: 0, setsLogged: 0, activitiesLogged: 0 };
+    const line = (drills: number) =>
+      growthPoints({ ...base, plateDrills: drills }).breakdown.find((b) => b.label === "Plate drill")!.points;
+
+    // One session at the cap.
+    expect(line(DRILL_MAX_SOLVES)).toBe(30);
+    // Two sessions at the cap must be worth twice as much, not the same.
+    // This is the regression: the total used to be re-capped, so the drill was worth
+    // 30 points for life no matter how many sessions were played.
+    expect(line(DRILL_MAX_SOLVES * 2)).toBe(60);
+    expect(line(DRILL_MAX_SOLVES * 2)).toBeGreaterThan(line(DRILL_MAX_SOLVES));
+    // A caller passing the per-session-capped sum of 8 + 3 solves gets 6 + 3.
+    expect(line(Math.min(8, DRILL_MAX_SOLVES) + Math.min(3, DRILL_MAX_SOLVES))).toBe(45);
+  });
+});
