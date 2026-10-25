@@ -1,0 +1,660 @@
+{
+  "title": "3dicons - Open Source & Free Premium 3D Icon Library",
+  "url": "https://3dicons.co/",
+  "fonts": [
+    [
+      "Manrope",
+      402
+    ],
+    [
+      "Geist",
+      1
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "Beautifully Crafted open source & premium 3D Icons",
+      "family": "Geist",
+      "size": "64px",
+      "weight": "600",
+      "lineHeight": "64px",
+      "letterSpacing": "-2.5px",
+      "color": "rgb(0, 0, 0)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "Trending 3d icons",
+      "family": "Manrope",
+      "size": "32px",
+      "weight": "600",
+      "lineHeight": "43.2px",
+      "letterSpacing": "-2px",
+      "color": "rgb(0, 0, 0)",
+      "transform": "none"
+    },
+    "h3": {
+      "text": "Crafted with love and some coffee and constantly improved by @realvjy",
+      "family": "Manrope",
+      "size": "18px",
+      "weight": "500",
+      "lineHeight": "25.2px",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 0)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "More than 1500+ hand made Open Source, Free & Premium 3d icons renders",
+      "family": "Manrope",
+      "size": "18px",
+      "weight": "400",
+      "lineHeight": "27.9px",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 0)",
+      "transform": "none"
+    },
+    "small": null,
+    "link": {
+      "text": "",
+      "family": "Manrope",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 0)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "fg rgb(0, 0, 0)",
+      272
+    ],
+    [
+      "border rgb(0, 0, 0)",
+      235
+    ],
+    [
+      "fg rgb(105, 105, 105)",
+      43
+    ],
+    [
+      "border rgb(235, 240, 246)",
+      36
+    ],
+    [
+      "border rgb(105, 105, 105)",
+      29
+    ],
+    [
+      "fg rgb(255, 255, 255)",
+      24
+    ],
+    [
+      "border rgb(255, 255, 255)",
+      20
+    ],
+    [
+      "fg rgb(20, 20, 20)",
+      13
+    ],
+    [
+      "fg rgb(26, 26, 26)",
+      12
+    ],
+    [
+      "border rgb(20, 20, 20)",
+      9
+    ],
+    [
+      "border rgb(26, 26, 26)",
+      8
+    ],
+    [
+      "bg rgb(0, 0, 0)",
+      3
+    ],
+    [
+      "fg rgb(134, 142, 150)",
+      2
+    ],
+    [
+      "border rgb(134, 142, 150)",
+      2
+    ],
+    [
+      "bg rgb(241, 243, 245)",
+      1
+    ],
+    [
+      "bg rgba(110, 110, 110, 0.02)",
+      1
+    ],
+    [
+      "border rgba(0, 0, 0, 0.05)",
+      1
+    ],
+    [
+      "fg rgb(130, 130, 130)",
+      1
+    ],
+    [
+      "border rgb(130, 130, 130)",
+      1
+    ],
+    [
+      "bg rgb(23, 23, 23)",
+      1
+    ]
+  ],
+  "bodyBg": "rgb(255, 255, 255)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 66,
+      "height": 4454,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Beautifully Crafted open source & premium 3D Icons",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "12px",
+        "children": 4
+      },
+      "imageCount": 52
+    },
+    {
+      "top": 66,
+      "height": 500,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Beautifully Crafted open source & premium 3D Icons",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "12px",
+        "children": 4
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 598,
+      "height": 250,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 928,
+      "height": 1181,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Trending 3d icons",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "32px",
+        "children": 2
+      },
+      "imageCount": 37
+    },
+    {
+      "top": 2189,
+      "height": 1196,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Featured collections",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "12px",
+        "children": 2
+      },
+      "imageCount": 4
+    },
+    {
+      "top": 3494,
+      "height": 672,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Made with",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "0px",
+        "children": 4
+      },
+      "imageCount": 4
+    },
+    {
+      "top": 4276,
+      "height": 244,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Answers to common questions",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 3
+    },
+    {
+      "top": 4580,
+      "height": 738,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Crafted with love and some coffee and constantly improved by",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "16px",
+        "children": 4
+      },
+      "imageCount": 6
+    }
+  ],
+  "nav": {
+    "position": "static",
+    "top": -37,
+    "height": 66,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "borderBottom": "0px none rgb(0, 0, 0)",
+    "boxShadow": "none",
+    "linkCount": 6,
+    "links": [
+      "",
+      "Editor",
+      "Explore",
+      "Figma",
+      "Pro",
+      "Download V1"
+    ],
+    "ctaCount": 1,
+    "ctaSamples": [
+      {
+        "text": "Download V1",
+        "bg": "rgb(0, 0, 0)",
+        "color": "rgb(255, 255, 255)",
+        "radius": "32px",
+        "height": 36
+      }
+    ],
+    "logoLeft": 236,
+    "maxWidth": "none",
+    "padding": "8px 18px",
+    "linkStyle": {
+      "text": "",
+      "family": "Manrope",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 0)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "Kigen",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(105, 105, 105)",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "radius": "32px",
+      "shadow": "none",
+      "height": 28,
+      "padding": "0px",
+      "fontSize": "16px",
+      "fontWeight": "600",
+      "family": "Manrope",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 14
+    },
+    {
+      "text": "Editor",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(26, 26, 26)",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "radius": "32px",
+      "shadow": "none",
+      "height": 36,
+      "padding": "0px 6.66667px 0px 10px",
+      "fontSize": "16px",
+      "fontWeight": "600",
+      "family": "Manrope",
+      "letterSpacing": "normal",
+      "transform": "capitalize",
+      "count": 4
+    },
+    {
+      "text": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(20, 20, 20)",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "radius": "8px",
+      "shadow": "none",
+      "height": 40,
+      "padding": "0px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "Manrope",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 4
+    },
+    {
+      "text": "Download V1",
+      "bg": "rgb(0, 0, 0)",
+      "color": "rgb(255, 255, 255)",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "radius": "32px",
+      "shadow": "none",
+      "height": 36,
+      "padding": "0px 16px",
+      "fontSize": "16px",
+      "fontWeight": "600",
+      "family": "Manrope",
+      "letterSpacing": "normal",
+      "transform": "capitalize",
+      "count": 2
+    },
+    {
+      "text": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 0)",
+      "border": "0px none rgb(0, 0, 0)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 48,
+      "padding": "0px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "Manrope",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Create Design System Variabl",
+      "bg": "rgba(110, 110, 110, 0.02)",
+      "color": "rgb(0, 0, 0)",
+      "border": "1px solid rgba(0, 0, 0, 0.05)",
+      "radius": "100px",
+      "shadow": "none",
+      "height": 34,
+      "padding": "6px 10px 6px 14px",
+      "fontSize": "13px",
+      "fontWeight": "500",
+      "family": "Manrope",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Download all V1",
+      "bg": "rgb(0, 0, 0)",
+      "color": "rgb(255, 255, 255)",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "radius": "32px",
+      "shadow": "none",
+      "height": 50,
+      "padding": "0px 17.3333px 0px 26px",
+      "fontSize": "18px",
+      "fontWeight": "700",
+      "family": "Manrope",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Donate & support",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 0)",
+      "border": "1px solid rgb(0, 0, 0)",
+      "radius": "32px",
+      "shadow": "none",
+      "height": 50,
+      "padding": "0px 26px",
+      "fontSize": "18px",
+      "fontWeight": "600",
+      "family": "Manrope",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": {
+    "height": 50,
+    "bg": "rgb(241, 243, 245)",
+    "border": "0px none rgb(0, 0, 0)",
+    "radius": "500px",
+    "padding": "0px 16.6667px",
+    "fontSize": "18px",
+    "shadow": "none"
+  },
+  "imagery": {
+    "count": 10,
+    "samples": [
+      {
+        "tag": "img",
+        "w": 225,
+        "h": 26,
+        "ratio": "8.65",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "3dicons Pro",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 477,
+        "h": 279,
+        "ratio": "1.71",
+        "radius": "14px",
+        "fit": "fill",
+        "alt": "3dicons editor with material presets",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 479,
+        "h": 553,
+        "ratio": "0.87",
+        "radius": "20px",
+        "fit": "fill",
+        "alt": "halloween Icon Collection",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 479,
+        "h": 553,
+        "ratio": "0.87",
+        "radius": "20px",
+        "fit": "fill",
+        "alt": "3dicons Pro — Open Editor",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 479,
+        "h": 553,
+        "ratio": "0.87",
+        "radius": "20px",
+        "fit": "fill",
+        "alt": "social Icon Collection",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 479,
+        "h": 553,
+        "ratio": "0.87",
+        "radius": "20px",
+        "fit": "fill",
+        "alt": "v1 Icon Collection",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 230,
+        "h": 498,
+        "ratio": "0.46",
+        "radius": "18px",
+        "fit": "cover",
+        "alt": "preview-image",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 230,
+        "h": 498,
+        "ratio": "0.46",
+        "radius": "18px",
+        "fit": "cover",
+        "alt": "preview-image",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 0,
+    "gradients": 6,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 0,
+    "sample": null
+  },
+  "footer": {
+    "height": 17,
+    "bg": "rgba(0, 0, 0, 0)",
+    "paddingTop": "0px",
+    "paddingBottom": "0px",
+    "columns": null,
+    "columnsTemplate": null,
+    "linkCount": 0,
+    "largestText": {
+      "text": "© 2021 - 2026 Overlayz Studio, All right",
+      "size": "12px",
+      "weight": "400",
+      "family": "Manrope",
+      "color": "rgb(105, 105, 105)"
+    },
+    "borderTop": "0px none rgb(0, 0, 0)"
+  },
+  "motion": {
+    "libs": [
+      "motion"
+    ],
+    "elementsWithTransition": 34,
+    "elementsWithAnimation": 0,
+    "transforms": 4,
+    "stickyElements": 0,
+    "videoCount": 0,
+    "canvasCount": 0,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 5318,
+    "containerMaxWidths": [
+      [
+        "1000px",
+        8
+      ],
+      [
+        "284px",
+        1
+      ],
+      [
+        "800px",
+        1
+      ],
+      [
+        "600px",
+        1
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "16px",
+        36
+      ],
+      [
+        "32px",
+        25
+      ],
+      [
+        "20px",
+        4
+      ],
+      [
+        "18px",
+        4
+      ],
+      [
+        "8px",
+        4
+      ],
+      [
+        "500px",
+        1
+      ]
+    ],
+    "shadows": [
+      "rgba(32, 22, 56, 0.15) 0px 12px 36px 0px"
+    ],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": {
+    "height": 66,
+    "top": -900,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "static"
+  },
+  "mobileNav": {
+    "height": 86,
+    "visibleControls": [
+      "A",
+      "Download V1",
+      "BUTTON"
+    ],
+    "hasMenuButton": true
+  },
+  "label": "icons / 3dicons",
+  "capturedAt": "2026-10-25T08:55:13.551Z"
+}

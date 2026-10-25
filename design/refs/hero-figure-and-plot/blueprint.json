@@ -1,0 +1,363 @@
+{
+  "title": "Figure&Plot",
+  "url": "https://www.figureandplot.com/",
+  "fonts": [
+    [
+      "sans-serif",
+      1072
+    ],
+    [
+      "Public Sans",
+      225
+    ],
+    [
+      "Inter",
+      16
+    ],
+    [
+      "JetBrains Mono",
+      10
+    ],
+    [
+      "Inter-Bold",
+      1
+    ]
+  ],
+  "type": {
+    "h1": null,
+    "h2": null,
+    "h3": {
+      "text": "Great Research Needs Impactful Communication",
+      "family": "Public Sans",
+      "size": "40px",
+      "weight": "700",
+      "lineHeight": "44px",
+      "letterSpacing": "normal",
+      "color": "rgb(255, 255, 255)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "We transform rigorous research into compelling communication",
+      "family": "Public Sans",
+      "size": "80px",
+      "weight": "700",
+      "lineHeight": "80px",
+      "letterSpacing": "-4px",
+      "color": "rgb(255, 255, 255)",
+      "transform": "none"
+    },
+    "small": null,
+    "link": null
+  },
+  "palette": [
+    [
+      "fg rgb(0, 0, 0)",
+      1058
+    ],
+    [
+      "border rgb(0, 0, 0)",
+      1058
+    ],
+    [
+      "fg rgb(255, 255, 255)",
+      118
+    ],
+    [
+      "border rgb(255, 255, 255)",
+      118
+    ],
+    [
+      "fg rgb(0, 0, 238)",
+      88
+    ],
+    [
+      "border rgb(0, 0, 238)",
+      88
+    ],
+    [
+      "bg rgb(255, 255, 255)",
+      24
+    ],
+    [
+      "fg rgb(140, 140, 140)",
+      20
+    ],
+    [
+      "border rgb(140, 140, 140)",
+      20
+    ],
+    [
+      "fg rgb(242, 242, 242)",
+      12
+    ],
+    [
+      "border rgb(242, 242, 242)",
+      12
+    ],
+    [
+      "fg rgb(51, 51, 51)",
+      9
+    ],
+    [
+      "border rgb(51, 51, 51)",
+      9
+    ],
+    [
+      "fg rgb(130, 130, 130)",
+      9
+    ],
+    [
+      "border rgb(130, 130, 130)",
+      9
+    ],
+    [
+      "bg rgb(176, 176, 176)",
+      8
+    ],
+    [
+      "fg rgb(207, 207, 207)",
+      6
+    ],
+    [
+      "border rgb(207, 207, 207)",
+      6
+    ],
+    [
+      "bg rgb(0, 0, 0)",
+      5
+    ],
+    [
+      "bg rgb(20, 20, 20)",
+      4
+    ]
+  ],
+  "bodyBg": "rgb(255, 255, 255)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 442,
+      "height": 236,
+      "paddingTop": "10px",
+      "paddingBottom": "10px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "100%",
+      "heading": null,
+      "layout": null,
+      "imageCount": 15
+    },
+    {
+      "top": 442,
+      "height": 236,
+      "paddingTop": "10px",
+      "paddingBottom": "10px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "100%",
+      "heading": null,
+      "layout": null,
+      "imageCount": 34
+    },
+    {
+      "top": 7125,
+      "height": 425,
+      "paddingTop": "10px",
+      "paddingBottom": "10px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "100%",
+      "heading": null,
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "27px",
+        "children": 24
+      },
+      "imageCount": 24
+    },
+    {
+      "top": 7703,
+      "height": 230,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "100%",
+      "heading": null,
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "0px",
+        "children": 32
+      },
+      "imageCount": 2
+    }
+  ],
+  "nav": null,
+  "buttons": [],
+  "input": null,
+  "imagery": {
+    "count": 88,
+    "samples": [
+      {
+        "tag": "canvas",
+        "w": 250,
+        "h": 250,
+        "ratio": "1.00",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 171,
+        "h": 163,
+        "ratio": "1.05",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 171,
+        "h": 163,
+        "ratio": "1.05",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 171,
+        "h": 163,
+        "ratio": "1.05",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 171,
+        "h": 163,
+        "ratio": "1.05",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 171,
+        "h": 163,
+        "ratio": "1.05",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 171,
+        "h": 163,
+        "ratio": "1.05",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 171,
+        "h": 163,
+        "ratio": "1.05",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 7,
+    "gradients": 1,
+    "blurBlobs": 1
+  },
+  "cards": {
+    "count": 0,
+    "sample": null
+  },
+  "footer": null,
+  "motion": {
+    "libs": [
+      "lenis",
+      "framer"
+    ],
+    "elementsWithTransition": 12,
+    "elementsWithAnimation": 0,
+    "transforms": 20,
+    "stickyElements": 6,
+    "videoCount": 0,
+    "canvasCount": 1,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 8626,
+    "containerMaxWidths": [
+      [
+        "1400px",
+        6
+      ],
+      [
+        "1200px",
+        3
+      ],
+      [
+        "1600px",
+        1
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "23px",
+        9
+      ],
+      [
+        "15px",
+        4
+      ],
+      [
+        "100px",
+        3
+      ],
+      [
+        "50px",
+        1
+      ],
+      [
+        "12px",
+        1
+      ],
+      [
+        "10px",
+        1
+      ]
+    ],
+    "shadows": [
+      "rgba(250, 250, 250, 0.32) 0px 0px 0px -1.25px, rgba(250, 250, 250, 0.32) 0px 0px 0px -2.5px",
+      "rgba(217, 217, 217, 0.545) 0px 0px 0px -2.25px inset, rgba(217, 217, 217, 0.067) 0px 0px 0px -4.5px inset",
+      "rgba(0, 0, 0, 0.25) 0px 4px 6px 3px",
+      "rgba(237, 237, 237, 0.45) 0px 0.602187px 2.04744px -1.5px inset, rgba(237, 237, 237, 0.38) 0px 2.28853px 7.78101px -3px inset, rgba(237, 237, 237, 0.055) 0px 10px 34px -4.5px inset"
+    ],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": null,
+  "mobileNav": null,
+  "label": "hero / Figure&Plot",
+  "capturedAt": "2026-10-25T08:54:06.438Z"
+}

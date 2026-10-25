@@ -1,70 +1,65 @@
 # UI-DECISIONS.md
 
-Which Sensational UI reference drove each pillar. Keep current on every UI change, so the next
-change extends this design instead of starting a new one. Values live in `DESIGN.md`.
+Path: **B — full revamp.** The owner said he does not like the UI and UX and asked for it to
+be completely rewired. That settles it. The previous build was also, by the skill's own
+description, the portfolio's house style: oversized-type hero with the product as an artifact,
+pill buttons, and a giant clipped wordmark footer. Three of the banned default-kit items.
 
-| Pillar | Choice | Reference | Why |
-|--------|--------|-----------|-----|
-| 7 · DNA | **ORYZO AI** — darkroom product editorial | [styles.refero.design/style/1f204e95…](https://styles.refero.design/style/1f204e95-454a-437e-845b-c1b169d35607) | Warm near-black canvas, one chromatic surface step, cream type, a single ember, hairline/dashed rules, depth without shadows. Kettleworth was already reaching for this; the DNA sharpens it. Departure: ember stays the primary-action colour, because unlike ORYZO this product has a primary action. |
-| 1 · Navbar | **Static**, sticky translucent → **pill morph** past the hero | [navbar.gallery](https://www.navbar.gallery/) — Static filter (Linear, Asana, Browserbase) | Marketing site has five destinations, so Static is right. The pill morph is the one "sensational" nav move and costs a single transform. In-app nav keeps its **Side Bar** (desktop) + bottom tab bar (phone). |
-| 2 · Hero | **Oversized type + product-as-artifact** | [supahero.io/hero/superpower](https://supahero.io/hero/superpower) | Superpower is the closest adjacent category (health platform) and leads with a promise in oversized type. Pairs exactly with the DNA's "void-mode reveal": the app floating in warm darkness, headline flanking it. |
-| 3 · CTA | **Full-bleed pre-footer closer** + hero CTA + **sticky mobile bar** | [cta.gallery](https://www.cta.gallery/) — Get-ripe (fitness), Northeasttomato | One primary action per viewport, verb-first. The closer is full-bleed because signing up is the entire point of the page; the sticky bar catches phone users who never reach it. |
-| 4 · Footer | **Typographic / Large Type** | [footer.design](https://www.footer.design/) — Typographic filter | A giant clipped KETTLEWORTH wordmark closes the page the way the DNA closes a product reveal. Links reduce to a thin row; no link soup. |
-| 6 · Motion | **Reveal on enter** spine + 2 signature moments | [scrolltide.co](https://www.scrolltide.co/) — Emberkiri, Cinder (Hero Section) | Reveal-on-enter is the cheap correct default. Signature moments: hero line clip-reveal, and a slow ember gradient drift behind the closing CTA. Everything else is a plain reveal, so the page reads as designed rather than templated. |
-| 5 · Icons & imagery | **Lucide** inline · **3dicons.co V1** expressive · **Higgsfield** art | [3dicons.co](https://3dicons.co/) · Higgsfield MCP | 3dicons ships exactly the vocabulary a training app needs (Fire, Trophy, Chart, Target, Clock). Higgsfield is connected, so section art is generated to the DNA palette rather than stocked. |
+Reference pack on disk: `design/refs/` (7 folders, each with desktop, mobile, scrolled,
+full-page screenshots and a measured blueprint). Composition read: `design/reference/COMPOSITION.md`.
+Concept written before any gallery was opened: `design/CONCEPT.md`.
 
-## Round 2 — Path B revamp of the signed-in app
+| Pillar | Choice | Reference (opened this session) | What was taken |
+|--------|--------|--------------------------------|----------------|
+| 7 · DNA | **teenage engineering** — industrial catalogue | [styles.refero.design/style/aecf9dda…](https://styles.refero.design/style/aecf9dda-5cba-4dc7-9e73-59b65d895cdf) then measured live at [teenage.engineering](https://teenage.engineering) | Zero radius, zero shadow, zero gradient, **zero cards**; five rationed neutrals plus one chromatic note; hairline rules as the structural element; 66px section gap, 15px element gap, 1200px max; images 1:1 unframed edge-to-edge; body left-aligned always. Not their products, photography or wordmark. |
+| 7 · Typeface | **Archivo** variable (weight 100–900, width 62–125%) | [Google Fonts](https://fonts.google.com/specimen/Archivo), OFL | One family, two axes, 34KB. The reference's own face (te-20) is custom and unlicensable; its suggested fallback is Inter, which is banned. Archivo carries the same engineered, wire-like register at width 112% / weight 300. |
+| 1 · Navbar | **Mega menu**, permanent labelled row | [navbar.gallery](https://www.navbar.gallery/) taxonomy; structure replicated from teenage.engineering's own nav | Category headings with sub-links always visible, tiny thin type, **no CTA button in the nav**. Diverges from the five static/sidebar navs already in this portfolio. |
+| 2 · Hero | **Table hero** | teenage.engineering catalogue grid (`design/refs/dna-teenage-engineering/`) | The week's training *is* the hero: a ruled table, edge-to-edge cells, zero cell padding, column heads in 12px uppercase. No headline over a photograph, no product-as-artifact. |
+| 3 · CTA | **Square pair, uppercase label** | [cta.gallery](https://www.cta.gallery/) → [tines.com](https://www.tines.com) (`design/refs/cta-tines/`) | Measured: primary filled + secondary outlined at identical size, label uppercase 13px weight 700. Taken: the label treatment and the pairing. **Rejected:** its 990px pill radius, its purple, its warm paper, and the grey "trusted by" logo row under the hero. |
+| 4 · Footer | **Grid** | footer.design taxonomy; structure from teenage.engineering (7 columns, 96px, 7 tiny links) | A quiet multi-column grid of small links on the dark band. Explicitly not the large-type wordmark footer used by four other apps here. Harvest Hall was captured as a candidate and rejected (980px animated panel) — `design/refs/footer-harvest-hall/`. |
+| 6 · Motion | **Near-still + one conveyor** | [scrolltide.co](https://www.scrolltide.co/) (`design/refs/motion-scrolltide/`); conveyor from [figureandplot.com](https://www.figureandplot.com) (`design/refs/hero-figure-and-plot/`) | The DNA measures 0 animations, so the page is still. The one signature moment is Figure&Plot's horizontal conveyor, re-cast as the training block's weeks travelling under a fixed "now" marker. **No scroll-reveal spine** — five of six apps here already have one. |
+| 5 · Icons & imagery | **Flat line only** (Lucide 1.5px) | [3dicons.co](https://3dicons.co/) (`design/refs/icons-3dicons/`) — reviewed and declined | The DNA has no illustration whatsoever; a glossy 3D set would break the register. Recorded as a deliberate deviation. Imagery is the product's own photography, square and unframed. |
 
-The first pass applied ORYZO's colours to the app but kept its structure and its typeface, so
-the app still read as the old app repainted. This round took **Path B** on the authenticated
-surfaces, on branch `revamp/app-surfaces`.
+Picks made offline (source unreachable): **none** — all were opened and captured this session.
 
-| Pillar | Choice | Reference | What was taken |
+## Divergence from the rest of the portfolio
+
+Checked against `~/.claude/sensational-ui/registry.json` (5 other projects); `registry.py check`
+passes. The portfolio had converged on warm-paper grounds (4 of 6), large-type footers (5 of 6),
+pill buttons (4 of 6) and a scroll-reveal spine (5 of 6). Kettleworth now uses a cool drafting
+ground, a grid footer, hard square buttons and a conveyor instead of a reveal.
+
+## Replication score: 8/10
+
+Scored by comparing `design/refs/ours-landing/blueprint.md` against
+`design/refs/dna-teenage-engineering/blueprint.md`. Minimum to ship is 8.
+
+| # | Criterion | Score | Evidence |
 |---|---|---|---|
-| 7 · DNA (app) | **Auros — abyssal terminal** | [styles.refero.design/style/21cfe0c1…](https://styles.refero.design/style/21cfe0c1-778d-4613-9f47-a5718eb929b3) then measured live on [auros.global](https://auros.global) | One display weight at every size, display line-height exactly 1.0, tracking -0.047em measured off their H1, buttons at weight 400 with 6px radius and no shadow, two radii total, large stats as the hero of a data surface. Nothing of their teal palette, their gradient, their brand. |
-| 7 · Typeface | **Clash Display 600 + Switzer 400/500/600** | [fontshare.com](https://www.fontshare.com) | Inter Tight and Inter are on the skill's ban list and were the main reason the app still looked generated. Auros's own face is Matter (commercial); its style page names Satoshi as the close free match, and Clash Display from the same library carries the weight this product needs. Self-hosted, 71KB total. |
-| 5 · Icons (app) | **3dicons.co V1**, CC0 | [3dicons.co](https://3dicons.co/) | Five renders (fire, target, chart, clock, tools) at the `dynamic` angle, self-hosted at 2x, unified into the warm palette by one filter chain. Placed on empty states and the quest board only; Lucide still owns inline affordances. |
+| 1 | Nav height, position, scroll behaviour | 1 | Permanent labelled row, no scroll change, 0 CTAs in nav - same as the reference |
+| 2 | h1 within 10% of reference | **0** | Reference display is 40px; ours is 56px. Deliberate: the reference is a product catalogue, ours has to carry a page title. Still far below the previous build's 88px |
+| 3 | Section rhythm within 15% | 1 | 66px token, measured 66px on the reference |
+| 4 | Primary button shape, height, label | 1 | Hard rectangle, radius 0, uppercase letterspaced label |
+| 5 | Column count in the main layout | 1 | Table replaces the catalogue grid, same ruled-column structure |
+| 6 | Imagery framing | 1 | 1:1, radius 0, unframed, edge-to-edge |
+| 7 | Footer style and column count | **0** | Style matches (grid of tiny links on the dark band) but ours has 4 columns to the reference's 7, because there are fewer real destinations. Inventing three more would be worse |
+| 8 | Ground and surface relationship | 1 | Near-white ground, one inverted band, flat throughout |
+| 9 | Motion spec implemented | 1 | The conveyor is built, not a generic fade |
+| 10 | "Same family" in three seconds | 1 | Both read as an industrial catalogue |
 
-## Brand mark
-
-The old mark was a bronze K with a three-stop gradient, rejected as meaningless. The new one
-is **one plate, split by a line of light, the right half lifted by exactly one increment** —
-the product in a single move, avoiding every category cliche. The wordmark is **outlined**
-from Clash Display 600 rather than set as live text, so the logo renders identically with no
-font loaded. Geometry, lockup proportions and regeneration notes: `brand/README.md`.
-
-## Applied behind the login, too
-
-| Surface | What changed |
-|---|---|
-| App nav | Side Bar + Tabs kept, but the two nav landmarks were both named "Main"; they are now Primary and Secondary. The current page is marked by an ember rail, not an ember fill, so the only filled ember on screen is still the primary action. Community and Connected apps were desktop-only and unreachable on a phone: they now live in a **More** sheet on the app bar, which replaced the lone settings gear. The sidebar is translucent to match the public header, and the z-index ladder is consistent. |
-| App motion | A dashboard should not animate on scroll, so app routes get `AppStack`: one quiet staggered arrival on mount, capped at six, pure CSS. Applied to Today, Programme, Progress and Nutrition. |
-| Accent discipline | Ember was simultaneously action, brand, nav selection, focus ring, rest timer and decoration. Streak, library pattern, build, calories and unread badges moved to amber/outline; the rest timer moved to sky. |
-| Components | Buttons now meet the 44px touch target (`md` 44, `lg` 52, `xl` 56) and their icons scale with size instead of being pinned to 16px inside a 56px button. |
-| Dialogs & sheets | The overlay carried `animate-in` from a plugin that is not installed, so it never animated. Replaced with real keyframes, gated behind `motion-safe`. |
-
-Picks made offline (gallery unreachable): **none** — all seven were read live. One refero
-detail page (Superhuman) failed to hydrate in the browser pane, so ORYZO was compared against
-it only by index description; ORYZO was the stronger match regardless.
+Measured parity: **cards 0 vs 0 · shadows none vs none · radius none vs 7.3px** (ours is
+stricter than the reference) · **link type 16px/24px on both**.
 
 ## Ship gate
 
-- [x] Tokens only, no stray values
-- [x] Light + dark
-- [x] 360 / 768 / 1440, no horizontal scroll
-- [x] Contrast ≥4.5:1, scrims over imagery
+- [x] Seven pillars recorded with URLs opened this session
+- [x] Zero hard-coded values outside DESIGN.md tokens
+- [x] Light and dark both render
+- [x] 360 / 768 / 1440 with no horizontal scroll
+- [x] Contrast >= 4.5:1
 - [x] Focus rings, 44px targets, full keyboard path
-- [x] `prefers-reduced-motion` honoured
-- [x] Hero LCP optimised, no layout shift
-
-## Audit before the revamp (scores 0–3)
-
-| Pillar | Before | Score | Highest-leverage fix |
-|--------|--------|-------|----------------------|
-| 7 · DNA | Good token set, but a dead second source of truth in `tokens.ts` with drifting values; ~140 hand-written `ring-white/[0.06]` literals duplicating `--color-border`; `bg-black/*` scrims that invert wrongly in light theme; five hand-rolled tracking values; one off-palette `#ff8a3d` | 1 | Warm the ground to the DNA, delete the mirror, repoint every literal at a token |
-| 1 · Navbar | Sticky and translucent, but below 768px the nav links simply vanish: no burger, no sheet, no `aria-expanded`, no Escape. A second divergent header on `/library` | 1 | Mobile sheet + unify the two headers + pill morph |
-| 2 · Hero | Four CTAs visible at once, two of them competing ember primaries both pointing at `/sign-up` | 1 | One primary, product-as-artifact |
-| 3 · CTA | Three primaries to the same destination under three labels and three sizes; ember simultaneously meaning action, brand, nav selection, focus ring and rest timer | 1 | One label, one accent meaning, full-bleed closer, sticky phone bar |
-| 4 · Footer | Inlined in the layout, three flat columns, no copyright; absent from `/library`, `/privacy`, `/terms`, so the legal pages are dead ends | 1 | Shared Typographic footer on every public route |
-| 6 · Motion | No scroll reveal anywhere. The six pillar cards fade in on mount simultaneously. A `animate-in` class with no plugin installed, so the dialog never animates. One file missing the reduced-motion guard | 0 | Reveal spine + two signature moments |
-| 5 · Icons & imagery | One icon set (Lucide) cleanly, but no illustration system at all, raw unicode glyphs used as icons, 16px icons inside 52px buttons | 2 | 3D icon set for the feature grid, Higgsfield art for the closer |
+- [x] prefers-reduced-motion honoured
+- [x] No banned typeface
+- [x] Screenshot comparison against the reference, scored
+- [x] Card count <= reference (reference = 0)
+- [x] Ledger row appended

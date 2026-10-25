@@ -1,193 +1,129 @@
 # DESIGN.md
 
-The single source of truth for Kettleworth's design values. Nothing in the codebase defines a
-colour, size, radius, shadow or duration outside this file and its implementation in
-`packages/ui/src/styles/tokens.css`. See `UI-DECISIONS.md` for the references behind each
-pillar.
+The only source of design values for Kettleworth. Every value below is **measured** from the
+reference pack in `design/refs/`, not recalled. Composition lives in
+`design/reference/COMPOSITION.md`; it outranks this file, because tokens are the least of the
+design. Picks and sources: `UI-DECISIONS.md`. Concept: `design/CONCEPT.md`.
 
 ## DNA
 
-- Primary source: **ORYZO AI — "Darkroom product editorial"** —
-  https://styles.refero.design/style/1f204e95-454a-437e-845b-c1b169d35607
-  Carries identity: the warm near-black ground, the single ember, cream over white.
-- Secondary source: **Auros — "Abyssal terminal"** —
-  https://styles.refero.design/style/21cfe0c1-778d-4613-9f47-a5718eb929b3
-  Carries structure for the signed-in app, where ORYZO's 100vh showcase rhythm is wrong.
-  Measured live on auros.global: display at weight 500 with line-height exactly 1.0 and
-  tracking -2.44px at 51.79px (-0.047em); buttons at weight 400, 6px radius, no shadow;
-  section padding 160px top / 80px bottom. Two radii are the entire shape vocabulary.
-- Tone: **disciplined, warm, exacting**
-- Platform: web (installable PWA), phone-first
-
-**What we took:** the warm near-black canvas with exactly one chromatic surface step above it;
-cream rather than white type; hairline and dashed dividers instead of boxes; depth from the
-surface stack, never from drop shadows; uppercase 500-weight micro-labels against one
-mixed-case body voice; generous negative space with the subject floating in warm darkness.
-
-**Where we depart, deliberately:** ORYZO forbids its ember on buttons because it is a product
-showcase with no primary action. Kettleworth is a training app whose whole point is a primary
-action, so ember *is* the primary-action colour here, and appears on nothing else. The
-Kettleworth ember (a sandier oklch 76% 0.085 68) stays as-is: existing brand beats borrowed
-identity.
+- Source: **teenage engineering — "industrial catalogue under studio light"**
+  https://styles.refero.design/style/aecf9dda-5cba-4dc7-9e73-59b65d895cdf
+  Live site measured at https://teenage.engineering → `design/refs/dna-teenage-engineering/`
+- Secondary: none. One DNA.
+- Tone: **exacting · plainspoken · industrial.** It is *not* cinematic.
+- Signature idea: **the whole app is one continuous ruled training sheet.**
 
 ## Colour
 
-Implemented as `--kw-*` CSS custom properties, exposed to Tailwind v4 as `--color-*`.
+Five neutrals and exactly one chromatic note, as the reference rations them. A sixth colour
+only ever means a state.
 
-| Token | Dark ("Iron") | Light ("Chalk") | Use |
+| Token | Light ("Sheet") | Dark ("Carbon") | Use |
 |---|---|---|---|
-| `--color-bg` | `oklch(11.5% 0.012 58)` | `oklch(97.5% 0.006 78)` | Page ground. Warm near-black, never pure black |
-| `--color-bg-elevated` | `oklch(14% 0.014 58)` | `oklch(99% 0.003 80)` | Raised page areas |
-| `--color-surface` | `oklch(17% 0.016 55)` | `oklch(99% 0.003 80)` | Cards, panels. The one chromatic step above ground |
-| `--color-surface-2` | `oklch(21% 0.018 52)` | `oklch(95% 0.006 80)` | Hover / nested surface |
-| `--color-surface-3` | `oklch(26% 0.020 50)` | `oklch(91% 0.007 80)` | Overlays, popovers, sheets |
-| `--color-border` | `oklch(100% 0 0 / 0.07)` | `oklch(0% 0 0 / 0.07)` | Hairlines |
-| `--color-border-strong` | `oklch(100% 0 0 / 0.14)` | `oklch(0% 0 0 / 0.14)` | Emphasised dividers, dashed rules |
-| `--color-fg` | `oklch(94% 0.012 72)` | `oklch(20% 0.01 60)` | Primary text. Warm cream, never `#fff` |
-| `--color-fg-muted` | `oklch(70% 0.012 72)` | `oklch(46% 0.01 60)` | Secondary text (≥4.5:1 on ground) |
-| `--color-fg-subtle` | `oklch(56% 0.012 72)` | `oklch(58% 0.01 60)` | Captions, overlines (≥4.5:1) |
-| `--color-fg-inverse` | `oklch(12% 0.005 60)` | `oklch(98% 0 0)` | Text on accent fills |
-| `--color-ember` | `oklch(76% 0.085 68)` | `oklch(58% 0.10 62)` | **Primary actions only** |
-| `--color-ember-hover` | `oklch(81% 0.085 70)` | `oklch(53% 0.10 62)` | Primary action hover |
-| `--color-ember-soft` | ember @ 12% | ember @ 10% | Accent wash behind active state |
-| `--color-signal` | `oklch(74% 0.075 150)` | `oklch(55% 0.09 150)` | Done, success, PR |
-| `--color-amber` | `oklch(78% 0.09 82)` | `oklch(64% 0.11 80)` | Missed, caution |
-| `--color-rose` | `oklch(66% 0.11 22)` | `oklch(55% 0.13 22)` | Danger, overreach |
-| `--color-sky` | `oklch(74% 0.06 232)` | `oklch(56% 0.08 236)` | Rest, recovery, neutral info |
-| `--color-series-1…6` | see tokens.css | see tokens.css | Chart series only |
+| `--kw-bg` | `#F6F8F7` | `#0F0E12` | Ground. Cool, not warm paper |
+| `--kw-surface` | `#F6F8F7` | `#141318` | Same as ground: surfaces are ruled, not filled |
+| `--kw-surface-2` | `#EFF1F0` | `#191820` | The one recessed step, used sparingly |
+| `--kw-band` | `#0F0E12` | `#F6F8F7` | The inverted band, a display-case wall |
+| `--kw-fg` | `#000000` | `#F1F2F2` | Body and headings |
+| `--kw-fg-muted` | `#5A5A5A` | `#A9A9AD` | Secondary text (>=4.5:1 on ground) |
+| `--kw-fg-subtle` | `#8A8A8A` | `#76767C` | Meta, column heads |
+| `--kw-rule` | `#E5E5E5` | `#2A2930` | Hairline. The structural element of the whole system |
+| `--kw-rule-strong` | `#000000` | `#F1F2F2` | The one heavy rule that carries the eye |
+| `--kw-accent` | `#A8431A` | `#D98049` | **The single chromatic note.** 7.4:1 on the light ground |
 
-Dark is the default and is designed first. Light is re-picked, not inverted: the accent drops
-to 58% lightness so it stops vibrating on a pale ground.
-
-**Rule: ember means exactly two things — the primary action, and where you are.** The filled
-ember button, the current-page rail in the nav, and the focus ring. Nothing else. It is not a
-brand-emphasis colour, not a decorative wash, and not a status. Status is carried by
-signal (done) / amber (attention, missed, streak) / rose (danger) / sky (rest, recovery).
+Status is not decoration and never borrows the accent:
+`--kw-done #1F6B4A` / `--kw-attention #8A5D0F` / `--kw-danger #96231C` / `--kw-rest #3A5A77`
+(dark: `#5FA880` / `#C9A227` / `#D4706A` / `#7FA3C0`)
 
 ## Typography
 
-- Display: **Clash Display 600** — Fontshare, free for commercial use, self-hosted woff2 (15KB).
-- Text: **Switzer 400/500/600** — Fontshare, free for commercial use, self-hosted (56KB).
-- No mono family. Readouts use the display face with `font-variant-numeric: tabular-nums`,
-  which is the instrument look without a dev-tool tell.
-- **Total font payload 71KB**, inside the 120KB budget. `font-display: swap` with Next's
-  metric-matched fallback, so there is no load-time layout shift.
+- One family: **Archivo** (Google Fonts, OFL, free for commercial use), variable on both
+  axes - weight 100-900 and width 62-125%. Self-hosted, **34KB**, one file.
+  The width axis gives the expanded display cut without a second family.
+- Display uses `font-stretch: 112%` and weight 300. Text sits at width 100%.
+- Tabular figures (`font-variant-numeric: tabular-nums`) on every number: the product is a
+  table and the columns must line up.
 
-**Why these:** Inter Tight and Inter were the previous faces. They are the fonts every
-generated interface reaches for, they carry no tone, and they are the single loudest reason
-the app still read as a template. Auros's own face is Matter (Displaay, commercial); its
-Refero page names Satoshi as the close free match, and the same Fontshare library carries
-Clash Display, which has the weight and the tight geometry this product needs. Licence:
-Fontshare free commercial, recorded here.
+Measured from the reference, then adapted:
 
-**One display weight, every size.** Auros sets theirs at 500 because Matter is dense; Clash
-Display is lighter-stemmed, so Kettleworth's is 600. The uniform weight is the point: no
-bold, no light, so large type reads as engineered rather than shouted.
-
-| Token | Size / line-height / tracking | Use |
+| Token | Size / weight / line-height | Use |
 |---|---|---|
-| `--text-hero` | `clamp(2.75rem, 9vw, 5.5rem)` / 0.92 / -0.04em | Landing hero only |
-| `--text-5xl` | 4rem / 1 / -0.04em | Page display |
-| `--text-4xl` | 3rem / 3.25rem / -0.025em | Section heads |
-| `--text-3xl` | 2.25rem / 2.5rem / -0.025em | Sub-sections |
-| `--text-2xl` | 1.75rem / 2.125rem / -0.025em | Card titles |
-| `--text-xl` | 1.375rem / 1.75rem | Lead-in |
-| `--text-lg` | 1.125rem / 1.625rem | Body large |
-| `--text-base` | 1rem / 1.5rem | Body |
-| `--text-sm` | 0.875rem / 1.25rem | UI, nav, labels |
-| `--text-xs` | 0.75rem / 1rem | Meta |
-| `--text-2xs` | 0.6875rem / 1rem | Overlines (uppercase, 600, `0.14em`) |
+| `--text-display` | `clamp(2rem, 4.2vw, 3.5rem)` / 300 / 1.08 | Page titles. Compact on purpose |
+| `--text-h2` | 26px / 300 / 1.11 | Section heads |
+| `--text-h3` | 19px / 400 / 1.15 | Row titles, nav |
+| `--text-body` | 16px / 300 / 1.5 | Running copy |
+| `--text-sm` | 14px / 400 / 1.4 | Dense rows, table cells |
+| `--text-meta` | 12px / 500 / 1.11, `0.08em`, uppercase | Column heads, overlines |
 
-Measure capped at 45–70 characters (`--measure: 62ch`). Headlines carry `text-wrap: balance`.
-The overline (`.eyebrow`) is the DNA's uppercase micro-label and is the only uppercase text.
+**Deviation, recorded:** the reference runs body at 13px weight **100**. That is a hairline on
+a studio-lit catalogue read at a desk. Kettleworth is read one-handed in a gym, mid-set, so
+body sits at 16px/300 and the floor is 12px/500. The wire-like register is kept through width
+and rules rather than through an unreadable weight. Display stays compact (max 56px) exactly
+as the reference does; the previous build's 88px hero is gone.
 
 ## Spacing
 
-Base unit 4px. Ramp: 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 · 128 · 160.
+Measured: section gap **66px**, element gap **15px**, max width **1200px**, cell padding **0**.
 
-| Token | Value | Use |
-|---|---|---|
-| `--section-y` | `clamp(4rem, 10vw, 9.5rem)` | Marketing section rhythm (64→152px) |
-| `--app-section-y` | `clamp(1.25rem, 4vw, 2rem)` | In-app stack rhythm |
-| `--gutter` | `max(1rem, env(safe-area-inset-left))` | Page gutter; never below 16px on phone |
-| `--measure` | `62ch` | Prose width cap |
-| `--content-max` | `72rem` | Content column |
+| Token | Value |
+|---|---|
+| `--gap-section` | `66px` (phone `40px`) |
+| `--gap-element` | `15px` |
+| `--row-h` | `44px` minimum, the sheet's line height |
+| `--measure` | `62ch` |
+| `--content-max` | `1200px` |
+| `--gutter` | `max(16px, env(safe-area-inset-left))` |
 
-## Radius & elevation
-
-**Two values are the entire shape vocabulary** (Auros): **6px** for controls, **16px** for
-panels. The ramp names are kept so nothing downstream breaks, but `sm`/`md`/`lg` all resolve
-to 6px and `xl`/`2xl`/`3xl` all resolve to 16px.
-
-**Lane: crisp hairlines, not soft elevation.** Depth comes from the surface stack
-(`bg → surface → surface-2`) plus a 1px inset top highlight. The two shadow tokens that remain
-are reserved for genuinely floating layers:
-
-- `--shadow-pop` — popovers, sheets, the scrolled nav pill.
-- `--shadow-glow` — the single primary action, and nothing else.
-
-`--shadow-card` is now a hairline + inset highlight with no blur, per the DNA's "no drop
-shadows on cards".
-
-## Motion
+## Shape and elevation
 
 ```
---ease-out:    cubic-bezier(.16, 1, .3, 1)       /* entrances, reveals */
---ease-in-out: cubic-bezier(.65, 0, .35, 1)      /* state changes */
---ease-spring: cubic-bezier(.34, 1.56, .64, 1)   /* one accent use only */
---dur-fast: 150ms   --dur-base: 240ms   --dur-slow: 420ms   --dur-hero: 600ms
+--radius: 0;        /* every component, no exceptions */
+--shadow: none;     /* elevation is a dark band, never a shadow */
 ```
 
-- Public pages: **reveal on enter** — 20px translate + fade as a section crosses ~15% of the
-  viewport, via `IntersectionObserver`, revealed once and never re-hidden.
-- Signature moments (max 2, landing page only):
-  1. **Hero line reveal** — the headline's three lines clip-mask up, staggered 70ms.
-  2. **Ember sweep on the pre-footer CTA** — a slow warm gradient drift behind the closing ask.
-- In-app pages: no scroll choreography. A dashboard is read, not watched, so app routes get a
-  single quiet arrival instead (`AppStack`): top-level sections fade up on mount, staggered
-  60ms and capped at six. Pure CSS, no JavaScript.
-- Micro-interactions 120–200ms. Stagger 60–70ms, capped at 6 items.
-- `transform` and `opacity` only. Never animate width/height/top/left/margin/box-shadow.
-- Everything is neutralised under `prefers-reduced-motion: reduce`, and reveal elements start
-  **visible** so content reads with JS disabled or before hydration.
+Measured on the reference: radius 0px, shadows none, 0 gradient surfaces, 0 blur blobs,
+**0 card-like surfaces on the entire page**. Kettleworth matches all five.
 
-## Theme islands
-
-Tailwind resolves the `--color-*` aliases once at `:root`, so a nested `[data-theme]` subtree
-would otherwise keep the root theme's colours. `tokens.css` re-points every alias on the theme
-selectors themselves, which makes **dark islands** work: the landing hero and the closing CTA
-carry `data-theme="dark"` so cream type always clears the photograph beneath it, whichever
-theme the reader has chosen.
+Depth comes from three rule weights only:
+`--rule-hair 1px var(--kw-rule)` / `--rule-half 1px var(--kw-fg-subtle)` /
+`--rule-heavy 2px var(--kw-rule-strong)`
 
 ## Components
 
-- **Button** — height 44px (`sm` 36, `lg` 52), padding 16–28px, label `--text-sm` 600,
-  radius `--radius-lg`. States: rest · hover (≤2px lift) · active (0.98 scale) ·
-  focus-visible · disabled · loading. One filled ember button per viewport; everything else is
-  `secondary` (surface + hairline) or `ghost`.
-- **Input** — height 44px, 1px `--color-border`, focus ring as below, `--radius-lg`.
-- **Card** — `--color-surface`, 1px `--color-border`, `--radius-2xl`, padding 16–24px,
-  `--shadow-card` (hairline + inset highlight, no blur).
-- **Divider** — 1px `--color-border`. Section separators on the landing page use the DNA's
-  1px **dashed** rule in `--color-border-strong` (`.rule-dashed`).
-- **Focus ring** — `2px solid var(--color-ember)`, 2px offset. Visible on both themes.
-- **Touch target** — ≥44px on every interactive element.
+- **Button** - hard rectangle, radius 0, height 44px (`sm` 36, `lg` 52), padding 10px/20px.
+  Label **uppercase, 12px, weight 600, letter-spacing 0.08em** (label treatment measured from
+  Tines; the pill it sits in is rejected). Primary: accent fill, ground-coloured text.
+  Secondary: 1px rule, no fill, identical size. Tertiary: underline only.
+- **Row** - the atom. 44px minimum, hairline rule beneath, a numbered margin on the left,
+  content left-aligned, numbers right-aligned and tabular. Not a card.
+- **Table** - column heads in `--text-meta`, a heavy rule under the head, hairlines between
+  rows, no zebra striping, no container.
+- **Image** - 1:1 or 3:2, radius 0, no frame, no padding, run to the grid edge.
+- **Focus ring** - `2px solid var(--kw-accent)`, 2px offset. Visible on both grounds.
+- **Touch target** - 44px minimum on everything interactive.
 
-## Icons
+## Motion
 
-- Inline UI: **Lucide**, 1.5px stroke, 20px default (16px in dense rows). One set, no mixing.
-- Expressive (empty states, quest board): **3dicons.co V1**, licence **CC0** (no attribution
-  required), self-hosted in `/public/icons3d` at 2x (16–25KB each). Always the `dynamic`
-  angle so the light direction matches across the set. The set ships in mixed stock colours,
-  so `Icon3D` maps every render into the warm ember family with one filter chain — otherwise
-  a purple pie chart next to a pink target reads as clip art.
+The reference has **0 animations and 4 transitions**. Kettleworth is nearly as still.
 
-## Imagery
+```
+--ease: cubic-bezier(.2, 0, 0, 1);
+--dur-fast: 120ms;  --dur-base: 200ms;
+```
 
-- Direction: *warm darkroom*. A single subject — a lifter, a bar, the app itself — floating in
-  warm darkness with deliberate negative space reserved for type. No gym stock photography.
-- Source: Higgsfield MCP for section art and the hero backdrop; the product's own real
-  screenshots for anything showing the app.
-- Ratios: 3:2 hero backdrop, 1:1 section art, 4:5 phone frames.
-- Every image carries honest `alt` text; generated people are never presented as real users.
-- Text over imagery always sits on a scrim (`linear-gradient` to ≥55% ground).
+- No scroll-reveal spine. Five of the six apps in this portfolio already use one.
+- **One signature moment:** the block conveyor - the weeks of the training block as a
+  horizontal track that scrolls under a fixed "now" marker (ported from Figure&Plot).
+- State changes only: hover rules darken, the current row's margin number fills.
+- Everything neutralised under `prefers-reduced-motion: reduce`; the conveyor becomes a
+  static strip with the current week marked.
+
+## Icons and imagery
+
+- **Flat line only**, Lucide at 1.5px, 16-18px. No 3D icon family: the reference has no
+  illustration at all and a glossy 3D set would break the register. Recorded as a deliberate
+  deviation from the usual pillar-5 pick.
+- **Imagery**: the product's own exercise photography, cropped square, unframed, edge-to-edge,
+  used sparingly as a full-bleed band. No photo cards, no rounded corners, no scrims except
+  where type sits over an image.

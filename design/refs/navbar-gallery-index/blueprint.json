@@ -1,0 +1,400 @@
+{
+  "title": "Navbar Gallery – Navigation Design Inspiration",
+  "url": "https://www.navbar.gallery/",
+  "fonts": [
+    [
+      "Neuemontreal",
+      635
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "Best Navbar Design Inspiration Websites",
+      "family": "Neuemontreal",
+      "size": "40px",
+      "weight": "400",
+      "lineHeight": "46px",
+      "letterSpacing": "0.2px",
+      "color": "rgb(255, 255, 255)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "Find the best navigation bar examples for your design.",
+      "family": "Neuemontreal",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "0.3px",
+      "color": "rgb(245, 245, 245)",
+      "transform": "none"
+    },
+    "h3": null,
+    "body": {
+      "text": "All Types",
+      "family": "Neuemontreal",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "25.6px",
+      "letterSpacing": "0.3px",
+      "color": "rgb(245, 245, 245)",
+      "transform": "none"
+    },
+    "small": null,
+    "link": null
+  },
+  "palette": [
+    [
+      "fg rgb(255, 255, 255)",
+      226
+    ],
+    [
+      "border rgb(255, 255, 255)",
+      198
+    ],
+    [
+      "fg rgba(238, 237, 242, 0.6)",
+      165
+    ],
+    [
+      "border rgba(238, 237, 242, 0.6)",
+      165
+    ],
+    [
+      "fg rgb(245, 245, 245)",
+      140
+    ],
+    [
+      "border rgb(245, 245, 245)",
+      140
+    ],
+    [
+      "fg rgb(238, 237, 242)",
+      87
+    ],
+    [
+      "border rgb(238, 237, 242)",
+      85
+    ],
+    [
+      "bg rgba(41, 41, 41, 0.8)",
+      26
+    ],
+    [
+      "bg rgba(0, 0, 0, 0.85)",
+      26
+    ],
+    [
+      "border rgba(255, 255, 255, 0.18)",
+      26
+    ],
+    [
+      "fg rgb(204, 204, 204)",
+      11
+    ],
+    [
+      "border rgb(204, 204, 204)",
+      11
+    ],
+    [
+      "fg rgba(255, 255, 255, 0.85)",
+      4
+    ],
+    [
+      "border rgba(255, 255, 255, 0.85)",
+      4
+    ],
+    [
+      "bg rgb(41, 41, 41)",
+      3
+    ],
+    [
+      "fg rgb(41, 41, 41)",
+      2
+    ],
+    [
+      "border rgb(41, 41, 41)",
+      2
+    ],
+    [
+      "bg rgb(17, 17, 17)",
+      1
+    ],
+    [
+      "border rgba(255, 255, 255, 0.2)",
+      1
+    ]
+  ],
+  "bodyBg": "rgb(17, 17, 17)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 0,
+      "height": 11274,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(17, 17, 17)",
+      "maxWidth": "none",
+      "heading": "Best Navbar Design Inspiration Websites",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 3
+      },
+      "imageCount": 393
+    }
+  ],
+  "nav": null,
+  "buttons": [
+    {
+      "text": "Visit Website",
+      "bg": "rgba(41, 41, 41, 0.8)",
+      "color": "rgb(245, 245, 245)",
+      "border": "0px none rgb(245, 245, 245)",
+      "radius": "7.5px",
+      "shadow": "rgba(255, 255, 255, 0.15) 0px 0px 0px 1px",
+      "height": 50,
+      "padding": "0px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "Neuemontreal",
+      "letterSpacing": "0.3px",
+      "transform": "none",
+      "count": 26
+    },
+    {
+      "text": "All Types",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgba(238, 237, 242, 0.6)",
+      "border": "0px none rgba(238, 237, 242, 0.6)",
+      "radius": "8px",
+      "shadow": "none",
+      "height": 42,
+      "padding": "8px 0px 8px 9.6px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "Neuemontreal",
+      "letterSpacing": "0.3px",
+      "transform": "none",
+      "count": 9
+    },
+    {
+      "text": "Twitter Twitter",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgba(255, 255, 255, 0.85)",
+      "border": "0px none rgba(255, 255, 255, 0.85)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 38,
+      "padding": "8px 8px 6px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "Neuemontreal",
+      "letterSpacing": "0.3px",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "Navbar Gallery",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(238, 237, 242)",
+      "border": "0px none rgb(238, 237, 242)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 28,
+      "padding": "0px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "Neuemontreal",
+      "letterSpacing": "0.3px",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Subscribe",
+      "bg": "rgba(255, 255, 255, 0.95)",
+      "color": "rgb(41, 41, 41)",
+      "border": "0px none rgb(41, 41, 41)",
+      "radius": "9px",
+      "shadow": "rgba(255, 255, 255, 0.36) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.1) 0px 2px 1px 0px inset, rgba(0, 0, 0, 0.1) 0px -4px 1px 0px inset",
+      "height": 45,
+      "padding": "9.6px 22.4px",
+      "fontSize": "16px",
+      "fontWeight": "500",
+      "family": "Neuemontreal",
+      "letterSpacing": "0.3px",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": null,
+  "imagery": {
+    "count": 27,
+    "samples": [
+      {
+        "tag": "img",
+        "w": 191,
+        "h": 193,
+        "ratio": "0.99",
+        "radius": "12px",
+        "fit": "cover",
+        "alt": "Mobbin, the sponsor of Navbar Gallery",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 424,
+        "h": 416,
+        "ratio": "1.02",
+        "radius": "14px",
+        "fit": "cover",
+        "alt": "Supaste",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "rgba(255, 255, 255, 0.32) 0px 0px 0px 1px"
+      },
+      {
+        "tag": "img",
+        "w": 670,
+        "h": 416,
+        "ratio": "1.61",
+        "radius": "14px",
+        "fit": "cover",
+        "alt": "Chesapeake Plywood",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "rgba(255, 255, 255, 0.32) 0px 0px 0px 1px"
+      },
+      {
+        "tag": "img",
+        "w": 1117,
+        "h": 628,
+        "ratio": "1.78",
+        "radius": "14px",
+        "fit": "cover",
+        "alt": "Velt",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "rgba(255, 255, 255, 0.32) 0px 0px 0px 1px"
+      },
+      {
+        "tag": "img",
+        "w": 670,
+        "h": 416,
+        "ratio": "1.61",
+        "radius": "14px",
+        "fit": "cover",
+        "alt": "Clonix",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "rgba(255, 255, 255, 0.32) 0px 0px 0px 1px"
+      },
+      {
+        "tag": "img",
+        "w": 424,
+        "h": 416,
+        "ratio": "1.02",
+        "radius": "14px",
+        "fit": "cover",
+        "alt": "Aveon",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "rgba(255, 255, 255, 0.32) 0px 0px 0px 1px"
+      },
+      {
+        "tag": "img",
+        "w": 1117,
+        "h": 628,
+        "ratio": "1.78",
+        "radius": "14px",
+        "fit": "cover",
+        "alt": "Orchid",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "rgba(255, 255, 255, 0.32) 0px 0px 0px 1px"
+      },
+      {
+        "tag": "img",
+        "w": 1117,
+        "h": 628,
+        "ratio": "1.78",
+        "radius": "14px",
+        "fit": "cover",
+        "alt": "Cloudflare",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "rgba(255, 255, 255, 0.32) 0px 0px 0px 1px"
+      }
+    ],
+    "svgIllustrations": 0,
+    "gradients": 0,
+    "blurBlobs": 26
+  },
+  "cards": {
+    "count": 1,
+    "sample": {
+      "bg": "rgb(41, 41, 41)",
+      "border": "0px none rgb(238, 237, 242)",
+      "radius": "12.8px",
+      "shadow": "rgba(255, 255, 255, 0.3) 0px 0px 0px 0.4px inset",
+      "padding": "0px 0px 3.2px"
+    }
+  },
+  "footer": null,
+  "motion": {
+    "libs": [
+      "gsap",
+      "framer",
+      "motion",
+      "lottie"
+    ],
+    "elementsWithTransition": 51,
+    "elementsWithAnimation": 0,
+    "transforms": 124,
+    "stickyElements": 1,
+    "videoCount": 26,
+    "canvasCount": 0,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 11274,
+    "containerMaxWidths": [
+      [
+        "496px",
+        1
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "14.4px",
+        26
+      ],
+      [
+        "14px",
+        26
+      ],
+      [
+        "7.5px",
+        26
+      ],
+      [
+        "15px",
+        26
+      ],
+      [
+        "8px",
+        20
+      ],
+      [
+        "4px",
+        9
+      ]
+    ],
+    "shadows": [
+      "rgba(0, 0, 0, 0.21) 0px 20px 90px 0px",
+      "rgba(255, 255, 255, 0.3) 0px 0px 0px 0.4px inset",
+      "rgba(255, 255, 255, 0.36) 0px 0px 0px 0.1px, rgba(0, 0, 0, 0.07) 0px 1px 7px 0px",
+      "rgba(255, 255, 255, 0.36) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.1) 0px 2px 1px 0px inset, rgba(0, 0, 0, 0.1) 0px -4px 1px 0px inset",
+      "rgba(255, 255, 255, 0.12) 0px 0px 0px 1px inset, rgba(255, 255, 255, 0.1) 0px 2px 3px 0px inset, rgba(0, 0, 0, 0.16) 0px -4px 1px 0px inset"
+    ],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": null,
+  "mobileNav": null,
+  "label": "navbar / gallery index",
+  "capturedAt": "2026-10-25T08:55:21.029Z"
+}

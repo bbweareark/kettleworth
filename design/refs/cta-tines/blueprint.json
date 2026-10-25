@@ -1,0 +1,691 @@
+{
+  "title": "Tines | The secure environment for AI agents, apps and automation",
+  "url": "https://www.tines.com/",
+  "fonts": [
+    [
+      "Roobert",
+      860
+    ],
+    [
+      "Reckless",
+      33
+    ],
+    [
+      "Roobert Mono",
+      26
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "You told everyone to use AI. Now give them a secure place to do it.",
+      "family": "Roobert",
+      "size": "64px",
+      "weight": "400",
+      "lineHeight": "67.2px",
+      "letterSpacing": "-1.92px",
+      "color": "color(display-p3 0.4203 0.3017 0.7863)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "AI made everyone a builder. But security and IT got 100× harder.",
+      "family": "Reckless",
+      "size": "52px",
+      "weight": "400",
+      "lineHeight": "57.2px",
+      "letterSpacing": "-1.56px",
+      "color": "color(display-p3 0.4203 0.3017 0.7863)",
+      "transform": "none"
+    },
+    "h3": {
+      "text": "Visibility across AI-created work",
+      "family": "Reckless",
+      "size": "24px",
+      "weight": "700",
+      "lineHeight": "26.4px",
+      "letterSpacing": "-0.24px",
+      "color": "rgb(252, 249, 245)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "Tines lets every team build. IT and Security maintain complete visibil",
+      "family": "Reckless",
+      "size": "24px",
+      "weight": "500",
+      "lineHeight": "31.2px",
+      "letterSpacing": "normal",
+      "color": "color(display-p3 0.4203 0.3017 0.7863)",
+      "transform": "none"
+    },
+    "small": {
+      "text": "Ask 3B",
+      "family": "Roobert",
+      "size": "12.5px",
+      "weight": "600",
+      "lineHeight": "14.375px",
+      "letterSpacing": "-0.125px",
+      "color": "color(display-p3 0.3082 0.192 0.5906)",
+      "transform": "none"
+    },
+    "link": {
+      "text": "Tines",
+      "family": "Roobert",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "18.4px",
+      "letterSpacing": "normal",
+      "color": "color(display-p3 0.4203 0.3017 0.7863)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "fg color(display-p3 0.4203 0.3017 0.7863)",
+      756
+    ],
+    [
+      "border color(display-p3 0.4203 0.3017 0.7863)",
+      744
+    ],
+    [
+      "fg rgb(252, 249, 245)",
+      106
+    ],
+    [
+      "border rgb(252, 249, 245)",
+      100
+    ],
+    [
+      "fg color(display-p3 0.3082 0.192 0.5906)",
+      26
+    ],
+    [
+      "border color(display-p3 0.3082 0.192 0.5906)",
+      26
+    ],
+    [
+      "bg color(display-p3 0.4203 0.3017 0.7863)",
+      11
+    ],
+    [
+      "border color(srgb 0.441758 0.295458 0.814856 / 0.12)",
+      11
+    ],
+    [
+      "bg color(srgb 0.441758 0.295458 0.814856 / 0.22)",
+      10
+    ],
+    [
+      "fg color(display-p3 0.7671 0.8713 0.8023)",
+      9
+    ],
+    [
+      "border color(display-p3 0.7671 0.8713 0.8023)",
+      9
+    ],
+    [
+      "fg color(display-p3 0.3827 0.2622 0.7236)",
+      4
+    ],
+    [
+      "border color(display-p3 0.3827 0.2622 0.7236)",
+      4
+    ],
+    [
+      "border color(display-p3 0.6576 0.8237 0.7225)",
+      4
+    ],
+    [
+      "border color(srgb 0.988235 0.976471 0.960784 / 0.14)",
+      4
+    ],
+    [
+      "fg color(display-p3 0 0.3108 0.1935)",
+      3
+    ],
+    [
+      "border color(display-p3 0 0.3108 0.1935)",
+      3
+    ],
+    [
+      "bg rgb(252, 249, 245)",
+      2
+    ],
+    [
+      "bg color(display-p3 0 0.4901 0.3084)",
+      2
+    ],
+    [
+      "fg rgb(0, 0, 0)",
+      2
+    ]
+  ],
+  "bodyBg": "rgba(0, 0, 0, 0)",
+  "htmlBg": "rgb(252, 249, 245)",
+  "sections": [
+    {
+      "top": 68,
+      "height": 6474,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "You told everyone to use AI. Now give them a secure place to",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 3
+      },
+      "imageCount": 81
+    },
+    {
+      "top": 68,
+      "height": 1472,
+      "paddingTop": "16.5px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1520px",
+      "heading": "You told everyone to use AI. Now give them a secure place to",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 3
+      },
+      "imageCount": 53
+    },
+    {
+      "top": 2748,
+      "height": 3794,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Freedom to build. Complete security. No compromises.",
+      "layout": {
+        "display": "grid",
+        "columns": "555.328px 555.344px",
+        "gap": "40px 139.333px",
+        "children": 4
+      },
+      "imageCount": 26
+    },
+    {
+      "top": 2748,
+      "height": 819,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1520px",
+      "heading": "Freedom to build. Complete security. No compromises.",
+      "layout": {
+        "display": "grid",
+        "columns": "555.328px 555.344px",
+        "gap": "40px 139.333px",
+        "children": 4
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 3723,
+      "height": 1233,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1520px",
+      "heading": "Keep important workflows moving for the teams dependent on t",
+      "layout": {
+        "display": "flex",
+        "columns": "repeat(5, minmax(0px, 1fr))",
+        "gap": "0px",
+        "children": 5
+      },
+      "imageCount": 17
+    },
+    {
+      "top": 5112,
+      "height": 756,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1520px",
+      "heading": "Powerful workflows, proven success.",
+      "layout": {
+        "display": "grid",
+        "columns": "652.5px 652.5px",
+        "gap": "40px 55px",
+        "children": 2
+      },
+      "imageCount": 6
+    },
+    {
+      "top": 6024,
+      "height": 518,
+      "paddingTop": "30px",
+      "paddingBottom": "96px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1520px",
+      "heading": null,
+      "layout": null,
+      "imageCount": 1
+    },
+    {
+      "top": 6542,
+      "height": 762,
+      "paddingTop": "50px",
+      "paddingBottom": "30px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1520px",
+      "heading": null,
+      "layout": null,
+      "imageCount": 5
+    },
+    {
+      "top": 6592,
+      "height": 682,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": null,
+      "imageCount": 1
+    },
+    {
+      "top": 6638,
+      "height": 636,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": null,
+      "imageCount": 0
+    },
+    {
+      "top": 6638,
+      "height": 636,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": null,
+      "imageCount": 0
+    },
+    {
+      "top": 6592,
+      "height": 675,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": null,
+      "imageCount": 1
+    },
+    {
+      "top": 6638,
+      "height": 629,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": null,
+      "imageCount": 0
+    },
+    {
+      "top": 6638,
+      "height": 629,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": null,
+      "imageCount": 0
+    }
+  ],
+  "nav": {
+    "position": "sticky",
+    "top": 0,
+    "height": 68,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "borderBottom": "0px none color(display-p3 0.4203 0.3017 0.7863)",
+    "boxShadow": "none",
+    "linkCount": 10,
+    "links": [
+      "Tines",
+      "Product",
+      "Solutions",
+      "Customers",
+      "Discover",
+      "Pricing",
+      "Log in",
+      "Sign up",
+      "BOOK A DEMO",
+      ""
+    ],
+    "ctaCount": 2,
+    "ctaSamples": [
+      {
+        "text": "BOOK A DEMO",
+        "bg": "color(display-p3 0.3082 0.192 0.5906)",
+        "color": "rgb(252, 249, 245)",
+        "radius": "990px",
+        "height": 35
+      },
+      {
+        "text": "",
+        "bg": "color(display-p3 0.9191 0.9094 0.9823)",
+        "color": "color(display-p3 0.3827 0.2622 0.7236)",
+        "radius": "990px",
+        "height": 38
+      }
+    ],
+    "logoLeft": 40,
+    "maxWidth": "none",
+    "padding": "0px",
+    "linkStyle": {
+      "text": "Tines",
+      "family": "Roobert",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "18.4px",
+      "letterSpacing": "normal",
+      "color": "color(display-p3 0.4203 0.3017 0.7863)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "Product",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "color(display-p3 0.4203 0.3017 0.7863)",
+      "border": "0px none color(display-p3 0.4203 0.3017 0.7863)",
+      "radius": "50px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "8px 12px",
+      "fontSize": "14px",
+      "fontWeight": "600",
+      "family": "Roobert",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 7
+    },
+    {
+      "text": "PRODUCT",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "color(display-p3 0.4203 0.3017 0.7863)",
+      "border": "0px none color(display-p3 0.4203 0.3017 0.7863)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 46,
+      "padding": "0px",
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "family": "Roobert",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 5
+    },
+    {
+      "text": "WORKFLOW",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "color(display-p3 0.7671 0.8713 0.8023)",
+      "border": "0px none color(display-p3 0.7671 0.8713 0.8023)",
+      "radius": "999px",
+      "shadow": "none",
+      "height": 34,
+      "padding": "10px 20px",
+      "fontSize": "12px",
+      "fontWeight": "700",
+      "family": "Roobert Mono",
+      "letterSpacing": "0.72px",
+      "transform": "uppercase",
+      "count": 2
+    },
+    {
+      "text": "Tines",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "color(display-p3 0.4203 0.3017 0.7863)",
+      "border": "0px none color(display-p3 0.4203 0.3017 0.7863)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 28,
+      "padding": "0px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "Roobert",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "BOOK A DEMO",
+      "bg": "color(display-p3 0.3082 0.192 0.5906)",
+      "color": "rgb(252, 249, 245)",
+      "border": "0px none rgb(252, 249, 245)",
+      "radius": "990px",
+      "shadow": "none",
+      "height": 35,
+      "padding": "10px 20px",
+      "fontSize": "13px",
+      "fontWeight": "700",
+      "family": "Roobert Mono",
+      "letterSpacing": "normal",
+      "transform": "uppercase",
+      "count": 1
+    },
+    {
+      "text": "NEW Introducing Tines 3B",
+      "bg": "color(srgb 0.988235 0.976471 0.960784 / 0.55)",
+      "color": "color(display-p3 0.4203 0.3017 0.7863)",
+      "border": "1px solid color(display-p3 0.4203 0.3017 0.7863)",
+      "radius": "28px",
+      "shadow": "none",
+      "height": 30,
+      "padding": "0px",
+      "fontSize": "14px",
+      "fontWeight": "600",
+      "family": "Roobert",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": {
+    "height": 44,
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "0px none rgb(16, 16, 16)",
+    "radius": "0px",
+    "padding": "0px",
+    "fontSize": "13px",
+    "shadow": "none"
+  },
+  "imagery": {
+    "count": 6,
+    "samples": [
+      {
+        "tag": "canvas",
+        "w": 1915,
+        "h": 991,
+        "ratio": "1.93",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "canvas",
+        "w": 1440,
+        "h": 1524,
+        "ratio": "0.95",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "canvas",
+        "w": 1005,
+        "h": 393,
+        "ratio": "2.56",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 907,
+        "h": 552,
+        "ratio": "1.64",
+        "radius": "19px",
+        "fit": "fill",
+        "alt": "IT workflow screenshot",
+        "frameBg": "color(display-p3 0.7671 0.8713 0.8023)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 935,
+        "h": 579,
+        "ratio": "1.61",
+        "radius": "19px",
+        "fit": "fill",
+        "alt": "IT frontend screenshot",
+        "frameBg": "color(display-p3 0.7671 0.8713 0.8023)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "canvas",
+        "w": 1541,
+        "h": 479,
+        "ratio": "3.21",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 24,
+    "gradients": 0,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 9,
+    "sample": {
+      "bg": "color(display-p3 0 0.4901 0.3084)",
+      "border": "0px none rgb(252, 249, 245)",
+      "radius": "14px 14px 0px 0px",
+      "shadow": "none",
+      "padding": "30px 30px 22px"
+    }
+  },
+  "footer": {
+    "height": 862,
+    "bg": "rgba(0, 0, 0, 0)",
+    "paddingTop": "0px",
+    "paddingBottom": "0px",
+    "columns": 13,
+    "columnsTemplate": "none",
+    "linkCount": 76,
+    "largestText": {
+      "text": "PRODUCT Tines 3B Examples gallery Produc",
+      "size": "14px",
+      "weight": "500",
+      "family": "Roobert",
+      "color": "color(display-p3 0.4203 0.3017 0.7863)"
+    },
+    "borderTop": "0px none color(display-p3 0.4203 0.3017 0.7863)"
+  },
+  "motion": {
+    "libs": [
+      "three"
+    ],
+    "elementsWithTransition": 43,
+    "elementsWithAnimation": 44,
+    "transforms": 75,
+    "stickyElements": 1,
+    "videoCount": 0,
+    "canvasCount": 6,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 7404,
+    "containerMaxWidths": [
+      [
+        "1520px",
+        9
+      ],
+      [
+        "352px",
+        5
+      ],
+      [
+        "768px",
+        2
+      ],
+      [
+        "1476px",
+        1
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "3px",
+        12
+      ],
+      [
+        "50px",
+        7
+      ],
+      [
+        "9990px",
+        5
+      ],
+      [
+        "14px 14px 0px 0px",
+        5
+      ],
+      [
+        "999px",
+        4
+      ],
+      [
+        "14px",
+        4
+      ]
+    ],
+    "shadows": [],
+    "baseFontSize": "10px"
+  },
+  "scrolledNav": {
+    "height": 68,
+    "top": 0,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "sticky"
+  },
+  "mobileNav": {
+    "height": 62,
+    "visibleControls": [
+      "A",
+      "Book a demo",
+      "Open search",
+      "Toggle menu"
+    ],
+    "hasMenuButton": true
+  },
+  "label": "CTA / Tines",
+  "capturedAt": "2026-10-25T08:54:53.687Z"
+}

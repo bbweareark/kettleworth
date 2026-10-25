@@ -6,12 +6,12 @@ import { requireUser } from "@/lib/session";
 import { getProfile, getActiveProgramme, todayState, sessionSummary, upcomingSessions, getReadiness, getProgress, ensureNutritionPlan, connectedProviders, activitiesForDay, getSessionDetail, hasUnreadLetter, listPhotos, runWeeklyAdaptation, currentWeekState, questBoard, diversifyProgramme } from "@kettleworth/api";
 import { kgToLb, ritualNudges, loadModel, pastDayLabel } from "@kettleworth/core";
 import { ActivityLog } from "@/components/today/activity-log";
-import { HeroSession } from "@/components/app/hero-session";
 import { sessionArt } from "@/lib/art";
 import { OfflineWarmup } from "@/components/app/offline-warmup";
 import { WeeklyCheckIn } from "@/components/today/check-in";
 import { QuestBoard } from "@/components/today/quest-board";
-import { DoneHero, RestHero, whenLabel } from "@/components/app/day-hero";
+import { DoneHero, whenLabel } from "@/components/app/day-hero";
+import { SessionSheet, RestSheet } from "@/components/app/session-sheet";
 import { localTodayIso, localTimeZone } from "@/lib/local-date";
 import { AppStack } from "@/components/app/stack";
 
@@ -72,24 +72,42 @@ export default async function Today() {
           <Button asChild size="lg"><Link href="/app/programme/new">Generate programme <Sparkles /></Link></Button>
         </CardContent></Card>
       ) : today ? (
-        <HeroSession
-          session={{ name: today.name, status: today.status, minutes: today.estimatedMinutes, focus: today.focus, label: state.kind === "in_progress" ? (today.scheduledOn < todayIso ? `Started ${pastDayLabel(today.scheduledOn, todayIso)}` : "In progress") : state.kind === "catch_up" ? `Missed ${pastDayLabel(today.scheduledOn, todayIso)} · do it today` : "Today" }}
-          readiness={{ score: readiness.score, band: readiness.band, line: readiness.reasons[readiness.reasons.length - 1] ?? "" }}
-          exercises={(detail?.instances ?? []).map((i) => { const w = i.plannedSets.filter((s) => s.type === "working"); const f = w[0]; const done = i.loggedSets.filter((l) => l.completed && w.some((x) => x.setNumber === l.setNumber)).length; return { id: i.id, name: i.exercise.name, role: i.role, sets: w.length, reps: f?.repRange ? `${f.repRange[0]}-${f.repRange[1]}` : String(f?.reps ?? ""), image: i.exercise.imageUrls[0], care: i.cautions.some((c) => c.level !== "info"), done, complete: w.length > 0 && done >= w.length }; })}
-          live={today.status === "in_progress" && detail ? (() => { const inst = detail.instances; const per = inst.map((i) => { const w = i.plannedSets.filter((s) => s.type === "working"); return { total: w.length, done: i.loggedSets.filter((l) => l.completed && w.some((x) => x.setNumber === l.setNumber)).length, logs: i.loggedSets.filter((l) => l.completed).map((l) => { const lm = loadModel({ name: i.exercise.name, equipment: i.exercise.equipment as never, unilateral: !!i.exercise.unilateral }); return { ...l, each: lm.kind === "handheld" && lm.count === 2 }; }) }; }); const setsTotal = per.reduce((a, x) => a + x.total, 0); const setsDone = per.reduce((a, x) => a + x.done, 0); const currentIndex = Math.max(0, per.findIndex((x) => x.done < x.total)); const last = per.flatMap((x) => x.logs).sort((a, b) => b.loggedAt.localeCompare(a.loggedAt))[0]; return { setsDone, setsTotal, currentIndex: currentIndex === -1 ? inst.length - 1 : currentIndex, elapsedMin: today.startedAt ? Math.max(0, Math.round((Date.now() - new Date(today.startedAt).getTime()) / 60000)) : 0, lastSet: last ? `${last.weightKg != null ? `${units === "metric" ? last.weightKg : Math.round(last.weightKg * 2.2046)} ${u}${last.each ? " each" : ""} × ` : ""}${last.reps ?? "?"}${last.rpe ? ` @ RPE ${last.rpe}` : ""}` : null }; })() : null}
-          week={{ done: progress.recentSessions.filter((s) => s.scheduledOn >= new Date(Date.now() - ((new Date().getDay() + 6) % 7) * 86400000).toISOString().slice(0, 10)).length, planned: prog?.daysPerWeek ?? 0 }}
-          cta={state.kind === "in_progress" ? "Continue" : state.kind === "catch_up" ? "Train it today" : "Start session"} href={`/app/session/${today.id}`} art={sessionArt(today.name, rec.profile.sex)}
+        <SessionSheet
+          label={state.kind === "in_progress" ? (today.scheduledOn < todayIso ? `Started ${pastDayLabel(today.scheduledOn, todayIso)}` : "In progress") : state.kind === "catch_up" ? `Missed ${pastDayLabel(today.scheduledOn, todayIso)}` : "Today"}
+          title={today.name}
+          note={readiness.reasons[readiness.reasons.length - 1] ?? null}
+          minutes={today.estimatedMinutes}
+          focus={today.focus}
+          rows={(detail?.instances ?? []).map((i) => {
+            const work = i.plannedSets.filter((x) => x.type === "working");
+            const f = work[0];
+            return {
+              id: i.id,
+              name: i.exercise.name,
+              detail: f?.repRange ? `${f.repRange[0]}–${f.repRange[1]} reps @ RPE ${f.targetRpe ?? "–"}` : f?.reps != null ? `${f.reps} reps` : "—",
+              work: `${work.length} × ${f?.repRange ? `${f.repRange[0]}–${f.repRange[1]}` : f?.reps ?? "–"}`,
+              load: f?.weightKg != null ? String(w(f.weightKg)) : "—",
+              done: i.loggedSets.filter((l) => l.completed && work.some((x) => x.setNumber === l.setNumber)).length,
+              total: work.length,
+            };
+          })}
+          href={`/app/session/${today.id}`}
+          cta={state.kind === "in_progress" ? "Continue" : state.kind === "catch_up" ? "Train it today" : "Start session"}
         />
       ) : state.kind === "done" ? (
         <DoneHero name={state.session.name} art={sessionArt(state.session.name, rec.profile.sex)} summary={doneSummary} next={state.next} todayIso={todayIso} unit={units === "metric" ? "kg" : "lb"} />
       ) : state.kind === "rest" ? (
-        <RestHero art={sessionArt((state.next ?? state.missed)!.name, rec.profile.sex)} next={state.next} missed={state.missed} todayIso={todayIso} />
+        <RestSheet
+          label="Today"
+          next={state.next ? `${state.next.name} ${whenLabel(state.next.scheduledOn, todayIso)}` : null}
+          href={state.next ? `/app/session/${state.next.id}` : null}
+        />
       ) : (
         <Card><CardContent className="flex items-center justify-between gap-4"><div><h2 className="font-display text-xl">Block complete.</h2><p className="text-sm text-fg-muted">Time to build the next one.</p></div><Button asChild><Link href="/app/programme/new?continue=1">Build next block <ArrowRight /></Link></Button></CardContent></Card>
       )}
 
       {quests ? <QuestBoard board={quests} todayIso={todayIso} /> : null}
-      <div className="grid grid-cols-2 divide-x divide-border rounded-2xl bg-surface/50 ring-1 ring-border lg:grid-cols-4">
+      <div className="grid grid-cols-2 border-t border-rule lg:grid-cols-4">
         <Tile label="Sessions" value={progress.completedSessions} hint={prog ? `of ${prog.totalWeeks * prog.daysPerWeek}` : undefined} spark={progress.weeklyTonnage.map((x) => x.kg)} />
         <Tile label={`Volume · ${u}`} value={w(progress.tonnageThisWeek)} hint={progress.tonnageLastWeek && progress.tonnageThisWeek ? `${progress.tonnageThisWeek >= progress.tonnageLastWeek ? "+" : ""}${Math.round(((progress.tonnageThisWeek - progress.tonnageLastWeek) / progress.tonnageLastWeek) * 100)}% wk/wk` : progress.tonnageLastWeek ? `${w(progress.tonnageLastWeek)} last week` : "this week"} spark={progress.weeklyTonnage.map((x) => x.kg)} tone="sky" />
         <Tile label="Calories" value={nutrition.targets.calories} hint={`${nutrition.targets.proteinG} g protein`} />
@@ -110,11 +128,12 @@ export default async function Today() {
   );
 }
 
-function Tile({ label, value, hint, spark, tone = "ember" }: { label: string; value: number; hint?: string; spark?: number[]; tone?: "ember" | "signal" | "sky" | "amber" }) {
+function Tile({ label, value, hint }: { label: string; value: number; hint?: string; spark?: number[]; tone?: "ember" | "signal" | "sky" | "amber" }) {
   return (
-    <div className="flex items-end justify-between gap-2 p-4">
-      <div><div className="text-2xs uppercase tracking-label text-fg-subtle">{label}</div><div className="font-display mt-1 text-4xl tracking-tightest"><CountUp value={value} /></div>{hint ? <div className="mt-0.5 text-xs text-fg-subtle">{hint}</div> : null}</div>
-      {spark && spark.length > 1 ? <Sparkline points={spark} tone={tone} /> : null}
+    <div className="border-b border-rule py-4 pr-4 lg:border-b-0 lg:border-r lg:last:border-r-0 lg:pl-4 lg:first:pl-0">
+      <div className="meta">{label}</div>
+      <div className="font-display mt-1 text-3xl tabular"><CountUp value={value} /></div>
+      {hint ? <div className="mt-0.5 text-xs text-fg-subtle">{hint}</div> : null}
     </div>
   );
 }

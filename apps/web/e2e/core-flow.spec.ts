@@ -8,10 +8,10 @@ test.setTimeout(180_000);
 
 test("landing renders and links to sign-up", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Training built for");
-  // The nav and sticky CTAs are inert until the hero's scrolls away, so target the hero's.
-  await expect(page.locator("#hero-cta")).toBeVisible();
-  await expect(page.locator("#hero-cta")).toHaveAttribute("href", "/sign-up");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("This is the week");
+  // The hero is a table, so assert the week actually renders, then the one primary action.
+  await expect(page.getByRole("table").first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Start free" }).first()).toHaveAttribute("href", "/sign-up");
 });
 
 test("library search works publicly", async ({ page }) => {

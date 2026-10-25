@@ -1,0 +1,442 @@
+{
+  "title": "Kettleworth",
+  "url": "http://localhost:3000/",
+  "fonts": [
+    [
+      "archivo",
+      227
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "This is the week. Nothing else is.",
+      "family": "archivo",
+      "size": "56px",
+      "weight": "300",
+      "lineHeight": "60.48px",
+      "letterSpacing": "-0.84px",
+      "color": "rgb(241, 242, 242)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "HOW IT DECIDES",
+      "family": "archivo",
+      "size": "12px",
+      "weight": "500",
+      "lineHeight": "13.32px",
+      "letterSpacing": "0.96px",
+      "color": "rgb(118, 118, 124)",
+      "transform": "uppercase"
+    },
+    "h3": {
+      "text": "It reads the set you just logged",
+      "family": "archivo",
+      "size": "22px",
+      "weight": "300",
+      "lineHeight": "25.3px",
+      "letterSpacing": "-0.33px",
+      "color": "rgb(241, 242, 242)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "TRAINING",
+      "family": "archivo",
+      "size": "12px",
+      "weight": "500",
+      "lineHeight": "13.32px",
+      "letterSpacing": "0.96px",
+      "color": "rgb(118, 118, 124)",
+      "transform": "uppercase"
+    },
+    "small": null,
+    "link": {
+      "text": "kettle worth",
+      "family": "archivo",
+      "size": "16px",
+      "weight": "300",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "rgb(241, 242, 242)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "border rgb(42, 41, 48)",
+      222
+    ],
+    [
+      "fg rgb(241, 242, 242)",
+      99
+    ],
+    [
+      "fg rgb(118, 118, 124)",
+      55
+    ],
+    [
+      "fg rgb(15, 14, 18)",
+      25
+    ],
+    [
+      "fg rgb(169, 169, 173)",
+      21
+    ],
+    [
+      "fg oklab(0.166846 0.0038159 -0.00749546 / 0.55)",
+      12
+    ],
+    [
+      "fg oklab(0.166846 0.0038159 -0.00749546 / 0.8)",
+      10
+    ],
+    [
+      "bg oklab(0.567811 0.00255615 -0.00875223 / 0.35)",
+      6
+    ],
+    [
+      "border rgb(241, 242, 242)",
+      4
+    ],
+    [
+      "bg rgb(217, 128, 73)",
+      3
+    ],
+    [
+      "fg rgb(217, 128, 73)",
+      3
+    ],
+    [
+      "fg rgb(95, 168, 128)",
+      2
+    ],
+    [
+      "bg rgb(42, 41, 48)",
+      2
+    ],
+    [
+      "bg rgb(246, 248, 247)",
+      2
+    ],
+    [
+      "bg oklab(0.213855 0.00555447 -0.0146375 / 0.4)",
+      1
+    ],
+    [
+      "bg rgb(241, 242, 242)",
+      1
+    ],
+    [
+      "border oklab(0.166846 0.0038159 -0.00749546 / 0.15)",
+      1
+    ]
+  ],
+  "bodyBg": "rgb(15, 14, 18)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 128,
+      "height": 640,
+      "paddingTop": "40px",
+      "paddingBottom": "66px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1200px",
+      "heading": "This is the week. Nothing else is.",
+      "layout": {
+        "display": "grid",
+        "columns": "352px 752px",
+        "gap": "48px",
+        "children": 2
+      },
+      "imageCount": 0
+    },
+    {
+      "top": 768,
+      "height": 348,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "oklab(0.213855 0.00555447 -0.0146375 / 0.4)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 0
+    },
+    {
+      "top": 769,
+      "height": 346,
+      "paddingTop": "66px",
+      "paddingBottom": "66px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1200px",
+      "heading": null,
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 0
+    },
+    {
+      "top": 1116,
+      "height": 651,
+      "paddingTop": "66px",
+      "paddingBottom": "66px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1200px",
+      "heading": "HOW IT DECIDES",
+      "layout": {
+        "display": "grid",
+        "columns": "64px 320px 704px",
+        "gap": "8px 32px",
+        "children": 3
+      },
+      "imageCount": 0
+    },
+    {
+      "top": 1766,
+      "height": 548,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(246, 248, 247)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "grid",
+        "columns": "704px 416px",
+        "gap": "32px",
+        "children": 2
+      },
+      "imageCount": 1
+    },
+    {
+      "top": 1766,
+      "height": 548,
+      "paddingTop": "66px",
+      "paddingBottom": "66px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1200px",
+      "heading": null,
+      "layout": null,
+      "imageCount": 1
+    },
+    {
+      "top": 2314,
+      "height": 231,
+      "paddingTop": "66px",
+      "paddingBottom": "66px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1200px",
+      "heading": "Twenty questions, then an eight-week block.",
+      "layout": {
+        "display": "grid",
+        "columns": "791.328px 328.672px",
+        "gap": "32px",
+        "children": 2
+      },
+      "imageCount": 0
+    },
+    {
+      "top": 2611,
+      "height": 277,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(246, 248, 247)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "grid",
+        "columns": "270px 270px 270px 270px",
+        "gap": "32px 24px",
+        "children": 4
+      },
+      "imageCount": 1
+    }
+  ],
+  "nav": {
+    "position": "static",
+    "top": -37,
+    "height": 128,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "borderBottom": "1px solid rgb(42, 41, 48)",
+    "boxShadow": "none",
+    "linkCount": 8,
+    "links": [
+      "kettle worth",
+      "The week",
+      "The block",
+      "Method",
+      "850 movements",
+      "Search",
+      "Sign in",
+      "Start free"
+    ],
+    "ctaCount": 0,
+    "ctaSamples": [],
+    "logoLeft": 144,
+    "maxWidth": "none",
+    "padding": "0px",
+    "linkStyle": {
+      "text": "kettle worth",
+      "family": "archivo",
+      "size": "16px",
+      "weight": "300",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "rgb(241, 242, 242)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "START FREE",
+      "bg": "rgb(217, 128, 73)",
+      "color": "rgb(241, 242, 242)",
+      "border": "0px solid rgb(42, 41, 48)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 52,
+      "padding": "0px 28px",
+      "fontSize": "12px",
+      "fontWeight": "600",
+      "family": "archivo",
+      "letterSpacing": "0.96px",
+      "transform": "uppercase",
+      "count": 2
+    },
+    {
+      "text": "BROWSE 850 MOVEMENTS",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(241, 242, 242)",
+      "border": "1px solid rgb(241, 242, 242)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 52,
+      "padding": "0px 28px",
+      "fontSize": "12px",
+      "fontWeight": "600",
+      "family": "archivo",
+      "letterSpacing": "0.96px",
+      "transform": "uppercase",
+      "count": 2
+    },
+    {
+      "text": "kettle worth",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(241, 242, 242)",
+      "border": "0px solid rgb(42, 41, 48)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 42,
+      "padding": "2px 0px 0px",
+      "fontSize": "16px",
+      "fontWeight": "300",
+      "family": "archivo",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": null,
+  "imagery": {
+    "count": 1,
+    "samples": [
+      {
+        "tag": "img",
+        "w": 416,
+        "h": 416,
+        "ratio": "1.00",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Chalked hands gripping a loaded barbell",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 0,
+    "gradients": 0,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 0,
+    "sample": null
+  },
+  "footer": {
+    "height": 277,
+    "bg": "rgb(246, 248, 247)",
+    "paddingTop": "0px",
+    "paddingBottom": "0px",
+    "columns": 4,
+    "columnsTemplate": "270px 270px 270px 270px",
+    "linkCount": 10,
+    "largestText": {
+      "text": "TRAINING The week The block Method LIBRA",
+      "size": "16px",
+      "weight": "300",
+      "family": "archivo",
+      "color": "rgb(15, 14, 18)"
+    },
+    "borderTop": "0px solid rgb(42, 41, 48)"
+  },
+  "motion": {
+    "libs": [
+      "framer",
+      "motion",
+      "three"
+    ],
+    "elementsWithTransition": 22,
+    "elementsWithAnimation": 0,
+    "transforms": 1,
+    "stickyElements": 0,
+    "videoCount": 0,
+    "canvasCount": 0,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 2888,
+    "containerMaxWidths": [
+      [
+        "1200px",
+        7
+      ],
+      [
+        "567.049px",
+        6
+      ],
+      [
+        "496.168px",
+        1
+      ],
+      [
+        "425.287px",
+        1
+      ]
+    ],
+    "radiusRamp": [],
+    "shadows": [],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": {
+    "height": 128,
+    "top": -900,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "static"
+  },
+  "mobileNav": {
+    "height": 77,
+    "visibleControls": [
+      "kettle\nworth",
+      "Open menu"
+    ],
+    "hasMenuButton": true
+  },
+  "label": "ours / landing (final)",
+  "capturedAt": "2026-10-25T09:11:38.456Z"
+}

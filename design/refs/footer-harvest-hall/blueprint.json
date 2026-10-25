@@ -1,0 +1,691 @@
+{
+  "title": "Harvest Hall（ハーベスト・ホール）｜日本の現代アートプラットフォーム",
+  "url": "https://www.harvesthall.io/",
+  "fonts": [
+    [
+      "STIX Two Text",
+      1123
+    ],
+    [
+      "GenInterfaceJP",
+      993
+    ],
+    [
+      "Inter Tight",
+      117
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "Share your thoughts. Share your KANDO.",
+      "family": "STIX Two Text",
+      "size": "76px",
+      "weight": "400",
+      "lineHeight": "76px",
+      "letterSpacing": "-1.52px",
+      "color": "rgb(70, 70, 90)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "Features",
+      "family": "GenInterfaceJP",
+      "size": "14px",
+      "weight": "400",
+      "lineHeight": "16.1px",
+      "letterSpacing": "normal",
+      "color": "rgb(70, 70, 90)",
+      "transform": "none"
+    },
+    "h3": {
+      "text": "What's on today? What's on today?",
+      "family": "STIX Two Text",
+      "size": "64px",
+      "weight": "400",
+      "lineHeight": "63.36px",
+      "letterSpacing": "-1.536px",
+      "color": "rgb(70, 70, 90)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "Calendar",
+      "family": "Inter Tight",
+      "size": "28px",
+      "weight": "400",
+      "lineHeight": "33.6px",
+      "letterSpacing": "normal",
+      "color": "rgb(70, 70, 90)",
+      "transform": "none"
+    },
+    "small": {
+      "text": "© 2026 Harvest Hall",
+      "family": "Inter Tight",
+      "size": "12px",
+      "weight": "400",
+      "lineHeight": "13.8px",
+      "letterSpacing": "normal",
+      "color": "rgb(160, 160, 176)",
+      "transform": "none"
+    },
+    "link": {
+      "text": "",
+      "family": "GenInterfaceJP",
+      "size": "14px",
+      "weight": "400",
+      "lineHeight": "16.1px",
+      "letterSpacing": "normal",
+      "color": "rgb(70, 70, 90)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "fg rgb(70, 70, 90)",
+      1505
+    ],
+    [
+      "border rgb(70, 70, 90)",
+      1371
+    ],
+    [
+      "fg rgb(20, 115, 200)",
+      583
+    ],
+    [
+      "border rgb(20, 115, 200)",
+      583
+    ],
+    [
+      "border rgb(229, 229, 231)",
+      131
+    ],
+    [
+      "fg rgb(160, 160, 176)",
+      76
+    ],
+    [
+      "border rgb(160, 160, 176)",
+      76
+    ],
+    [
+      "bg rgb(244, 243, 242)",
+      73
+    ],
+    [
+      "bg rgb(20, 115, 200)",
+      46
+    ],
+    [
+      "fg rgb(244, 243, 242)",
+      38
+    ],
+    [
+      "bg rgb(253, 253, 253)",
+      37
+    ],
+    [
+      "border rgb(244, 243, 242)",
+      37
+    ],
+    [
+      "fg rgb(253, 253, 253)",
+      20
+    ],
+    [
+      "border rgb(253, 253, 253)",
+      20
+    ],
+    [
+      "fg rgb(119, 119, 138)",
+      10
+    ],
+    [
+      "border rgb(119, 119, 138)",
+      10
+    ],
+    [
+      "bg rgb(244, 245, 239)",
+      3
+    ],
+    [
+      "border rgb(0, 0, 0)",
+      3
+    ],
+    [
+      "bg rgb(70, 70, 90)",
+      2
+    ],
+    [
+      "bg rgb(229, 229, 231)",
+      2
+    ]
+  ],
+  "bodyBg": "rgb(253, 253, 253)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 0,
+      "height": 14115,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Share your thoughts. Share your KANDO.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "6px",
+        "children": 2
+      },
+      "imageCount": 94
+    },
+    {
+      "top": 214,
+      "height": 765,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(249, 249, 249)",
+      "maxWidth": "none",
+      "heading": "Share your thoughts. Share your KANDO.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "6px",
+        "children": 2
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 1566,
+      "height": 3284,
+      "paddingTop": "120px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Features",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 3
+      },
+      "imageCount": 3
+    },
+    {
+      "top": 4850,
+      "height": 1065,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "# 術 TechDiumMory",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "24px",
+        "children": 4
+      },
+      "imageCount": 42
+    },
+    {
+      "top": 5914,
+      "height": 3685,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Category",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 14
+    },
+    {
+      "top": 9600,
+      "height": 1716,
+      "paddingTop": "130px",
+      "paddingBottom": "130px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1600px",
+      "heading": "Join",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "8px",
+        "children": 2
+      },
+      "imageCount": 23
+    },
+    {
+      "top": 11315,
+      "height": 1034,
+      "paddingTop": "170px",
+      "paddingBottom": "180px",
+      "bg": "rgb(20, 115, 200)",
+      "maxWidth": "none",
+      "heading": "MyStudio MyStudio",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "14px",
+        "children": 2
+      },
+      "imageCount": 6
+    },
+    {
+      "top": 12349,
+      "height": 1166,
+      "paddingTop": "140px",
+      "paddingBottom": "140px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1600px",
+      "heading": "Data",
+      "layout": {
+        "display": "grid",
+        "columns": "95px 95px 95px 95px 95px 95px 95px 95px 95px 95px 95px 95px",
+        "gap": "60px 20px",
+        "children": 2
+      },
+      "imageCount": 3
+    },
+    {
+      "top": 13515,
+      "height": 600,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "JOIN HARVEST HALL JOIN HARVEST HALL",
+      "layout": null,
+      "imageCount": 0
+    }
+  ],
+  "nav": {
+    "position": "fixed",
+    "top": 0,
+    "height": 43,
+    "bg": "rgb(253, 253, 253)",
+    "backdrop": "none",
+    "borderBottom": "1px solid rgb(229, 229, 231)",
+    "boxShadow": "none",
+    "linkCount": 6,
+    "links": [
+      "",
+      "Calendar",
+      "Artists",
+      "MyStudio",
+      "アカウント登録",
+      "ログイン"
+    ],
+    "ctaCount": 2,
+    "ctaSamples": [
+      {
+        "text": "アカウント登録",
+        "bg": "rgb(20, 115, 200)",
+        "color": "rgb(70, 70, 90)",
+        "radius": "4px",
+        "height": 31
+      },
+      {
+        "text": "ログイン",
+        "bg": "rgb(244, 243, 242)",
+        "color": "rgb(70, 70, 90)",
+        "radius": "4px",
+        "height": 33
+      }
+    ],
+    "logoLeft": 31,
+    "maxWidth": "none",
+    "padding": "4px 30px",
+    "linkStyle": {
+      "text": "",
+      "family": "GenInterfaceJP",
+      "size": "14px",
+      "weight": "400",
+      "lineHeight": "16.1px",
+      "letterSpacing": "normal",
+      "color": "rgb(70, 70, 90)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "イベント詳細を見る",
+      "bg": "rgb(20, 115, 200)",
+      "color": "rgb(253, 253, 253)",
+      "border": "0px none rgb(253, 253, 253)",
+      "radius": "4px",
+      "shadow": "none",
+      "height": 55,
+      "padding": "20px 0px",
+      "fontSize": "13px",
+      "fontWeight": "400",
+      "family": "GenInterfaceJP",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 20
+    },
+    {
+      "text": "アカウント登録",
+      "bg": "rgb(20, 115, 200)",
+      "color": "rgb(70, 70, 90)",
+      "border": "0px none rgb(70, 70, 90)",
+      "radius": "4px",
+      "shadow": "none",
+      "height": 31,
+      "padding": "8px 10px 6px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "GenInterfaceJP",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 5
+    },
+    {
+      "text": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(70, 70, 90)",
+      "border": "0px none rgb(70, 70, 90)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 30,
+      "padding": "0px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "GenInterfaceJP",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 5
+    },
+    {
+      "text": "ログイン",
+      "bg": "rgb(244, 243, 242)",
+      "color": "rgb(70, 70, 90)",
+      "border": "1px solid rgb(229, 229, 231)",
+      "radius": "4px",
+      "shadow": "none",
+      "height": 33,
+      "padding": "8px 10px 6px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "GenInterfaceJP",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 3
+    },
+    {
+      "text": "アカウント登録",
+      "bg": "rgb(20, 115, 200)",
+      "color": "rgb(244, 243, 242)",
+      "border": "1px solid rgb(229, 229, 231)",
+      "radius": "4px",
+      "shadow": "none",
+      "height": 43,
+      "padding": "0px 20px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "GenInterfaceJP",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "はじめてのHarvest Hall",
+      "bg": "rgb(20, 115, 200)",
+      "color": "rgb(70, 70, 90)",
+      "border": "1px solid rgb(229, 229, 231)",
+      "radius": "4px",
+      "shadow": "none",
+      "height": 41,
+      "padding": "10px 20px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "GenInterfaceJP",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "フィルター",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(70, 70, 90)",
+      "border": "1px solid rgb(229, 229, 231)",
+      "radius": "1440px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "8px 18px",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "family": "GenInterfaceJP",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Discord",
+      "bg": "rgb(244, 243, 242)",
+      "color": "rgb(70, 70, 90)",
+      "border": "1px solid rgb(129, 146, 235)",
+      "radius": "4px",
+      "shadow": "none",
+      "height": 40,
+      "padding": "10px 18px 10px 14px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "GenInterfaceJP",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": {
+    "height": 15,
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "0px none rgb(70, 70, 90)",
+    "radius": "0px",
+    "padding": "0px",
+    "fontSize": "13px",
+    "shadow": "none"
+  },
+  "imagery": {
+    "count": 43,
+    "samples": [
+      {
+        "tag": "canvas",
+        "w": 1440,
+        "h": 765,
+        "ratio": "1.88",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 1308,
+        "h": 700,
+        "ratio": "1.87",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 192,
+        "h": 386,
+        "ratio": "0.50",
+        "radius": "40px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 192,
+        "h": 386,
+        "ratio": "0.50",
+        "radius": "40px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 245,
+        "h": 487,
+        "ratio": "0.50",
+        "radius": "40px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 187,
+        "h": 280,
+        "ratio": "0.67",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "# 術 TechDiumMory",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 198,
+        "h": 280,
+        "ratio": "0.71",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "大河紀 個展「穴 THE HOLE」",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 187,
+        "h": 280,
+        "ratio": "0.67",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "ISO1638400 exhibition「Fūten」",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 0,
+    "gradients": 0,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 0,
+    "sample": null
+  },
+  "footer": {
+    "height": 980,
+    "bg": "rgba(0, 0, 0, 0)",
+    "paddingTop": "0px",
+    "paddingBottom": "0px",
+    "columns": 5,
+    "columnsTemplate": "none",
+    "linkCount": 6,
+    "largestText": {
+      "text": "Join Harvest Hall NOW 今すぐ登録 コミュニティに参加 Di",
+      "size": "14px",
+      "weight": "400",
+      "family": "GenInterfaceJP",
+      "color": "rgb(70, 70, 90)"
+    },
+    "borderTop": "0px none rgb(70, 70, 90)"
+  },
+  "motion": {
+    "libs": [
+      "lenis",
+      "three"
+    ],
+    "elementsWithTransition": 155,
+    "elementsWithAnimation": 1,
+    "transforms": 575,
+    "stickyElements": 5,
+    "videoCount": 4,
+    "canvasCount": 3,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 15095,
+    "containerMaxWidths": [
+      [
+        "1600px",
+        4
+      ],
+      [
+        "1440px",
+        2
+      ],
+      [
+        "1300px",
+        1
+      ],
+      [
+        "300px",
+        1
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "4px",
+        79
+      ],
+      [
+        "999px",
+        68
+      ],
+      [
+        "1440px",
+        22
+      ],
+      [
+        "2px",
+        9
+      ],
+      [
+        "40px",
+        3
+      ],
+      [
+        "6px",
+        3
+      ]
+    ],
+    "shadows": [
+      "rgba(0, 0, 0, 0.06) 0px 1px 4px 0px"
+    ],
+    "baseFontSize": "1px"
+  },
+  "scrolledNav": {
+    "height": 43,
+    "top": 0,
+    "bg": "rgb(253, 253, 253)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "fixed"
+  },
+  "mobileNav": {
+    "height": 53,
+    "visibleControls": [
+      "A",
+      "メニューを開く"
+    ],
+    "hasMenuButton": true
+  },
+  "label": "footer / Harvest Hall",
+  "capturedAt": "2026-10-25T08:53:47.204Z"
+}

@@ -1,273 +1,266 @@
-/* Kettleworth design tokens. Dark ("Iron") is the default; light ("Chalk") via [data-theme="light"] or prefers-color-scheme. */
+/*
+ * Kettleworth design tokens.
+ *
+ * DNA: teenage engineering, "industrial catalogue under studio light", measured live at
+ * teenage.engineering (design/refs/dna-teenage-engineering/blueprint.md).
+ *
+ * The three rules that define this system, all measured from the reference:
+ *   radius 0 everywhere, no shadows ever, zero cards.
+ * Depth comes from hairline rules and one inverted band. Values live only in DESIGN.md.
+ */
 @import "tailwindcss";
 
 @theme {
-  /* Typography */
-  --font-display: var(--font-clash), "Clash Display", ui-sans-serif, sans-serif;
-  --font-sans: var(--font-switzer), "Switzer", ui-sans-serif, system-ui, sans-serif;
-  /* Readouts use the display face with tabular figures, not a dev-tool mono. */
-  --font-mono: var(--font-clash), "Clash Display", ui-sans-serif, sans-serif;
+  /* One family, two axes. Display = width 112%, weight 300. Text = width 100%. */
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+
+  /* Type scale, compressed on purpose: the reference tops out at 40px. */
   --text-2xs: 0.6875rem;
-  --text-2xs--line-height: 1rem;
+  --text-2xs--line-height: 1.1;
+  --text-meta: 0.75rem;
+  --text-meta--line-height: 1.11;
+  --text-meta--letter-spacing: 0.08em;
   --text-xs: 0.75rem;
-  --text-xs--line-height: 1rem;
+  --text-xs--line-height: 1.2;
   --text-sm: 0.875rem;
-  --text-sm--line-height: 1.25rem;
+  --text-sm--line-height: 1.4;
   --text-base: 1rem;
-  --text-base--line-height: 1.5rem;
-  --text-lg: 1.125rem;
-  --text-lg--line-height: 1.625rem;
+  --text-base--line-height: 1.5;
+  --text-lg: 1.1875rem;
+  --text-lg--line-height: 1.15;
   --text-xl: 1.375rem;
-  --text-xl--line-height: 1.75rem;
-  --text-2xl: 1.75rem;
-  --text-2xl--line-height: 1.05;
-  --text-3xl: 2.25rem;
-  --text-3xl--line-height: 1;
-  --text-4xl: 3rem;
-  --text-4xl--line-height: 1;
-  --text-5xl: 4rem;
-  --text-5xl--line-height: 1;
-  --text-hero: clamp(2.75rem, 9vw, 5.5rem);
-  --text-hero--line-height: 1;
-  --text-hero--letter-spacing: -0.047em;
-  --tracking-tightest: -0.047em;
-  --tracking-label: 0.12em;
-  --tracking-tighter: -0.03em;
+  --text-xl--line-height: 1.15;
+  --text-2xl: 1.625rem;
+  --text-2xl--line-height: 1.11;
+  --text-3xl: 2rem;
+  --text-3xl--line-height: 1.08;
+  --text-4xl: 2.5rem;
+  --text-4xl--line-height: 1.08;
+  --text-5xl: 3.5rem;
+  --text-5xl--line-height: 1.04;
+  --text-hero: clamp(2rem, 4.2vw, 3.5rem);
+  --text-hero--line-height: 1.08;
+  --text-hero--letter-spacing: -0.015em;
+  --tracking-tighter: -0.015em;
+  --tracking-tightest: -0.02em;
+  --tracking-label: 0.08em;
 
-  /* Radius */
-  /* Two values are the entire shape vocabulary (Auros): 6px for controls, 16px for panels. */
-  --radius-sm: 6px;
-  --radius-md: 6px;
-  --radius-lg: 6px;
-  --radius-xl: 16px;
-  --radius-2xl: 16px;
-  --radius-3xl: 16px;
-  --radius-full: 9999px;
+  /* Shape: the whole system is square. */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-full: 9999px; /* only ever a dot or an avatar, never a container */
 
-  /* Rhythm. Marketing sections breathe; in-app stacks stay dense. */
-  --spacing-section: clamp(4rem, 10vw, 9.5rem);
-  --spacing-app-section: clamp(1.25rem, 4vw, 2rem);
-  --spacing-section-y: clamp(4rem, 10vw, 9.5rem);
-  --container-content: 72rem;
+  /* Rhythm, measured: 66px section gap, 15px element gap, 1200px max. */
+  --spacing-section: 66px;
+  --spacing-element: 15px;
+  --spacing-row: 44px;
+  --spacing-app-section: 32px;
+  --container-content: 1200px;
 
-  /* Semantic colours (resolved from CSS vars so themes can swap them) */
+  /* Semantic colours, resolved from the theme layer below. */
   --color-bg: var(--kw-bg);
-  --color-bg-elevated: var(--kw-bg-elevated);
+  --color-bg-elevated: var(--kw-surface);
   --color-surface: var(--kw-surface);
   --color-surface-2: var(--kw-surface-2);
-  --color-surface-3: var(--kw-surface-3);
-  --color-border: var(--kw-border);
-  --color-well: var(--kw-well);
-  --color-well-strong: var(--kw-well-strong);
-  --color-border-strong: var(--kw-border-strong);
+  --color-surface-3: var(--kw-surface-2);
+  --color-band: var(--kw-band);
+  --color-band-fg: var(--kw-band-fg);
+  --color-border: var(--kw-rule);
+  --color-border-strong: var(--kw-rule-strong);
+  --color-rule: var(--kw-rule);
+  --color-rule-strong: var(--kw-rule-strong);
+  --color-well: var(--kw-surface-2);
+  --color-well-strong: var(--kw-surface-2);
   --color-fg: var(--kw-fg);
   --color-fg-muted: var(--kw-fg-muted);
   --color-fg-subtle: var(--kw-fg-subtle);
-  --color-fg-inverse: var(--kw-fg-inverse);
-  --color-fg-on-fill: oklch(98% 0 0);
-  --color-ember: var(--kw-ember);
-  --color-ember-hover: var(--kw-ember-hover);
-  --color-ember-soft: var(--kw-ember-soft);
-  --color-ember-fg: var(--kw-ember-fg);
-  --color-signal: var(--kw-signal);
-  --color-signal-soft: var(--kw-signal-soft);
-  --color-amber: var(--kw-amber);
-  --color-amber-soft: var(--kw-amber-soft);
-  --color-rose: var(--kw-rose);
-  --color-rose-soft: var(--kw-rose-soft);
-  --color-sky: var(--kw-sky);
-  --color-series-1: var(--kw-series-1);
-  --color-series-2: var(--kw-series-2);
-  --color-series-3: var(--kw-series-3);
-  --color-series-4: var(--kw-series-4);
-  --color-series-5: var(--kw-series-5);
-  --color-series-6: var(--kw-series-6);
+  --color-fg-inverse: var(--kw-band-fg);
+  --color-fg-on-fill: var(--kw-accent-fg);
+  --color-ember: var(--kw-accent);
+  --color-ember-hover: var(--kw-accent-hover);
+  --color-ember-soft: var(--kw-accent-soft);
+  --color-ember-fg: var(--kw-accent-fg);
+  --color-signal: var(--kw-done);
+  --color-signal-soft: var(--kw-done-soft);
+  --color-amber: var(--kw-attention);
+  --color-amber-soft: var(--kw-attention-soft);
+  --color-rose: var(--kw-danger);
+  --color-rose-soft: var(--kw-danger-soft);
+  --color-sky: var(--kw-rest);
+  --color-series-1: var(--kw-accent);
+  --color-series-2: var(--kw-rest);
+  --color-series-3: var(--kw-done);
+  --color-series-4: var(--kw-fg-muted);
+  --color-series-5: var(--kw-attention);
+  --color-series-6: var(--kw-danger);
 
-  /* Elevation */
-  --shadow-card: 0 1px 0 0 var(--kw-highlight) inset;
-  --shadow-pop: 0 1px 0 0 var(--kw-highlight) inset, 0 24px 60px -20px rgb(0 0 0 / 0.7);
-  --shadow-glow: 0 0 0 1px color-mix(in oklch, var(--kw-ember) 35%, transparent), 0 10px 30px -14px color-mix(in oklch, var(--kw-ember) 30%, transparent);
+  /* Elevation does not exist. These stay so nothing downstream breaks. */
+  --shadow-card: none;
+  --shadow-pop: none;
+  --shadow-glow: none;
 
-  /* Motion */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-  --dur-fast: 150ms;
-  --dur-base: 240ms;
-  --dur-slow: 420ms;
-  --dur-hero: 600ms;
-  --animate-fade-up: fade-up var(--dur-slow) var(--ease-out) both;
-  --animate-line-up: line-up var(--dur-hero) var(--ease-out) both;
-  --animate-ember-drift: ember-drift 18s ease-in-out infinite;
+  /* Motion: the reference measures 0 animations. We are nearly as still. */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-in-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-spring: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out-quart: cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 200ms;
+  --dur-hero: 200ms;
+  --animate-pulse-soft: pulse-soft 2s ease-in-out infinite;
+  --animate-ring: ring 0.9s var(--ease-out) both;
   --animate-fade-in: fade-in var(--dur-base) var(--ease-out) both;
   --animate-sheet-in: sheet-in var(--dur-base) var(--ease-out) both;
-  --animate-pulse-soft: pulse-soft 2s ease-in-out infinite;
-  --animate-ring: ring 0.9s var(--ease-out-quart) both;
+  --animate-fade-up: sheet-in var(--dur-base) var(--ease-out) both;
 }
 
-@keyframes fade-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-@keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes sheet-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-@keyframes line-up { from { transform: translateY(105%); } to { transform: translateY(0); } }
-@keyframes ember-drift { 0%, 100% { transform: translate3d(-6%, 0, 0) scale(1.05); } 50% { transform: translate3d(6%, -4%, 0) scale(1.15); } }
+@keyframes sheet-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
 @keyframes ring { from { stroke-dashoffset: var(--ring-len); } to { stroke-dashoffset: var(--ring-offset); } }
 
-:root, [data-theme="dark"] {
-  color-scheme: dark;
-  --kw-bg: oklch(11.5% 0.012 58);
-  --kw-bg-elevated: oklch(14% 0.014 58);
-  --kw-surface: oklch(17% 0.016 55);
-  --kw-surface-2: oklch(21% 0.018 52);
-  --kw-surface-3: oklch(26% 0.020 50);
-  --kw-border: oklch(100% 0 0 / 0.07);
-  --kw-border-strong: oklch(100% 0 0 / 0.12);
-  --kw-highlight: oklch(100% 0 0 / 0.04);
-  --kw-well: oklch(0% 0 0 / 0.22);
-  --kw-well-strong: oklch(0% 0 0 / 0.32);
-  --kw-fg: oklch(94% 0.012 72);
-  --kw-fg-muted: oklch(70% 0.012 72);
-  --kw-fg-subtle: oklch(56% 0.012 72);
-  --kw-fg-inverse: oklch(12% 0.005 60);
-  --kw-ember: oklch(76% 0.085 68);
-  --kw-ember-hover: oklch(81% 0.085 70);
-  --kw-ember-soft: oklch(76% 0.085 68 / 0.12);
-  --kw-ember-fg: oklch(14% 0.02 68);
-  --kw-signal: oklch(74% 0.075 150);
-  --kw-signal-soft: oklch(74% 0.075 150 / 0.12);
-  --kw-amber: oklch(78% 0.09 82);
-  --kw-amber-soft: oklch(78% 0.09 82 / 0.12);
-  --kw-rose: oklch(66% 0.11 22);
-  --kw-rose-soft: oklch(66% 0.11 22 / 0.12);
-  --kw-sky: oklch(74% 0.06 232);
-  --kw-series-1: oklch(76% 0.085 68);
-  --kw-series-2: oklch(74% 0.06 232);
-  --kw-series-3: oklch(74% 0.075 150);
-  --kw-series-4: oklch(72% 0.07 320);
-  --kw-series-5: oklch(78% 0.09 82);
-  --kw-series-6: oklch(66% 0.11 22);
-}
-
-[data-theme="light"] {
+/* ---- Sheet (light). The default: a cool drafting ground, not warm paper. ---- */
+:root, [data-theme="light"] {
   color-scheme: light;
-  --kw-bg: oklch(97.5% 0.006 78);
-  --kw-bg-elevated: oklch(99% 0.002 80);
-  --kw-surface: oklch(99% 0.002 80);
-  --kw-surface-2: oklch(95% 0.005 80);
-  --kw-surface-3: oklch(91% 0.006 80);
-  --kw-border: oklch(0% 0 0 / 0.07);
-  --kw-border-strong: oklch(0% 0 0 / 0.14);
-  --kw-highlight: oklch(100% 0 0 / 0.5);
-  --kw-well: oklch(0% 0 0 / 0.035);
-  --kw-well-strong: oklch(0% 0 0 / 0.06);
-  --kw-fg: oklch(20% 0.01 60);
-  --kw-fg-muted: oklch(46% 0.01 60);
-  --kw-fg-subtle: oklch(58% 0.01 60);
-  --kw-fg-inverse: oklch(98% 0 0);
-  --kw-ember: oklch(58% 0.10 62);
-  --kw-ember-hover: oklch(53% 0.10 62);
-  --kw-ember-soft: oklch(58% 0.10 62 / 0.10);
-  --kw-ember-fg: oklch(99% 0 0);
-  --kw-signal: oklch(55% 0.09 150);
-  --kw-signal-soft: oklch(55% 0.09 150 / 0.10);
-  --kw-amber: oklch(64% 0.11 80);
-  --kw-amber-soft: oklch(64% 0.11 80 / 0.12);
-  --kw-rose: oklch(55% 0.13 22);
-  --kw-rose-soft: oklch(55% 0.13 22 / 0.10);
-  --kw-sky: oklch(56% 0.08 236);
-  --kw-series-1: oklch(58% 0.10 62);
-  --kw-series-2: oklch(56% 0.08 236);
-  --kw-series-3: oklch(55% 0.09 150);
-  --kw-series-4: oklch(56% 0.09 320);
-  --kw-series-5: oklch(64% 0.11 80);
-  --kw-series-6: oklch(55% 0.13 22);
+  --kw-bg: #f6f8f7;
+  --kw-surface: #f6f8f7;
+  --kw-surface-2: #eff1f0;
+  --kw-band: #0f0e12;
+  --kw-band-fg: #f1f2f2;
+  --kw-fg: #000000;
+  --kw-fg-muted: #5a5a5a;
+  --kw-fg-subtle: #8a8a8a;
+  --kw-rule: #e5e5e5;
+  --kw-rule-strong: #000000;
+  --kw-accent: #a8431a;
+  --kw-accent-hover: #8c3714;
+  --kw-accent-soft: rgb(168 67 26 / 0.1);
+  --kw-accent-fg: #f6f8f7;
+  --kw-done: #1f6b4a;
+  --kw-done-soft: rgb(31 107 74 / 0.1);
+  --kw-attention: #8a5d0f;
+  --kw-attention-soft: rgb(138 93 15 / 0.1);
+  --kw-danger: #96231c;
+  --kw-danger-soft: rgb(150 35 28 / 0.1);
+  --kw-rest: #3a5a77;
 }
 
+/* ---- Carbon (dark). Re-picked, not inverted: #0f0e12, never pure black. ---- */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --kw-bg: #0f0e12;
+  --kw-surface: #141318;
+  --kw-surface-2: #191820;
+  --kw-band: #f6f8f7;
+  --kw-band-fg: #0f0e12;
+  --kw-fg: #f1f2f2;
+  --kw-fg-muted: #a9a9ad;
+  --kw-fg-subtle: #76767c;
+  --kw-rule: #2a2930;
+  --kw-rule-strong: #f1f2f2;
+  --kw-accent: #d98049;
+  --kw-accent-hover: #e89460;
+  --kw-accent-soft: rgb(217 128 73 / 0.12);
+  --kw-accent-fg: #0f0e12;
+  --kw-done: #5fa880;
+  --kw-done-soft: rgb(95 168 128 / 0.12);
+  --kw-attention: #c9a227;
+  --kw-attention-soft: rgb(201 162 39 / 0.12);
+  --kw-danger: #d4706a;
+  --kw-danger-soft: rgb(212 112 106 / 0.12);
+  --kw-rest: #7fa3c0;
+}
 
 /*
- * Tailwind resolves the --color-* aliases once, at :root, so a nested [data-theme] island
- * would keep the root theme's colours even though its --kw-* values changed. Re-pointing the
- * aliases on the theme selectors themselves makes dark islands (photographic sections that
- * must always read dark, whatever the reader's theme) actually work.
+ * Tailwind resolves the --color-* aliases once at :root, so a nested [data-theme] island
+ * keeps the root theme unless the aliases are re-pointed on the theme selectors themselves.
  */
 [data-theme="dark"], [data-theme="light"] {
   --color-bg: var(--kw-bg);
-  --color-bg-elevated: var(--kw-bg-elevated);
+  --color-bg-elevated: var(--kw-surface);
   --color-surface: var(--kw-surface);
   --color-surface-2: var(--kw-surface-2);
-  --color-surface-3: var(--kw-surface-3);
-  --color-border: var(--kw-border);
-  --color-well: var(--kw-well);
-  --color-well-strong: var(--kw-well-strong);
-  --color-border-strong: var(--kw-border-strong);
+  --color-surface-3: var(--kw-surface-2);
+  --color-band: var(--kw-band);
+  --color-band-fg: var(--kw-band-fg);
+  --color-border: var(--kw-rule);
+  --color-border-strong: var(--kw-rule-strong);
+  --color-rule: var(--kw-rule);
+  --color-rule-strong: var(--kw-rule-strong);
+  --color-well: var(--kw-surface-2);
+  --color-well-strong: var(--kw-surface-2);
   --color-fg: var(--kw-fg);
   --color-fg-muted: var(--kw-fg-muted);
   --color-fg-subtle: var(--kw-fg-subtle);
-  --color-fg-inverse: var(--kw-fg-inverse);
-  --color-ember: var(--kw-ember);
-  --color-ember-hover: var(--kw-ember-hover);
-  --color-ember-soft: var(--kw-ember-soft);
-  --color-ember-fg: var(--kw-ember-fg);
-  --color-signal: var(--kw-signal);
-  --color-signal-soft: var(--kw-signal-soft);
-  --color-amber: var(--kw-amber);
-  --color-amber-soft: var(--kw-amber-soft);
-  --color-rose: var(--kw-rose);
-  --color-rose-soft: var(--kw-rose-soft);
-  --color-sky: var(--kw-sky);
-  --color-series-1: var(--kw-series-1);
-  --color-series-2: var(--kw-series-2);
-  --color-series-3: var(--kw-series-3);
-  --color-series-4: var(--kw-series-4);
-  --color-series-5: var(--kw-series-5);
-  --color-series-6: var(--kw-series-6);
+  --color-fg-inverse: var(--kw-band-fg);
+  --color-fg-on-fill: var(--kw-accent-fg);
+  --color-ember: var(--kw-accent);
+  --color-ember-hover: var(--kw-accent-hover);
+  --color-ember-soft: var(--kw-accent-soft);
+  --color-ember-fg: var(--kw-accent-fg);
+  --color-signal: var(--kw-done);
+  --color-signal-soft: var(--kw-done-soft);
+  --color-amber: var(--kw-attention);
+  --color-amber-soft: var(--kw-attention-soft);
+  --color-rose: var(--kw-danger);
+  --color-rose-soft: var(--kw-danger-soft);
+  --color-sky: var(--kw-rest);
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-  body { background: var(--color-bg); color: var(--color-fg); font-family: var(--font-sans); line-height: 1.5; font-feature-settings: "cv11", "ss01", "ss03"; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-  /*
-   * Display type is ONE weight at every size (the uniform-weight idea is taken from Auros).
-   * Auros sets theirs at 500 because Matter is a dense geometric face; Clash Display is
-   * lighter-stemmed, so 600 is where it carries the same engineered confidence. Deviating
-   * from the reference's number to keep the reference's intent.
-   */
-  h1, h2, h3, .font-display { font-family: var(--font-display); font-weight: 600; letter-spacing: var(--tracking-tighter); }
-  .tabular, .font-display { font-variant-numeric: tabular-nums; }
-  ::selection { background: var(--kw-ember-soft); }
-  :focus-visible { outline: 2px solid var(--color-ember); outline-offset: 2px; border-radius: 4px; }
+  * { border-color: var(--color-rule); }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Display is the same family at a wider width and a light weight. Never bold. */
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    font-weight: 300;
+    letter-spacing: -0.015em;
+  }
+  /* The product is a table: every figure is tabular so the columns line up. */
+  .tabular, .font-display, th, td { font-variant-numeric: tabular-nums; }
+  ::selection { background: var(--color-ember); color: var(--color-ember-fg); }
+  :focus-visible { outline: 2px solid var(--color-ember); outline-offset: 2px; border-radius: 0; }
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-@utility surface { background: var(--color-surface); border: 1px solid var(--color-border); box-shadow: var(--shadow-card); }
-@utility glass { background: color-mix(in oklch, var(--color-bg) 70%, transparent); backdrop-filter: blur(16px) saturate(1.4); border: 1px solid var(--color-border); }
-@utility noise { position: relative; }
+/* The sheet's structural vocabulary: three rule weights and nothing else. */
+@utility measure { max-width: 62ch; }
+@utility band { background: var(--color-band); color: var(--color-band-fg); }
+@utility meta {
+  font-size: var(--text-meta);
+  line-height: 1.11;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--color-fg-subtle);
+}
+@utility rule-dashed { border: 0; border-top: 1px solid var(--color-rule); }
 @utility scrollbar-none { scrollbar-width: none; &::-webkit-scrollbar { display: none; } }
 
-/* Prose measure, so body copy never runs past a comfortable line length. */
-@utility measure { max-width: 62ch; }
-
-/* The DNA's section separator: a 1px dashed rule, never a solid box. */
-@utility rule-dashed { border: 0; border-top: 1px dashed var(--color-border-strong); }
-
-/* Scrim for type sitting over imagery. Always applied, never eyeballed. */
-@utility scrim {
-  background: linear-gradient(180deg, color-mix(in oklch, var(--color-bg) 35%, transparent) 0%, color-mix(in oklch, var(--color-bg) 75%, transparent) 55%, var(--color-bg) 100%);
-}
-
-/*
- * Reveal on enter (the page spine).
- * Content starts VISIBLE: the hidden state only applies once JS has marked the document
- * ready, so the page reads with JS disabled, before hydration, and under reduced motion.
- */
-@layer base {
-  [data-reveal] { transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out); transition-delay: var(--reveal-delay, 0ms); }
-  .js-reveal [data-reveal]:not([data-reveal="in"]) { opacity: 0; transform: translateY(20px); }
-  @media (prefers-reduced-motion: reduce) {
-    .js-reveal [data-reveal]:not([data-reveal="in"]) { opacity: 1; transform: none; }
-  }
-}
+/* Kept so existing call sites keep compiling; all three are flat now, by design. */
+@utility surface { background: var(--color-surface); border: 1px solid var(--color-rule); }
+@utility glass { background: var(--color-bg); border-bottom: 1px solid var(--color-rule); }
+@utility scrim { background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--color-band) 78%, transparent)); }

@@ -1,0 +1,274 @@
+{
+  "title": "teenage engineering",
+  "url": "https://teenage.engineering/",
+  "fonts": [
+    [
+      "te-20",
+      243
+    ],
+    [
+      "TechnoType",
+      6
+    ]
+  ],
+  "type": {
+    "h1": null,
+    "h2": null,
+    "h3": null,
+    "body": {
+      "text": "newsletter",
+      "family": "te-20",
+      "size": "19.102px",
+      "weight": "100",
+      "lineHeight": "22.0408px",
+      "letterSpacing": "normal",
+      "color": "rgb(229, 229, 229)",
+      "transform": "none"
+    },
+    "small": null,
+    "link": {
+      "text": "teenage engineering",
+      "family": "te-20",
+      "size": "16px",
+      "weight": "100",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "rgb(241, 242, 242)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "fg rgb(241, 242, 242)",
+      174
+    ],
+    [
+      "border rgb(241, 242, 242)",
+      174
+    ],
+    [
+      "fg rgb(0, 0, 0)",
+      37
+    ],
+    [
+      "border rgb(0, 0, 0)",
+      36
+    ],
+    [
+      "fg rgb(229, 229, 229)",
+      33
+    ],
+    [
+      "border rgb(229, 229, 229)",
+      33
+    ],
+    [
+      "bg rgb(0, 0, 0)",
+      1
+    ],
+    [
+      "border rgb(118, 118, 118)",
+      1
+    ]
+  ],
+  "bodyBg": "rgb(0, 0, 0)",
+  "htmlBg": "rgb(0, 0, 0)",
+  "sections": [
+    {
+      "top": 0,
+      "height": 5760,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": null,
+      "imageCount": 12
+    }
+  ],
+  "nav": {
+    "position": "absolute",
+    "top": 0,
+    "height": 0,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "borderBottom": "0px none rgb(0, 0, 0)",
+    "boxShadow": "none",
+    "linkCount": 25,
+    "links": [
+      "teenage engineering",
+      "product",
+      "instruments",
+      "audio",
+      "designs",
+      "store",
+      "checkout",
+      "deals",
+      "newsletter",
+      "instagram"
+    ],
+    "ctaCount": 0,
+    "ctaSamples": [],
+    "logoLeft": 0,
+    "maxWidth": "none",
+    "padding": "0px",
+    "linkStyle": {
+      "text": "teenage engineering",
+      "family": "te-20",
+      "size": "16px",
+      "weight": "100",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "rgb(241, 242, 242)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "search",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(241, 242, 242)",
+      "border": "0px none rgb(241, 242, 242)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "0px",
+      "fontSize": "16px",
+      "fontWeight": "100",
+      "family": "te-20",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 2
+    }
+  ],
+  "input": {
+    "height": 22,
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "1px solid rgb(118, 118, 118)",
+    "radius": "0px",
+    "padding": "0px",
+    "fontSize": "16px",
+    "shadow": "none"
+  },
+  "imagery": {
+    "count": 5,
+    "samples": [
+      {
+        "tag": "img",
+        "w": 1440,
+        "h": 1440,
+        "ratio": "1.00",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 1440,
+        "h": 1440,
+        "ratio": "1.00",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 1440,
+        "h": 1440,
+        "ratio": "1.00",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 1440,
+        "h": 1440,
+        "ratio": "1.00",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 1308,
+        "h": 44,
+        "ratio": "29.67",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 1,
+    "gradients": 0,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 0,
+    "sample": null
+  },
+  "footer": {
+    "height": 96,
+    "bg": "rgb(0, 0, 0)",
+    "paddingTop": "33.0612px",
+    "paddingBottom": "33.0612px",
+    "columns": 7,
+    "columnsTemplate": "none",
+    "linkCount": 7,
+    "largestText": {
+      "text": "united kingdom",
+      "size": "19.102px",
+      "weight": "300",
+      "family": "te-20",
+      "color": "rgb(229, 229, 229)"
+    },
+    "borderTop": "0px none rgb(229, 229, 229)"
+  },
+  "motion": {
+    "libs": [],
+    "elementsWithTransition": 4,
+    "elementsWithAnimation": 0,
+    "transforms": 25,
+    "stickyElements": 0,
+    "videoCount": 0,
+    "canvasCount": 0,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 5856,
+    "containerMaxWidths": [],
+    "radiusRamp": [
+      [
+        "7.34694px",
+        2
+      ]
+    ],
+    "shadows": [],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": {
+    "height": 0,
+    "top": -900,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "absolute"
+  },
+  "mobileNav": {
+    "height": 0,
+    "visibleControls": [],
+    "hasMenuButton": false
+  },
+  "label": "DNA / teenage engineering",
+  "capturedAt": "2026-10-25T08:51:59.542Z"
+}

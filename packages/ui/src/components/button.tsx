@@ -5,25 +5,31 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { Loader2 } from "lucide-react";
 import { cn } from "../lib/cn";
 
+/*
+ * Hard rectangle, no radius, no shadow (DNA: teenage engineering measures radius 0 and
+ * shadows none). The label treatment is measured from tines.com: uppercase, small, heavy,
+ * letterspaced. Tines wraps it in a 990px pill; that is rejected here, and so is the pill
+ * generally, since four of this owner's six apps already use one.
+ */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-normal transition-[background,transform,box-shadow,color] duration-(--dur-fast) ease-out select-none disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-none uppercase tracking-label font-semibold transition-colors duration-(--dur-fast) ease-out select-none disabled:pointer-events-none disabled:opacity-40 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         primary: "bg-ember text-ember-fg hover:bg-ember-hover",
-        secondary: "bg-surface-2 text-fg hover:bg-surface-3 border border-border",
-        ghost: "text-fg-muted hover:text-fg hover:bg-surface-2",
-        outline: "border border-border-strong text-fg hover:bg-surface-2",
-        danger: "bg-rose-soft text-rose hover:bg-rose hover:text-fg-on-fill",
-        link: "text-ember underline-offset-4 hover:underline p-0 h-auto",
+        secondary: "border border-rule-strong text-fg hover:bg-fg hover:text-bg",
+        ghost: "text-fg-muted hover:text-fg",
+        outline: "border border-rule-strong text-fg hover:bg-fg hover:text-bg",
+        danger: "border border-rose text-rose hover:bg-rose hover:text-fg-on-fill",
+        link: "text-fg underline underline-offset-4 decoration-1 hover:text-ember p-0 h-auto normal-case tracking-normal font-normal",
       },
       size: {
-        sm: "h-9 px-3.5 text-sm rounded-md [&_svg]:size-4",
-        md: "h-11 px-5 text-sm [&_svg]:size-4",
-        lg: "h-13 px-6 text-base [&_svg]:size-[1.125rem]",
-        xl: "h-14 px-8 text-lg rounded-xl [&_svg]:size-5",
-        icon: "size-11 [&_svg]:size-5",
-        "icon-sm": "size-9 rounded-md [&_svg]:size-4",
+        sm: "h-9 px-4 text-[0.6875rem] [&_svg]:size-3.5",
+        md: "h-11 px-5 text-meta [&_svg]:size-4",
+        lg: "h-13 px-7 text-meta [&_svg]:size-4",
+        xl: "h-14 px-8 text-sm [&_svg]:size-4",
+        icon: "size-11 px-0 [&_svg]:size-4",
+        "icon-sm": "size-9 px-0 [&_svg]:size-3.5",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },

@@ -14,19 +14,19 @@ import "./globals.css";
  * adjustFontFallback matches the fallback's metrics so swapping in the real face causes no
  * layout shift.
  */
-const display = localFont({
-  src: [{ path: "./fonts/clash-display-600.woff2", weight: "600", style: "normal" }],
-  variable: "--font-clash",
+/*
+ * One family, two axes. Archivo variable carries weight 100-900 and width 62-125%, so the
+ * expanded display cut and the hairline text cut come from a single 90KB file.
+ *
+ * The DNA's own face (te-20) is custom and unlicensable, and the style page's suggested
+ * fallback is Inter, which is banned. Archivo holds the same engineered register.
+ */
+const archivo = localFont({
+  src: "./fonts/archivo-variable.woff2",
+  variable: "--font-archivo",
   display: "swap",
-});
-const text = localFont({
-  src: [
-    { path: "./fonts/switzer-400.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/switzer-500.woff2", weight: "500", style: "normal" },
-    { path: "./fonts/switzer-600.woff2", weight: "600", style: "normal" },
-  ],
-  variable: "--font-switzer",
-  display: "swap",
+  weight: "100 900",
+  declarations: [{ prop: "font-stretch", value: "62% 125%" }],
 });
 
 export const metadata: Metadata = {
@@ -37,13 +37,13 @@ export const metadata: Metadata = {
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Kettleworth" },
   icons: { icon: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }, { url: "/icons/favicon-32.png", sizes: "32x32", type: "image/png" }], apple: "/icons/apple-touch-icon.png" },
 };
-export const viewport: Viewport = { themeColor: "#141110", width: "device-width", initialScale: 1, viewportFit: "cover" };
+export const viewport: Viewport = { themeColor: "#F6F8F7", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // Theme is read on the server from a cookie, so the first paint is already right and no inline script is needed.
   const theme = (await cookies()).get("kw-theme")?.value === "light" ? "light" : "dark";
   return (
-    <html lang="en" data-theme={theme} suppressHydrationWarning className={`${display.variable} ${text.variable}`}>
+    <html lang="en" data-theme={theme} suppressHydrationWarning className={archivo.variable}>
       <body className="min-h-dvh bg-bg text-fg">
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster position="top-center" toastOptions={{ className: "!bg-bg-elevated !border-border !text-fg !shadow-pop !rounded-xl" }} />

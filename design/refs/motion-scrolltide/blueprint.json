@@ -1,0 +1,650 @@
+{
+  "title": "Scrolltide — Cinematic website prompts & templates",
+  "url": "https://www.scrolltide.co/",
+  "fonts": [
+    [
+      "Inter",
+      1888
+    ],
+    [
+      "Space Mono",
+      59
+    ],
+    [
+      "Bricolage Grotesque",
+      25
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "Ship websites that move like the tide.",
+      "family": "Bricolage Grotesque",
+      "size": "88px",
+      "weight": "800",
+      "lineHeight": "83.6px",
+      "letterSpacing": "-2.64px",
+      "color": "rgb(243, 245, 248)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "The library, at a glance",
+      "family": "Bricolage Grotesque",
+      "size": "36px",
+      "weight": "700",
+      "lineHeight": "40px",
+      "letterSpacing": "-0.9px",
+      "color": "rgb(243, 245, 248)",
+      "transform": "none"
+    },
+    "h3": {
+      "text": "VALMORA",
+      "family": "Inter",
+      "size": "15px",
+      "weight": "600",
+      "lineHeight": "22.5px",
+      "letterSpacing": "-0.375px",
+      "color": "rgb(243, 245, 248)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "A curated library of scroll-driven templates and prompts. Copy one, pa",
+      "family": "Inter",
+      "size": "18px",
+      "weight": "400",
+      "lineHeight": "29.25px",
+      "letterSpacing": "normal",
+      "color": "rgb(154, 162, 173)",
+      "transform": "none"
+    },
+    "small": null,
+    "link": {
+      "text": "scrolltide",
+      "family": "Inter",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "rgb(243, 245, 248)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "fg rgb(243, 245, 248)",
+      1613
+    ],
+    [
+      "border rgb(243, 245, 248)",
+      1470
+    ],
+    [
+      "border rgba(255, 255, 255, 0.08)",
+      172
+    ],
+    [
+      "fg rgb(91, 99, 110)",
+      152
+    ],
+    [
+      "border rgb(91, 99, 110)",
+      152
+    ],
+    [
+      "bg rgb(11, 13, 16)",
+      127
+    ],
+    [
+      "bg oklab(0.134026 -0.000681959 -0.00509647 / 0.7)",
+      123
+    ],
+    [
+      "fg rgb(154, 162, 173)",
+      110
+    ],
+    [
+      "bg rgb(0, 0, 0)",
+      96
+    ],
+    [
+      "border rgb(154, 162, 173)",
+      68
+    ],
+    [
+      "fg rgb(139, 243, 230)",
+      40
+    ],
+    [
+      "bg oklab(0.746639 -0.0703368 -0.1263 / 0.1)",
+      31
+    ],
+    [
+      "border oklab(0.746639 -0.0703368 -0.1263 / 0.4)",
+      28
+    ],
+    [
+      "border rgba(255, 255, 255, 0.14)",
+      27
+    ],
+    [
+      "fg rgba(255, 255, 255, 0.14)",
+      20
+    ],
+    [
+      "fg rgb(7, 8, 10)",
+      19
+    ],
+    [
+      "border rgb(7, 8, 10)",
+      18
+    ],
+    [
+      "bg rgb(243, 245, 248)",
+      10
+    ],
+    [
+      "border rgb(139, 243, 230)",
+      9
+    ],
+    [
+      "fg rgb(4, 18, 31)",
+      8
+    ]
+  ],
+  "bodyBg": "rgb(7, 8, 10)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 105,
+      "height": 774,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Ship websites that move like the tide.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 6
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 941,
+      "height": 3460,
+      "paddingTop": "32px",
+      "paddingBottom": "32px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1280px",
+      "heading": "The library, at a glance",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "24px",
+        "children": 4
+      },
+      "imageCount": 29
+    },
+    {
+      "top": 4401,
+      "height": 3689,
+      "paddingTop": "32px",
+      "paddingBottom": "32px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1280px",
+      "heading": "One piece at a time",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "24px",
+        "children": 4
+      },
+      "imageCount": 30
+    },
+    {
+      "top": 8091,
+      "height": 3418,
+      "paddingTop": "32px",
+      "paddingBottom": "32px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1280px",
+      "heading": "Motion behind everything",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "24px",
+        "children": 4
+      },
+      "imageCount": 30
+    },
+    {
+      "top": 11508,
+      "height": 2485,
+      "paddingTop": "32px",
+      "paddingBottom": "32px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1280px",
+      "heading": "Build a page a band at a time",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "24px",
+        "children": 4
+      },
+      "imageCount": 20
+    },
+    {
+      "top": 13994,
+      "height": 1863,
+      "paddingTop": "32px",
+      "paddingBottom": "32px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1280px",
+      "heading": "The screen behind the landing page",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "24px",
+        "children": 4
+      },
+      "imageCount": 14
+    },
+    {
+      "top": 15857,
+      "height": 757,
+      "paddingTop": "112px",
+      "paddingBottom": "112px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1280px",
+      "heading": "Copy, paste, launch.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "12px",
+        "children": 4
+      },
+      "imageCount": 0
+    }
+  ],
+  "nav": {
+    "position": "sticky",
+    "top": 40,
+    "height": 65,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "borderBottom": "0px solid rgb(243, 245, 248)",
+    "boxShadow": "none",
+    "linkCount": 12,
+    "links": [
+      "scrolltide",
+      "Library",
+      "Components",
+      "Shaders",
+      "Sections",
+      "UI",
+      "eBook",
+      "Pricing",
+      "FAQ",
+      "Contact"
+    ],
+    "ctaCount": 1,
+    "ctaSamples": [
+      {
+        "text": "Go Unlimited",
+        "bg": "rgb(243, 245, 248)",
+        "color": "rgb(7, 8, 10)",
+        "radius": "3.35544e+07px",
+        "height": 36
+      }
+    ],
+    "logoLeft": 104,
+    "maxWidth": "none",
+    "padding": "0px",
+    "linkStyle": {
+      "text": "scrolltide",
+      "family": "Inter",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "rgb(243, 245, 248)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "Components →",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(154, 162, 173)",
+      "border": "1px solid rgba(255, 255, 255, 0.08)",
+      "radius": "3.35544e+07px",
+      "shadow": "none",
+      "height": 34,
+      "padding": "6px 14px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 37
+    },
+    {
+      "text": "Library",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(154, 162, 173)",
+      "border": "0px solid rgb(154, 162, 173)",
+      "radius": "3.35544e+07px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "6px 14px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 10
+    },
+    {
+      "text": "Browse the library",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(243, 245, 248)",
+      "border": "1px solid rgba(255, 255, 255, 0.14)",
+      "radius": "3.35544e+07px",
+      "shadow": "none",
+      "height": 46,
+      "padding": "12px 24px",
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 6
+    },
+    {
+      "text": "All",
+      "bg": "rgb(243, 245, 248)",
+      "color": "rgb(7, 8, 10)",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "radius": "3.35544e+07px",
+      "shadow": "none",
+      "height": 34,
+      "padding": "6px 14px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 5
+    },
+    {
+      "text": "Go Unlimited →",
+      "bg": "rgb(243, 245, 248)",
+      "color": "rgb(7, 8, 10)",
+      "border": "0px solid rgb(7, 8, 10)",
+      "radius": "3.35544e+07px",
+      "shadow": "none",
+      "height": 44,
+      "padding": "12px 24px",
+      "fontSize": "14px",
+      "fontWeight": "600",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 3
+    },
+    {
+      "text": "scrolltide",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(243, 245, 248)",
+      "border": "0px solid rgb(243, 245, 248)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "0px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "Popular",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(154, 162, 173)",
+      "border": "0px solid rgb(154, 162, 173)",
+      "radius": "3.35544e+07px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "6px 16px",
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "Go Unlimited",
+      "bg": "rgb(243, 245, 248)",
+      "color": "rgb(7, 8, 10)",
+      "border": "0px solid rgb(7, 8, 10)",
+      "radius": "3.35544e+07px",
+      "shadow": "none",
+      "height": 36,
+      "padding": "8px 16px",
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": {
+    "height": 46,
+    "bg": "oklab(0.185831 -0.00182673 -0.0111374 / 0.6)",
+    "border": "1px solid rgba(255, 255, 255, 0.08)",
+    "radius": "3.35544e+07px",
+    "padding": "12px 20px",
+    "fontSize": "14px",
+    "shadow": "none"
+  },
+  "imagery": {
+    "count": 124,
+    "samples": [
+      {
+        "tag": "canvas",
+        "w": 1440,
+        "h": 774,
+        "ratio": "1.86",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 398,
+        "h": 235,
+        "ratio": "1.69",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 398,
+        "h": 236,
+        "ratio": "1.69",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 398,
+        "h": 236,
+        "ratio": "1.69",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 398,
+        "h": 237,
+        "ratio": "1.68",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 398,
+        "h": 234,
+        "ratio": "1.70",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 398,
+        "h": 235,
+        "ratio": "1.69",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 398,
+        "h": 224,
+        "ratio": "1.77",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 1,
+    "gradients": 150,
+    "blurBlobs": 5
+  },
+  "cards": {
+    "count": 4,
+    "sample": {
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "1px solid rgba(255, 255, 255, 0.08)",
+      "radius": "16px",
+      "shadow": "none",
+      "padding": "24px"
+    }
+  },
+  "footer": {
+    "height": 1181,
+    "bg": "rgba(0, 0, 0, 0)",
+    "paddingTop": "0px",
+    "paddingBottom": "0px",
+    "columns": 4,
+    "columnsTemplate": "370.656px 247.109px 247.109px 247.125px",
+    "linkCount": 17,
+    "largestText": {
+      "text": "scrolltide",
+      "size": "316.8px",
+      "weight": "800",
+      "family": "Bricolage Grotesque",
+      "color": "rgba(0, 0, 0, 0)"
+    },
+    "borderTop": "1px solid rgba(255, 255, 255, 0.08)"
+  },
+  "motion": {
+    "libs": [
+      "gsap",
+      "lenis",
+      "framer",
+      "motion",
+      "three"
+    ],
+    "elementsWithTransition": 594,
+    "elementsWithAnimation": 2,
+    "transforms": 8,
+    "stickyElements": 1,
+    "videoCount": 105,
+    "canvasCount": 1,
+    "smoothScroll": "smooth"
+  },
+  "layout": {
+    "pageHeight": 17795,
+    "containerMaxWidths": [
+      [
+        "1280px",
+        12
+      ],
+      [
+        "384px",
+        5
+      ],
+      [
+        "448px",
+        2
+      ],
+      [
+        "896px",
+        1
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "16px",
+        251
+      ],
+      [
+        "3.35544e+07px",
+        239
+      ],
+      [
+        "9px",
+        2
+      ]
+    ],
+    "shadows": [
+      "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.14) 0px 0px 0px 1px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.89744 -0.098873 -0.00909621 / 0.5) 0px 0px 10px 2px"
+    ],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": {
+    "height": 65,
+    "top": 0,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "sticky"
+  },
+  "mobileNav": {
+    "height": 65,
+    "visibleControls": [
+      "scrolltide",
+      "Menu"
+    ],
+    "hasMenuButton": true
+  },
+  "label": "motion / scrolltide",
+  "capturedAt": "2026-10-25T08:55:05.363Z"
+}

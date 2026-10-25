@@ -6,7 +6,6 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Swords, Shield, Check, Timer, Flame, ChevronRight, Home } from "lucide-react";
 import { shouldAskAboutSession, pastDayLabel, type SideQuest } from "@kettleworth/core";
 import { Button, cn, toast } from "@kettleworth/ui";
-import { Icon3D } from "@/components/app/icon-3d";
 
 type Board = {
   main: { sessionId: string; name: string; scheduledOn: string; status: string; points: number; overdue: boolean } | null;
@@ -56,7 +55,7 @@ export function QuestBoard({ board: initial, todayIso }: { board: Board; todayIs
   if (!board.main && !board.side) return null;
   const mainDone = board.main?.status === "completed";
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-surface/50 p-5 ring-1 ring-border" aria-label="Quest board">
+    <section className="border-t border-rule pt-5" aria-label="Quest board">
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <span className="eyebrow">Quest board</span>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-well-strong px-2.5 py-1 text-2xs uppercase tracking-label text-fg-muted"><Shield className="size-3 text-ember" />{board.streakWeeks} week streak</span>
@@ -65,9 +64,9 @@ export function QuestBoard({ board: initial, todayIso }: { board: Board; todayIs
 
       {/* Main quest */}
       {board.main ? (
-        <div className={cn("relative overflow-hidden rounded-2xl p-4 ring-1 transition-colors", mainDone ? "bg-signal-soft ring-signal/30" : "bg-[linear-gradient(120deg,color-mix(in_oklch,var(--color-ember)_14%,transparent),transparent)] ring-ember/25")}>
+        <div className={cn("border-b border-rule py-4")}>
           <div className="flex items-start gap-3">
-            <div className="shrink-0">{mainDone ? <div className="grid size-12 place-items-center rounded-xl bg-signal/20"><Check className="size-6 text-signal" /></div> : <Icon3D name="target" size="sm" />}</div>
+            <div className="shrink-0 pt-0.5">{mainDone ? <Check className="size-5 text-signal" /> : <Swords className="size-5 text-fg-subtle" strokeWidth={1.5} />}</div>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-2xs uppercase tracking-label text-ember">Main quest</span>
@@ -120,7 +119,7 @@ function SideQuestCard({ quest, done, claimed, busy, onClaim }: { quest: SideQue
   return (
     <div className={cn("rounded-2xl p-4 ring-1", done ? "bg-signal-soft ring-signal/30" : "bg-well ring-border")}>
       <div className="flex items-start gap-3">
-        <div className="shrink-0">{done ? <div className="grid size-12 place-items-center rounded-xl bg-signal/20"><Check className="size-6 text-signal" /></div> : <Icon3D name="clock" size="sm" />}</div>
+        <div className="shrink-0 pt-0.5">{done ? <Check className="size-5 text-signal" /> : <Timer className="size-5 text-fg-subtle" strokeWidth={1.5} />}</div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-2xs uppercase tracking-label text-sky">Side quest</span>
