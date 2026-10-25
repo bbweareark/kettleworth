@@ -50,6 +50,47 @@ Target weight and a bar; load one side from the rack. Three constraints shaped i
 - *It should make you better at the thing.* Racking a bar quickly is a real gym skill, so the
   game is the skill.
 
+## Verification log — Plate Drill on production
+
+Run 25 Oct 2026 against https://kettleworth.vercel.app. Both runs used **throwaway accounts
+created and deleted for the purpose**, never the owner's own account: logging fake sets there
+would have written into real training history, triggered autoregulation on future loads and
+could have recorded a false personal record.
+
+### Run 1 — does the breakdown read correctly?
+
+Signed up, completed the intake, generated a programme, opened the day's session, logged a
+set at 40 kg x 8 to start the rest timer, then solved two rounds (50 kg = 15 a side,
+70 kg = 25 a side).
+
+| Line | Value | Reading |
+|---|---|---|
+| Plate drill | **10** | Two solves at five points. Correct |
+| Rest deck | absent | Correct. Drill rows did **not** leak into the rest-deck count, which was the main risk, since both write to `rest_activity` |
+| Sets logged | 2 | One set at two points |
+
+### Run 2 — does the cap hold?
+
+Played **eight** rounds inside a single rest window, then forged four extra drill rows
+straight at `/api/rest` to simulate a tampered client.
+
+| Layer | Observed |
+|---|---|
+| Interface | Header counted `0/6` through `5/6`, then switched to "Session limit reached" on attempts 7 and 8. The game kept playing, as designed |
+| Client requests | **6 POSTs for 8 solves.** The client stops paying itself without the server's help |
+| Forged API writes | Accepted with 200, which is correct: the endpoint records activity, it does not award points |
+| Rows for that session | 10 |
+| Growth shown | **30, not 50.** The per-session cap in SQL held |
+
+Final state of that account: 332 points, with Plate drill at 30 beside Showing up at 280 and
+Sets logged at 2. That ratio is the design intent: a whole session of the game is worth less
+than a third of finishing the session itself.
+
+### Not covered
+
+The cap is enforced per session. Solves spread across several sessions each get their own
+allowance, which is intended, and was verified locally but not on production.
+
 ## Replication score: 8/10
 
 Scored by comparing `design/refs/ours-landing/blueprint.md` against
