@@ -74,6 +74,14 @@ describe("finishRun", () => {
     expect(r.message).toContain("One short");
   });
 
+  it("calls a tie a tie: matching your best is not one short of it", () => {
+    const r = finishRun(5, 5, 0);
+    expect(r.soClose).toBe(false);
+    expect(r.beatBest).toBe(false);
+    expect(r.message).toContain("Level with your best");
+    expect(r.message).not.toContain("One short");
+  });
+
   it("stops paying at the session cap but keeps playing", () => {
     const r = finishRun(20, 5, GAME_MAX_RUNS);
     expect(r.points).toBe(0);

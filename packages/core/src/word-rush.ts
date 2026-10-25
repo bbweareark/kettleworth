@@ -152,7 +152,9 @@ export type RunResult = {
 export function finishRun(score: number, previousBest: number, scoringRunsThisSession: number): RunResult {
   const beatBest = score > previousBest;
   const best = Math.max(score, previousBest);
-  const soClose = !beatBest && previousBest > 0 && previousBest - score <= 1;
+  /** Exactly one short. Matching your best is not "so close", it is a tie, and saying otherwise reads as a bug. */
+  const soClose = previousBest - score === 1 && previousBest > 0;
+  const matched = previousBest > 0 && score === previousBest;
   const capped = scoringRunsThisSession >= GAME_MAX_RUNS;
   const earned = score >= SCORING_THRESHOLD && !capped;
   const points = earned ? GAME_POINTS_PER_RUN : 0;
@@ -161,11 +163,13 @@ export function finishRun(score: number, previousBest: number, scoringRunsThisSe
   // while capped should still say both: the score stands, the points do not.
   const base = beatBest
     ? score === 0 ? "Off the mark. Go again." : `New best: ${score}.`
-    : soClose
-      ? `${score}. One short of your best.`
-      : score < SCORING_THRESHOLD
-        ? `${score}. ${SCORING_THRESHOLD} clears it for a point.`
-        : `${score}. Best is ${previousBest}.`;
+    : matched
+      ? `${score}. Level with your best.`
+      : soClose
+        ? `${score}. One short of your best.`
+        : score < SCORING_THRESHOLD
+          ? `${score}. ${SCORING_THRESHOLD} clears it for a point.`
+          : `${score}. Best is ${previousBest}.`;
   const message = capped
     ? `${base} Session limit reached, so this one is for the Spanish.`
     : base;

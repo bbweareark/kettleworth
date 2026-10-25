@@ -138,6 +138,27 @@ Run 25 Oct 2026 against a local build on an iPhone 15 viewport, driving the real
 | Sub-threshold run | A run ending at 0 produced **no** POST, so a lucky tap pays nothing |
 | Layout | Options land at y=279 in a 659px viewport, rest clock still visible at y=75, no horizontal scroll |
 
+### Live run on production
+
+Run 25 Oct 2026 against https://kettleworth.vercel.app, on a **throwaway account created and
+deleted for the purpose** (delete confirmed: sign-in afterwards returns 401). Never the
+owner's own account, because logging fake sets there would write into real training history,
+drive autoregulation on future loads and could record a false personal record.
+
+| Check | Observed |
+|---|---|
+| Deck tabs | `RUSH QUIZ BREATHE CALL IT TIP` all present, none clipped |
+| Clock while playing | Visible, sticky under the header |
+| Seven correct answers | Score 7, "New best: 7." |
+| Scoring | One POST, `{kind:"drill", detail:{points:5, game:"word-rush"}}`, counter 0/6 to 1/6 |
+| Growth breakdown | `Rest game 5` beside Showing up 280, Sets logged 2, Weigh-ins 20 = 307 |
+| Cap, six more scoring runs on a fresh page load | Header switched to **SESSION LIMIT** on run 6; **7 drill rows in that session, Growth shows 30, not 35.** The client counter resets on reload, the SQL cap does not, which is the behaviour that matters |
+
+**Bug found by this run.** Scoring 5 against a best of 5 said "One short of your best".
+`soClose` used `previousBest - score <= 1`, so a tie counted as one short. Tightened to `=== 1`
+and a tie now reads "Level with your best". Regression test added (104 core tests).
+
+
 ## Replication score: 8/10
 
 Scored by comparing `design/refs/ours-landing/blueprint.md` against
