@@ -118,6 +118,13 @@ export async function physiqueProgress(userId: string) {
 /** Growth and streak for many members in a few grouped queries (community cards and boards). */
 export async function growthForUsers(ids: string[]): Promise<Record<string, { total: number; level: number; streakWeeks: number }>> {
   if (!ids.length) return {};
+  /** Drill rows counted per user per session, so the cap below is applied once per session. */
+  const drillPerSession = db()
+    .select({ u: restActivity.userId, sid: restActivity.sessionId, c: sql<number>`count(*)::int`.as("c") })
+    .from(restActivity)
+    .where(and(inArray(restActivity.userId, ids), eq(restActivity.kind, "drill")))
+    .groupBy(restActivity.userId, restActivity.sessionId)
+    .as("d");
   const [sess, prs, sets, weigh, acts, rest, drillRows, profs] = await Promise.all([
     db().select({ u: trainingSession.userId, d: trainingSession.scheduledOn }).from(trainingSession).where(and(inArray(trainingSession.userId, ids), eq(trainingSession.status, "completed"))),
     db().select({ u: personalRecord.userId, n: sql<number>`count(*)::int` }).from(personalRecord).where(inArray(personalRecord.userId, ids)).groupBy(personalRecord.userId),
@@ -126,11 +133,10 @@ export async function growthForUsers(ids: string[]): Promise<Record<string, { to
     db().select({ u: healthSample.userId, n: sql<number>`count(*)::int` }).from(healthSample).where(and(inArray(healthSample.userId, ids), eq(healthSample.metric, "workout"), eq(healthSample.provider, "manual"))).groupBy(healthSample.userId),
     db().select({ u: restActivity.userId, n: sql<number>`count(*)::int` }).from(restActivity).where(and(inArray(restActivity.userId, ids), sql`${restActivity.kind} <> 'drill'`, sql`(${restActivity.kind} <> 'quiz' or ${restActivity.correct} = true)`)).groupBy(restActivity.userId),
     // Same per-session cap as the personal breakdown, so the leaderboard cannot be gamed.
-    db().select({ u: restActivity.userId, n: sql<number>`coalesce(sum(least(c, ${GAME_MAX_RUNS})), 0)::int` }).from(
-      db().select({ u: restActivity.userId, sid: restActivity.sessionId, c: sql<number>`count(*)::int`.as("c") }).from(restActivity)
-        .where(and(inArray(restActivity.userId, ids), eq(restActivity.kind, "drill")))
-        .groupBy(restActivity.userId, restActivity.sessionId).as("d"),
-    ).groupBy(restActivity.userId),
+    // The outer query must address the subquery's own columns: rest_activity is not joined
+    // into it, and naming restActivity.userId out here makes Drizzle refuse the whole query.
+    db().select({ u: drillPerSession.u, n: sql<number>`coalesce(sum(least(${drillPerSession.c}, ${GAME_MAX_RUNS})), 0)::int` })
+      .from(drillPerSession).groupBy(drillPerSession.u),
     db().select({ u: profileTable.userId, step: profileTable.onboardingStep, done: profileTable.onboardingCompletedAt }).from(profileTable).where(inArray(profileTable.userId, ids)),
   ]);
   const sideByUser = await sideQuestDates(ids);

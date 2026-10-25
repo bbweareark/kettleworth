@@ -77,7 +77,7 @@ export function SessionSheet({
                 <td className="py-3 pr-3">
                   <span className={cn("font-display text-lg", complete && "text-fg-muted")}>{r.name}</span>
                   {current && <span className="meta ml-2 text-ember">Now</span>}
-                  {complete && <span className="meta ml-2 text-signal">Done</span>}
+                  {complete && <span className="meta ml-2 text-fg">Done</span>}
                   <span className="block text-xs text-fg-subtle sm:hidden">{r.work} · {r.detail}</span>
                 </td>
                 <td className="hidden py-3 pr-3 text-sm text-fg-muted sm:table-cell">{r.detail}</td>

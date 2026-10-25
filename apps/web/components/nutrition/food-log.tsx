@@ -87,19 +87,19 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
   const pct = Math.min(1, tot.calories / Math.max(1, targets.calories));
 
   return (
-    <section className="space-y-4 rounded-3xl p-5 ring-1 ring-border md:p-6" aria-label="Food log">
+    <section className="space-y-4 p-5 border border-rule md:p-6" aria-label="Food log">
       {/* Today's meter */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="eyebrow">Today's log</div>
           <div className="mt-1 flex items-baseline gap-2"><span className="font-display text-4xl tracking-tightest tabular">{Math.round(tot.calories)}</span><span className="text-sm text-fg-subtle">of {targets.calories} kcal</span></div>
         </div>
-        <div className={cn("rounded-full px-3 py-1 text-sm tabular", left >= 0 ? "bg-signal-soft text-signal" : "bg-amber-soft text-amber")}>{left >= 0 ? `${left} kcal left` : `${-left} kcal over`}</div>
+        <div className={cn(" px-3 py-1 text-sm tabular", left >= 0 ? "bg-fg text-bg" : " text-ember")}>{left >= 0 ? `${left} kcal left` : `${-left} kcal over`}</div>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-white/10"><motion.div className={cn("h-full rounded-full", left >= 0 ? "bg-ember" : "bg-amber")} animate={{ width: `${pct * 100}%` }} transition={{ duration: reduce ? 0 : 0.5 }} /></div>
+      <div className="h-2 overflow-hidden bg-rule"><motion.div className={cn("h-full", left >= 0 ? "bg-ember" : "bg-amber")} animate={{ width: `${pct * 100}%` }} transition={{ duration: reduce ? 0 : 0.5 }} /></div>
       <div className="grid grid-cols-3 gap-2">
         {([["Protein", tot.proteinG, targets.proteinG, "bg-ember"], ["Carbs", tot.carbsG, targets.carbsG, "bg-sky"], ["Fat", tot.fatG, targets.fatG, "bg-amber"]] as const).map(([l, v, t, c]) => (
-          <div key={l} className="rounded-xl p-2.5"><div className="flex items-baseline justify-between text-xs"><span className="text-fg-subtle">{l}</span><span className="tabular text-fg-muted">{Math.round(v)} / {t} g</span></div><div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/10"><div className={cn("h-full rounded-full", c)} style={{ width: `${Math.min(100, (v / Math.max(1, t)) * 100)}%` }} /></div></div>
+          <div key={l} className="p-2.5"><div className="flex items-baseline justify-between text-xs"><span className="text-fg-subtle">{l}</span><span className="tabular text-fg-muted">{Math.round(v)} / {t} g</span></div><div className="mt-1.5 h-1 overflow-hidden bg-rule"><div className={cn("h-full", c)} style={{ width: `${Math.min(100, (v / Math.max(1, t)) * 100)}%` }} /></div></div>
         ))}
       </div>
 
@@ -112,7 +112,7 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
               <ul className="space-y-1">
                 <AnimatePresence initial={false}>
                   {rows.map((e) => { const Icon = SOURCE_ICON[e.source ?? "manual"]; return (
-                    <motion.li key={e.id} layout={!reduce} initial={reduce ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -12 }} className="group flex items-center gap-3 rounded-xl bg-white/[0.03] px-3 py-2 text-sm">
+                    <motion.li key={e.id} layout={!reduce} initial={reduce ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -12 }} className="group flex items-center gap-3 bg-rule px-3 py-2 text-sm">
                       <Icon className="size-4 shrink-0 text-fg-subtle" aria-hidden />
                       <span className="min-w-0 flex-1 truncate">{e.label}</span>
                       <span className="shrink-0 tabular text-fg-muted">{Math.round(e.macros.calories)}</span>
@@ -125,14 +125,14 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
       ) : <p className="text-sm text-fg-muted">Nothing logged yet. Start with what you're drinking.</p>}
 
       {/* Add */}
-      <div className="space-y-4 rounded-2xl p-4 ring-1 ring-border">
+      <div className="space-y-4 p-4 border border-rule">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-2xs uppercase tracking-label text-fg-subtle">Add to</span>
-          <div className="flex flex-wrap gap-1">{SLOTS.map((s) => <button key={s.v} type="button" aria-pressed={slot === s.v} onClick={() => setSlot(s.v)} className={cn("h-8 rounded-full px-3 text-xs ring-1", slot === s.v ? "bg-fg text-bg ring-fg" : "text-fg-muted ring-border-strong hover:text-fg")}>{s.l}</button>)}</div>
+          <div className="flex flex-wrap gap-1">{SLOTS.map((s) => <button key={s.v} type="button" aria-pressed={slot === s.v} onClick={() => setSlot(s.v)} className={cn("h-8  px-3 text-xs border", slot === s.v ? "bg-fg text-bg ring-fg" : "text-fg-muted border-rule-strong hover:text-fg")}>{s.l}</button>)}</div>
         </div>
-        <div className="grid grid-cols-4 gap-1 rounded-2xl bg-white/[0.03] p-1" role="tablist" aria-label="How to add">
+        <div className="grid grid-cols-4 gap-1 bg-rule p-1" role="tablist" aria-label="How to add">
           {modes.map(({ id, label, Icon }) => (
-            <button key={id} type="button" role="tab" aria-selected={mode === id} onClick={() => { setMode(id); setEstimate(null); setProduct(null); setScanning(false); }} className={cn("flex h-11 flex-col items-center justify-center gap-0.5 rounded-xl text-xs transition-colors sm:flex-row sm:gap-2 sm:text-sm", mode === id ? "bg-surface text-fg shadow-sm ring-1 ring-border-strong" : "text-fg-muted hover:text-fg")}><Icon className={cn("size-4", mode === id && "text-ember")} />{label}</button>
+            <button key={id} type="button" role="tab" aria-selected={mode === id} onClick={() => { setMode(id); setEstimate(null); setProduct(null); setScanning(false); }} className={cn("flex h-11 flex-col items-center justify-center gap-0.5 text-xs transition-colors sm:flex-row sm:gap-2 sm:text-sm", mode === id ? "bg-fg text-bg" : "text-fg-muted hover:text-fg")}><Icon className={cn("size-4", mode === id && "text-bg")} />{label}</button>
           ))}
         </div>
 
@@ -146,8 +146,8 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
               : scanning ? <BarcodeScanner onProduct={(p) => { setScanning(false); setProduct(p); }} onClose={() => setScanning(false)} />
               : (
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <button type="button" onClick={() => setScanning(true)} className="group relative flex min-h-36 flex-col items-start justify-end overflow-hidden rounded-2xl bg-[linear-gradient(140deg,color-mix(in_oklch,var(--color-signal)_18%,transparent),transparent_70%)] p-4 text-left ring-1 ring-signal/25 transition-transform active:scale-[0.99]">
-                    <div className="mb-auto grid size-11 place-items-center rounded-xl bg-signal-soft"><ScanBarcode className="size-5 text-signal" /></div>
+                  <button type="button" onClick={() => setScanning(true)} className="group relative flex min-h-36 flex-col items-start justify-end overflow-hidden bg-[linear-gradient(140deg,color-mix(in_oklch,var(--color-signal)_18%,transparent),transparent_70%)] p-4 text-left border border-fg transition-transform active:scale-[0.99]">
+                    <div className="mb-auto grid size-11 place-items-center bg-fg text-bg"><ScanBarcode className="size-5 text-fg" /></div>
                     <div className="mt-4 font-display text-lg tracking-tight">Scan a barcode</div>
                     <div className="text-xs text-fg-muted">Exact values from the label, for anything packaged</div>
                   </button>
@@ -162,7 +162,7 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
               : (
                 <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); if (text.trim().length > 1) runEstimate({ text }, "describe"); }}>
                   <Textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="What did you have? Say it the way you'd tell a friend." className="min-h-20" aria-label="Describe what you had" onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); if (text.trim().length > 1) runEstimate({ text }, "describe"); } }} />
-                  <div className="flex flex-wrap gap-1.5">{["Flat white with oat milk", "Two slices of toast with butter", "Chicken caesar wrap", "Bowl of porridge with banana"].map((ex) => <button key={ex} type="button" onClick={() => setText(ex)} className="h-8 rounded-full px-3 text-xs text-fg-muted ring-1 ring-border-strong hover:text-fg">{ex}</button>)}</div>
+                  <div className="flex flex-wrap gap-1.5">{["Flat white with oat milk", "Two slices of toast with butter", "Chicken caesar wrap", "Bowl of porridge with banana"].map((ex) => <button key={ex} type="button" onClick={() => setText(ex)} className="h-8 px-3 text-xs text-fg-muted border border-rule-strong hover:text-fg">{ex}</button>)}</div>
                   <div className="flex justify-end"><Button type="submit" loading={busy === "describe"} disabled={text.trim().length < 2}><Sparkles className="size-4" />Work it out</Button></div>
                 </form>
               )
@@ -171,7 +171,7 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
             {mode === "search" ? (
               <div className="space-y-3">
                 <div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" /><Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search your meal plan recipes" aria-label="Search recipes" className="pl-9" /></div>
-                {matches.length ? <ul className="space-y-1">{matches.map((m) => <li key={m.id}><button type="button" onClick={async () => { setBusy(m.id); await log(m.name, m.macros, "recipe", undefined, m.id); setBusy(null); setQ(""); router.refresh(); }} className="flex w-full items-center justify-between rounded-xl bg-white/[0.03] px-3 py-2 text-left text-sm hover:bg-white/[0.06]"><span className="truncate">{m.name}</span><span className="flex shrink-0 items-center gap-2 tabular text-fg-muted">{m.macros.calories} kcal<Plus className="size-4" /></span></button></li>)}</ul> : null}
+                {matches.length ? <ul className="space-y-1">{matches.map((m) => <li key={m.id}><button type="button" onClick={async () => { setBusy(m.id); await log(m.name, m.macros, "recipe", undefined, m.id); setBusy(null); setQ(""); router.refresh(); }} className="flex w-full items-center justify-between bg-rule px-3 py-2 text-left text-sm hover:bg-rule"><span className="truncate">{m.name}</span><span className="flex shrink-0 items-center gap-2 tabular text-fg-muted">{m.macros.calories} kcal<Plus className="size-4" /></span></button></li>)}</ul> : null}
                 <div className="flex items-end gap-2 border-t border-border pt-3">
                   <label className="flex-1 text-2xs uppercase tracking-label text-fg-subtle">Quick add<Input value={custom.label} onChange={(e) => setCustom({ ...custom, label: e.target.value })} className="mt-1" placeholder="Name" /></label>
                   <label className="w-24 text-2xs uppercase tracking-label text-fg-subtle">kcal<Input inputMode="numeric" value={custom.calories} onChange={(e) => setCustom({ ...custom, calories: e.target.value.replace(/[^0-9]/g, "") })} className="mt-1" placeholder="0" /></label>

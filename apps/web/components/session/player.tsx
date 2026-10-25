@@ -146,7 +146,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
         <div className="flex items-center gap-3 text-xs">{queued > 0 && <Badge tone="amber"><WifiOff className="size-3" /> {queued} queued</Badge>}<ElapsedClock since={session.startedAt} /><button type="button" onClick={() => setResetOpen(true)} className="inline-flex items-center gap-1 text-fg-subtle hover:text-fg" aria-label="Restart session"><RotateCcw className="size-3.5" /> Restart</button></div>
       </div>
       {preview && !autoStart ? (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-sky-soft px-4 py-3 ring-1 ring-sky/25">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border border-rule">
           <p className="text-sm"><span className="font-medium">Previewing the session for {whenLabelClient(session.scheduledOn, todayIso)}.</span> <span className="text-fg-muted">Nothing starts until you log a set.</span></p>
           <Button size="sm" variant="secondary" loading={starting} onClick={() => start()}>Train it today</Button>
         </div>
@@ -165,7 +165,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
             <div className="flex items-center gap-2"><Badge tone={cur.role === "primary" ? "ember" : "neutral"} className="capitalize">{cur.role}</Badge><span className="text-xs text-fg-subtle">Exercise {idx + 1} of {instances.length}</span>{cur.swappedReason && <Badge tone="amber">Swapped</Badge>}</div>
             <h1 className="font-display text-3xl tracking-tightest">{cur.exercise.name}</h1>
             <PrescriptionNumerals sets={cur.plannedSets} />
-            {cur.notes ? <p className="text-xs text-amber">{cur.notes}</p> : null}
+            {cur.notes ? <p className="text-xs text-ember">{cur.notes}</p> : null}
             <div className="flex flex-wrap gap-2 pt-1"><Button size="sm" variant="secondary" onClick={() => setShowInfo((s) => !s)} aria-expanded={showInfo}><Info /> How to {showInfo ? <ChevronUp /> : <ChevronDown />}</Button><Button size="sm" variant="secondary" onClick={() => setSwapOpen(true)}><Repeat /> Swap</Button></div>
           </CardContent>
         </div>
@@ -375,8 +375,8 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
           </div>
 
           {challenge ? (
-            <div className="mt-3 rounded-2xl border border-amber/40 bg-amber-soft p-3 text-sm" role="alert">
-              <div className="flex items-start gap-2"><AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber" /><div><p className="font-medium">That looks unusual.</p><p className="text-fg-muted">{challenge} It will be logged but will not count as a record until you repeat it.</p></div></div>
+            <div className="mt-3 border border-ember/40 p-3 text-sm" role="alert">
+              <div className="flex items-start gap-2"><AlertTriangle className="mt-0.5 size-4 shrink-0 text-ember" /><div><p className="font-medium">That looks unusual.</p><p className="text-fg-muted">{challenge} It will be logged but will not count as a record until you repeat it.</p></div></div>
               <div className="mt-2 flex gap-2"><Button size="sm" variant="secondary" onClick={() => setChallenge(null)}>Edit</Button><Button size="sm" loading={busy} onClick={() => submit(true)}>It's right, log it</Button></div>
             </div>
           ) : null}
@@ -399,8 +399,8 @@ function SwapList({ instanceId, onPick }: { instanceId: string; onPick: (e: Exer
     <div className="space-y-3">
       <Segmented value={permanent ? "always" : "today"} onChange={(v) => setPermanent(v === "always")} options={[{ value: "today", label: "Just today" }, { value: "always", label: "Rest of programme" }]} label="Swap scope" />
       {subs === null ? <p className="text-sm text-fg-subtle">Finding alternatives…</p> : subs.length === 0 ? <p className="text-sm text-fg-subtle">No close alternatives with your equipment. Try the library.</p> : subs.map((s) => (
-        <button key={s.exercise.id} type="button" onClick={() => onPick(s.exercise, permanent)} className="flex w-full items-center gap-3 rounded-xl border border-border bg-surface p-3 text-left hover:border-border-strong">
-          {s.exercise.imageUrls[0] ? <img src={s.exercise.imageUrls[0]} alt="" className="size-14 rounded-md object-cover" /> : <div className="size-14 rounded-md bg-surface-3" />}
+        <button key={s.exercise.id} type="button" onClick={() => onPick(s.exercise, permanent)} className="flex w-full items-center gap-3 border border-border bg-surface p-3 text-left hover:border-border-strong">
+          {s.exercise.imageUrls[0] ? <img src={s.exercise.imageUrls[0]} alt="" className="size-14 object-cover" /> : <div className="size-14 bg-surface-3" />}
           <div className="min-w-0"><div className="truncate font-medium">{s.exercise.name}</div><div className="text-xs text-fg-subtle">{s.reason}</div></div>
         </button>
       ))}
@@ -426,18 +426,18 @@ function FinishForm({ sessionId, onDone }: { sessionId: string; units: "metric" 
     setResult(r.data);
   }
   const Scale = ({ label, value, set, lo, hi }: { label: string; value: number | null; set: (v: number) => void; lo: string; hi: string }) => (
-    <div><div className="mb-1.5 flex justify-between text-sm"><span className="font-medium">{label}</span><span className="text-xs text-fg-subtle">{lo} → {hi}</span></div><div className="grid grid-cols-5 gap-1.5">{[1, 2, 3, 4, 5].map((n) => <button key={n} type="button" aria-pressed={value === n} onClick={() => set(n)} className={cn("h-10 rounded-md text-sm font-medium", value === n ? "bg-ember text-ember-fg" : "bg-surface-2 hover:bg-surface-3")}>{n}</button>)}</div></div>
+    <div><div className="mb-1.5 flex justify-between text-sm"><span className="font-medium">{label}</span><span className="text-xs text-fg-subtle">{lo} → {hi}</span></div><div className="grid grid-cols-5 gap-1.5">{[1, 2, 3, 4, 5].map((n) => <button key={n} type="button" aria-pressed={value === n} onClick={() => set(n)} className={cn("h-10 text-sm font-medium", value === n ? "bg-ember text-ember-fg" : "bg-surface-2 hover:bg-surface-3")}>{n}</button>)}</div></div>
   );
   if (result) return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-signal-soft p-4"><div className="font-display text-lg">Session logged.</div><p className="text-sm text-fg-muted">Here's what changes next time, and why.</p></div>
-      <ul className="space-y-2">{result.changes.map((c) => (<li key={c.name} className="rounded-lg border border-border p-3 text-sm"><div className="flex items-center justify-between"><span className="font-medium">{c.name}</span><Badge tone={c.change === "up" ? "signal" : c.change === "down" ? "amber" : "neutral"}>{c.change === "up" ? "Load up" : c.change === "down" ? "Load down" : "Hold"}</Badge></div><p className="mt-1 text-fg-muted">{c.reason}</p></li>))}{!result.changes.length && <li className="text-sm text-fg-subtle">Log weights next time and the plan will progress them for you.</li>}</ul>
+      <div className="bg-fg text-bg p-4"><div className="font-display text-lg">Session logged.</div><p className="text-sm text-fg-muted">Here's what changes next time, and why.</p></div>
+      <ul className="space-y-2">{result.changes.map((c) => (<li key={c.name} className="border border-border p-3 text-sm"><div className="flex items-center justify-between"><span className="font-medium">{c.name}</span><Badge tone={c.change === "up" ? "signal" : c.change === "down" ? "amber" : "neutral"}>{c.change === "up" ? "Load up" : c.change === "down" ? "Load down" : "Hold"}</Badge></div><p className="mt-1 text-fg-muted">{c.reason}</p></li>))}{!result.changes.length && <li className="text-sm text-fg-subtle">Log weights next time and the plan will progress them for you.</li>}</ul>
       <Button className="w-full" size="lg" onClick={onDone}>Done</Button>
     </div>
   );
   return (
     <div className="space-y-5">
-      <div><div className="mb-1.5 text-sm font-medium">Session RPE</div><div className="grid grid-cols-6 gap-1.5">{[5, 6, 7, 8, 9, 10].map((n) => <button key={n} type="button" aria-pressed={rpe === n} onClick={() => setRpe(n)} className={cn("h-10 rounded-md text-sm font-medium", rpe === n ? "bg-ember text-ember-fg" : "bg-surface-2 hover:bg-surface-3")}>{n}</button>)}</div></div>
+      <div><div className="mb-1.5 text-sm font-medium">Session RPE</div><div className="grid grid-cols-6 gap-1.5">{[5, 6, 7, 8, 9, 10].map((n) => <button key={n} type="button" aria-pressed={rpe === n} onClick={() => setRpe(n)} className={cn("h-10 text-sm font-medium", rpe === n ? "bg-ember text-ember-fg" : "bg-surface-2 hover:bg-surface-3")}>{n}</button>)}</div></div>
       <Scale label="Soreness" value={soreness} set={setSoreness} lo="none" hi="can't sit" />
       <Scale label="Fatigue" value={fatigue} set={setFatigue} lo="fresh" hi="wrecked" />
       <Scale label="Enjoyment" value={mood} set={setMood} lo="dreaded it" hi="loved it" />
@@ -468,7 +468,7 @@ function Benchmark({ inst, units, onUse }: { inst: Instance; units: "metric" | "
     if (!data) { const r = await fetch(`/api/exercise/${inst.exerciseId}/history`); if (r.ok) setData(await r.json()); }
   }
   return (
-    <div className="mb-3 rounded-2xl p-3 ring-1 ring-border">
+    <div className="mb-3 p-3 border border-rule">
       {b?.last ? (
         <>
           <div className="flex items-center justify-between gap-2">
@@ -477,7 +477,7 @@ function Benchmark({ inst, units, onUse }: { inst: Instance; units: "metric" | "
           </div>
           <div className="mt-2 flex flex-wrap gap-1.5">
             {b.last.sets.map((x, i) => (
-              <button key={i} type="button" onClick={() => onUse(x.weightKg, x.reps, x.rpe)} aria-label={`Use ${fmtKg(x.weightKg, units)} ${unit} for ${x.reps} reps`} className="inline-flex h-8 items-center rounded-full bg-white/[0.05] px-3 text-sm tabular text-fg ring-1 ring-border-strong transition-colors hover:bg-white/10 active:scale-95">
+              <button key={i} type="button" onClick={() => onUse(x.weightKg, x.reps, x.rpe)} aria-label={`Use ${fmtKg(x.weightKg, units)} ${unit} for ${x.reps} reps`} className="inline-flex h-8 items-center bg-rule px-3 text-sm tabular text-fg border border-rule-strong transition-colors hover:bg-rule active:scale-95">
                 {fmtKg(x.weightKg, units)} × {x.reps}{x.rpe ? <span className="ml-1 text-2xs text-fg-subtle">@{x.rpe}</span> : null}
               </button>))}
           </div>

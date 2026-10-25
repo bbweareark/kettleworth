@@ -12,7 +12,7 @@ export function ExerciseMedia({ name, images, video, className, compact }: { nam
   const real = ready && video.provider === "mux";
   const yt = ready && video.provider === "youtube";
   return (
-    <div className={cn("relative overflow-hidden rounded-2xl bg-surface-2", compact ? "aspect-[4/3]" : "aspect-video lg:aspect-[4/3]", className)}>
+    <div className={cn("relative overflow-hidden bg-surface-2", compact ? "aspect-[4/3]" : "aspect-video lg:aspect-[4/3]", className)}>
       {yt ? (
         <iframe title={`${name} demonstration`} src={`https://www.youtube-nocookie.com/embed/${video!.playbackId}?rel=0&modestbranding=1&playsinline=1${compact ? "&mute=1" : ""}`} className="absolute inset-0 size-full" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen loading="lazy" referrerPolicy="strict-origin-when-cross-origin" />
       ) : real ? (
@@ -21,7 +21,7 @@ export function ExerciseMedia({ name, images, video, className, compact }: { nam
         <>
           {images.map((src, i) => <img key={src} src={src} alt={i === 0 ? `${name} start position` : `${name} end position`} className={cn("absolute inset-0 size-full object-cover transition-opacity duration-300", i === frame ? "opacity-100" : "opacity-0")} />)}
           <Badge tone="amber" className="absolute left-3 top-3">Stills · video pending</Badge>
-          <a href={`https://www.youtube.com/results?search_query=${encodeURIComponent(name + " exercise proper form")}`} target="_blank" rel="noopener noreferrer" className="absolute bottom-3 right-3 rounded-full bg-black/70 px-3 py-1.5 text-xs font-medium text-white backdrop-blur hover:bg-black/85">Watch on YouTube ↗</a>
+          <a href={`https://www.youtube.com/results?search_query=${encodeURIComponent(name + " exercise proper form")}`} target="_blank" rel="noopener noreferrer" className="absolute bottom-3 right-3 bg-black/70 px-3 py-1.5 text-xs font-medium text-white hover:bg-black/85">Watch on YouTube ↗</a>
         </>
       ) : (
         <div className="grid size-full place-items-center text-sm text-fg-subtle">Demo video coming</div>

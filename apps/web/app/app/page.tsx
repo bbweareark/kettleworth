@@ -38,7 +38,7 @@ export default async function Today() {
   const units = rec.profile.units;
   const w = (kg: number) => Math.round(units === "metric" ? kg : kgToLb(kg));
   const u = units === "metric" ? "kg" : "lb";
-  const firstName = user.name.split(" ")[0];
+  const firstName = user.name.split("")[0];
   const hour = new Date().getHours();
   const greet = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
   const tone = readiness.band === "high" ? "signal" : readiness.band === "moderate" ? "amber" : readiness.band === "low" ? "rose" : "sky";
@@ -64,7 +64,7 @@ export default async function Today() {
       <OfflineWarmup sessionHref={today ? `/app/session/${today.id}` : null} images={[...(today ? [sessionArt(today.name, rec.profile.sex)] : []), ...(detail?.instances ?? []).map((i) => i.exercise.imageUrls[0]).filter((u): u is string => !!u)]} />
       <CoachPulse avatar="/art/seal.png" items={pulse} />
       {weekState && weekState.hasPrevious && !weekState.week.checkin && !weekState.week.isDeload ? <WeeklyCheckIn weekNumber={weekState.week.weekNumber} applied={weekState.week.adaptations} /> : null}
-      {nudges.length ? <ul className="flex flex-wrap gap-2">{nudges.map((n) => (<li key={n.id} className={`flex items-center gap-3 rounded-xl px-3.5 py-2 text-sm ring-1 ring-border ${n.tone === "amber" ? "bg-amber-soft" : n.tone === "signal" ? "bg-signal-soft" : n.tone === "ember" ? "bg-ember-soft" : ""}`}><span>{n.text}</span>{n.action ? <Link href={n.action.href} className="font-medium text-ember hover:underline">{n.action.label}</Link> : null}</li>))}</ul> : null}
+      {nudges.length ? <ul className="flex flex-wrap gap-2">{nudges.map((n) => (<li key={n.id} className={`flex items-center gap-3 px-3.5 py-2 text-sm border border-rule ${n.tone === "amber" ? "" : n.tone === "signal" ? "bg-fg text-bg" : n.tone === "ember" ? "" : ""}`}><span>{n.text}</span>{n.action ? <Link href={n.action.href} className="font-medium text-ember hover:underline">{n.action.label}</Link> : null}</li>))}</ul> : null}
 
       {!prog ? (
         <Card className="animate-fade-up"><CardContent className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
@@ -117,11 +117,11 @@ export default async function Today() {
       <div className="grid gap-3 lg:grid-cols-3">
         <Card className="lg:col-span-2"><CardContent className="p-4">
           <div className="mb-2 flex items-center justify-between"><h3 className="font-display text-base">Week ahead</h3><Link href="/app/programme" className="text-xs text-ember hover:underline">Programme</Link></div>
-          {upcoming.length ? (<ul className="grid gap-2 sm:grid-cols-2">{upcoming.slice(0, 4).map((s) => (<li key={s.id}><Link href={`/app/session/${s.id}`} className="flex items-center justify-between rounded-lg border border-border px-3 py-2.5 text-sm transition-colors hover:border-border-strong hover:bg-surface-2"><span><span className="block font-medium">{s.name}</span><span className="text-xs text-fg-subtle">{whenLabel(s.scheduledOn, todayIso).replace(/^tomorrow$/, "Tomorrow")} · {s.estimatedMinutes} min</span></span><ArrowRight className="size-4 text-fg-subtle" /></Link></li>))}</ul>) : <p className="text-sm text-fg-muted">Generate a programme to fill your week.</p>}
+          {upcoming.length ? (<ul className="grid gap-2 sm:grid-cols-2">{upcoming.slice(0, 4).map((s) => (<li key={s.id}><Link href={`/app/session/${s.id}`} className="flex items-center justify-between border border-border px-3 py-2.5 text-sm transition-colors hover:border-border-strong hover:bg-surface-2"><span><span className="block font-medium">{s.name}</span><span className="text-xs text-fg-subtle">{whenLabel(s.scheduledOn, todayIso).replace(/^tomorrow$/, "Tomorrow")} · {s.estimatedMinutes} min</span></span><ArrowRight className="size-4 text-fg-subtle" /></Link></li>))}</ul>) : <p className="text-sm text-fg-muted">Generate a programme to fill your week.</p>}
         </CardContent></Card>
         <div className="space-y-3">
           <ActivityLog initial={activities} />
-          {!providers.length && <Link href="/app/connected" className="block rounded-xl border border-dashed border-border-strong p-4 text-sm text-fg-muted transition-colors hover:border-ember hover:text-fg">Connect Whoop, Oura, Garmin, Fitbit, Polar or Strava and readiness calibrates itself every morning.</Link>}
+          {!providers.length && <Link href="/app/connected" className="block border border-dashed border-border-strong p-4 text-sm text-fg-muted transition-colors hover:border-ember hover:text-fg">Connect Whoop, Oura, Garmin, Fitbit, Polar or Strava and readiness calibrates itself every morning.</Link>}
         </div>
       </div>
     </AppStack>

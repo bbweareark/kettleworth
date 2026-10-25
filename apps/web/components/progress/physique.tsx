@@ -18,8 +18,7 @@ export function GrowthPanel({ growth }: { growth: Growth }) {
   const pct = ((growth.total - prev) / Math.max(1, growth.nextLevelAt - prev)) * 100;
   const reduce = useReducedMotion();
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-surface via-bg-elevated to-bg p-6 ring-1 ring-border">
-      <div aria-hidden className="pointer-events-none absolute -left-20 -top-24 size-72 rounded-full bg-ember/20 blur-3xl" />
+    <section className="relative overflow-hidden p-6 border border-rule">
       <div className="relative flex flex-wrap items-end justify-between gap-6">
         <div>
           <div className="eyebrow">Growth</div>
@@ -61,12 +60,12 @@ export function CompareSlider({ before, after }: { before: { id: string; date: s
   const [x, setX] = useState(50);
   return (
     <div className="space-y-2">
-      <div className="relative aspect-[3/4] max-h-[520px] w-full overflow-hidden rounded-3xl bg-surface-2 select-none" style={{ maxWidth: 390 }}>
+      <div className="relative aspect-[3/4] max-h-[520px] w-full overflow-hidden bg-surface-2 select-none" style={{ maxWidth: 390 }}>
         <img src={`/api/photos/${after.id}`} alt={`After, ${after.date}`} className="absolute inset-0 size-full object-cover" draggable={false} />
         <div className="absolute inset-0 overflow-hidden" style={{ width: `${x}%` }}><img src={`/api/photos/${before.id}`} alt={`Before, ${before.date}`} className="absolute inset-0 size-full max-w-none object-cover" style={{ width: `${10000 / x}%` }} draggable={false} /></div>
-        <div className="absolute inset-y-0" style={{ left: `calc(${x}% - 1px)` }}><div className="h-full w-0.5 bg-white/80 shadow-[0_0_12px_rgba(0,0,0,0.6)]" /><div className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/60 bg-black/60 px-2 py-1 text-2xs font-semibold text-white backdrop-blur">⇆</div></div>
-        <span className="absolute left-3 top-3 rounded-full bg-black/60 px-2 py-0.5 text-2xs font-semibold text-white backdrop-blur">{before.date}</span>
-        <span className="absolute right-3 top-3 rounded-full bg-ember px-2 py-0.5 text-2xs font-semibold text-ember-fg">{after.date}</span>
+        <div className="absolute inset-y-0" style={{ left: `calc(${x}% - 1px)` }}><div className="h-full w-0.5 bg-rule" /><div className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 border border-white/60 bg-black/60 px-2 py-1 text-2xs font-semibold text-white">⇆</div></div>
+        <span className="absolute left-3 top-3 bg-black/60 px-2 py-0.5 text-2xs font-semibold text-white">{before.date}</span>
+        <span className="absolute right-3 top-3 bg-ember px-2 py-0.5 text-2xs font-semibold text-ember-fg">{after.date}</span>
         <input type="range" min={2} max={98} value={x} onChange={(e) => setX(Number(e.target.value))} aria-label="Compare before and after" className="absolute inset-0 h-full w-full cursor-ew-resize opacity-0" />
       </div>
       <p className="text-xs text-fg-subtle"><TrendingUp className="mr-1 inline size-3" /> Drag to compare your first and latest front photos.</p>

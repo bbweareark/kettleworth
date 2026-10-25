@@ -10,5 +10,5 @@ export default async function Onboarding() {
   const user = await requireUser();
   const rec = await getProfile(user.id);
   if (rec?.onboardingCompletedAt) redirect("/app");
-  return <Intake initial={rec?.profile ?? null} step={rec?.onboardingStep ?? 0} name={user.name.split(" ")[0] ?? "there"} ai={aiAvailable()} />;
+  return <Intake initial={rec?.profile ?? null} step={rec?.onboardingStep ?? 0} name={user.name.split("")[0] ?? "there"} ai={aiAvailable()} />;
 }

@@ -136,7 +136,7 @@
   --kw-band-fg: #f1f2f2;
   --kw-fg: #000000;
   --kw-fg-muted: #5a5a5a;
-  --kw-fg-subtle: #8a8a8a;
+  --kw-fg-subtle: #6e6e6e; /* 4.78:1 on the sheet ground; #8a8a8a measured 3.24:1 and failed AA */
   --kw-rule: #e5e5e5;
   --kw-rule-strong: #000000;
   --kw-accent: #a8431a;
@@ -162,7 +162,7 @@
   --kw-band-fg: #0f0e12;
   --kw-fg: #f1f2f2;
   --kw-fg-muted: #a9a9ad;
-  --kw-fg-subtle: #76767c;
+  --kw-fg-subtle: #8a8a90; /* 5.60:1 on the carbon ground; #76767c measured 4.26:1 */
   --kw-rule: #2a2930;
   --kw-rule-strong: #f1f2f2;
   --kw-accent: #d98049;

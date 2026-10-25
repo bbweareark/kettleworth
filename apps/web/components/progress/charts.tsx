@@ -56,7 +56,7 @@ export function E1RMChart({ series, unit }: { series: { name: string; points: { 
       </LineChart></ResponsiveContainer></div>
       <div className="mt-2 flex flex-wrap gap-1.5" role="group" aria-label="Lifts shown">
         {ranked.map((s, i) => { const on = shown.includes(s.name); return (
-          <button key={s.name} type="button" aria-pressed={on} onClick={() => setShown((x) => (on ? x.filter((n) => n !== s.name) : [...x, s.name]))} className={cn("inline-flex h-7 max-w-full items-center gap-1.5 rounded-full px-2.5 text-xs ring-1 transition-colors", on ? "bg-white/[0.06] text-fg ring-border-strong" : "text-fg-subtle ring-border")}>
+          <button key={s.name} type="button" aria-pressed={on} onClick={() => setShown((x) => (on ? x.filter((n) => n !== s.name) : [...x, s.name]))} className={cn("inline-flex h-7 max-w-full items-center gap-1.5  px-2.5 text-xs border transition-colors", on ? "bg-rule text-fg border-rule-strong" : "text-fg-subtle border-rule")}>
             <span className="size-2 shrink-0 rounded-full" style={{ background: on ? SERIES[i % SERIES.length] : "var(--color-surface-3)" }} /><span className="truncate">{s.name}</span>
           </button>); })}
       </div>
@@ -84,11 +84,11 @@ export function VolumeCompare({ thisWeek, lastWeek }: { thisWeek: Record<string,
   // Plain bars instead of a chart library: labels never truncate, and it reads cleanly at any width.
   return (
     <div className="space-y-2.5">
-      <div className="flex justify-end gap-3 text-2xs text-fg-subtle"><span className="inline-flex items-center gap-1"><span className="size-2 rounded-full bg-ember" />This week</span><span className="inline-flex items-center gap-1"><span className="size-2 rounded-full bg-white/25" />Last week</span></div>
+      <div className="flex justify-end gap-3 text-2xs text-fg-subtle"><span className="inline-flex items-center gap-1"><span className="size-2 rounded-full bg-ember" />This week</span><span className="inline-flex items-center gap-1"><span className="size-2 rounded-full bg-rule" />Last week</span></div>
       {muscles.map((m) => { const t = thisWeek[m] ?? 0, l = lastWeek[m] ?? 0; return (
         <div key={m} className="grid grid-cols-[5.5rem_1fr_2rem] items-center gap-2">
-          <span className="truncate text-xs capitalize text-fg-muted">{m.replace(/_/g, " ")}</span>
-          <div className="space-y-1"><div className="h-2 overflow-hidden rounded-full bg-white/[0.05]"><div className="h-full rounded-full bg-ember" style={{ width: `${(t / max) * 100}%` }} /></div><div className="h-1.5 overflow-hidden rounded-full bg-white/[0.04]"><div className="h-full rounded-full bg-white/25" style={{ width: `${(l / max) * 100}%` }} /></div></div>
+          <span className="truncate text-xs capitalize text-fg-muted">{m.replace(/_/g, "")}</span>
+          <div className="space-y-1"><div className="h-2 overflow-hidden bg-rule"><div className="h-full bg-ember" style={{ width: `${(t / max) * 100}%` }} /></div><div className="h-1.5 overflow-hidden bg-rule"><div className="h-full bg-rule" style={{ width: `${(l / max) * 100}%` }} /></div></div>
           <span className="text-right text-xs tabular text-fg">{t}</span>
         </div>); })}
     </div>

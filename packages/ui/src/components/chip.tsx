@@ -9,13 +9,15 @@ export function Chip({ selected, className, children, icon, ...p }: React.Button
       type="button"
       aria-pressed={selected}
       className={cn(
-        "inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-all duration-150 ease-out-quart active:scale-[0.97]",
-        selected ? "border-ember bg-ember-soft text-fg shadow-[0_0_0_1px_var(--kw-ember)]" : "border-border bg-surface-2 text-fg-muted hover:border-border-strong hover:text-fg",
+        // Hard rectangle. Selected inverts rather than tinting, the same signal the set track and
+        // the rest-deck keys use, so one reading of "chosen" works everywhere in the app.
+        "inline-flex h-10 items-center gap-2 border px-4 text-sm font-medium transition-colors",
+        selected ? "border-fg bg-fg text-bg" : "border-rule text-fg-muted hover:border-rule-strong hover:text-fg",
         className,
       )}
       {...p}
     >
-      {selected ? <Check className="size-3.5 text-ember" aria-hidden /> : icon}
+      {selected ? <Check className="size-3.5" aria-hidden /> : icon}
       {children}
     </button>
   );

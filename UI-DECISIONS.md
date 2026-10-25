@@ -159,6 +159,67 @@ drive autoregulation on future loads and could record a false personal record.
 and a tie now reads "Level with your best". Regression test added (104 core tests).
 
 
+## App screens brought onto the DNA (Path A restyle)
+
+The landing and the session screens had been replicated against the reference pack; the rest
+of the app had only had its **fills** swept. Radius and shadow were already neutralised at the
+token layer, so `rounded-xl` and `shadow-lg` were dead class names rather than visible defects.
+What still rendered was audited and converted:
+
+| Residue | Count | Converted to |
+|---|---|---|
+| `ring-1` / `ring-2` | 72 | Hairline `border` on the same token. A ring is a soft-UI mechanism; the DNA rules |
+| `rounded-full` on bars and chips | 92 | Hard bars and hard rectangles. Dots and 1:1 tiles keep it; containers do not |
+| `bg-white/*`, `backdrop-blur` | 24 | Removed. The DNA forbids tinted and blurred surfaces |
+| `bg-*-soft` fills | 40 | Removed, or inverted to `bg-fg text-bg` where the fill meant "done" |
+| `text-amber/sky/rose/signal` | 13 | Collapsed onto the one rationed accent, or onto fill weight |
+| dead `rounded-*` class names | 146 | Deleted, so the code states what it renders |
+
+**Shared primitives were the real leverage.** `Chip` alone accounted for 83 of the pills across
+settings, library, nutrition and progress. Badge, Chip, Segmented, Tabs, Switch, Slider, Input,
+Progress, Ring, Sheet, Dialog, EmptyState and Skeleton were rebuilt: selection now **inverts**
+(`bg-fg text-bg`) everywhere, the same signal the set track and the rest-deck keys already used,
+so one reading of "chosen" works across the whole app.
+
+**Badge tone** no longer invents five hues. It carries meaning in fill weight: outline for
+neutral, solid foreground for positive, accent fill for highlight, accent outline for caution,
+double accent rule for negative.
+
+### Two composition changes, not restyles
+
+- **Macro rings became ruled bars.** Three concentric arcs in three hues were the soft-UI motif
+  the DNA exists to avoid, and they laid low-contrast strokes over a photograph. Now one
+  dominant calorie figure over three hard bars, told apart by label.
+- **The nutrition photograph became its own 1:1 cell.** Small grey type over the image measured
+  **3.7:1 at the scrim's weakest point** even after the scrim was strengthened, under the 4.5
+  the gate requires. The reference frames images 1:1 and unframed, so the figures moved onto
+  the ground and the photo stands on its own, below the numbers on a phone.
+
+### Accessibility defect found by this pass
+
+`--color-fg-subtle` was `#8a8a8a`, which is **3.24:1 on the sheet ground** and fails AA for the
+small uppercase labels it is used on throughout the app. Now `#6e6e6e` (4.78:1); the carbon
+theme went `#76767c` to `#8a8a90` (4.26:1 to 5.60:1).
+
+### Correctness defect found by this pass
+
+The community leaderboard threw on every load: the capped-drill subquery added earlier in this
+session selected and grouped by `restActivity.userId` while its `FROM` was the aliased subquery,
+so Drizzle refused the query with "the table rest_activity is not part of the query". The page
+had never been opened after that change. The outer query now addresses the subquery's own
+columns. **This was live on production.**
+
+### Verified
+
+Nine screens at 390px, 768px and 1440px: zero rounded containers over 8px, zero shadows, zero
+backdrop blur, no horizontal scroll, no page errors. Carbon theme measured separately
+(`bg #0f0e12`, `fg #f1f2f2`), equally clean. 104 core tests, typecheck, production build and
+both Playwright projects pass.
+
+**Stale test corrected, not masked:** the core-flow spec asserted the commit button reads
+"Update set" after logging. Logging advances focus to the next set, so it reads "Log set"; the
+spec now asserts the set track recorded the set, which is the stronger check.
+
 ## Replication score: 8/10
 
 Scored by comparing `design/refs/ours-landing/blueprint.md` against

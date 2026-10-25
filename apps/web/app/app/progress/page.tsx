@@ -29,7 +29,7 @@ export default async function Progress() {
     <AppStack>
       <div><p className="eyebrow">Progress</p><h1 className="font-display text-3xl tracking-tighter md:text-4xl">The numbers behind the work.</h1></div>
       <GrowthPanel growth={phys.growth} />
-      <div className="grid grid-cols-2 divide-x divide-border rounded-2xl ring-1 ring-border sm:grid-cols-4">
+      <div className="grid grid-cols-2 divide-x divide-border border border-rule sm:grid-cols-4">
         <div className="p-4"><Stat label="Sessions" value={p.completedSessions} /></div>
         <div className="p-4"><Stat label="Week streak" value={p.streakWeeks} hint={p.streakWeeks ? "Keep it alive" : "Start one"} /></div>
         <div className="p-4"><Stat label="Volume this week" value={w(p.tonnageThisWeek) ?? 0} unit={u} delta={p.tonnageLastWeek ? `${w(p.tonnageLastWeek)} ${u} last week` : undefined} /></div>
@@ -43,7 +43,7 @@ export default async function Progress() {
         <div className="flex flex-wrap items-end justify-between gap-3"><div><div className="eyebrow">This week</div><h2 className="font-display text-2xl tracking-tighter">Where the work went.</h2></div><p className="max-w-sm text-xs text-fg-subtle">Working sets per muscle group from completed sessions. Lit means trained this week.</p></div>
         <MuscleGrid setsByMuscle={p.volumeThisWeek} lastWeek={p.volumeLastWeek} sex={rec.profile.sex ?? null} />
       </section>
-      <section className="relative space-y-6 overflow-hidden rounded-3xl p-6 ring-1 ring-border">
+      <section className="relative space-y-6 overflow-hidden p-6 border border-rule">
         <img src={genderedArt("progress", rec.profile.sex)} alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-70" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-bg)_70%,transparent)_0%,var(--color-bg)_55%)]" />
         <div className="flex flex-wrap items-end justify-between gap-3"><div><div className="eyebrow">Physique</div><h2 className="font-display text-2xl tracking-tighter">What the mirror can't measure.</h2></div><p className="max-w-sm text-xs text-fg-subtle">Photo reads are smoothed against your weigh-ins so a change in lighting never looks like a change in you.</p></div>
         <div className={phys.compare ? "grid gap-8 lg:grid-cols-[minmax(0,390px)_1fr]" : ""}>

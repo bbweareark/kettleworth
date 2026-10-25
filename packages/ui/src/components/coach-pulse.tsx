@@ -22,7 +22,7 @@ export function CoachPulse({ items, interval = 5200, className, label = "Coach",
   return (
     <div className={cn("flex min-w-0 items-center gap-4 py-2", className)} role="status" aria-live="polite">
       <span aria-hidden className="relative grid shrink-0 place-items-center" style={{ width: size, height: size }}>
-        {avatar ? <img src={avatar} alt="" className="size-9 rounded-full object-cover ring-1 ring-border" /> : <BrandSeal size={36} />}
+        {avatar ? <img src={avatar} alt="" className="size-9 rounded-full object-cover border border-rule" /> : <BrandSeal size={36} />}
         {items.length > 1 && !reduce ? (
           <svg className="absolute inset-0 -rotate-90" viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
             <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="currentColor" strokeWidth="1" className="text-white/[0.07]" />
@@ -56,7 +56,7 @@ export function CountUp({ value, duration = 900, className, decimals = 0 }: { va
 export function Sparkline({ points, className, tone = "ember" }: { points: number[]; className?: string; tone?: "ember" | "signal" | "sky" | "amber" }) {
   if (points.length < 2) return null;
   const w = 96, h = 28, max = Math.max(...points), min = Math.min(...points);
-  const d = points.map((p, i) => `${(i / (points.length - 1)) * w},${h - ((p - min) / Math.max(1e-6, max - min)) * (h - 4) - 2}`).join(" ");
+  const d = points.map((p, i) => `${(i / (points.length - 1)) * w},${h - ((p - min) / Math.max(1e-6, max - min)) * (h - 4) - 2}`).join("");
   const color = { ember: "var(--color-ember)", signal: "var(--color-signal)", sky: "var(--color-sky)", amber: "var(--color-amber)" }[tone];
   return (<svg viewBox={`0 0 ${w} ${h}`} width={w} height={h} className={cn("overflow-visible", className)} aria-hidden><polyline points={d} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><circle cx={w} cy={h - ((points[points.length - 1]! - min) / Math.max(1e-6, max - min)) * (h - 4) - 2} r="2.5" fill={color} /></svg>);
 }

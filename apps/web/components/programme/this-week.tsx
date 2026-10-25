@@ -15,31 +15,31 @@ export function ThisWeek({ sessions, todayIso, openMissedId }: { sessions: Sess[
   const days = Array.from({ length: 7 }, (_, i) => addDays(monday, i));
   const nextId = sessions.find((s) => s.scheduledOn > todayIso && s.status === "planned")?.id;
   return (
-    <section className="rounded-3xl p-4 ring-1 ring-border sm:p-5" aria-label="This week">
+    <section className="p-4 border border-rule sm:p-5" aria-label="This week">
       <div className="mb-3 flex items-baseline justify-between gap-2"><h2 className="font-display text-lg tracking-tight">This week</h2><span className="text-xs text-fg-subtle">Tap a day to see or start it</span></div>
       <ol className="space-y-2">
         {days.map((day) => {
           const list = sessions.filter((s) => s.scheduledOn === day);
           const dayName = day === todayIso ? "Today" : WEEKDAY[new Date(`${day}T12:00:00Z`).getUTCDay()]!;
           if (!list.length) return (
-            <li key={day} className={cn("flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-fg-subtle", day === todayIso && "bg-white/[0.03] ring-1 ring-border")}>
+            <li key={day} className={cn("flex items-center gap-3 px-3 py-2 text-sm text-fg-subtle", day === todayIso && "bg-rule border border-rule")}>
               <span className="text-2xs font-medium uppercase tracking-label">{dayName}</span><Moon className="size-3.5" /> Rest
             </li>
           );
           return list.map((s) => {
-            const status = s.status === "completed" ? { t: "Done", c: "text-signal bg-signal-soft" }
-              : s.status === "skipped" ? { t: "Skipped", c: "text-fg-subtle bg-white/[0.05]" }
-              : s.status === "in_progress" ? { t: "In progress", c: "text-ember bg-ember-soft" }
+            const status = s.status === "completed" ? { t: "Done", c: "text-fg bg-fg text-bg" }
+              : s.status === "skipped" ? { t: "Skipped", c: "text-fg-subtle bg-rule" }
+              : s.status === "in_progress" ? { t: "In progress", c: "text-ember " }
               : day === todayIso ? { t: "Today", c: "text-bg bg-ember" }
-              : day < todayIso ? { t: "Missed", c: s.id === openMissedId ? "text-amber bg-amber-soft" : "text-fg-subtle bg-white/[0.05]" }
-              : s.id === nextId ? { t: "Up next", c: "text-fg bg-white/10" } : null;
+              : day < todayIso ? { t: "Missed", c: s.id === openMissedId ? "text-ember " : "text-fg-subtle bg-rule" }
+              : s.id === nextId ? { t: "Up next", c: "text-fg bg-rule" } : null;
             const muted = s.status === "completed" || s.status === "skipped" || (day < todayIso && s.id !== openMissedId);
             return (
               <li key={s.id}>
-                <Link href={`/app/session/${s.id}`} className={cn("group block rounded-xl p-3 ring-1 transition-colors hover:bg-white/[0.04]", day === todayIso || s.id === nextId || s.id === openMissedId ? "bg-white/[0.03] ring-border-strong" : "ring-border")}>
+                <Link href={`/app/session/${s.id}`} className={cn("group block p-3 border transition-colors hover:bg-rule", day === todayIso || s.id === nextId || s.id === openMissedId ? "bg-rule border-rule-strong" : "border-rule")}>
                   <div className="flex items-center gap-2">
                     <span className="text-2xs font-medium uppercase tracking-label text-fg-subtle">{dayName}</span>
-                    {status ? <span className={cn("inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-2xs font-medium uppercase tracking-label", status.c)}>{s.status === "completed" ? <Check className="size-3" /> : null}{status.t}</span> : null}
+                    {status ? <span className={cn("inline-flex shrink-0 items-center gap-1 whitespace-nowrap  px-2 py-0.5 text-2xs font-medium uppercase tracking-label", status.c)}>{s.status === "completed" ? <Check className="size-3" /> : null}{status.t}</span> : null}
                     <span className="ml-auto whitespace-nowrap text-xs text-fg-subtle">{s.estimatedMinutes} min</span>
                     <ChevronRight className="size-4 shrink-0 text-fg-subtle group-hover:text-fg" />
                   </div>

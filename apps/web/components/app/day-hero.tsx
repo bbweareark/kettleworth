@@ -19,7 +19,7 @@ function UpNext({ next, todayIso, train }: { next: Next; todayIso: string; train
   if (!next) return <p className="text-sm text-white/70">That was the last session of this block.</p>;
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <Link href={`/app/session/${next.id}`} className="group inline-flex items-center gap-3 rounded-2xl bg-black/35 px-4 py-3 ring-1 ring-border-strong backdrop-blur transition-colors hover:bg-black/50">
+      <Link href={`/app/session/${next.id}`} className="group inline-flex items-center gap-3 bg-black/35 px-4 py-3 border border-rule-strong transition-colors hover:bg-black/50">
         <span><span className="block text-2xs uppercase tracking-label text-white/60">Up next · {whenLabel(next.scheduledOn, todayIso)}</span><span className="block font-display text-lg tracking-tight text-white">{next.name}</span></span>
         <span className="inline-flex items-center gap-1 text-sm text-white/70 group-hover:text-white">Preview <ChevronRight className="size-4" /></span>
       </Link>
@@ -32,19 +32,19 @@ function UpNext({ next, todayIso, train }: { next: Next; todayIso: string; train
 export function DoneHero({ name, art, summary, next, todayIso, unit }: { name: string; art: string; summary: { sets: number; volumeKg: number; minutes: number | null; records: number } | null; next: Next; todayIso: string; unit: "kg" | "lb" }) {
   const vol = summary ? (unit === "kg" ? summary.volumeKg : Math.round(summary.volumeKg * 2.20462)) : 0;
   return (
-    <section className="relative overflow-hidden rounded-3xl ring-1 ring-border" aria-label="Today's session is done">
+    <section className="relative overflow-hidden border border-rule" aria-label="Today's session is done">
       <img src={art} alt="" aria-hidden className="absolute inset-0 size-full object-cover opacity-60 grayscale-[35%]" />
       <div aria-hidden className="absolute inset-0 bg-[linear-gradient(100deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_80%,transparent)_55%,color-mix(in_oklch,var(--color-bg)_45%,transparent)_100%)]" />
       <div className="relative space-y-6 p-6 md:p-8">
         <div>
-          <span className="inline-flex items-center gap-1.5 text-2xs uppercase tracking-label text-signal"><Check className="size-3.5" /> Done for today</span>
+          <span className="inline-flex items-center gap-1.5 text-2xs uppercase tracking-label text-fg"><Check className="size-3.5" /> Done for today</span>
           <h2 className="mt-2 font-display text-4xl leading-[0.95] tracking-tightest md:text-5xl">{name}, done.</h2>
           <p className="mt-2 max-w-md text-sm text-fg-muted">The work is in. Eat, sleep, and let it turn into strength.</p>
         </div>
         {summary ? (
           <dl className="grid max-w-lg grid-cols-2 gap-3 sm:grid-cols-4">
             {[["Sets", String(summary.sets)], [`Volume · ${unit}`, vol.toLocaleString("en-GB")], ["Minutes", summary.minutes != null ? String(summary.minutes) : "-"], ["Records", String(summary.records)]].map(([l, v]) => (
-              <div key={l} className="rounded-2xl px-3 py-2.5 ring-1 ring-border"><dt className="text-2xs uppercase tracking-label text-fg-subtle">{l}</dt><dd className="mt-0.5 flex items-center gap-1.5 font-display text-2xl tabular tracking-tight">{l === "Records" && summary.records > 0 ? <Trophy className="size-4 text-ember" /> : null}{v}</dd></div>
+              <div key={l} className="px-3 py-2.5 border border-rule"><dt className="text-2xs uppercase tracking-label text-fg-subtle">{l}</dt><dd className="mt-0.5 flex items-center gap-1.5 font-display text-2xl tabular tracking-tight">{l === "Records" && summary.records > 0 ? <Trophy className="size-4 text-ember" /> : null}{v}</dd></div>
             ))}
           </dl>
         ) : null}
@@ -57,12 +57,12 @@ export function DoneHero({ name, art, summary, next, todayIso, unit }: { name: s
 /** Nothing scheduled today: rest is part of the plan. A session missed earlier in the week is offered, never forced. */
 export function RestHero({ art, next, missed, todayIso }: { art: string; next: Next; missed?: { id: string; name: string; scheduledOn: string } | null; todayIso: string }) {
   return (
-    <section className="relative overflow-hidden rounded-3xl ring-1 ring-border" aria-label="Rest day">
+    <section className="relative overflow-hidden border border-rule" aria-label="Rest day">
       <img src={art} alt="" aria-hidden className="absolute inset-0 size-full object-cover opacity-50 grayscale-[45%]" />
       <div aria-hidden className="absolute inset-0 bg-[linear-gradient(100deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_82%,transparent)_55%,color-mix(in_oklch,var(--color-bg)_50%,transparent)_100%)]" />
       <div className="relative space-y-5 p-6 md:p-8">
         <div>
-          <span className="inline-flex items-center gap-1.5 text-2xs uppercase tracking-label text-sky"><Moon className="size-3.5" /> Rest day</span>
+          <span className="inline-flex items-center gap-1.5 text-2xs uppercase tracking-label text-fg"><Moon className="size-3.5" /> Rest day</span>
           <h2 className="mt-2 font-display text-4xl leading-[0.95] tracking-tightest md:text-5xl">No session today.</h2>
           <p className="mt-2 max-w-md text-sm text-fg-muted">{next ? `Next up is ${next.name}, ${whenLabel(next.scheduledOn, todayIso)}.` : "Your block is nearly done."} Muscle is built between sessions: walk, eat well, sleep early.</p>
         </div>

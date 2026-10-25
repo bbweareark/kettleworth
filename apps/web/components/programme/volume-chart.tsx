@@ -1,7 +1,7 @@
 "use client";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 export function VolumeChart({ data }: { data: Record<string, number> }) {
-  const rows = Object.entries(data).map(([m, sets]) => ({ muscle: m.replace(/_/g, " "), sets })).sort((a, b) => b.sets - a.sets).slice(0, 10);
+  const rows = Object.entries(data).map(([m, sets]) => ({ muscle: m.replace(/_/g, ""), sets })).sort((a, b) => b.sets - a.sets).slice(0, 10);
   if (!rows.length) return <p className="text-sm text-fg-subtle">No volume data.</p>;
   return (
     <div className="h-56">

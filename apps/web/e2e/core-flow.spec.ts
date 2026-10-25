@@ -78,5 +78,7 @@ test("sign up → intake → programme → session logging", async ({ page }) =>
   await console_.getByRole("radio", { name: "Right" }).click();
   await console_.getByRole("button", { name: /^(Log set|Update set)$/ }).click();
   await expect(page.getByRole("timer")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Update set" }).first()).toBeVisible();
+  // Logging advances the focus to the next set, so the commit button reads "Log set" again.
+  // Assert the set track recorded the one just logged, which is the stronger check anyway.
+  await expect(console_.getByRole("button", { name: /^set 1/i })).toContainText("×");
 });

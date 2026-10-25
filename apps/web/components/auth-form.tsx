@@ -40,7 +40,7 @@ export function AuthForm({ mode, providers }: { mode: "sign-in" | "sign-up"; pro
   }
 
   if (magicSent) return (
-    <div className="surface rounded-2xl p-6 text-center">
+    <div className="surface p-6 text-center">
       <h1 className="font-display text-xl">Check your email</h1>
       <p className="mt-2 text-sm text-fg-muted">We sent a sign-in link to <span className="text-fg">{email}</span>. It expires in 15 minutes.</p>
       <p className="mt-4 text-xs text-fg-subtle">Running locally without an email provider? The link is printed in the server console.</p>

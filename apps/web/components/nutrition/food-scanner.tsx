@@ -63,19 +63,19 @@ export function BarcodeScanner({ onProduct, onClose }: { onProduct: (p: Product)
 
   return (
     <div className="space-y-3">
-      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-black ring-1 ring-border-strong">
+      <div className="relative aspect-[4/3] overflow-hidden bg-black border border-rule-strong">
         <video ref={video} playsInline muted className={cn("size-full object-cover", state !== "scanning" && "opacity-30")} />
         {state === "scanning" ? (
           <div aria-hidden className="pointer-events-none absolute inset-0 grid place-items-center">
-            <div className="relative h-28 w-3/4 rounded-xl ring-2 ring-white/70">
-              <div className="absolute inset-x-3 top-1/2 h-0.5 -translate-y-1/2 animate-pulse rounded-full bg-ember shadow-[0_0_16px_var(--color-ember)]" />
+            <div className="relative h-28 w-3/4 border-2 border-fg">
+              <div className="absolute inset-x-3 top-1/2 h-0.5 -translate-y-1/2 animate-pulse bg-ember" />
             </div>
           </div>
         ) : null}
         <div className="absolute inset-x-0 bottom-0 p-3 text-center text-sm text-white/80">
           {state === "starting" ? "Opening the camera" : state === "scanning" ? "Hold the barcode inside the frame" : state === "looking" ? <span className="inline-flex items-center gap-2"><Loader2 className="size-4 animate-spin" /> Looking it up</span> : state === "denied" ? "Camera access was declined. Type the number instead." : "Type the number under the barcode."}
         </div>
-        <button type="button" onClick={() => { stop.current(); onClose(); }} aria-label="Close scanner" className="absolute right-2 top-2 grid size-9 place-items-center rounded-full bg-black/50 text-white backdrop-blur"><X className="size-4" /></button>
+        <button type="button" onClick={() => { stop.current(); onClose(); }} aria-label="Close scanner" className="absolute right-2 top-2 grid size-9 place-items-center bg-black/50 text-white"><X className="size-4" /></button>
       </div>
       <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); if (code.replace(/\D/g, "").length >= 8) { handled.current = false; lookup(code); } }}>
         <div className="relative flex-1"><Keyboard className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" /><Input inputMode="numeric" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Or type the barcode number" className="pl-9" aria-label="Barcode number" /></div>
@@ -94,27 +94,27 @@ export function ProductCard({ product, busy, onLog, onCancel }: { product: Produ
   const qty = mode === "serving" && serving ? serving * servings : amount;
   const k = qty / 100;
   const m = { calories: Math.round(product.per100.calories * k), proteinG: Math.round(product.per100.proteinG * k * 10) / 10, carbsG: Math.round(product.per100.carbsG * k * 10) / 10, fatG: Math.round(product.per100.fatG * k * 10) / 10, fibreG: Math.round(product.per100.fibreG * k * 10) / 10 };
-  const brandShort = product.brand?.replace(/\b(services|limited|ltd|plc|inc|sa\/nv|sa|nv|gmbh|llc|uk|group|company|co)\b\.?/gi, "").replace(/\s+/g, " ").trim() ?? "";
+  const brandShort = product.brand?.replace(/\b(services|limited|ltd|plc|inc|sa\/nv|sa|nv|gmbh|llc|uk|group|company|co)\b\.?/gi, "").replace(/\s+/g, "").trim() ?? "";
   const label = brandShort && !product.name.toLowerCase().includes(brandShort.toLowerCase()) ? `${brandShort} ${product.name}` : product.name;
   return (
-    <div className="space-y-4 rounded-2xl p-4 ring-1 ring-border">
+    <div className="space-y-4 p-4 border border-rule">
       <div className="flex items-start gap-3">
-        {product.imageUrl ? <img src={product.imageUrl} alt="" className="size-16 shrink-0 rounded-xl bg-white object-contain p-1" /> : <div className="grid size-16 shrink-0 place-items-center rounded-xl bg-white/[0.05]"><ScanBarcode className="size-6 text-fg-subtle" /></div>}
+        {product.imageUrl ? <img src={product.imageUrl} alt="" className="size-16 shrink-0 bg-white object-contain p-1" /> : <div className="grid size-16 shrink-0 place-items-center bg-rule"><ScanBarcode className="size-6 text-fg-subtle" /></div>}
         <div className="min-w-0 flex-1">
-          <div className="text-2xs uppercase tracking-label text-signal">From the label</div>
+          <div className="text-2xs uppercase tracking-label text-fg">From the label</div>
           <div className="truncate font-display text-lg tracking-tight">{product.name}</div>
           <div className="text-xs text-fg-subtle">{product.brand ?? "Unknown brand"} · {product.per100.calories} kcal per 100 {product.unit}{product.servingLabel ? ` · serving ${product.servingLabel}` : ""}</div>
         </div>
       </div>
       <div className="flex flex-wrap items-end gap-3">
-        {serving ? <div className="inline-flex rounded-full bg-white/[0.04] p-1 ring-1 ring-border">{(["serving", "amount"] as const).map((x) => <button key={x} type="button" onClick={() => setMode(x)} className={cn("h-8 rounded-full px-3 text-sm", mode === x ? "bg-fg text-bg" : "text-fg-muted")}>{x === "serving" ? "Servings" : product.unit === "ml" ? "Millilitres" : "Grams"}</button>)}</div> : null}
+        {serving ? <div className="inline-flex bg-rule p-1 border border-rule">{(["serving", "amount"] as const).map((x) => <button key={x} type="button" onClick={() => setMode(x)} className={cn("h-8  px-3 text-sm", mode === x ? "bg-fg text-bg" : "text-fg-muted")}>{x === "serving" ? "Servings" : product.unit === "ml" ? "Millilitres" : "Grams"}</button>)}</div> : null}
         {mode === "serving" && serving ? (
-          <div className="flex gap-1">{[0.5, 1, 1.5, 2, 3].map((s) => <button key={s} type="button" onClick={() => setServings(s)} className={cn("h-9 min-w-10 rounded-full px-3 text-sm tabular ring-1", servings === s ? "bg-ember text-ember-fg ring-ember" : "text-fg-muted ring-border-strong")}>{s}</button>)}</div>
+          <div className="flex gap-1">{[0.5, 1, 1.5, 2, 3].map((s) => <button key={s} type="button" onClick={() => setServings(s)} className={cn("h-9 min-w-10  px-3 text-sm tabular border", servings === s ? "bg-ember text-ember-fg ring-ember" : "text-fg-muted border-rule-strong")}>{s}</button>)}</div>
         ) : (
           <label className="flex items-center gap-2 text-sm"><Input inputMode="decimal" value={String(amount)} onChange={(e) => setAmount(Math.max(0, Number(e.target.value.replace(/[^0-9.]/g, "")) || 0))} className="h-9 w-24" aria-label={`Amount in ${product.unit}`} />{product.unit}</label>
         )}
       </div>
-      <div className="grid grid-cols-4 gap-2 text-center">{[["kcal", m.calories], ["protein", m.proteinG], ["carbs", m.carbsG], ["fat", m.fatG]].map(([l, v]) => <div key={l as string} className="rounded-xl bg-white/[0.04] py-2"><div className="font-display text-lg tabular">{v}</div><div className="text-[10px] uppercase tracking-wider text-fg-subtle">{l}</div></div>)}</div>
+      <div className="grid grid-cols-4 gap-2 text-center">{[["kcal", m.calories], ["protein", m.proteinG], ["carbs", m.carbsG], ["fat", m.fatG]].map(([l, v]) => <div key={l as string} className="bg-rule py-2"><div className="font-display text-lg tabular">{v}</div><div className="text-[10px] uppercase tracking-wider text-fg-subtle">{l}</div></div>)}</div>
       {product.per100.sugarG != null && product.per100.sugarG * k >= 1 ? <p className="text-xs text-fg-subtle">Includes {Math.round(product.per100.sugarG * k)} g sugar.</p> : null}
       <div className="flex justify-between gap-2"><Button variant="ghost" onClick={onCancel}>Scan another</Button><Button loading={busy} disabled={qty <= 0} onClick={() => onLog(qty, m, `${label}, ${Math.round(qty)} ${product.unit}`)}>Log {m.calories} kcal</Button></div>
     </div>
@@ -137,8 +137,8 @@ export function PhotoButton({ busy, onPhoto }: { busy: boolean; onPhoto: (f: Fil
   return (
     <>
       <input ref={input} type="file" accept="image/*" capture="environment" className="sr-only" aria-label="Photograph your food" onChange={(e) => { const f = e.target.files?.[0]; if (f) onPhoto(f); e.target.value = ""; }} />
-      <button type="button" disabled={busy} onClick={() => input.current?.click()} className="group relative flex min-h-36 flex-col items-start justify-end overflow-hidden rounded-2xl bg-[linear-gradient(140deg,color-mix(in_oklch,var(--color-ember)_22%,transparent),transparent_70%)] p-4 text-left ring-1 ring-ember/25 transition-transform active:scale-[0.99] disabled:opacity-60">
-        <div className="mb-auto grid size-11 place-items-center rounded-xl bg-ember-soft">{busy ? <Loader2 className="size-5 animate-spin text-ember" /> : <Camera className="size-5 text-ember" />}</div>
+      <button type="button" disabled={busy} onClick={() => input.current?.click()} className="group relative flex min-h-36 flex-col items-start justify-end overflow-hidden bg-[linear-gradient(140deg,color-mix(in_oklch,var(--color-ember)_22%,transparent),transparent_70%)] p-4 text-left border border-ember transition-transform active:scale-[0.99] disabled:opacity-60">
+        <div className="mb-auto grid size-11 place-items-center">{busy ? <Loader2 className="size-5 animate-spin text-ember" /> : <Camera className="size-5 text-ember" />}</div>
         <div className="mt-4 font-display text-lg tracking-tight">{busy ? "Reading your plate" : "Photograph your plate"}</div>
         <div className="text-xs text-fg-muted">{busy ? "Identifying each item and its portion" : "Every item and portion, itemised"}</div>
         <ImagePlus aria-hidden className="absolute -right-3 -top-3 size-24 text-white/[0.03]" />

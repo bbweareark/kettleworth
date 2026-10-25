@@ -1,7 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
 
-export const inputClass = "flex h-11 w-full rounded-md border border-border bg-surface-2 px-3.5 text-base text-fg placeholder:text-fg-subtle transition-colors focus:border-ember focus:bg-surface focus:outline-none focus:ring-2 focus:ring-ember/30 disabled:opacity-50 tabular";
+export const inputClass = "flex h-11 w-full border border-rule bg-bg px-3.5 text-base text-fg placeholder:text-fg-subtle transition-colors focus:border-ember focus:outline-none focus:ring-2 focus:ring-ember disabled:opacity-50 tabular";
 
 export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(({ className, ...props }, ref) => (
   <input ref={ref} className={cn(inputClass, className)} {...props} />
@@ -29,7 +29,7 @@ export function Field({ label, hint, error, children, className }: { label: stri
   return (
     <div className={cn("space-y-1", className)}>
       {isControl ? <label className="block">{text}{children}</label> : <div role="group" aria-labelledby={id}>{text}{children}</div>}
-      {error ? <p className="text-xs text-rose">{error}</p> : hint ? <p className="text-xs text-fg-subtle">{hint}</p> : null}
+      {error ? <p className="text-xs text-ember">{error}</p> : hint ? <p className="text-xs text-fg-subtle">{hint}</p> : null}
     </div>
   );
 }

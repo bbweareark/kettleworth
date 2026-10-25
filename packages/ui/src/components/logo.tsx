@@ -58,13 +58,13 @@ export function Wordmark({ capHeight = 12, className, title }: { capHeight?: num
     <svg
       width={w}
       height={h}
-      viewBox={"0 0 " + WORD_VB.w + " " + WORD_VB.h}
+      viewBox={"0 0 " + WORD_VB.w + "" + WORD_VB.h}
       className={cn("shrink-0", className)}
       aria-hidden={title ? undefined : true}
       role={title ? "img" : undefined}
     >
       {title ? <title>{title}</title> : null}
-      <path transform={"translate(" + WORD_VB.dx + " " + WORD_VB.dy + ")"} fill="currentColor" d={WORD_D} />
+      <path transform={"translate(" + WORD_VB.dx + "" + WORD_VB.dy + ")"} fill="currentColor" d={WORD_D} />
     </svg>
   );
 }

@@ -40,10 +40,10 @@ export function Intake({ initial, step, name, ai }: { initial: TrainingProfile |
       case "body": return `${p.heightCm ? Math.round(p.heightCm) + " cm" : "no height"}, ${p.weightKg ? round(p.weightKg, 1) + " kg" : "no weight"}${p.bodyFatPct ? `, ~${p.bodyFatPct}% body fat` : ""}.`;
       case "experience": return `${p.experience}.`;
       case "goals": return `${(p.goals ?? []).map((g) => GOALS.find((x) => x.v === g)?.l).join(", ")}; main goal ${GOALS.find((x) => x.v === p.primaryGoal)?.l ?? "-"} over ${p.timelineWeeks} weeks.`;
-      case "schedule": return `${p.daysPerWeek} days a week, ${p.sessionMinutes} minutes${p.preferredTime ? `, ${p.preferredTime.replace("_", " ")}` : ""}.`;
+      case "schedule": return `${p.daysPerWeek} days a week, ${p.sessionMinutes} minutes${p.preferredTime ? `, ${p.preferredTime.replace("_", "")}` : ""}.`;
       case "environment": return `${p.environment}${p.environment !== "gym" ? `: ${(p.equipment ?? []).length ? p.equipment!.join(", ") : "bodyweight only"}` : ""}.`;
       case "styles": return `${(p.styles ?? []).length ? p.styles!.join(", ") : "no strong preference"}${(p.hatedExerciseIds ?? []).length ? `; never: ${p.hatedExerciseIds!.join(", ")}` : ""}.`;
-      case "injuries": return (p.injuries ?? []).length || (p.medicalFlags ?? []).length ? `${(p.injuries ?? []).map((x) => `${x.severity} ${x.region.replace("_", " ")}`).join(", ")}${(p.medicalFlags ?? []).length ? `; flags: ${p.medicalFlags!.join(", ")}` : ""}.` : "Nothing to work around.";
+      case "injuries": return (p.injuries ?? []).length || (p.medicalFlags ?? []).length ? `${(p.injuries ?? []).map((x) => `${x.severity} ${x.region.replace("_", "")}`).join(", ")}${(p.medicalFlags ?? []).length ? `; flags: ${p.medicalFlags!.join(", ")}` : ""}.` : "Nothing to work around.";
       case "lifestyle": return `${p.sleepHours ?? "?"} h sleep, stress ${p.stressLevel ?? "?"}/5.`;
       case "diet": return `${p.dietType}${(p.allergens ?? []).length ? `, avoiding ${p.allergens!.join(", ")}` : ""}.`;
       case "food": return `${(p.dislikedFoods ?? []).length ? `no ${p.dislikedFoods!.join(", ")}; ` : ""}${p.cookingMinutes} min cooking, ${p.budgetTier} budget.`;
@@ -120,8 +120,8 @@ export function Intake({ initial, step, name, ai }: { initial: TrainingProfile |
         <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.15)_0%,rgba(0,0,0,0.05)_35%,var(--color-bg)_100%)] lg:bg-[linear-gradient(180deg,rgba(0,0,0,0.25)_0%,rgba(0,0,0,0)_40%,rgba(0,0,0,0.6)_100%)]" />
         <div aria-hidden className="absolute inset-y-0 right-0 hidden w-32 bg-[linear-gradient(90deg,transparent,var(--color-bg))] lg:block" />
         <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5 lg:p-8">
-          <ol className="flex items-center gap-1.5" aria-label="Chapters">{CHAPTERS.map((c, k) => <li key={c} className={cn("h-1 rounded-full transition-all", k < chapterIdx ? "w-6 bg-ember" : k === chapterIdx ? "w-10 bg-fg" : "w-3 bg-white/25")} title={c} />)}</ol>
-          <div className="flex items-center gap-3"><AnimatePresence mode="popLayout" initial={false}><motion.span key={earned} initial={reduce ? false : { opacity: 0, y: 8, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8 }} className="rounded-full bg-black/40 px-2.5 py-1 text-2xs uppercase tracking-label text-ember backdrop-blur" title="Showing up counts: every answered step earns Growth">{earned} Growth</motion.span></AnimatePresence><span className="text-2xs uppercase tracking-label text-white/70">{Math.min(i + 1, STEPS.length)} / {STEPS.length}</span></div>
+          <ol className="flex items-center gap-1.5" aria-label="Chapters">{CHAPTERS.map((c, k) => <li key={c} className={cn("h-1 transition-all", k < chapterIdx ? "w-6 bg-ember" : k === chapterIdx ? "w-10 bg-fg" : "w-3 bg-rule")} title={c} />)}</ol>
+          <div className="flex items-center gap-3"><AnimatePresence mode="popLayout" initial={false}><motion.span key={earned} initial={reduce ? false : { opacity: 0, y: 8, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8 }} className="bg-black/40 px-2.5 py-1 text-2xs uppercase tracking-label text-ember" title="Showing up counts: every answered step earns Growth">{earned} Growth</motion.span></AnimatePresence><span className="text-2xs uppercase tracking-label text-white/70">{Math.min(i + 1, STEPS.length)} / {STEPS.length}</span></div>
         </div>
         <div className="absolute inset-x-0 bottom-0 p-5 lg:p-10">
           <AnimatePresence mode="wait" initial={false}>
@@ -137,12 +137,12 @@ export function Intake({ initial, step, name, ai }: { initial: TrainingProfile |
       {/* The conversation */}
       <div className="relative mx-auto w-full max-w-2xl px-4 pb-24 pt-6 md:px-8 lg:pt-16">
         <div className="space-y-4">
-          {turns.slice(-4).map((t, k) => (<div key={k} className={cn("max-w-[85%] rounded-2xl px-4 py-2.5 text-sm", t.role === "coach" ? "bg-surface-2 text-fg-muted" : "ml-auto bg-ember-soft text-fg")}>{t.text}</div>))}
+          {turns.slice(-4).map((t, k) => (<div key={k} className={cn("max-w-[85%] px-4 py-2.5 text-sm", t.role === "coach" ? "bg-surface-2 text-fg-muted" : "ml-auto  text-fg")}>{t.text}</div>))}
           <AnimatePresence mode="wait">
             <motion.div key={followUp ? "follow" : stepDef.id} {...anim} className="space-y-5">
               <div className="flex items-start gap-3"><BrandSeal size={36} className="mt-0.5 shrink-0" /><Typed key={followUp ? followUp.question : coachLine} text={followUp ? followUp.question : coachLine} reduce={!!reduce} className="pt-1.5 font-display text-lg leading-snug tracking-tight text-fg md:text-xl" /></div>
               {thinking ? <div className="ml-11 flex gap-1 px-2 py-2" aria-label="Coach is thinking"><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle" /><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle [animation-delay:150ms]" /><span className="size-1.5 animate-pulse-soft rounded-full bg-fg-subtle [animation-delay:300ms]" /></div> : null}
-              <div className="rounded-3xl p-5 ring-1 ring-border backdrop-blur md:p-6">
+              <div className="p-5 border border-rule md:p-6">
                 <div className="space-y-5">
                   {followUp ? (
                     <>
@@ -154,7 +154,7 @@ export function Intake({ initial, step, name, ai }: { initial: TrainingProfile |
                       <StepBody id={stepDef.id} p={p} set={set} baseline={baseline} />
                       <div className="flex items-center justify-between pt-2">
                         <Button variant="ghost" onClick={() => setI((x) => Math.max(0, x - 1))} disabled={i === 0 || busy}><ArrowLeft /> Back</Button>
-                        {stepDef.id === "review" ? <Button size="lg" className="shadow-glow" onClick={finish} loading={busy}>Build my programme <Sparkles /></Button> : <Button size="lg" onClick={next} loading={busy}>Continue <ArrowRight /></Button>}
+                        {stepDef.id === "review" ? <Button size="lg" onClick={finish} loading={busy}>Build my programme <Sparkles /></Button> : <Button size="lg" onClick={next} loading={busy}>Continue <ArrowRight /></Button>}
                       </div>
                     </>
                   )}
@@ -218,7 +218,7 @@ function StepBody({ id, p, set, baseline }: { id: StepId; p: P; set: (x: P) => v
       </div>);
     case "experience": return (
       <div className="grid gap-2">{([["beginner", "Beginner", "New to structured training, or less than 6 months."], ["novice", "Novice", "6 to 18 months, still adding weight most weeks."], ["intermediate", "Intermediate", "1 to 3 years, progress needs planning."], ["advanced", "Advanced", "3+ years, competing or close to genetic ceiling."]] as const).map(([v, l, d]) => (
-        <button key={v} type="button" onClick={() => set({ experience: v })} aria-pressed={p.experience === v} className={cn("flex items-start gap-3 rounded-lg border p-4 text-left transition-colors", p.experience === v ? "border-ember bg-ember-soft" : "border-border hover:border-border-strong")}><span className={cn("mt-0.5 grid size-5 shrink-0 place-items-center rounded-full border", p.experience === v ? "border-ember bg-ember text-ember-fg" : "border-border-strong")}>{p.experience === v ? <Check className="size-3" /> : null}</span><span><span className="block font-medium">{l}</span><span className="text-sm text-fg-muted">{d}</span></span></button>))}</div>);
+        <button key={v} type="button" onClick={() => set({ experience: v })} aria-pressed={p.experience === v} className={cn("flex items-start gap-3 border p-4 text-left transition-colors", p.experience === v ? "border-ember " : "border-border hover:border-border-strong")}><span className={cn("mt-0.5 grid size-5 shrink-0 place-items-center  border", p.experience === v ? "border-ember bg-ember text-ember-fg" : "border-border-strong")}>{p.experience === v ? <Check className="size-3" /> : null}</span><span><span className="block font-medium">{l}</span><span className="text-sm text-fg-muted">{d}</span></span></button>))}</div>);
     case "goals": return (
       <div className="space-y-5">
         <Field label="Goals"><ChipGroup>{GOALS.map((g) => <Chip key={g.v} selected={(p.goals ?? []).includes(g.v)} onClick={() => { const goals = toggle(p.goals, g.v); set({ goals, primaryGoal: goals.includes(p.primaryGoal!) ? p.primaryGoal : goals[0] }); }}>{g.l}</Chip>)}</ChipGroup></Field>
@@ -244,12 +244,12 @@ function StepBody({ id, p, set, baseline }: { id: StepId; p: P; set: (x: P) => v
         <Field label="Exercises you love" hint="Search the library. These get priority.">
           <div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" /><Input className="pl-9" value={loveQ} onChange={(e) => setLoveQ(e.target.value)} placeholder="e.g. hip thrust" /></div>
           {loveResults.length ? <div className="mt-2 flex flex-wrap gap-2">{loveResults.map((r) => <Chip key={r.id} onClick={() => { set({ lovedExerciseIds: [...new Set([...(p.lovedExerciseIds ?? []), r.id])] }); setLoveQ(""); }}>{r.name}</Chip>)}</div> : null}
-          {(p.lovedExerciseIds ?? []).length ? <div className="mt-2 flex flex-wrap gap-2">{p.lovedExerciseIds!.map((id) => <Badge key={id} tone="signal" className="normal-case tracking-normal">{id.replace(/-/g, " ")}<button aria-label={`Remove ${id}`} onClick={() => set({ lovedExerciseIds: p.lovedExerciseIds!.filter((x) => x !== id) })}><X className="size-3" /></button></Badge>)}</div> : null}
+          {(p.lovedExerciseIds ?? []).length ? <div className="mt-2 flex flex-wrap gap-2">{p.lovedExerciseIds!.map((id) => <Badge key={id} tone="signal" className="normal-case tracking-normal">{id.replace(/-/g, "")}<button aria-label={`Remove ${id}`} onClick={() => set({ lovedExerciseIds: p.lovedExerciseIds!.filter((x) => x !== id) })}><X className="size-3" /></button></Badge>)}</div> : null}
         </Field>
         <Field label="Exercises you hate" hint="Never programmed. Swaps are always offered anyway.">
           <div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" /><Input className="pl-9" value={hateQ} onChange={(e) => setHateQ(e.target.value)} placeholder="e.g. burpee" /></div>
           {hateResults.length ? <div className="mt-2 flex flex-wrap gap-2">{hateResults.map((r) => <Chip key={r.id} onClick={() => { set({ hatedExerciseIds: [...new Set([...(p.hatedExerciseIds ?? []), r.id])] }); setHateQ(""); }}>{r.name}</Chip>)}</div> : null}
-          {(p.hatedExerciseIds ?? []).length ? <div className="mt-2 flex flex-wrap gap-2">{p.hatedExerciseIds!.map((id) => <Badge key={id} tone="rose" className="normal-case tracking-normal">{id.replace(/-/g, " ")}<button aria-label={`Remove ${id}`} onClick={() => set({ hatedExerciseIds: p.hatedExerciseIds!.filter((x) => x !== id) })}><X className="size-3" /></button></Badge>)}</div> : null}
+          {(p.hatedExerciseIds ?? []).length ? <div className="mt-2 flex flex-wrap gap-2">{p.hatedExerciseIds!.map((id) => <Badge key={id} tone="rose" className="normal-case tracking-normal">{id.replace(/-/g, "")}<button aria-label={`Remove ${id}`} onClick={() => set({ hatedExerciseIds: p.hatedExerciseIds!.filter((x) => x !== id) })}><X className="size-3" /></button></Badge>)}</div> : null}
         </Field>
         <Field label="Music or vibe (optional)"><Input value={p.vibe ?? ""} onChange={(e) => set({ vibe: e.target.value || undefined })} placeholder="Loud, heavy, in and out" maxLength={200} /></Field>
       </div>);
@@ -257,7 +257,7 @@ function StepBody({ id, p, set, baseline }: { id: StepId; p: P; set: (x: P) => v
       <div className="space-y-5">
         <Field label="Injuries or pain" hint="Tap a region, then set how much it limits you.">
           <ChipGroup>{REGIONS.map((r) => { const inj = (p.injuries ?? []).find((x) => x.region === r.v); return <Chip key={r.v} selected={!!inj} onClick={() => set({ injuries: inj ? p.injuries!.filter((x) => x.region !== r.v) : [...(p.injuries ?? []), { region: r.v, severity: "moderate" }] })}>{r.l}</Chip>; })}</ChipGroup>
-          {(p.injuries ?? []).map((inj, idx) => (<div key={`${inj.region}-${idx}`} className="mt-3 flex flex-wrap items-center gap-3 rounded-lg bg-surface-2 p-3"><span className="w-28 text-sm font-medium">{REGIONS.find((r) => r.v === inj.region)?.l}</span><Segmented value={inj.severity} onChange={(v) => set({ injuries: p.injuries!.map((x) => (x.region === inj.region ? { ...x, severity: v } : x)) })} options={[{ value: "mild", label: "Mild" }, { value: "moderate", label: "Moderate" }, { value: "severe", label: "Severe" }]} label={`${inj.region} severity`} /><Input className="h-9 flex-1 text-sm" placeholder="Note (optional)" value={inj.note ?? ""} maxLength={300} onChange={(e) => set({ injuries: p.injuries!.map((x) => (x.region === inj.region ? { ...x, note: e.target.value } : x)) })} /></div>))}
+          {(p.injuries ?? []).map((inj, idx) => (<div key={`${inj.region}-${idx}`} className="mt-3 flex flex-wrap items-center gap-3 bg-surface-2 p-3"><span className="w-28 text-sm font-medium">{REGIONS.find((r) => r.v === inj.region)?.l}</span><Segmented value={inj.severity} onChange={(v) => set({ injuries: p.injuries!.map((x) => (x.region === inj.region ? { ...x, severity: v } : x)) })} options={[{ value: "mild", label: "Mild" }, { value: "moderate", label: "Moderate" }, { value: "severe", label: "Severe" }]} label={`${inj.region} severity`} /><Input className="h-9 flex-1 text-sm" placeholder="Note (optional)" value={inj.note ?? ""} maxLength={300} onChange={(e) => set({ injuries: p.injuries!.map((x) => (x.region === inj.region ? { ...x, note: e.target.value } : x)) })} /></div>))}
         </Field>
         <Field label="Medical conditions (optional)" hint="Stored encrypted. Used only to add safety notes and calorie floors; never sold or used for advertising.">
           <ChipGroup>{["Heart condition", "High blood pressure", "Diabetes", "Pregnancy / postpartum", "Asthma", "Eating disorder history", "Other"].map((f) => <Chip key={f} selected={(p.medicalFlags ?? []).includes(f)} onClick={() => set({ medicalFlags: toggle(p.medicalFlags, f) })}>{f}</Chip>)}</ChipGroup>
@@ -285,16 +285,16 @@ function StepBody({ id, p, set, baseline }: { id: StepId; p: P; set: (x: P) => v
     case "lifts": return (
       <div className="space-y-3">
         {BIG_LIFTS.map((l) => { const k = (p.knownLifts ?? []).find((x) => x.exerciseId === l.id); return (
-          <div key={l.id} className="grid grid-cols-[1fr_auto_auto] items-center gap-2 rounded-lg bg-surface-2 p-3"><span className="text-sm font-medium">{l.name}</span>
+          <div key={l.id} className="grid grid-cols-[1fr_auto_auto] items-center gap-2 bg-surface-2 p-3"><span className="text-sm font-medium">{l.name}</span>
             <NumberInput step={0.5} value={k?.weightKg != null ? round(imperial ? kgToLb(k.weightKg) : k.weightKg, 1) : undefined} suffix={imperial ? "lb" : "kg"} onChange={(v) => { const w = v == null ? undefined : imperial ? lbToKg(v) : v; const rest = (p.knownLifts ?? []).filter((x) => x.exerciseId !== l.id); set({ knownLifts: w ? [...rest, { exerciseId: l.id, weightKg: w, reps: k?.reps ?? 5 }] : rest }); }} />
             <NumberInput value={k?.reps} suffix="reps" min={1} max={30} onChange={(v) => { if (!k) return; set({ knownLifts: (p.knownLifts ?? []).map((x) => (x.exerciseId === l.id ? { ...x, reps: v ?? 5 } : x)) }); }} />
           </div>); })}
       </div>);
     case "review": return (
       <div className="space-y-5">
-        <div className="grid gap-3 sm:grid-cols-2">{STEPS.filter((s) => s.id !== "review").map((s) => (<div key={s.id} className="rounded-lg bg-surface-2 p-3"><div className="eyebrow mb-1">{s.id.replace("_", " ")}</div><div className="text-sm">{(function () { return summaryFor(s.id, p); })()}</div></div>))}</div>
-        {baseline ? (<div className="rounded-xl border border-border p-4"><h3 className="font-display mb-3 text-lg">Your baseline</h3><div className="grid grid-cols-2 gap-4 sm:grid-cols-4">{[["BMI", baseline.bmi], ["BMR", baseline.bmr, "kcal"], ["Maintenance", baseline.tdee, "kcal"], ["Target", baseline.targetCalories, "kcal"]].map(([l, v, u]) => (<div key={l as string}><div className="text-2xs uppercase tracking-wide text-fg-subtle">{l as string}</div><div className="font-display text-xl tabular">{v ?? "-"} <span className="text-xs font-normal text-fg-muted">{u as string}</span></div></div>))}</div>{baseline.proteinG ? <p className="mt-3 text-sm text-fg-muted">Macros: {baseline.proteinG} g protein · {baseline.carbsG} g carbs · {baseline.fatG} g fat</p> : null}<ul className="mt-3 space-y-1.5 text-sm text-fg-muted">{baseline.explanations.map((e) => <li key={e} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-ember" />{e}</li>)}</ul></div>) : null}
-        <p className="rounded-xl bg-ember-soft px-3 py-2 text-sm"><span className="font-medium text-ember">{Math.min(12, STEPS.length - 1) * INTAKE_STEP_POINTS} Growth earned before lifting a thing.</span> Building the programme adds {INTAKE_COMPLETE_POINTS} more. Showing up is the first rep.</p>
+        <div className="grid gap-3 sm:grid-cols-2">{STEPS.filter((s) => s.id !== "review").map((s) => (<div key={s.id} className="bg-surface-2 p-3"><div className="eyebrow mb-1">{s.id.replace("_", "")}</div><div className="text-sm">{(function () { return summaryFor(s.id, p); })()}</div></div>))}</div>
+        {baseline ? (<div className="border border-border p-4"><h3 className="font-display mb-3 text-lg">Your baseline</h3><div className="grid grid-cols-2 gap-4 sm:grid-cols-4">{[["BMI", baseline.bmi], ["BMR", baseline.bmr, "kcal"], ["Maintenance", baseline.tdee, "kcal"], ["Target", baseline.targetCalories, "kcal"]].map(([l, v, u]) => (<div key={l as string}><div className="text-2xs uppercase tracking-wide text-fg-subtle">{l as string}</div><div className="font-display text-xl tabular">{v ?? "-"} <span className="text-xs font-normal text-fg-muted">{u as string}</span></div></div>))}</div>{baseline.proteinG ? <p className="mt-3 text-sm text-fg-muted">Macros: {baseline.proteinG} g protein · {baseline.carbsG} g carbs · {baseline.fatG} g fat</p> : null}<ul className="mt-3 space-y-1.5 text-sm text-fg-muted">{baseline.explanations.map((e) => <li key={e} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-ember" />{e}</li>)}</ul></div>) : null}
+        <p className="px-3 py-2 text-sm"><span className="font-medium text-ember">{Math.min(12, STEPS.length - 1) * INTAKE_STEP_POINTS} Growth earned before lifting a thing.</span> Building the programme adds {INTAKE_COMPLETE_POINTS} more. Showing up is the first rep.</p>
         <p className="text-xs text-fg-subtle">Not medical advice. Kettleworth builds general fitness guidance from what you've told us; check with a professional if you have a medical condition.</p>
       </div>);
   }

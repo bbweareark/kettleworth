@@ -6,12 +6,13 @@ export function Ring({ value, size = 96, stroke = 10, tone = "ember", children, 
   const r = (size - stroke) / 2;
   const len = 2 * Math.PI * r;
   const v = Math.max(0, Math.min(1, value));
-  const color = { ember: "var(--color-ember)", signal: "var(--color-signal)", amber: "var(--color-amber)", rose: "var(--color-rose)", sky: "var(--color-sky)" }[tone];
+  // One rationed accent: tone resolves to the accent or to the foreground, never to a new hue.
+  const color = { ember: "var(--color-ember)", signal: "var(--color-fg)", amber: "var(--color-ember)", rose: "var(--color-ember)", sky: "var(--color-fg)" }[tone];
   return (
     <div className={cn("relative inline-grid place-items-center", className)} style={{ width: size, height: size }} role="img" aria-label={label ?? `${Math.round(v * 100)}%`}>
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--color-surface-3)" strokeWidth={stroke} />
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round" strokeDasharray={len} strokeDashoffset={len * (1 - v)} className="animate-ring" style={{ ["--ring-len" as string]: len, ["--ring-offset" as string]: len * (1 - v) }} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--color-rule)" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke} strokeDasharray={len} strokeDashoffset={len * (1 - v)} className="animate-ring" style={{ ["--ring-len" as string]: len, ["--ring-offset" as string]: len * (1 - v) }} />
       </svg>
       <div className="absolute inset-0 grid place-items-center">{children}</div>
     </div>
