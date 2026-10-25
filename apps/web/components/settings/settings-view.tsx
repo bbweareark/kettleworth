@@ -9,7 +9,7 @@ import { authClient } from "@/lib/auth-client";
 
 export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { user: { name: string; email: string }; profile: TrainingProfile | null; aiSummary: string | null; providerCount: number; ai: boolean }) {
   const router = useRouter();
-  const [theme, setTheme] = useState<"system" | "light" | "dark">("dark");
+  const [theme, setTheme] = useState<"system" | "light" | "dark">("light");
   const [p, setP] = useState<Partial<TrainingProfile>>(profile ?? {});
   const [busy, setBusy] = useState<string | null>(null);
   const [confirmText, setConfirmText] = useState("");
@@ -18,7 +18,7 @@ export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { 
     setTheme(t);
     const year = 60 * 60 * 24 * 365;
     document.cookie = t === "system" ? "kw-theme=; path=/; max-age=0; samesite=lax" : `kw-theme=${t}; path=/; max-age=${year}; samesite=lax`;
-    document.documentElement.dataset.theme = t === "light" ? "light" : "dark";
+    document.documentElement.dataset.theme = t === "dark" ? "dark" : "light";
   }
   async function save() { setBusy("save"); const r = await fetch("/api/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ patch: p }) }); setBusy(null); if (!r.ok) return toast.error("Couldn't save"); toast.success("Profile updated. Regenerate your programme to apply changes."); router.refresh(); }
   async function del() { setBusy("delete"); const r = await fetch("/api/account/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ confirm: "DELETE" }) }); setBusy(null); if (!r.ok) return toast.error("Couldn't delete"); await authClient.signOut(); window.location.href = "/"; }

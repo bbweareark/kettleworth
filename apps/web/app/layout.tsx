@@ -41,7 +41,8 @@ export const viewport: Viewport = { themeColor: "#F6F8F7", width: "device-width"
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // Theme is read on the server from a cookie, so the first paint is already right and no inline script is needed.
-  const theme = (await cookies()).get("kw-theme")?.value === "light" ? "light" : "dark";
+  // Sheet (light) is the designed default; Carbon (dark) is the opt-in.
+  const theme = (await cookies()).get("kw-theme")?.value === "dark" ? "dark" : "light";
   return (
     <html lang="en" data-theme={theme} suppressHydrationWarning className={archivo.variable}>
       <body className="min-h-dvh bg-bg text-fg">
