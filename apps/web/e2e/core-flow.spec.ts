@@ -70,12 +70,14 @@ test("sign up → intake → programme → session logging", async ({ page }) =>
   await page.goto("/app");
   await page.getByRole("link", { name: /Start session/ }).click();
   await page.waitForURL(/\/app\/session\//);
-  // The console is a readout plus hard keys (21st.dev Number Pad composition), not text fields:
-  // tap a figure to choose what the keys drive, nudge it, rate the effort, commit.
+  // The console is one labelled row per quantity (21st.dev Unit Field composition), not text
+  // fields: tap a row to edit it, the keys appear under that row, rate the effort, commit.
   const console_ = page.locator('section[aria-label="Log sets"]');
-  await console_.getByRole("button", { name: /^Enter reps$/ }).click();
+  await console_.getByRole("button", { name: /^Edit Reps/ }).click();
   await console_.getByRole("button", { name: "+2", exact: true }).click();
-  await console_.getByRole("radio", { name: "Right" }).click();
+  // The keys must drive the row that was tapped, not the other one.
+  await expect(console_.getByRole("button", { name: /^Edit Weight/ })).toHaveAttribute("aria-label", /currently 0 /);
+  await console_.getByRole("radio", { name: /^Right/ }).click();
   await console_.getByRole("button", { name: /^(Log set|Update set)$/ }).click();
   await expect(page.getByRole("timer")).toBeVisible();
   // Logging advances the focus to the next set, so the commit button reads "Log set" again.

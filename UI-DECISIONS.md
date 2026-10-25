@@ -220,6 +220,55 @@ both Playwright projects pass.
 "Update set" after logging. Logging advances focus to the next set, so it reads "Log set"; the
 spec now asserts the set track recorded the set, which is the stronger check.
 
+## Set console, second pass — ported from 21st.dev Unit Field
+
+The first pass fixed height (579px → 494px) but not comprehension, which is what the owner
+actually reported: "crowded and hard to understand". Measured on an iPhone 15 before touching
+anything, the console carried **16 interactive controls, 11 bordered regions and 12 uppercase
+micro-labels in 494px**, and it stated the same instruction **three times in three dialects**:
+
+    SET 2 OF 3 · TARGET 12 TO 15 @ 9      (header)
+    REPS · AIM 12 TO 15                    (readout caption)
+    RPE 9                                  (effort row)
+
+Weight and reps sat either side of a 19px `×` at 40px each, so neither dominated, and which one
+the keys drove was signalled by **nothing but 45% opacity**.
+
+**Reference: 21st.dev Unit Field by arikchakma** (`design/refs/components-21st-unitfield`,
+https://21st.dev/@arikchakma/components/unit-field). Its composition is one labelled row per
+quantity, a quiet fixed label column, and the value right-aligned **with its unit inline**
+(`200px`, `0°`) rather than captioned beneath.
+
+| Taken | Not taken |
+|---|---|
+| One labelled row per quantity | Its drag-to-scrub: a horizontal drag fights a scrolling page on touch |
+| Unit inline in the value (`0 kg`, `15 reps`) | Its type — 21st.dev's own site runs on Inter, banned here |
+| Hairline-ruled rows, zero fills | Its palette and its grey-on-white surfaces |
+
+**The one change that answers "hard to understand": the key row now sits directly beneath the
+row it drives.** Position answers "what do these keys change?", so the question no longer
+depends on noticing an opacity difference.
+
+### Measured, before and after
+
+| | Before | After |
+|---|---|---|
+| Height | 494px | **476px** |
+| Statements of the same target | **3** | **1** |
+| Duplicate "set N of M" (the track already says it) | 1 | **0** |
+| Uppercase micro-labels | 12 | **8** |
+| Enclosed or differently-filled boxes | ~11 (4-sided borders on every key and effort cell) | **6**, all hairline strips |
+| Touch targets under 44px | — | **0** |
+| Pills / shadows | 0 / 0 | 0 / 0 |
+
+A first attempt measured *worse* on height (528px) and I kept it only after removing a tinted
+active-row fill (a fill the DNA forbids anyway), unboxing the benchmark note into a ruled band,
+and tightening the rows. An intermediate "regions 15" reading was my own metric mismeasuring:
+it counted `bg-bg` cells, which are the same colour as the ground, as separate regions.
+
+**Behaviour proven, not assumed:** tapping Reps moves the keys to that row, `+2` takes reps
+15 → 17, and the weight row stays at 0. The e2e spec now drives and asserts exactly that.
+
 ## Replication score: 8/10
 
 Scored by comparing `design/refs/ours-landing/blueprint.md` against

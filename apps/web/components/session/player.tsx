@@ -296,30 +296,42 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
 
       <AnimatePresence mode="wait" initial={false}>
         <motion.div key={set.setNumber} initial={reduce ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={reduce ? undefined : { opacity: 0, x: -12 }} transition={{ duration: 0.22 }} className="mt-4">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-            <div className="text-2xs uppercase tracking-label text-fg-subtle">{set.type === "warmup" ? "Warm-up" : `Set ${set.setNumber} of ${sets.length}`}{target ? <span className="text-ember"> · target {target}{set.targetRpe ? ` @ ${set.targetRpe}` : ""}</span> : null}</div>
+          {/*
+            The brief said once, not three times. This line is now the only place the set and
+            its target are stated: the readout rows used to repeat "aim 12 to 15" and the
+            effort row used to repeat it again as "RPE 9".
+          */}
+          <div className="text-2xs uppercase tracking-label text-fg-subtle">
+            {set.type === "warmup" ? <>Warm-up{target ? " · " : ""}</> : null}
+            {target ? <span className="text-ember">Aim {target} reps{set.targetRpe ? ` at ${effortWord(set.targetRpe).toLowerCase()}` : ""}</span> : null}
           </div>
 
           {/*
-            Readout and keys, the composition ported from 21st.dev's Number Pad
-            (design/refs/components-21st-numberpad). One figure dominates; tapping either
-            figure chooses which the keys drive. The old console stacked three equally
-            weighted boxes and ran 579px tall, so logging a set mid-set meant scrolling.
+            Rows, ported from 21st.dev's Unit Field (design/refs/components-21st-unitfield):
+            one labelled row per quantity, value right-aligned with its unit inline, hairline
+            rules and no fills. It replaces the Number Pad split readout, which measured two
+            40px figures either side of a 19px cross, so neither dominated, and signalled
+            which one the keys drove with nothing but 45% opacity.
           */}
-          <div className="mt-3 border-y-2 border-rule-strong">
-            <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-3 py-4">
-              <button type="button" onClick={() => setPad("w")} aria-pressed={pad === "w"} aria-label={`Enter ${model.label}`} className={cn("min-w-0 text-left transition-opacity", pad !== "w" && "opacity-45")}>
-                <span className="meta block truncate">{model.label}{sideMode ? " · a side" : ""}</span>
-                <span className="font-display block truncate text-[2.5rem] leading-none tabular">{w || "0"}</span>
-                <span className="meta block">{unit}</span>
-              </button>
-              <span aria-hidden className="pb-7 text-lg text-fg-subtle">×</span>
-              <button type="button" onClick={() => setPad("r")} aria-pressed={pad === "r"} aria-label="Enter reps" className={cn("min-w-0 text-right transition-opacity", pad !== "r" && "opacity-45")}>
-                <span className="meta block truncate">Reps{target ? ` · aim ${target}` : ""}</span>
-                <span className="font-display block truncate text-[2.5rem] leading-none tabular">{r || "0"}</span>
-                <span className="meta block">reps</span>
-              </button>
-            </div>
+          <div className="mt-3 border-t-2 border-rule-strong">
+            <Quantity
+              label={`${model.label}${sideMode ? " · a side" : ""}`}
+              value={w || "0"}
+              unit={unit}
+              active={pad === "w"}
+              onSelect={() => setPad("w")}
+              onNudge={(d) => nudge("w", d)}
+              stepFor={(d) => String(round(Math.abs(d) * step, 2))}
+            />
+            <Quantity
+              label="Reps"
+              value={r || "0"}
+              unit="reps"
+              active={pad === "r"}
+              onSelect={() => setPad("r")}
+              onNudge={(d) => nudge("r", d)}
+              stepFor={(d) => String(Math.abs(d))}
+            />
             {model.kind === "bar" || makeup ? (
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-rule py-2 text-xs">
                 {model.kind === "bar" ? (
@@ -349,25 +361,14 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
             ) : null}
           </div>
 
-          <div className="mt-2.5 grid grid-cols-4 gap-1.5" aria-label={pad === "w" ? `Adjust ${model.label}` : "Adjust reps"}>
-            {[-2, -1, 1, 2].map((d) => (
-              <button key={d} type="button" onClick={() => nudge(pad, d)}
-                className="h-14 touch-manipulation border border-rule text-base tabular transition-colors hover:border-rule-strong hover:bg-fg hover:text-bg active:bg-fg active:text-bg">
-                {d > 0 ? "+" : "−"}{pad === "w" ? round(Math.abs(d) * step, 2) : Math.abs(d)}
-              </button>
-            ))}
-          </div>
-
-          {/* Effort in plain words. The old row read "8 · 2 LEFT IN THE TANK", which is jargon. */}
-          <div className="mt-3" role="radiogroup" aria-label="Effort">
-            <div className="flex items-baseline justify-between gap-2">
-              <span className="meta">How hard was it</span>
-              <span className="meta">{rpe != null ? `RPE ${rpe}` : "Pick one"}</span>
-            </div>
-            <div className="mt-1.5 grid grid-cols-5 gap-1.5">
-              {([["Easy", 6], ["Light", 7], ["Right", 8], ["Hard", 9], ["Max", 10]] as const).map(([label, n]) => (
-                <button key={n} type="button" role="radio" aria-checked={rpe === n} onClick={() => setRpe(n)}
-                  className={cn("flex h-12 touch-manipulation items-center justify-center border text-sm transition-colors", rpe === n ? "border-rule-strong bg-fg text-bg" : "border-rule text-fg-muted hover:text-fg")}>
+          {/* Effort in plain words. The RPE numeral is gone from the face: the target line
+              already states the effort to aim for, and the number was the third restatement. */}
+          <div className="mt-4" role="radiogroup" aria-label="How hard was it">
+            <span className="meta">How hard was it</span>
+            <div className="mt-1.5 grid grid-cols-5 gap-px bg-rule">
+              {EFFORT.map(([label, n]) => (
+                <button key={n} type="button" role="radio" aria-checked={rpe === n} aria-label={`${label}, RPE ${n}`} onClick={() => setRpe(n)}
+                  className={cn("flex h-11 touch-manipulation items-center justify-center text-sm transition-colors", rpe === n ? "bg-fg text-bg" : "bg-bg text-fg-muted hover:text-fg")}>
                   {label}
                 </button>
               ))}
@@ -467,8 +468,9 @@ function Benchmark({ inst, units, onUse }: { inst: Instance; units: "metric" | "
     setOpen(true);
     if (!data) { const r = await fetch(`/api/exercise/${inst.exerciseId}/history`); if (r.ok) setData(await r.json()); }
   }
+  // Not a card: a ruled band on the ground, per the DNA.
   return (
-    <div className="mb-3 p-3 border border-rule">
+    <div className="mb-3 border-b border-rule pb-3">
       {b?.last ? (
         <>
           <div className="flex items-center justify-between gap-2">
@@ -496,6 +498,65 @@ function Benchmark({ inst, units, onUse }: { inst: Instance; units: "metric" | "
           {data ? <LiftHistory data={data} units={units} /> : <p className="py-8 text-center text-sm text-fg-subtle">Loading your history</p>}
         </SheetContent>
       </Sheet>
+    </div>
+  );
+}
+
+/** Plain words for effort, and the RPE each maps to. The numbers stay in the data and in the
+ *  accessible name; the face of the app never shows them, because "RPE 9" is jargon. */
+const EFFORT = [["Easy", 6], ["Light", 7], ["Right", 8], ["Hard", 9], ["Max", 10]] as const;
+
+/** Nearest plain word for a target RPE, so a planned 8.5 reads as a word and not a decimal. */
+function effortWord(rpe: number): string {
+  let best: readonly [string, number] = EFFORT[0];
+  for (const e of EFFORT) if (Math.abs(e[1] - rpe) < Math.abs(best[1] - rpe)) best = e;
+  return best[0];
+}
+
+/**
+ * One quantity: a labelled row whose value carries its unit inline, and whose keys appear
+ * directly beneath it when it is the one being edited.
+ *
+ * Ported from 21st.dev's Unit Field (design/refs/components-21st-unitfield). The point is
+ * comprehension, not density: the previous console put weight and reps side by side with a
+ * single shared key row underneath, so "what do these keys change?" was answered only by a
+ * 45% opacity difference. Here the keys sit under the row they drive, so position answers it.
+ */
+function Quantity({
+  label, value, unit, active, onSelect, onNudge, stepFor,
+}: {
+  label: string; value: string; unit: string; active: boolean;
+  onSelect: () => void; onNudge: (d: number) => void; stepFor: (d: number) => string;
+}) {
+  return (
+    <div className="border-b border-rule">
+      <button
+        type="button"
+        onClick={onSelect}
+        aria-pressed={active}
+        aria-label={`Edit ${label}, currently ${value} ${unit}`}
+        className="flex w-full items-baseline justify-between gap-3 px-3 py-2.5 text-left"
+      >
+        <span className="meta min-w-0 truncate">{label}</span>
+        <span className="font-display shrink-0 text-4xl leading-none tabular">
+          {value}
+          <span className="ml-1.5 text-base text-fg-muted">{unit}</span>
+        </span>
+      </button>
+      {active ? (
+        <div className="grid grid-cols-4 gap-px bg-rule" aria-label={`Adjust ${label}`}>
+          {[-2, -1, 1, 2].map((d) => (
+            <button
+              key={d}
+              type="button"
+              onClick={() => onNudge(d)}
+              className="h-12 touch-manipulation bg-bg text-base tabular transition-colors hover:bg-fg hover:text-bg active:bg-fg active:text-bg"
+            >
+              {d > 0 ? "+" : "−"}{stepFor(d)}
+            </button>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

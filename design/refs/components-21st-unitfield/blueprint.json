@@ -1,0 +1,552 @@
+{
+  "title": "Unit Field | Community Components | 21st",
+  "url": "https://21st.dev/@arikchakma/components/unit-field",
+  "fonts": [
+    [
+      "ui-monospace",
+      898
+    ],
+    [
+      "Inter",
+      517
+    ],
+    [
+      "General Sans",
+      1
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "Unit Field",
+      "family": "Inter",
+      "size": "32px",
+      "weight": "600",
+      "lineHeight": "38.4px",
+      "letterSpacing": "-0.32px",
+      "color": "oklch(0.975 0.002 286)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "Code",
+      "family": "Inter",
+      "size": "16px",
+      "weight": "500",
+      "lineHeight": "28px",
+      "letterSpacing": "-0.176px",
+      "color": "oklch(0.975 0.002 286)",
+      "transform": "none"
+    },
+    "h3": {
+      "text": "Cromia Color Picker",
+      "family": "Inter",
+      "size": "13px",
+      "weight": "500",
+      "lineHeight": "18px",
+      "letterSpacing": "-0.176px",
+      "color": "oklab(0.975 0.000551274 -0.00192252 / 0.8)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "arikchakma",
+      "family": "Inter",
+      "size": "15px",
+      "weight": "450",
+      "lineHeight": "22.5px",
+      "letterSpacing": "-0.176px",
+      "color": "oklab(0.975 0.000551274 -0.00192252 / 0.85)",
+      "transform": "none"
+    },
+    "small": null,
+    "link": {
+      "text": "",
+      "family": "Inter",
+      "size": "16px",
+      "weight": "450",
+      "lineHeight": "24px",
+      "letterSpacing": "-0.176px",
+      "color": "oklch(0.975 0.002 286)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "border oklch(0.24 0.004 286)",
+      1412
+    ],
+    [
+      "fg rgb(225, 228, 232)",
+      477
+    ],
+    [
+      "fg oklch(0.975 0.002 286)",
+      209
+    ],
+    [
+      "fg rgb(249, 117, 131)",
+      135
+    ],
+    [
+      "fg rgb(121, 184, 255)",
+      114
+    ],
+    [
+      "fg rgb(179, 146, 240)",
+      99
+    ],
+    [
+      "fg oklch(0.485 0.291 264.121)",
+      93
+    ],
+    [
+      "fg oklch(0.68 0.008 286)",
+      82
+    ],
+    [
+      "fg oklab(0.975 0.000551274 -0.00192252 / 0.6)",
+      78
+    ],
+    [
+      "fg rgb(158, 203, 255)",
+      40
+    ],
+    [
+      "fg oklab(0.975 0.000551274 -0.00192252 / 0.75)",
+      27
+    ],
+    [
+      "fg rgb(133, 232, 157)",
+      21
+    ],
+    [
+      "fg oklab(0.975 0.000551274 -0.00192252 / 0.85)",
+      16
+    ],
+    [
+      "fg rgb(255, 171, 112)",
+      9
+    ],
+    [
+      "fg oklch(1 0 0)",
+      6
+    ],
+    [
+      "bg oklch(0.19 0.004 286)",
+      5
+    ],
+    [
+      "fg rgb(255, 255, 255)",
+      5
+    ],
+    [
+      "fg oklab(0.975 0.000551274 -0.00192252 / 0.8)",
+      4
+    ],
+    [
+      "bg oklch(0.485 0.291 264.121)",
+      2
+    ],
+    [
+      "bg oklab(0.19 0.00110255 -0.00384505 / 0.5)",
+      2
+    ]
+  ],
+  "bodyBg": "oklch(0.141 0.004 285.824)",
+  "htmlBg": "oklch(0.141 0.004 285.824)",
+  "sections": [
+    {
+      "top": 56,
+      "height": 2016,
+      "paddingTop": "48px",
+      "paddingBottom": "96px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Unit Field",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "6px",
+        "children": 3
+      },
+      "imageCount": 21
+    },
+    {
+      "top": 104,
+      "height": 1872,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1152px",
+      "heading": "Unit Field",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "6px",
+        "children": 3
+      },
+      "imageCount": 21
+    },
+    {
+      "top": 912,
+      "height": 701,
+      "paddingTop": "24px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Code",
+      "layout": null,
+      "imageCount": 0
+    },
+    {
+      "top": 1693,
+      "height": 283,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "More by arikchakma",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "16px",
+        "children": 2
+      },
+      "imageCount": 13
+    }
+  ],
+  "nav": {
+    "position": "sticky",
+    "top": 0,
+    "height": 56,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "borderBottom": "0px solid rgba(0, 0, 0, 0)",
+    "boxShadow": "none",
+    "linkCount": 7,
+    "links": [
+      "",
+      "Library",
+      "Product",
+      "Pricing",
+      "Search ⌘K",
+      "Log in",
+      "Get 21st free"
+    ],
+    "ctaCount": 1,
+    "ctaSamples": [
+      {
+        "text": "Get 21st free",
+        "bg": "oklch(0.485 0.291 264.121)",
+        "color": "oklch(1 0 0)",
+        "radius": "10px",
+        "height": 32
+      }
+    ],
+    "logoLeft": 168,
+    "maxWidth": "none",
+    "padding": "0px",
+    "linkStyle": {
+      "text": "",
+      "family": "Inter",
+      "size": "16px",
+      "weight": "450",
+      "lineHeight": "24px",
+      "letterSpacing": "-0.176px",
+      "color": "oklch(0.975 0.002 286)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "Library",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "oklab(0.975 0.000551274 -0.00192252 / 0.75)",
+      "border": "0px solid oklch(0.24 0.004 286)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 29,
+      "padding": "4px 0px",
+      "fontSize": "14px",
+      "fontWeight": "450",
+      "family": "Inter",
+      "letterSpacing": "-0.176px",
+      "transform": "none",
+      "count": 23
+    },
+    {
+      "text": "Number Input",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "oklab(0.975 0.000551274 -0.00192252 / 0.85)",
+      "border": "1px solid oklch(0.24 0.004 286)",
+      "radius": "6px",
+      "shadow": "none",
+      "height": 36,
+      "padding": "0px 12px",
+      "fontSize": "14px",
+      "fontWeight": "450",
+      "family": "Inter",
+      "letterSpacing": "-0.176px",
+      "transform": "none",
+      "count": 4
+    },
+    {
+      "text": "Library",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "oklch(0.68 0.008 286)",
+      "border": "0px solid oklch(0.24 0.004 286)",
+      "radius": "8px",
+      "shadow": "none",
+      "height": 36,
+      "padding": "0px 12px",
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "family": "Inter",
+      "letterSpacing": "-0.176px",
+      "transform": "none",
+      "count": 3
+    },
+    {
+      "text": "Search ⌘K",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "oklch(0.68 0.008 286)",
+      "border": "0px solid oklch(0.24 0.004 286)",
+      "radius": "10px",
+      "shadow": "none",
+      "height": 36,
+      "padding": "0px 10px",
+      "fontSize": "14px",
+      "fontWeight": "450",
+      "family": "Inter",
+      "letterSpacing": "-0.176px",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Log in",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "oklch(0.68 0.008 286)",
+      "border": "0px solid oklch(0.24 0.004 286)",
+      "radius": "10px",
+      "shadow": "none",
+      "height": 36,
+      "padding": "0px 12px",
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "family": "Inter",
+      "letterSpacing": "-0.176px",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Get 21st free",
+      "bg": "oklch(0.485 0.291 264.121)",
+      "color": "oklch(1 0 0)",
+      "border": "0px solid rgba(0, 0, 0, 0)",
+      "radius": "10px",
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset",
+      "height": 32,
+      "padding": "0px 12px",
+      "fontSize": "13px",
+      "fontWeight": "500",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Copy prompt",
+      "bg": "oklch(0.485 0.291 264.121)",
+      "color": "oklch(1 0 0)",
+      "border": "0px solid oklch(0.24 0.004 286)",
+      "radius": "8px",
+      "shadow": "none",
+      "height": 44,
+      "padding": "0px 20px",
+      "fontSize": "16px",
+      "fontWeight": "500",
+      "family": "Inter",
+      "letterSpacing": "-0.176px",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Preview",
+      "bg": "oklab(0 0 0 / 0.85)",
+      "color": "rgb(255, 255, 255)",
+      "border": "0px solid oklch(0.24 0.004 286)",
+      "radius": "8px",
+      "shadow": "none",
+      "height": 40,
+      "padding": "0px 14px",
+      "fontSize": "15px",
+      "fontWeight": "500",
+      "family": "Inter",
+      "letterSpacing": "-0.176px",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": null,
+  "imagery": {
+    "count": 5,
+    "samples": [
+      {
+        "tag": "img",
+        "w": 674,
+        "h": 421,
+        "ratio": "1.60",
+        "radius": "12px",
+        "fit": "cover",
+        "alt": "Unit Field preview",
+        "frameBg": "oklch(0.19 0.004 286)",
+        "frameShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.975 0.000551274 -0.00192252 / 0.08) 0px 0px 0px 1px, rgba(0, 0, 0, 0.25) 0px 25px 50px -12px"
+      },
+      {
+        "tag": "img",
+        "w": 267,
+        "h": 200,
+        "ratio": "1.33",
+        "radius": "14px",
+        "fit": "cover",
+        "alt": "Cromia Color Picker",
+        "frameBg": "oklch(0.19 0.004 286)",
+        "frameShadow": "rgba(0, 0, 0, 0.04) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.07) 0px 1px 3px 0px"
+      },
+      {
+        "tag": "img",
+        "w": 267,
+        "h": 200,
+        "ratio": "1.33",
+        "radius": "14px",
+        "fit": "cover",
+        "alt": "Cromia Compact",
+        "frameBg": "oklch(0.19 0.004 286)",
+        "frameShadow": "rgba(0, 0, 0, 0.04) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.07) 0px 1px 3px 0px"
+      },
+      {
+        "tag": "img",
+        "w": 267,
+        "h": 200,
+        "ratio": "1.33",
+        "radius": "14px",
+        "fit": "cover",
+        "alt": "Cromia Channels",
+        "frameBg": "oklch(0.19 0.004 286)",
+        "frameShadow": "rgba(0, 0, 0, 0.04) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.07) 0px 1px 3px 0px"
+      },
+      {
+        "tag": "img",
+        "w": 267,
+        "h": 200,
+        "ratio": "1.33",
+        "radius": "14px",
+        "fit": "cover",
+        "alt": "Cromia Swatches",
+        "frameBg": "oklch(0.19 0.004 286)",
+        "frameShadow": "rgba(0, 0, 0, 0.04) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.07) 0px 1px 3px 0px"
+      }
+    ],
+    "svgIllustrations": 0,
+    "gradients": 1,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 0,
+    "sample": null
+  },
+  "footer": {
+    "height": 540,
+    "bg": "rgba(0, 0, 0, 0)",
+    "paddingTop": "0px",
+    "paddingBottom": "0px",
+    "columns": 78,
+    "columnsTemplate": "none",
+    "linkCount": 108,
+    "largestText": {
+      "text": "",
+      "size": "16px",
+      "weight": "450",
+      "family": "Inter",
+      "color": "oklch(0.975 0.002 286)"
+    },
+    "borderTop": "1px solid oklab(0.975 0.000551274 -0.00192252 / 0.08)"
+  },
+  "motion": {
+    "libs": [
+      "motion"
+    ],
+    "elementsWithTransition": 142,
+    "elementsWithAnimation": 0,
+    "transforms": 0,
+    "stickyElements": 1,
+    "videoCount": 0,
+    "canvasCount": 0,
+    "smoothScroll": "smooth"
+  },
+  "layout": {
+    "pageHeight": 2769,
+    "containerMaxWidths": [
+      [
+        "1152px",
+        5
+      ],
+      [
+        "732.665px",
+        1
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "6px",
+        9
+      ],
+      [
+        "8px",
+        5
+      ],
+      [
+        "14px",
+        4
+      ],
+      [
+        "10px",
+        3
+      ],
+      [
+        "3.35544e+07px",
+        3
+      ],
+      [
+        "12px",
+        2
+      ]
+    ],
+    "shadows": [
+      "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset",
+      "rgba(0, 0, 0, 0.25) 0px 0.5px 1px 0px",
+      "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.975 0.000551274 -0.00192252 / 0.08) 0px 0px 0px 1px, rgba(0, 0, 0, 0.25) 0px 25px 50px -12px",
+      "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklch(0.24 0.004 286) 0px 0px 0px 1px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "rgba(0, 0, 0, 0.04) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.07) 0px 1px 3px 0px"
+    ],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": {
+    "height": 56,
+    "top": 0,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "sticky"
+  },
+  "mobileNav": {
+    "height": 56,
+    "visibleControls": [
+      "21st home",
+      "Search the library",
+      "Get 21st free",
+      "Open the menu"
+    ],
+    "hasMenuButton": true
+  },
+  "label": "components / 21st.dev Unit Field by arikchakma",
+  "capturedAt": "2026-10-25T22:08:12.404Z"
+}

@@ -37,3 +37,20 @@ Nav height within 8px · display within 10% · section rhythm within 15% · butt
 identical · same column count · imagery framed the same · footer style and column count ·
 ground/surface relationship · motion spec implemented · "same family" in three seconds.
 Minimum 8/10 to ship.
+
+## Set console, second pass — ported from 21st.dev Unit Field
+
+| What | Reference (Unit Field, arikchakma) | Measured target here |
+|---|---|---|
+| Quantity | One labelled row per quantity, never a side-by-side split | `WEIGHT` row, `REPS` row |
+| Unit | Lives **inside** the value (`200px`, `0°`), never a caption beneath | `0 kg`, `15 reps` |
+| Label | Quiet, fixed left column; value right-aligned tabular | `meta` left, `font-display tabular` right |
+| Rows | Separated by hairline rules, zero fills | `border-b border-rule` |
+| Keys | — (Unit Field scrubs; a scrub fights a scrolling page on touch) | Key row sits **under the selected row**, so position says what it drives |
+
+**Why this replaces the previous pass.** The Number Pad port fixed height (579px → 494px) but not
+comprehension. Measured on a phone the console carried 16 interactive controls, 11 bordered
+regions and 12 uppercase micro-labels, and it stated the same target three times in three
+dialects: `SET 2 OF 3 · TARGET 12 TO 15 @ 9`, `REPS · AIM 12 TO 15`, and `RPE 9`. The weight
+and reps figures sat either side of a 19px `×` at 40px each, so neither dominated, and which
+one the keys drove was signalled only by 45% opacity.
