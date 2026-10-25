@@ -10,7 +10,8 @@
   },
   "scripts": {
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "purge-test-accounts": "tsx scripts/purge-test-accounts.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.125.0",
@@ -27,6 +28,7 @@
     "typescript": "^5.9.3",
     "vitest": "^5.0.0",
     "@kettleworth/config": "workspace:*",
-    "@types/node": "^24"
+    "@types/node": "^24",
+    "tsx": "^4.23.13"
   }
 }
