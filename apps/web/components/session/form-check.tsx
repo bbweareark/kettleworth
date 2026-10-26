@@ -19,36 +19,46 @@ const STYLE = {
  * and stored locally, so it never nags but is impossible to miss on new movements.
  */
 export function FormCheck({ exerciseId, name, cards, image, onReady }: { exerciseId: string; name: string; cards: CheckCard[]; image?: string; onReady?: () => void }) {
-  const reduce = useReducedMotion();
   const key = `kw-formcheck:${exerciseId}`;
   const [seen, setSeen] = useState<number | null>(null);
-  const [i, setI] = useState(0);
   const [open, setOpen] = useState(false);
   useEffect(() => { try { const n = Number(localStorage.getItem(key) ?? 0); setSeen(n); setOpen(n < 3 && cards.length > 0); } catch { setSeen(0); setOpen(cards.length > 0); } }, [key, cards.length]);
   if (seen === null || !cards.length) return null;
-  const done = () => { try { localStorage.setItem(key, String((seen ?? 0) + 1)); } catch {} setSeen((s) => (s ?? 0) + 1); setOpen(false); setI(0); onReady?.(); };
+  const done = () => { try { localStorage.setItem(key, String((seen ?? 0) + 1)); } catch {} setSeen((s) => (s ?? 0) + 1); setOpen(false); onReady?.(); };
   if (!open) return (
     <button type="button" onClick={() => setOpen(true)} className="flex w-full items-center gap-3 border border-border bg-surface-2 px-4 py-2.5 text-left text-sm transition-colors hover:border-border-strong">
       <span className="flex -space-x-1">{cards.slice(0, 3).map((c, k) => { const I = STYLE[c.kind].icon; return <span key={k} className={cn("grid size-6 place-items-center  border-2 border-bg", STYLE[c.kind].chip)}><I className="size-3" /></span>; })}</span>
       <span className="flex-1 text-fg-muted">Set-up check for {name}</span><ChevronRight className="size-4 text-fg-subtle" />
     </button>
   );
-  const c = cards[i]!; const S = STYLE[c.kind]; const I = S.icon; const last = i === cards.length - 1;
+  /*
+    All the cues at once, as a ruled list.
+
+    It used to be a carousel: one cue in a bordered card with a 1-of-3 pager and a Next
+    button, measured at 193px to show a single sentence like "Elbows tucked, upper arms
+    still", on a session screen already running 1573px against a 659px viewport. Set-up cues
+    are three short lines; paging through them costs two taps and most of the screen to say
+    less. Read together they also make more sense, because they describe one position.
+  */
   return (
-    <div className={cn("relative overflow-hidden border-2 p-5", S.ring)} role="group" aria-label={`Set-up check ${i + 1} of ${cards.length}`}>
-      <div className="relative flex items-start gap-4">
-        {image ? <img src={image} alt="" className="hidden size-24 shrink-0 object-cover sm:block" /> : null}
-        <div className="min-w-0 flex-1">
-          <div className="mb-2 flex items-center gap-2"><span className={cn("inline-flex items-center gap-1  px-2.5 py-1 text-2xs font-bold uppercase tracking-label", S.chip)}><I className="size-3" /> {S.label}</span><span className="text-2xs text-fg-subtle">{i + 1} / {cards.length}</span></div>
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.p key={i} initial={reduce ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={reduce ? undefined : { opacity: 0, x: -12 }} transition={{ duration: 0.22 }} className="font-display text-xl leading-snug tracking-tighter md:text-2xl">{c.text}</motion.p>
-          </AnimatePresence>
-        </div>
+    <div className="border-y border-rule py-3" role="group" aria-label={`Set-up check for ${name}`}>
+      <div className="flex items-baseline justify-between gap-3">
+        <span className="meta">Do this</span>
+        <button type="button" onClick={done} className="meta underline underline-offset-4 hover:text-fg">
+          Got it
+        </button>
       </div>
-      <div className="relative mt-4 flex items-center justify-between gap-3">
-        <div className="flex gap-1" aria-hidden>{cards.map((_, k) => <span key={k} className={cn("h-1 transition-all", k === i ? "w-6 bg-fg" : "w-2 bg-surface-3")} />)}</div>
-        {last ? <Button onClick={done}><Check /> Got it, ready</Button> : <Button variant="secondary" onClick={() => setI((x) => x + 1)}>Next <ChevronRight /></Button>}
-      </div>
+      <ul className="mt-2 space-y-1.5">
+        {cards.map((c, k) => {
+          const S = STYLE[c.kind]; const I = S.icon;
+          return (
+            <li key={k} className="flex items-start gap-2.5 text-sm leading-snug">
+              <I aria-hidden className="mt-0.5 size-4 shrink-0 text-ember" />
+              <span className="measure">{c.text}</span>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

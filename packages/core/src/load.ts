@@ -78,3 +78,70 @@ export function describePlates(plates: number[]): string {
   for (const p of plates) { const last = counts[counts.length - 1]; if (last && last[0] === p) last[1]++; else counts.push([p, 1]); }
   return counts.map(([p, n]) => (n > 1 ? `${n}×${p}` : `${p}`)).join(" + ");
 }
+
+/**
+ * The loads a lifter can actually select, for one piece of equipment.
+ *
+ * The console used to offer the current weight plus or minus a fixed step, which cannot reach
+ * most real loads: a rack jumps 22.5 to 25 with nothing between, a barbell can only make totals
+ * its plates can build, and a stack moves in whole pin increments. Stepping by 5 from 22.5
+ * produced 27.5, a dumbbell that does not exist in most gyms.
+ *
+ * So the control offers the ladder the equipment actually has, and the lifter picks a rung.
+ */
+
+/** Dumbbells as racks are actually built: 1 kg steps to 10, then 2.5 to 30, then 5 to 60. */
+const DUMBBELL_KG = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 7.5, 8, 9, 10, 12, 12.5, 14, 15, 16, 17.5, 18, 20, 22.5, 25, 27.5, 30, 32.5, 35, 37.5, 40, 42.5, 45, 50, 55, 60];
+const DUMBBELL_LB = [2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130];
+/** Competition kettlebells come in fixed sizes, not a continuum. */
+const KETTLEBELL_KG = [4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 36, 40, 44, 48];
+const KETTLEBELL_LB = [9, 13, 18, 26, 35, 44, 53, 62, 70, 79, 88, 97, 106];
+
+/** Every total a bar can be loaded to, since plates go on in pairs. Capped so the list stays a list. */
+function barLadder(bar: number, units: "metric" | "imperial", max: number): number[] {
+  const step = units === "metric" ? 1.25 : 2.5; // the smallest plate, one per side
+  const out: number[] = [bar];
+  for (let side = step; bar + side * 2 <= max; side = Math.round((side + step) * 100) / 100) {
+    const built = platesPerSide(bar + side * 2, bar, units);
+    if (built.exact) out.push(Math.round((bar + side * 2) * 100) / 100);
+  }
+  return out;
+}
+
+export type Ladder = { values: number[]; note: string };
+
+/**
+ * Selectable loads for a model, in the lifter's own units, as display numbers.
+ * An empty list means the quantity is continuous and the keys should step it freely.
+ */
+export function loadLadder(
+  model: LoadModel,
+  units: "metric" | "imperial",
+  barWeightDisplay = 0,
+): Ladder {
+  const metric = units === "metric";
+  switch (model.kind) {
+    case "handheld":
+      return model.implement === "kettlebell"
+        ? { values: metric ? KETTLEBELL_KG : KETTLEBELL_LB, note: "kettlebell sizes" }
+        : { values: metric ? DUMBBELL_KG : DUMBBELL_LB, note: "dumbbell rack" };
+    case "bar":
+      return { values: barLadder(barWeightDisplay, units, barWeightDisplay + (metric ? 260 : 580)), note: "loadable totals" };
+    case "stack":
+      // Pin stacks move in whole plates. Most are 5 kg or 10 lb, and the list stops where gyms do.
+      return { values: Array.from({ length: metric ? 40 : 30 }, (_, i) => (i + 1) * (metric ? 5 : 10)), note: "stack settings" };
+    case "added":
+      // What you can actually hang on a belt: plates, including none at all.
+      return { values: metric ? [0, 1.25, 2.5, 5, 7.5, 10, 12.5, 15, 20, 25, 30, 35, 40] : [0, 2.5, 5, 10, 15, 20, 25, 35, 45, 55, 70, 90], note: "added plates" };
+    default:
+      return { values: [], note: "" };
+  }
+}
+
+/** The rung at or just below a value, so the control can open on the lifter's current load. */
+export function nearestRung(values: number[], v: number): number | null {
+  if (!values.length) return null;
+  let best = values[0]!;
+  for (const x of values) if (Math.abs(x - v) < Math.abs(best - v)) best = x;
+  return best;
+}

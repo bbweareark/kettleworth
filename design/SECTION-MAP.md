@@ -54,3 +54,32 @@ regions and 12 uppercase micro-labels, and it stated the same target three times
 dialects: `SET 2 OF 3 · TARGET 12 TO 15 @ 9`, `REPS · AIM 12 TO 15`, and `RPE 9`. The weight
 and reps figures sat either side of a 19px `×` at 40px each, so neither dominated, and which
 one the keys drove was signalled only by 45% opacity.
+
+## Weight entry — ported from 21st.dev Iso Fader
+
+| What | Reference (Iso Fader, Daiwiik Harihar) | Here |
+|---|---|---|
+| Control | A ladder of discrete detents, not a continuous slide | The loads this equipment actually has |
+| Readout | The exact value read separately as a figure | The Unit Field row above it |
+| Hierarchy | Tick height carries the scale | Tick height reads the load, so the strip has the shape of a rack |
+| Orientation | Vertical fader travel | Horizontal: a thumb works across a phone, not up it |
+| Not taken | Dark chrome, LED colour ramp, inertial physics | A flick with momentum inside a scrolling page sets the wrong weight |
+
+**Why a ladder and not a stepper.** The console offered the current weight plus or minus a
+fixed step, which cannot reach most real loads:
+
+- a dumbbell rack jumps **22.5 → 25** with nothing between, so stepping 22.5 by 5 produced
+  **27.5**, a dumbbell most racks do not carry;
+- a barbell can only make totals its plates can build, and no sequence of ±5 respects that;
+- kettlebells are cast in fixed sizes (24, not 25);
+- a pin stack moves in whole plates.
+
+`loadLadder()` in `packages/core/src/load.ts` returns the real rungs per equipment kind, with
+10 tests asserting exactly these cases. `PlateDiagram` draws what goes on the sleeve, each
+plate a bar whose height is its weight, replacing the written "20 + 10 + 2.5".
+
+## Set-up check — cut, not restyled
+
+Measured on a phone: the session screen ran **1573px against a 659px viewport**, and the
+set-up check took **193px to show one sentence** ("Elbows tucked, upper arms still") behind a
+1 of 3 pager and a NEXT button. The cues are worth keeping; the carousel around them is not.

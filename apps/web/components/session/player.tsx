@@ -6,11 +6,12 @@ import { ArrowLeft, ArrowRight, Check, ChevronRight, ChevronDown, ChevronUp, Inf
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { LoggedSet, PlannedSet, ExerciseSummary } from "@kettleworth/types";
 import { Badge, Button, Card, CardContent, Progress, Sheet, SheetContent, Segmented, Textarea, CoachPulse, Dialog, DialogContent, cn, toast, type PulseItem } from "@kettleworth/ui";
-import { kgToLb, lbToKg, round, restFor, autoregulate, loadStep, loadModel, platesPerSide, describePlates, DEFAULT_BARS_KG, BAR_CHOICES_KG, BAR_CHOICES_LB, BAR_NAMES, type BarKind } from "@kettleworth/core";
+import { kgToLb, lbToKg, round, restFor, autoregulate, loadStep, loadModel, loadLadder, platesPerSide, describePlates, DEFAULT_BARS_KG, BAR_CHOICES_KG, BAR_CHOICES_LB, BAR_NAMES, type BarKind } from "@kettleworth/core";
 import { ExerciseMedia } from "@/components/library/media";
 import { RestTimer, ElapsedClock } from "./timer";
 import { FormCheck, type CheckCard } from "./form-check";
 import { RestDeck } from "./rest-deck";
+import { WeightRack, PlateDiagram } from "./weight-rack";
 import { PRCelebration } from "./celebrate";
 import { LiftHistory, fmtKg, type LiftHistoryData } from "@/components/lifts/lift-history";
 import { dayMonth } from "@/lib/format";
@@ -267,6 +268,11 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
   const unit = metric ? "kg" : "lb";
   const done = !!logged;
   const totalNow = fieldToTotalDisp(w);
+  // The loads this equipment can actually be set to. Empty means the quantity is continuous
+  // and the plus/minus keys step it freely.
+  const ladder = loadLadder(model, units, barDisp);
+  // The raw figure, so the rack highlights only what is actually set.
+  const rackValue = Number(w) || 0;
   const makeup = (() => {
     if (model.kind === "bar") {
       if (totalNow == null) return `${barDisp} ${unit} ${BAR_NAMES[model.bar].toLowerCase()}`;
@@ -322,7 +328,20 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
               onSelect={() => setPad("w")}
               onNudge={(d) => nudge("w", d)}
               stepFor={(d) => String(round(Math.abs(d) * step, 2))}
+              /* Where the equipment has real rungs, the rack replaces the keys: a dumbbell
+                 cannot be nudged to 27.5 if the gym does not own one. Per-side entry keeps the
+                 keys, because there the lifter is counting plates, not picking a dumbbell. */
+              keys={ladder.values.length === 0 || sideMode}
             />
+            {pad === "w" && ladder.values.length > 0 && !sideMode ? (
+              <WeightRack
+                values={ladder.values}
+                value={rackValue}
+                unit={unit}
+                note={ladder.note}
+                onPick={(v) => setW(String(v))}
+              />
+            ) : null}
             <Quantity
               label="Reps"
               value={r || "0"}
@@ -349,7 +368,9 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
                     {BAR_NAMES[model.bar]} {barDisp} {unit}
                   </button>
                 ) : null}
-                {makeup ? <span className="min-w-0 text-fg-subtle">{makeup}</span> : null}
+                {model.kind === "bar" && totalNow != null && totalNow >= barDisp ? (
+                  <PlateDiagram plates={platesPerSide(totalNow, barDisp, units).plates} unit={unit} />
+                ) : makeup ? <span className="min-w-0 text-fg-muted">{makeup}</span> : null}
               </div>
             ) : null}
             {model.kind === "bar" && barOpen ? (
@@ -523,10 +544,12 @@ function effortWord(rpe: number): string {
  * 45% opacity difference. Here the keys sit under the row they drive, so position answers it.
  */
 function Quantity({
-  label, value, unit, active, onSelect, onNudge, stepFor,
+  label, value, unit, active, onSelect, onNudge, stepFor, keys = true,
 }: {
   label: string; value: string; unit: string; active: boolean;
   onSelect: () => void; onNudge: (d: number) => void; stepFor: (d: number) => string;
+  /** False when a rack of real loads replaces the keys for this quantity. */
+  keys?: boolean;
 }) {
   return (
     <div className="border-b border-rule">
@@ -543,7 +566,7 @@ function Quantity({
           <span className="ml-1.5 text-base text-fg-muted">{unit}</span>
         </span>
       </button>
-      {active ? (
+      {active && keys ? (
         <div className="grid grid-cols-4 gap-px bg-rule" aria-label={`Adjust ${label}`}>
           {[-2, -1, 1, 2].map((d) => (
             <button

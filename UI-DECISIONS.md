@@ -269,6 +269,65 @@ it counted `bg-bg` cells, which are the same colour as the ground, as separate r
 **Behaviour proven, not assumed:** tapping Reps moves the keys to that row, `+2` takes reps
 15 → 17, and the weight row stays at 0. The e2e spec now drives and asserts exactly that.
 
+## Weight entry — the rack, ported from 21st.dev Iso Fader
+
+**The report:** the incrementer cannot set the right weight, "specially when dumbbell".
+
+**The cause, and it was a correctness bug, not a styling one.** The console offered the current
+weight plus or minus a fixed step. Real equipment does not work that way:
+
+| Equipment | What the stepper did | What exists |
+|---|---|---|
+| Dumbbell | 22.5 + 5 = **27.5** | Racks jump 22.5 → 25 → 27.5; 27.5 is often absent, and nothing sits between 22.5 and 25 |
+| Barbell | any multiple of the step | Only totals the plates can build in pairs |
+| Kettlebell | 24 + 1 = 25 | Bells are cast at 24, then 28. There is no 25 |
+| Pin stack | free | Whole pins only |
+
+`loadLadder()` in `packages/core/src/load.ts` now returns the rungs each kind actually has,
+with **10 tests** asserting exactly these cases, including that every barbell rung passes
+`platesPerSide(...).exact`.
+
+**Reference: 21st.dev Iso Fader by Daiwiik Harihar**
+(`design/refs/components-21st-isofader`, https://21st.dev/@daiwiikharihar/components/iso-fader)
+— a mixing-desk fader: a ladder of discrete detents beside a digital readout. ISO is a
+non-linear ladder (100, 200, 400) and so is a dumbbell rack, which is why it transfers.
+
+| Taken | Not taken |
+|---|---|
+| The detented ladder of real values | Its dark chrome and LED colour ramp |
+| Tick height carrying the scale, so the strip has the shape of a rack | Its vertical travel: a thumb works across a phone, not up it |
+| The exact value read separately as a figure | Its inertial physics — a flick with momentum inside a scrolling page sets the wrong weight |
+
+Per-side barbell entry keeps the plus/minus keys, because there the lifter is counting plates
+rather than picking a dumbbell. `PlateDiagram` now draws the sleeve — each plate a bar whose
+height is its weight — in place of the written "20 + 10 + 2.5".
+
+**Bug caught in review:** the rack first highlighted the *nearest* rung, so a console reading
+`0 kg` sat above a rack claiming 5 was selected. Scrolling to the nearest rung is helpful;
+marking it chosen is a lie. It now highlights only an exact match.
+
+### Set-up check — carousel cut
+
+It was one cue at a time in a bordered card with a 1-of-3 pager and a Next button: **193px to
+show a single sentence**, on a screen already running 1573px against a 659px viewport. Set-up
+cues are three short lines, and they describe one position, so they read better together.
+Now a ruled list with one "Got it": **117px, all three cues visible, two fewer taps.**
+
+### Verified on the real UI
+
+Swapped to a real dumbbell lift: **33 rungs, 22.5 and 25 both present, nothing between them**,
+and tapping 22.5 set exactly `22.5 kg` with "A pair of 22.5 kg dumbbells" beneath. A cable
+pushdown offered 40 whole-pin stack settings. 114 core tests, typecheck, production build and
+both Playwright projects pass.
+
+### Tooling fixed to make this possible
+
+The gate's `find_repo_root` tested `os.path.isdir(".git")`, but a **git worktree's `.git` is a
+file**, so the walk failed and the gate reported the whole pipeline missing. It now accepts
+either. Project identity also came from the folder basename, so a worktree compared the
+project against itself and called all fifteen choices a near-clone; identity now resolves
+through the worktree's `gitdir` to the main repository.
+
 ## Replication score: 8/10
 
 Scored by comparing `design/refs/ours-landing/blueprint.md` against
