@@ -11,7 +11,7 @@ import { ExerciseMedia } from "@/components/library/media";
 import { RestTimer, ElapsedClock } from "./timer";
 import { FormCheck, type CheckCard } from "./form-check";
 import { RestDeck } from "./rest-deck";
-import { WeightRack, PlateDiagram } from "./weight-rack";
+import { WeightPad, PlateDiagram } from "./weight-pad";
 import { PRCelebration } from "./celebrate";
 import { LiftHistory, fmtKg, type LiftHistoryData } from "@/components/lifts/lift-history";
 import { dayMonth } from "@/lib/format";
@@ -331,15 +331,15 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
               /* Where the equipment has real rungs, the rack replaces the keys: a dumbbell
                  cannot be nudged to 27.5 if the gym does not own one. Per-side entry keeps the
                  keys, because there the lifter is counting plates, not picking a dumbbell. */
-              keys={ladder.values.length === 0 || sideMode}
+              keys={false}
             />
-            {pad === "w" && ladder.values.length > 0 && !sideMode ? (
-              <WeightRack
-                values={ladder.values}
-                value={rackValue}
+            {pad === "w" ? (
+              <WeightPad
+                value={w}
                 unit={unit}
-                note={ladder.note}
-                onPick={(v) => setW(String(v))}
+                quick={sideMode ? [] : ladder.values}
+                quickNote={ladder.note || "common loads"}
+                onChange={setW}
               />
             ) : null}
             <Quantity
@@ -551,8 +551,16 @@ function Quantity({
   /** False when a rack of real loads replaces the keys for this quantity. */
   keys?: boolean;
 }) {
+  const row = useRef<HTMLDivElement>(null);
+  // The keypad is tall enough to push this row off the top of a phone, and typing a number
+  // you cannot see is worse than any stepper. Opening the editor brings its figure up first.
+  useEffect(() => {
+    if (!active) return;
+    const id = requestAnimationFrame(() => row.current?.scrollIntoView({ block: "start", behavior: "smooth" }));
+    return () => cancelAnimationFrame(id);
+  }, [active]);
   return (
-    <div className="border-b border-rule">
+    <div ref={row} className="scroll-mt-14 border-b border-rule">
       <button
         type="button"
         onClick={onSelect}

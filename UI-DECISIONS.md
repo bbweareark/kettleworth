@@ -328,6 +328,51 @@ either. Project identity also came from the folder basename, so a worktree compa
 project against itself and called all fifteen choices a near-clone; identity now resolves
 through the worktree's `gitdir` to the main repository.
 
+## Weight entry, third attempt: a keypad, because a ladder is a cage
+
+**The report:** "still not better... its not showing 0 1 or .5s or anything".
+
+That is correct and it was my regression. The sequence:
+
+1. **Steppers** (± a fixed step) could not land on an arbitrary value without many taps.
+2. **A ladder of real gym loads** fixed the dumbbell case but made it *worse overall*: a fixed
+   table can only ever offer what it lists, so 0, 1 and any half it omitted became
+   **unreachable**. I replaced a slow control with a closed one.
+3. **A keypad** has no ceiling. Every value is a few taps away, and the ladder survives beside
+   it as an accelerator rather than as the only route in.
+
+This is the real port of **21st.dev's Number Pad by Bankk roll**
+(`design/refs/components-21st-numberpad`): one dominant readout, a hard grid of equal keys,
+one commit. I had captured that reference twice and both times implemented something that was
+not a number pad. The third time it is one.
+
+| Taken | Not taken |
+|---|---|
+| The key grid and its one-commit flow | Its palette, radius and type |
+| One dominant readout above the keys | Its card surfaces |
+
+**Proven in the real app**, typing each value and reading back what the field holds:
+
+| Typed | Field reads |
+|---|---|
+| `0` | 0 kg |
+| `1` | 1 kg |
+| `.5` | 0.5 kg |
+| `2.5` | 2.5 kg |
+| `7.5` | 7.5 kg |
+| `22.5` | 22.5 kg |
+| `137.5` | 137.5 kg |
+
+14 tests cover the keystroke contract: a bare `.` opens `0.`, only one decimal point, one
+decimal place, a lone leading zero is replaced rather than making `05`, backspace empties, and
+four digits is the ceiling.
+
+**Flaw caught in review:** the keypad is tall enough to push the weight figure off the top of a
+phone, so the first build had the lifter typing a number they could not see. Opening the editor
+now brings its row into view first; measured at y=299 in a 659px viewport with the keys below.
+
+`WeightRack` was deleted rather than left unused: the quick row inside the pad supersedes it.
+
 ## Replication score: 8/10
 
 Scored by comparing `design/refs/ours-landing/blueprint.md` against
