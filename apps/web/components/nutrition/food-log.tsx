@@ -87,18 +87,18 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
   const pct = Math.min(1, tot.calories / Math.max(1, targets.calories));
 
   return (
-    <section className="space-y-4 p-5 border border-rule md:p-6" aria-label="Food log">
+    <section className="space-y-4 rounded-lg border border-rule bg-surface p-5 md:p-6" aria-label="Food log">
       {/* Today's meter */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="eyebrow">Today's log</div>
           <div className="mt-1 flex items-baseline gap-2"><span className="font-display text-4xl tracking-tightest tabular">{Math.round(tot.calories)}</span><span className="text-sm text-fg-subtle">of {targets.calories} kcal</span></div>
         </div>
-        <div className={cn(" px-3 py-1 text-sm tabular", left >= 0 ? "bg-fg text-bg" : " text-ember")}>{left >= 0 ? `${left} kcal left` : `${-left} kcal over`}</div>
+        <div className={cn(" px-3 py-1 text-sm tabular", left >= 0 ? "bg-fg text-bg" : " text-volt")}>{left >= 0 ? `${left} kcal left` : `${-left} kcal over`}</div>
       </div>
-      <div className="h-2 overflow-hidden bg-rule"><motion.div className={cn("h-full", left >= 0 ? "bg-ember" : "bg-amber")} animate={{ width: `${pct * 100}%` }} transition={{ duration: reduce ? 0 : 0.5 }} /></div>
+      <div className="h-2 overflow-hidden bg-rule"><motion.div className={cn("h-full", left >= 0 ? "bg-volt" : "bg-amber")} animate={{ width: `${pct * 100}%` }} transition={{ duration: reduce ? 0 : 0.5 }} /></div>
       <div className="grid grid-cols-3 gap-2">
-        {([["Protein", tot.proteinG, targets.proteinG, "bg-ember"], ["Carbs", tot.carbsG, targets.carbsG, "bg-sky"], ["Fat", tot.fatG, targets.fatG, "bg-amber"]] as const).map(([l, v, t, c]) => (
+        {([["Protein", tot.proteinG, targets.proteinG, "bg-volt"], ["Carbs", tot.carbsG, targets.carbsG, "bg-sky"], ["Fat", tot.fatG, targets.fatG, "bg-amber"]] as const).map(([l, v, t, c]) => (
           <div key={l} className="p-2.5"><div className="flex items-baseline justify-between text-xs"><span className="text-fg-subtle">{l}</span><span className="tabular text-fg-muted">{Math.round(v)} / {t} g</span></div><div className="mt-1.5 h-1 overflow-hidden bg-rule"><div className={cn("h-full", c)} style={{ width: `${Math.min(100, (v / Math.max(1, t)) * 100)}%` }} /></div></div>
         ))}
       </div>
@@ -125,14 +125,14 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
       ) : <p className="text-sm text-fg-muted">Nothing logged yet. Start with what you're drinking.</p>}
 
       {/* Add */}
-      <div className="space-y-4 p-4 border border-rule">
+      <div className="space-y-4 rounded-lg border border-rule bg-surface p-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-2xs uppercase tracking-label text-fg-subtle">Add to</span>
-          <div className="flex flex-wrap gap-1">{SLOTS.map((s) => <button key={s.v} type="button" aria-pressed={slot === s.v} onClick={() => setSlot(s.v)} className={cn("h-8  px-3 text-xs border", slot === s.v ? "bg-fg text-bg ring-fg" : "text-fg-muted border-rule-strong hover:text-fg")}>{s.l}</button>)}</div>
+          <span className="meta">Add to</span>
+          <div className="flex flex-wrap gap-1">{SLOTS.map((s) => <button key={s.v} type="button" aria-pressed={slot === s.v} onClick={() => setSlot(s.v)} className={cn("h-9 rounded-full border px-3.5 text-xs transition-colors", slot === s.v ? "border-fg bg-fg text-bg" : "border-rule text-fg-muted hover:border-rule-strong hover:text-fg")}>{s.l}</button>)}</div>
         </div>
-        <div className="grid grid-cols-4 gap-1 bg-rule p-1" role="tablist" aria-label="How to add">
+        <div className="grid grid-cols-4 gap-1 rounded-full border border-rule bg-bg p-1" role="tablist" aria-label="How to add">
           {modes.map(({ id, label, Icon }) => (
-            <button key={id} type="button" role="tab" aria-selected={mode === id} onClick={() => { setMode(id); setEstimate(null); setProduct(null); setScanning(false); }} className={cn("flex h-11 flex-col items-center justify-center gap-0.5 text-xs transition-colors sm:flex-row sm:gap-2 sm:text-sm", mode === id ? "bg-fg text-bg" : "text-fg-muted hover:text-fg")}><Icon className={cn("size-4", mode === id && "text-bg")} />{label}</button>
+            <button key={id} type="button" role="tab" aria-selected={mode === id} onClick={() => { setMode(id); setEstimate(null); setProduct(null); setScanning(false); }} className={cn("flex h-11 flex-col items-center justify-center gap-0.5 rounded-full text-xs transition-colors sm:flex-row sm:gap-2 sm:text-sm", mode === id ? "bg-fg text-bg" : "text-fg-muted hover:text-fg")}><Icon className={cn("size-4", mode === id && "text-bg")} />{label}</button>
           ))}
         </div>
 
@@ -172,7 +172,7 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
               <div className="space-y-3">
                 <div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" /><Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search your meal plan recipes" aria-label="Search recipes" className="pl-9" /></div>
                 {matches.length ? <ul className="space-y-1">{matches.map((m) => <li key={m.id}><button type="button" onClick={async () => { setBusy(m.id); await log(m.name, m.macros, "recipe", undefined, m.id); setBusy(null); setQ(""); router.refresh(); }} className="flex w-full items-center justify-between bg-rule px-3 py-2 text-left text-sm hover:bg-rule"><span className="truncate">{m.name}</span><span className="flex shrink-0 items-center gap-2 tabular text-fg-muted">{m.macros.calories} kcal<Plus className="size-4" /></span></button></li>)}</ul> : null}
-                <div className="flex items-end gap-2 border-t border-border pt-3">
+                <div className="flex items-end gap-2 border-t border-rule pt-3">
                   <label className="flex-1 text-2xs uppercase tracking-label text-fg-subtle">Quick add<Input value={custom.label} onChange={(e) => setCustom({ ...custom, label: e.target.value })} className="mt-1" placeholder="Name" /></label>
                   <label className="w-24 text-2xs uppercase tracking-label text-fg-subtle">kcal<Input inputMode="numeric" value={custom.calories} onChange={(e) => setCustom({ ...custom, calories: e.target.value.replace(/[^0-9]/g, "") })} className="mt-1" placeholder="0" /></label>
                   <Button disabled={!custom.label || !custom.calories} loading={busy === "custom"} onClick={async () => { setBusy("custom"); await log(custom.label, { calories: Number(custom.calories), proteinG: 0, carbsG: 0, fatG: 0, fibreG: 0 }, "manual"); setBusy(null); setCustom({ label: "", calories: "" }); router.refresh(); }} aria-label="Quick add">Add</Button>

@@ -40,7 +40,7 @@ export function AuthForm({ mode, providers }: { mode: "sign-in" | "sign-up"; pro
   }
 
   if (magicSent) return (
-    <div className="surface p-6 text-center">
+    <div className="rounded-lg border border-rule bg-surface p-6 text-center">
       <h1 className="font-display text-xl">Check your email</h1>
       <p className="mt-2 text-sm text-fg-muted">We sent a sign-in link to <span className="text-fg">{email}</span>. It expires in 15 minutes.</p>
       <p className="mt-4 text-xs text-fg-subtle">Running locally without an email provider? The link is printed in the server console.</p>
@@ -49,12 +49,12 @@ export function AuthForm({ mode, providers }: { mode: "sign-in" | "sign-up"; pro
 
   return (
     <div className="space-y-6">
-      <div><h1 className="font-display text-2xl tracking-tighter">{mode === "sign-up" ? "Create your account" : "Welcome back"}</h1><p className="mt-1 text-sm text-fg-muted">{mode === "sign-up" ? "Free while we're in early access." : "Sign in to pick up your programme."}</p></div>
+      <div><h1 className="font-display text-3xl">{mode === "sign-up" ? "Create your account" : "Welcome back"}</h1><p className="mt-1 text-sm text-fg-muted">{mode === "sign-up" ? "Free while we're in early access." : "Sign in to pick up your programme."}</p></div>
       {providers.length ? (
         <div className="grid gap-2">
           {providers.includes("google") && <Button type="button" variant="secondary" size="lg" loading={busy === "google"} onClick={() => social("google")}>Continue with Google</Button>}
           {providers.includes("apple") && <Button type="button" variant="secondary" size="lg" loading={busy === "apple"} onClick={() => social("apple")}>Continue with Apple</Button>}
-          <div className="relative py-2 text-center text-xs text-fg-subtle"><span className="bg-bg px-2">or</span><div className="absolute inset-x-0 top-1/2 -z-10 h-px bg-border" /></div>
+          <div className="relative py-2 text-center text-xs text-fg-subtle"><span className="bg-bg px-2">or</span><div className="absolute inset-x-0 top-1/2 -z-10 h-px bg-rule" /></div>
         </div>
       ) : null}
       <form onSubmit={submit} className="space-y-4">
@@ -65,7 +65,7 @@ export function AuthForm({ mode, providers }: { mode: "sign-in" | "sign-up"; pro
         <Button type="button" variant="ghost" size="lg" className="w-full" loading={busy === "magic"} onClick={magic}>Email me a sign-in link instead</Button>
       </form>
       <p className="text-center text-sm text-fg-muted">
-        {mode === "sign-up" ? <>Already have an account? <Link className="text-ember hover:underline" href="/sign-in">Sign in</Link></> : <>New here? <Link className="text-ember hover:underline" href="/sign-up">Create an account</Link></>}
+        {mode === "sign-up" ? <>Already have an account? <Link className="text-volt transition-colors hover:text-fg" href="/sign-in">Sign in</Link></> : <>New here? <Link className="text-volt transition-colors hover:text-fg" href="/sign-up">Create an account</Link></>}
       </p>
     </div>
   );

@@ -9,7 +9,7 @@ type Result = { items: ExerciseSummary[]; total: number; limit: number; offset: 
 const MUSCLES = ["chest", "lats", "upper_back", "front_delts", "side_delts", "rear_delts", "biceps", "triceps", "forearms", "abs", "quads", "hamstrings", "glutes", "calves", "lower_back"];
 const EQUIP = ["bodyweight", "barbell", "dumbbell", "kettlebell", "cable", "machine", "bands"];
 const PATTERNS = ["squat", "hinge", "lunge", "horizontal_push", "vertical_push", "horizontal_pull", "vertical_pull", "core", "carry", "isolation", "cardio", "mobility"];
-const label = (s: string) => s.replace(/_/g, "");
+const label = (s: string) => s.replace(/_/g, " ");
 
 export function LibraryBrowser({ initial, initialQuery, onPick, compact }: { initial: Result; initialQuery?: Record<string, string | undefined>; onPick?: (e: ExerciseSummary) => void; compact?: boolean }) {
   const [q, setQ] = useState(initialQuery?.q ?? "");
@@ -50,13 +50,13 @@ export function LibraryBrowser({ initial, initialQuery, onPick, compact }: { ini
           {res.items.map((e) => (
             <li key={e.id}>
               {onPick ? (
-                <button type="button" onClick={() => onPick(e)} className="flex w-full items-center gap-3 border border-border bg-surface p-3 text-left transition-colors hover:border-border-strong">
+                <button type="button" onClick={() => onPick(e)} className="flex w-full items-center gap-3 rounded-lg border border-rule bg-surface p-3.5 text-left transition-colors hover:border-rule-strong">
                   <Thumb e={e} size={56} /><div className="min-w-0"><div className="truncate font-medium">{e.name}</div><div className="truncate text-xs text-fg-subtle capitalize">{e.primaryMuscles.map(label).join(", ")} · {e.equipment.map(label).join(", ")}</div></div>
                 </button>
               ) : (
-                <Link href={`/library/${e.slug}`} className="group flex gap-3 border border-border bg-surface p-3 transition-all hover:-translate-y-0.5 hover:border-border-strong hover:shadow-card">
+                <Link href={`/library/${e.slug}`} className="group flex gap-3 rounded-lg border border-rule bg-surface p-3.5 transition-colors hover:border-rule-strong">
                   <Thumb e={e} size={72} />
-                  <div className="min-w-0 flex-1"><div className="truncate font-medium group-hover:text-ember">{e.name}</div><div className="mt-0.5 truncate text-xs text-fg-subtle capitalize">{e.primaryMuscles.map(label).join(", ")}</div><div className="mt-2 flex flex-wrap gap-1"><Badge tone="outline" className="capitalize">{label(e.pattern)}</Badge><Badge tone="outline" className="capitalize">{e.difficulty}</Badge>{e.equipment.slice(0, 2).map((q) => <Badge key={q} tone="outline" className="capitalize">{label(q)}</Badge>)}</div></div>
+                  <div className="min-w-0 flex-1"><div className="truncate font-medium group-hover:text-volt">{e.name}</div><div className="mt-0.5 truncate text-xs text-fg-subtle capitalize">{e.primaryMuscles.map(label).join(", ")}</div><div className="mt-2 flex flex-wrap gap-1"><Badge tone="outline" className="capitalize">{label(e.pattern)}</Badge><Badge tone="outline" className="capitalize">{e.difficulty}</Badge>{e.equipment.slice(0, 2).map((q) => <Badge key={q} tone="outline" className="capitalize">{label(q)}</Badge>)}</div></div>
                 </Link>
               )}
             </li>
@@ -71,7 +71,7 @@ export function LibraryBrowser({ initial, initialQuery, onPick, compact }: { ini
 export function Thumb({ e, size }: { e: ExerciseSummary; size: number }) {
   const src = e.imageUrls[0];
   return (
-    <div className="relative shrink-0 overflow-hidden bg-surface-3" style={{ width: size, height: size }}>
+    <div className="relative shrink-0 overflow-hidden bg-bg" style={{ width: size, height: size }}>
       {src ? <img src={src} alt="" width={size} height={size} loading="lazy" className="size-full object-cover" /> : <div className="grid size-full place-items-center text-2xs text-fg-subtle">No image</div>}
     </div>
   );

@@ -21,16 +21,16 @@ export function RestTimer({ seconds, onDone, onSkip, children, why }: { seconds:
   const pct = total ? (left / total) * 100 : 0;
   const mm = Math.floor(left / 60), ss = String(left % 60).padStart(2, "0");
   return (
-    <div className="border-y-2 border-rule-strong py-3.5" role="timer" aria-live="polite" aria-label={`Rest ${mm}:${ss} remaining`}>
+    <div className="rounded-lg border border-volt/40 bg-surface px-4 py-3.5" role="timer" aria-live="polite" aria-label={`Rest ${mm}:${ss} remaining`}>
       {/* The clock sticks under the app header: whatever the rest deck scrolls to, the time left
           is still on screen. Clock and controls share one row so the deck starts higher up. */}
-      <div className="sticky top-[49px] z-20 bg-bg pb-2 lg:top-0">
-        <div className="mb-1.5 flex items-center justify-between gap-3 text-sm"><span className="font-medium text-ember">Rest</span><span className="truncate text-right text-fg-muted">{why ?? "Next set when it hits zero"}</span></div>
+      <div className="sticky top-16 z-20 bg-surface pb-2">
+        <div className="mb-1.5 flex items-center justify-between gap-3 text-sm"><span className="font-medium text-volt">Rest</span><span className="truncate text-right text-fg-muted">{why ?? "Next set when it hits zero"}</span></div>
         <div className="flex items-end justify-between gap-3">
           <div className="font-display text-4xl leading-none tabular">{mm}:{ss}</div>
           <div className="flex gap-2"><Button variant="secondary" size="sm" onClick={() => adjust(-15)} aria-label="Minus 15 seconds"><Minus /> 15s</Button><Button variant="secondary" size="sm" onClick={() => adjust(15)} aria-label="Plus 15 seconds"><Plus /> 15s</Button><Button variant="ghost" size="sm" onClick={onSkip}>Skip <SkipForward /></Button></div>
         </div>
-        <div className="mt-2 h-1 overflow-hidden"><div className="h-full bg-ember transition-[width] duration-200" style={{ width: `${pct}%` }} /></div>
+        <div className="mt-2 h-1 overflow-hidden rounded-full bg-rule"><div className="h-full rounded-full bg-volt transition-[width] duration-200" style={{ width: `${pct}%` }} /></div>
       </div>
       {children}
     </div>

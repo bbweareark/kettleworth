@@ -61,7 +61,7 @@ export function Conveyor() {
                   current ? "border-rule-strong" : "border-rule",
                 )}
               >
-                <div className={cn("meta", current && "text-ember")}>
+                <div className={cn("meta", current && "text-volt")}>
                   {String(w.n).padStart(2, "0")} · {w.kind}
                 </div>
                 <div className={cn("mt-1 font-display text-2xl tabular", current ? "text-fg" : "text-fg-subtle")}>
@@ -71,7 +71,7 @@ export function Conveyor() {
                   aria-hidden
                   className={cn(
                     "mt-2 h-8",
-                    w.kind === "deload" ? "bg-rule" : current ? "bg-ember" : "bg-fg-subtle/35",
+                    w.kind === "deload" ? "bg-rule" : current ? "bg-volt" : "bg-fg-subtle/35",
                   )}
                   style={{ height: `${w.kind === "deload" ? 14 : 14 + (w.n * 3)}px` }}
                 />

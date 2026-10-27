@@ -55,11 +55,11 @@ export function QuestBoard({ board: initial, todayIso }: { board: Board; todayIs
   if (!board.main && !board.side) return null;
   const mainDone = board.main?.status === "completed";
   return (
-    <section className="border-t border-rule pt-5" aria-label="Quest board">
+    <section className="border-t border-rule pt-4" aria-label="Quest board">
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <span className="eyebrow">Quest board</span>
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-2xs uppercase tracking-label text-fg-muted"><Shield className="size-3 text-ember" />{board.streakWeeks} week streak</span>
-        <span className="ml-auto text-2xs uppercase tracking-label text-fg-subtle tabular">{board.weekDone} / {board.weekPlanned} this week</span>
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-rule px-3 py-1 text-2xs uppercase tracking-label text-fg-muted"><Shield className="size-3 text-volt" aria-hidden />{board.streakWeeks} week streak</span>
+        <span className="meta ml-auto tabular">{board.weekDone} / {board.weekPlanned} this week</span>
       </div>
 
       {/* Main quest */}
@@ -69,20 +69,20 @@ export function QuestBoard({ board: initial, todayIso }: { board: Board; todayIs
             <div className="shrink-0 pt-0.5">{mainDone ? <Check className="size-5 text-fg" /> : <Swords className="size-5 text-fg-subtle" strokeWidth={1.5} />}</div>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-2xs uppercase tracking-label text-ember">Main quest</span>
-                {board.main.overdue && !mainDone ? <span className="px-2 py-0.5 text-2xs uppercase tracking-label text-ember">From {pastDayLabel(board.main.scheduledOn, todayIso)}</span> : null}
+                <span className="text-2xs uppercase tracking-label text-volt">Main quest</span>
+                {board.main.overdue && !mainDone ? <span className="px-2 py-0.5 text-2xs uppercase tracking-label text-volt">From {pastDayLabel(board.main.scheduledOn, todayIso)}</span> : null}
                 <span className="ml-auto font-display text-sm tabular text-fg">+{board.main.points}</span>
               </div>
-              <h3 className="mt-0.5 truncate font-display text-xl tracking-tighter">{board.main.name}</h3>
-              {!mainDone ? <Link href={`/app/session/${board.main.sessionId}`} className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-ember hover:underline">Open the session <ChevronRight className="size-4" /></Link> : <p className="mt-1 text-sm text-fg">Complete. Full Growth claimed.</p>}
+              <h3 className="mt-0.5 truncate font-display text-xl">{board.main.name}</h3>
+              {!mainDone ? <Link href={`/app/session/${board.main.sessionId}`} className="mt-2 inline-flex items-center gap-1.5 text-sm text-fg transition-colors hover:text-volt">Open the session <ChevronRight className="size-4" /></Link> : <p className="mt-1 text-sm text-fg">Complete. Full Growth claimed.</p>}
             </div>
           </div>
 
           <AnimatePresence>
             {ask && !mainDone ? (
               <motion.div initial={reduce ? false : { opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
-                <div className="mt-4 border-t border-border-strong pt-4">
-                  <p className="font-display text-base tracking-tight">{board.main.overdue ? `Did you do ${board.main.name} ${pastDayLabel(board.main.scheduledOn, todayIso)}?` : "Did you train today?"}</p>
+                <div className="mt-4 rounded-lg border border-rule bg-surface p-4">
+                  <p className="font-display text-lg">{board.main.overdue ? `Did you do ${board.main.name} ${pastDayLabel(board.main.scheduledOn, todayIso)}?` : "Did you train today?"}</p>
                   <p className="text-sm text-fg-muted">Answer honestly. There is a way to keep the week alive either way.</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <Button size="sm" loading={busy === "done"} onClick={() => answer("done")}><Check className="size-4" />Yes, it's done</Button>
@@ -117,7 +117,7 @@ function SideQuestCard({ quest, done, claimed, busy, onClaim }: { quest: SideQue
   const complete = done || ticks.size >= total;
   const toggle = (k: string) => setTicks((s) => { const n = new Set(s); n.has(k) ? n.delete(k) : n.add(k); return n; });
   return (
-    <div className={cn("p-4 border", done ? "bg-fg text-bg border-fg" : "border-rule")}>
+    <div className={cn("rounded-lg border p-4", done ? "border-fg bg-fg text-bg" : "border-rule bg-surface")}>
       <div className="flex items-start gap-3">
         <div className="shrink-0 pt-0.5">{done ? <Check className="size-5 text-fg" /> : <Timer className="size-5 text-fg-subtle" strokeWidth={1.5} />}</div>
         <div className="min-w-0 flex-1">
@@ -125,23 +125,23 @@ function SideQuestCard({ quest, done, claimed, busy, onClaim }: { quest: SideQue
             <span className="text-2xs uppercase tracking-label text-fg">Side quest</span>
             <span className="ml-auto font-display text-sm tabular">+{quest.points}</span>
           </div>
-          <h3 className="mt-0.5 font-display text-xl tracking-tighter">{quest.title}</h3>
+          <h3 className="mt-0.5 font-display text-xl">{quest.title}</h3>
           <p className="mt-1 text-sm text-fg-muted">{quest.rounds} rounds, about {quest.minutes} minutes. {quest.why}</p>
         </div>
       </div>
       <ul className="mt-3 space-y-1.5">
         {quest.moves.map((m, i) => (
-          <li key={m.exerciseId} className="flex items-center gap-3 px-3 py-2">
+          <li key={m.exerciseId} className="flex items-center gap-3 border-t border-rule py-2.5">
             <span className="w-4 text-center font-display text-xs text-fg-subtle tabular">{i + 1}</span>
             <span className="min-w-0 flex-1 truncate text-sm">{m.name}<span className="ml-2 text-fg-subtle">{m.reps ? `${m.reps} reps` : `${m.seconds}s`}</span></span>
             <span className="flex gap-1">{Array.from({ length: quest.rounds }, (_, r) => { const k = `${i}-${r}`; const on = done || ticks.has(k); return (
-              <button key={k} type="button" disabled={done} aria-label={`${m.name}, round ${r + 1}`} aria-pressed={on} onClick={() => toggle(k)} className={cn("size-6 border transition-all active:scale-90", on ? "bg-ember text-ember-fg ring-ember" : "bg-rule border-rule-strong hover:bg-rule")}>{on ? <Check className="mx-auto size-3.5" /> : null}</button>); })}</span>
+              <button key={k} type="button" disabled={done} aria-label={`${m.name}, round ${r + 1}`} aria-pressed={on} onClick={() => toggle(k)} className={cn("size-7 rounded-full border transition-colors active:scale-90", on ? "border-volt bg-volt text-volt-fg" : "border-rule-strong hover:border-fg")}>{on ? <Check className="mx-auto size-3.5" /> : null}</button>); })}</span>
           </li>
         ))}
       </ul>
       {!done ? (
         <div className="mt-3 flex items-center gap-3">
-          <div className="h-1.5 flex-1 overflow-hidden bg-rule"><motion.div className="h-full bg-ember" animate={{ width: `${(ticks.size / total) * 100}%` }} transition={{ duration: reduce ? 0 : 0.3 }} /></div>
+          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-rule"><motion.div className="h-full rounded-full bg-volt" animate={{ width: `${(ticks.size / total) * 100}%` }} transition={{ duration: reduce ? 0 : 0.3 }} /></div>
           <Button size="sm" disabled={!complete} loading={busy} onClick={onClaim}><Flame className="size-4" />Claim {quest.points}</Button>
         </div>
       ) : (

@@ -11,7 +11,7 @@ import { ExerciseMedia } from "@/components/library/media";
 import { RestTimer, ElapsedClock } from "./timer";
 import { FormCheck, type CheckCard } from "./form-check";
 import { RestDeck } from "./rest-deck";
-import { WeightPad, PlateDiagram } from "./weight-pad";
+import { Keypad, PlateDiagram } from "./weight-pad";
 import { PRCelebration } from "./celebrate";
 import { LiftHistory, fmtKg, type LiftHistoryData } from "@/components/lifts/lift-history";
 import { dayMonth } from "@/lib/format";
@@ -147,7 +147,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
         <div className="flex items-center gap-3 text-xs">{queued > 0 && <Badge tone="amber"><WifiOff className="size-3" /> {queued} queued</Badge>}<ElapsedClock since={session.startedAt} /><button type="button" onClick={() => setResetOpen(true)} className="inline-flex items-center gap-1 text-fg-subtle hover:text-fg" aria-label="Restart session"><RotateCcw className="size-3.5" /> Restart</button></div>
       </div>
       {preview && !autoStart ? (
-        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border border-rule">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-rule bg-surface px-4 py-3.5">
           <p className="text-sm"><span className="font-medium">Previewing the session for {whenLabelClient(session.scheduledOn, todayIso)}.</span> <span className="text-fg-muted">Nothing starts until you log a set.</span></p>
           <Button size="sm" variant="secondary" loading={starting} onClick={() => start()}>Train it today</Button>
         </div>
@@ -156,7 +156,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
       <CoachPulse label="Live" items={live.length ? live : [{ text: session.intensityScalar < 1 ? `Loads eased ${Math.round((1 - session.intensityScalar) * 100)}% for today's readiness. ${doneSets}/${totalSets} sets.` : `Watching every set. ${doneSets}/${totalSets} done.`, tone: "ember" }]} />
 
       {idx === 0 && doneSets === 0 && session.warmup.length ? (
-        <Card><CardContent className="p-4"><div className="eyebrow mb-2">Warm-up · 8 min</div><ul className="space-y-1 text-sm text-fg-muted">{session.warmup.map((w) => <li key={w} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-ember" />{w}</li>)}</ul></CardContent></Card>
+        <Card><CardContent className="p-4"><div className="eyebrow mb-2">Warm-up · 8 min</div><ul className="space-y-1 text-sm text-fg-muted">{session.warmup.map((w) => <li key={w} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-volt" />{w}</li>)}</ul></CardContent></Card>
       ) : null}
 
       <Card className="overflow-hidden">
@@ -166,11 +166,11 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
             <div className="flex items-center gap-2"><Badge tone={cur.role === "primary" ? "ember" : "neutral"} className="capitalize">{cur.role}</Badge><span className="text-xs text-fg-subtle">Exercise {idx + 1} of {instances.length}</span>{cur.swappedReason && <Badge tone="amber">Swapped</Badge>}</div>
             <h1 className="font-display text-3xl tracking-tightest">{cur.exercise.name}</h1>
             <PrescriptionNumerals sets={cur.plannedSets} />
-            {cur.notes ? <p className="text-xs text-ember">{cur.notes}</p> : null}
+            {cur.notes ? <p className="text-xs text-volt">{cur.notes}</p> : null}
             <div className="flex flex-wrap gap-2 pt-1"><Button size="sm" variant="secondary" onClick={() => setShowInfo((s) => !s)} aria-expanded={showInfo}><Info /> How to {showInfo ? <ChevronUp /> : <ChevronDown />}</Button><Button size="sm" variant="secondary" onClick={() => setSwapOpen(true)}><Repeat /> Swap</Button></div>
           </CardContent>
         </div>
-        {showInfo && (<div className="border-t border-border bg-surface-2 p-4 text-sm"><div className="grid gap-4 sm:grid-cols-2"><div><div className="eyebrow mb-1">Cues</div><ul className="space-y-1 text-fg-muted">{(cur.exercise.cues.length ? cur.exercise.cues : cur.exercise.instructions.slice(0, 4)).map((c) => <li key={c}>{c}</li>)}</ul></div><div><div className="eyebrow mb-1">Watch for</div><ul className="space-y-1 text-fg-muted">{cur.exercise.commonMistakes.length ? cur.exercise.commonMistakes.map((c) => <li key={c}>{c}</li>) : <li>Control the eccentric; stop 1 to 2 reps shy of failure unless told otherwise.</li>}</ul>{cur.cautions.filter((c) => c.level === "info").length ? <><div className="eyebrow mb-1 mt-3">Safety</div><ul className="space-y-1 text-fg-muted">{cur.cautions.filter((c) => c.level === "info").map((c, k) => <li key={k}>{c.text}</li>)}</ul></> : null}<p className="mt-2 text-xs text-fg-subtle">{cur.rationale}</p><Link href={`/library/${cur.exercise.slug}`} className="mt-2 inline-block text-ember hover:underline">Full exercise page</Link></div></div></div>)}
+        {showInfo && (<div className="border-t border-rule bg-bg p-4 text-sm"><div className="grid gap-4 sm:grid-cols-2"><div><div className="eyebrow mb-1">Cues</div><ul className="space-y-1 text-fg-muted">{(cur.exercise.cues.length ? cur.exercise.cues : cur.exercise.instructions.slice(0, 4)).map((c) => <li key={c}>{c}</li>)}</ul></div><div><div className="eyebrow mb-1">Watch for</div><ul className="space-y-1 text-fg-muted">{cur.exercise.commonMistakes.length ? cur.exercise.commonMistakes.map((c) => <li key={c}>{c}</li>) : <li>Control the eccentric; stop 1 to 2 reps shy of failure unless told otherwise.</li>}</ul>{cur.cautions.filter((c) => c.level === "info").length ? <><div className="eyebrow mb-1 mt-3">Safety</div><ul className="space-y-1 text-fg-muted">{cur.cautions.filter((c) => c.level === "info").map((c, k) => <li key={k}>{c.text}</li>)}</ul></> : null}<p className="mt-2 text-xs text-fg-subtle">{cur.rationale}</p><Link href={`/library/${cur.exercise.slug}`} className="mt-2 inline-block text-volt hover:underline">Full exercise page</Link></div></div></div>)}
       </Card>
 
       {!curDone && <FormCheck key={`check-${cur.id}`} exerciseId={cur.exerciseId} name={cur.exercise.name} cards={cards} image={cur.exercise.imageUrls[0]} />}
@@ -184,7 +184,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
         {idx < instances.length - 1 ? <Button variant={curDone ? "primary" : "secondary"} onClick={() => { setIdx((i) => i + 1); setRest(null); setShowInfo(false); }}>Next exercise <ArrowRight /></Button> : <Button onClick={() => setFinishOpen(true)} loading={starting}>Finish session <Check /></Button>}
       </div>
 
-      <div className="flex flex-wrap gap-1">{instances.map((i, k) => (<button key={i.id} type="button" onClick={() => { setIdx(k); setRest(null); }} aria-label={`${i.exercise.name}${k === idx ? " (current)" : ""}`} aria-current={k === idx} className={cn("h-2 flex-1 rounded-full transition-colors", i.loggedSets.filter((l) => l.completed).length >= i.plannedSets.length ? "bg-signal" : k === idx ? "bg-ember" : "bg-surface-3")} />))}</div>
+      <div className="flex flex-wrap gap-1">{instances.map((i, k) => (<button key={i.id} type="button" onClick={() => { setIdx(k); setRest(null); }} aria-label={`${i.exercise.name}${k === idx ? " (current)" : ""}`} aria-current={k === idx} className={cn("h-2 flex-1 rounded-full transition-colors", i.loggedSets.filter((l) => l.completed).length >= i.plannedSets.length ? "bg-fg" : k === idx ? "bg-volt" : "bg-bg")} />))}</div>
 
       <Dialog open={resetOpen} onOpenChange={setResetOpen}><DialogContent title="Restart this session?" description="Every logged set is cleared and the plan stays as prescribed for today. Records set in this session are removed."><div className="flex justify-end gap-2"><Button variant="ghost" onClick={() => setResetOpen(false)}>Keep going</Button><Button variant="danger" onClick={resetSessionAll}><RotateCcw /> Restart</Button></div></DialogContent></Dialog>
       <Sheet open={swapOpen} onOpenChange={setSwapOpen}><SheetContent title="Swap exercise" description="Like-for-like alternatives that fit your equipment and injuries."><SwapList instanceId={cur.id} onPick={doSwap} /></SheetContent></Sheet>
@@ -261,6 +261,13 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
   useEffect(() => { const l = doneOf(set.setNumber); setW(toField(l?.weightKg ?? set.weightKg)); setR(l?.reps != null ? String(l.reps) : set.reps != null ? String(set.reps) : set.repRange ? String(set.repRange[1]) : ""); setRpe(l?.rpe ?? set.targetRpe ?? null); setChallenge(null); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [set.setNumber]);
   // Which figure the key row drives. One pad, two targets (21st.dev Number Pad).
   const [pad, setPad] = useState<"w" | "r">("w");
+  // The keypad is tall enough to push the figure off the top of a phone, and typing a number
+  // you cannot see is worse than any stepper. Switching the pad brings its figure up first.
+  const padRow = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => padRow.current?.scrollIntoView({ block: "start", behavior: "smooth" }));
+    return () => cancelAnimationFrame(id);
+  }, [pad]);
   const nudge = (which: "w" | "r", d: number) => { if (which === "w") setW((x) => String(Math.max(0, round((Number(x) || 0) + d * step, 2)))); else setR((x) => String(Math.max(0, (Number(x) || 0) + d))); };
   const values = () => { const t = fieldToTotalDisp(w); return { weightKg: t == null ? null : metric ? t : lbToKg(t), reps: r === "" ? null : Number(r), rpe, barKg: model.kind === "bar" ? barKg : null }; };
   const submit = async (confirmed = false) => { setBusy(true); const res = await onLog(set, values(), confirmed); setBusy(false); if (!res.ok) setChallenge(res.reason); else setChallenge(null); };
@@ -288,108 +295,108 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
   return (
     <section className="border-t border-rule pt-4" aria-label="Log sets">
       <Benchmark inst={inst} units={units} onUse={(weightKg, reps, rpeVal) => { setW(toField(weightKg)); setR(reps != null ? String(reps) : ""); if (rpeVal != null) setRpe(rpeVal); }} />
-      {/* Set track */}
-      {/* Set track as hard hairline-separated cells: done is filled, the one you are on is ember. */}
-      <ol className="flex items-stretch gap-px bg-rule" aria-label="Sets">
-        {sets.map((s) => { const l = doneOf(s.setNumber); const cur = s.setNumber === focus; return (
-          <li key={s.setNumber} className="flex-1">
-            <button type="button" onClick={() => setFocus(s.setNumber)} aria-current={cur ? "step" : undefined} className={cn("flex h-12 w-full flex-col items-center justify-center text-2xs uppercase tracking-label transition-colors", l ? "bg-fg text-bg" : cur ? "bg-ember text-ember-fg" : "bg-bg text-fg-subtle hover:text-fg")}>
-              <span>{s.type === "warmup" ? "warm" : `set ${s.setNumber}`}</span>
-              {l ? <span className="font-display text-sm normal-case tabular">{disp(l.weightKg) || "bw"}×{l.reps ?? "-"}</span> : null}
+
+      {/* The set track: done / now / to come, which design/SECTION-MAP.md carries over. Pills
+          now rather than hard cells, because every other control in this system is a pill. */}
+      <ol className="scrollbar-none flex gap-1.5 overflow-x-auto pb-0.5" aria-label="Sets">
+        {sets.map((s) => { const l = doneOf(s.setNumber); const on = s.setNumber === focus; return (
+          <li key={s.setNumber}>
+            <button type="button" onClick={() => setFocus(s.setNumber)} aria-current={on ? "step" : undefined}
+              className={cn("flex h-11 min-w-[4.5rem] shrink-0 flex-col items-center justify-center rounded-full border px-3 transition-colors",
+                l ? "border-fg bg-fg text-bg" : on ? "border-volt text-volt" : "border-rule text-fg-subtle hover:border-rule-strong hover:text-fg")}>
+              <span className="meta" style={l ? { color: "inherit" } : undefined}>{s.type === "warmup" ? "warm" : `set ${s.setNumber}`}</span>
+              {l ? <span className="font-display text-sm tabular">{disp(l.weightKg) || "bw"}×{l.reps ?? "–"}</span> : null}
             </button>
           </li>); })}
       </ol>
 
       <AnimatePresence mode="wait" initial={false}>
-        <motion.div key={set.setNumber} initial={reduce ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={reduce ? undefined : { opacity: 0, x: -12 }} transition={{ duration: 0.22 }} className="mt-4">
+        <motion.div key={set.setNumber} initial={reduce ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={reduce ? undefined : { opacity: 0, x: -12 }} transition={{ duration: 0.22 }} className="mt-5">
           {/*
-            The brief said once, not three times. This line is now the only place the set and
-            its target are stated: the readout rows used to repeat "aim 12 to 15" and the
-            effort row used to repeat it again as "RPE 9".
+            The target, stated once. The readout rows used to repeat "aim 12 to 15" and the
+            effort row used to repeat it again as "RPE 9"; this is the only place it is said.
           */}
-          <div className="text-2xs uppercase tracking-label text-fg-subtle">
+          <p className="meta">
             {set.type === "warmup" ? <>Warm-up{target ? " · " : ""}</> : null}
-            {target ? <span className="text-ember">Aim {target} reps{set.targetRpe ? ` at ${effortWord(set.targetRpe).toLowerCase()}` : ""}</span> : null}
-          </div>
+            {target ? <span>Aim {target} reps{set.targetRpe ? ` at ${effortWord(set.targetRpe).toLowerCase()}` : ""}</span> : null}
+          </p>
 
           {/*
-            Rows, ported from 21st.dev's Unit Field (design/refs/components-21st-unitfield):
-            one labelled row per quantity, value right-aligned with its unit inline, hairline
-            rules and no fills. It replaces the Number Pad split readout, which measured two
-            40px figures either side of a 19px cross, so neither dominated, and signalled
-            which one the keys drove with nothing but 45% opacity.
+            The weight on the bar is the one number on this screen, so it is rendered at
+            --text-figure and nothing else here comes close to it. Reps sit beside it two steps
+            down the ramp; tapping either makes it the figure and points the keys at it, which
+            is why the active one is volt - the DNA reserves the accent for the figure being
+            changed.
           */}
-          <div className="mt-3 border-t-2 border-rule-strong">
-            <Quantity
-              label={`${model.label}${sideMode ? " · a side" : ""}`}
-              value={w || "0"}
-              unit={unit}
-              active={pad === "w"}
-              onSelect={() => setPad("w")}
-              onNudge={(d) => nudge("w", d)}
-              stepFor={(d) => String(round(Math.abs(d) * step, 2))}
-              /* Where the equipment has real rungs, the rack replaces the keys: a dumbbell
-                 cannot be nudged to 27.5 if the gym does not own one. Per-side entry keeps the
-                 keys, because there the lifter is counting plates, not picking a dumbbell. */
-              keys={false}
-            />
-            {pad === "w" ? (
-              <WeightPad
-                value={w}
-                unit={unit}
-                quick={sideMode ? [] : ladder.values}
-                quickNote={ladder.note || "common loads"}
-                onChange={setW}
-              />
-            ) : null}
-            <Quantity
-              label="Reps"
-              value={r || "0"}
-              unit="reps"
-              active={pad === "r"}
-              onSelect={() => setPad("r")}
-              onNudge={(d) => nudge("r", d)}
-              stepFor={(d) => String(Math.abs(d))}
-            />
-            {model.kind === "bar" || makeup ? (
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-rule py-2 text-xs">
-                {model.kind === "bar" ? (
-                  <span role="radiogroup" aria-label="Total or per side" className="inline-flex">
-                    {(["total", "side"] as const).map((m) => (
-                      <button key={m} type="button" role="radio" aria-checked={entry === m} onClick={() => switchEntry(m)}
-                        className={cn("h-8 border px-2.5 text-[0.6875rem] uppercase tracking-label -ml-px first:ml-0", entry === m ? "border-rule-strong bg-fg text-bg" : "border-rule text-fg-muted")}>
-                        {m === "total" ? "Total" : "Per side"}
-                      </button>
-                    ))}
-                  </span>
-                ) : null}
-                {model.kind === "bar" ? (
-                  <button type="button" onClick={() => setBarOpen((o) => !o)} aria-expanded={barOpen} className="h-8 text-fg-muted underline underline-offset-4 hover:text-fg">
-                    {BAR_NAMES[model.bar]} {barDisp} {unit}
-                  </button>
-                ) : null}
-                {model.kind === "bar" && totalNow != null && totalNow >= barDisp ? (
-                  <PlateDiagram plates={platesPerSide(totalNow, barDisp, units).plates} unit={unit} />
-                ) : makeup ? <span className="min-w-0 text-fg-muted">{makeup}</span> : null}
-              </div>
-            ) : null}
-            {model.kind === "bar" && barOpen ? (
-              <div className="flex flex-wrap gap-1.5 border-t border-rule py-2" role="radiogroup" aria-label={`${BAR_NAMES[model.bar]} weight`}>
-                {(metric ? BAR_CHOICES_KG : BAR_CHOICES_LB)[model.bar].map((c) => { const kg = metric ? c : round(lbToKg(c), 2); const on = Math.abs(barDisp - c) < 0.2; return (
-                  <button key={c} type="button" role="radio" aria-checked={on} onClick={() => { const totalDisp = fieldToTotalDisp(w); onBarChange(model.bar, kg); setBarOpen(false); if (sideMode && totalDisp != null) setW(toField(metric ? totalDisp : lbToKg(totalDisp))); }}
-                    className={cn("h-9 border px-3 text-sm tabular", on ? "border-rule-strong bg-fg text-bg" : "border-rule text-fg-muted")}>{c}</button>); })}
-              </div>
-            ) : null}
+          <div ref={padRow} className="mt-2 flex scroll-mt-4 items-end justify-between gap-5">
+            <button type="button" onClick={() => setPad("w")} aria-pressed={pad === "w"} className="min-w-0 text-left"
+              aria-label={`Edit the ${model.label.toLowerCase()}, currently ${w || 0} ${unit}`}>
+              <span className="meta block truncate">{model.label}{sideMode ? " · a side" : ""}</span>
+              <span className={cn("font-display mt-1 block leading-none transition-colors", pad === "w" ? "text-figure text-volt" : "text-4xl text-fg")}>
+                <span className="tabular">{w || "0"}</span>
+                <span className="ml-1.5 font-mono text-sm tracking-normal text-fg-subtle">{unit}</span>
+              </span>
+            </button>
+            <button type="button" onClick={() => setPad("r")} aria-pressed={pad === "r"} className="shrink-0 text-right"
+              aria-label={`Edit the reps, currently ${r || 0}`}>
+              <span className="meta block">Reps</span>
+              <span className={cn("font-display mt-1 block leading-none transition-colors", pad === "r" ? "text-figure text-volt" : "text-4xl text-fg")}>
+                <span className="tabular">{r || "0"}</span>
+              </span>
+            </button>
           </div>
+
+          <div className="mt-4">
+            <Keypad
+              key={pad}
+              label={pad === "w" ? model.label.toLowerCase() : "reps"}
+              value={pad === "w" ? w : r}
+              unit={pad === "w" ? unit : "reps"}
+              decimal={pad === "w"}
+              quick={pad === "w" && !sideMode ? ladder.values : undefined}
+              quickNote={ladder.note || "common loads"}
+              onChange={pad === "w" ? setW : setR}
+            />
+          </div>
+
+          {model.kind === "bar" || makeup ? (
+            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs">
+              {model.kind === "bar" ? (
+                <span role="radiogroup" aria-label="Total or per side" className="inline-flex items-center gap-1 rounded-full border border-rule bg-surface p-1">
+                  {(["total", "side"] as const).map((m) => (
+                    <button key={m} type="button" role="radio" aria-checked={entry === m} onClick={() => switchEntry(m)}
+                      className={cn("h-8 rounded-full px-3 text-xs transition-colors", entry === m ? "bg-fg text-bg" : "text-fg-muted hover:text-fg")}>
+                      {m === "total" ? "Total" : "Per side"}
+                    </button>
+                  ))}
+                </span>
+              ) : null}
+              {model.kind === "bar" ? (
+                <button type="button" onClick={() => setBarOpen((o) => !o)} aria-expanded={barOpen} className="h-8 rounded-full border border-rule px-3 text-fg-muted transition-colors hover:border-rule-strong hover:text-fg">
+                  {BAR_NAMES[model.bar]} {barDisp} {unit}
+                </button>
+              ) : null}
+              {model.kind === "bar" && totalNow != null && totalNow >= barDisp ? (
+                <PlateDiagram plates={platesPerSide(totalNow, barDisp, units).plates} unit={unit} />
+              ) : makeup ? <span className="min-w-0 text-fg-muted">{makeup}</span> : null}
+            </div>
+          ) : null}
+          {model.kind === "bar" && barOpen ? (
+            <div className="mt-2 flex flex-wrap gap-1.5" role="radiogroup" aria-label={`${BAR_NAMES[model.bar]} weight`}>
+              {(metric ? BAR_CHOICES_KG : BAR_CHOICES_LB)[model.bar].map((c) => { const kg = metric ? c : round(lbToKg(c), 2); const on = Math.abs(barDisp - c) < 0.2; return (
+                <button key={c} type="button" role="radio" aria-checked={on} onClick={() => { const totalDisp = fieldToTotalDisp(w); onBarChange(model.bar, kg); setBarOpen(false); if (sideMode && totalDisp != null) setW(toField(metric ? totalDisp : lbToKg(totalDisp))); }}
+                  className={cn("h-10 rounded-full border px-4 text-sm tabular transition-colors", on ? "border-fg bg-fg text-bg" : "border-rule text-fg-muted hover:border-rule-strong")}>{c}</button>); })}
+            </div>
+          ) : null}
 
           {/* Effort in plain words. The RPE numeral is gone from the face: the target line
               already states the effort to aim for, and the number was the third restatement. */}
-          <div className="mt-4" role="radiogroup" aria-label="How hard was it">
+          <div className="mt-5" role="radiogroup" aria-label="How hard was it">
             <span className="meta">How hard was it</span>
-            <div className="mt-1.5 grid grid-cols-5 gap-px bg-rule">
+            <div className="mt-2 grid grid-cols-5 gap-1.5">
               {EFFORT.map(([label, n]) => (
                 <button key={n} type="button" role="radio" aria-checked={rpe === n} aria-label={`${label}, RPE ${n}`} onClick={() => setRpe(n)}
-                  className={cn("flex h-11 touch-manipulation items-center justify-center text-sm transition-colors", rpe === n ? "bg-fg text-bg" : "bg-bg text-fg-muted hover:text-fg")}>
+                  className={cn("flex h-12 touch-manipulation items-center justify-center rounded-full border text-sm transition-colors", rpe === n ? "border-fg bg-fg text-bg" : "border-rule text-fg-muted hover:border-rule-strong hover:text-fg")}>
                   {label}
                 </button>
               ))}
@@ -397,15 +404,16 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
           </div>
 
           {challenge ? (
-            <div className="mt-3 border border-ember/40 p-3 text-sm" role="alert">
-              <div className="flex items-start gap-2"><AlertTriangle className="mt-0.5 size-4 shrink-0 text-ember" /><div><p className="font-medium">That looks unusual.</p><p className="text-fg-muted">{challenge} It will be logged but will not count as a record until you repeat it.</p></div></div>
-              <div className="mt-2 flex gap-2"><Button size="sm" variant="secondary" onClick={() => setChallenge(null)}>Edit</Button><Button size="sm" loading={busy} onClick={() => submit(true)}>It's right, log it</Button></div>
+            <div className="mt-4 rounded-lg border border-rule-strong bg-surface p-4 text-sm" role="alert">
+              <div className="flex items-start gap-2.5"><AlertTriangle className="mt-0.5 size-4 shrink-0 text-volt" aria-hidden /><div><p>That looks unusual.</p><p className="text-fg-muted">{challenge} It will be logged but will not count as a record until you repeat it.</p></div></div>
+              <div className="mt-3 flex gap-2"><Button size="sm" variant="secondary" onClick={() => setChallenge(null)}>Edit</Button><Button size="sm" loading={busy} onClick={() => submit(true)}>It&apos;s right, log it</Button></div>
             </div>
           ) : null}
 
-          <div className="mt-3 flex items-center gap-2">
-            <Button className="h-13 flex-1" loading={busy} onClick={() => submit(false)} aria-label={done ? "Update set" : "Log set"}>{done ? "Update set" : "Log set"} <Check /></Button>
-            {inst.loggedSets.some((l) => l.completed) ? <Button variant="ghost" onClick={onReset} aria-label="Restart exercise"><RotateCcw /></Button> : null}
+          {/* One commit. */}
+          <div className="mt-5 flex items-center gap-2">
+            <Button size="xl" className="flex-1" loading={busy} onClick={() => submit(false)} aria-label={done ? "Update set" : "Log set"}>{done ? "Update set" : "Log set"} <Check /></Button>
+            {inst.loggedSets.some((l) => l.completed) ? <Button size="xl" variant="secondary" onClick={onReset} aria-label="Restart exercise"><RotateCcw /></Button> : null}
           </div>
         </motion.div>
       </AnimatePresence>
@@ -421,8 +429,8 @@ function SwapList({ instanceId, onPick }: { instanceId: string; onPick: (e: Exer
     <div className="space-y-3">
       <Segmented value={permanent ? "always" : "today"} onChange={(v) => setPermanent(v === "always")} options={[{ value: "today", label: "Just today" }, { value: "always", label: "Rest of programme" }]} label="Swap scope" />
       {subs === null ? <p className="text-sm text-fg-subtle">Finding alternatives…</p> : subs.length === 0 ? <p className="text-sm text-fg-subtle">No close alternatives with your equipment. Try the library.</p> : subs.map((s) => (
-        <button key={s.exercise.id} type="button" onClick={() => onPick(s.exercise, permanent)} className="flex w-full items-center gap-3 border border-border bg-surface p-3 text-left hover:border-border-strong">
-          {s.exercise.imageUrls[0] ? <img src={s.exercise.imageUrls[0]} alt="" className="size-14 object-cover" /> : <div className="size-14 bg-surface-3" />}
+        <button key={s.exercise.id} type="button" onClick={() => onPick(s.exercise, permanent)} className="flex w-full items-center gap-3 rounded-lg border border-rule bg-surface p-3.5 text-left transition-colors hover:border-rule-strong">
+          {s.exercise.imageUrls[0] ? <img src={s.exercise.imageUrls[0]} alt="" className="size-14 object-cover" /> : <div className="size-14 bg-bg" />}
           <div className="min-w-0"><div className="truncate font-medium">{s.exercise.name}</div><div className="text-xs text-fg-subtle">{s.reason}</div></div>
         </button>
       ))}
@@ -448,18 +456,18 @@ function FinishForm({ sessionId, onDone }: { sessionId: string; units: "metric" 
     setResult(r.data);
   }
   const Scale = ({ label, value, set, lo, hi }: { label: string; value: number | null; set: (v: number) => void; lo: string; hi: string }) => (
-    <div><div className="mb-1.5 flex justify-between text-sm"><span className="font-medium">{label}</span><span className="text-xs text-fg-subtle">{lo} → {hi}</span></div><div className="grid grid-cols-5 gap-1.5">{[1, 2, 3, 4, 5].map((n) => <button key={n} type="button" aria-pressed={value === n} onClick={() => set(n)} className={cn("h-10 text-sm font-medium", value === n ? "bg-ember text-ember-fg" : "bg-surface-2 hover:bg-surface-3")}>{n}</button>)}</div></div>
+    <div><div className="mb-2 flex items-baseline justify-between gap-3 text-sm"><span>{label}</span><span className="meta">{lo} → {hi}</span></div><div className="grid grid-cols-5 gap-1.5">{[1, 2, 3, 4, 5].map((n) => <button key={n} type="button" aria-pressed={value === n} onClick={() => set(n)} className={cn("h-11 rounded-full border text-sm transition-colors", value === n ? "border-volt bg-volt text-volt-fg" : "border-rule text-fg-muted hover:border-fg hover:text-fg")}>{n}</button>)}</div></div>
   );
   if (result) return (
     <div className="space-y-4">
-      <div className="bg-fg text-bg p-4"><div className="font-display text-lg">Session logged.</div><p className="text-sm text-fg-muted">Here's what changes next time, and why.</p></div>
-      <ul className="space-y-2">{result.changes.map((c) => (<li key={c.name} className="border border-border p-3 text-sm"><div className="flex items-center justify-between"><span className="font-medium">{c.name}</span><Badge tone={c.change === "up" ? "signal" : c.change === "down" ? "amber" : "neutral"}>{c.change === "up" ? "Load up" : c.change === "down" ? "Load down" : "Hold"}</Badge></div><p className="mt-1 text-fg-muted">{c.reason}</p></li>))}{!result.changes.length && <li className="text-sm text-fg-subtle">Log weights next time and the plan will progress them for you.</li>}</ul>
+      <div className="rounded-lg bg-fg p-4 text-bg"><p className="font-display text-xl">Session logged.</p><p className="text-sm opacity-70">Here&apos;s what changes next time, and why.</p></div>
+      <ul className="space-y-2">{result.changes.map((c) => (<li key={c.name} className="rounded-md border border-rule p-3.5 text-sm"><div className="flex items-center justify-between"><span className="font-medium">{c.name}</span><Badge tone={c.change === "up" ? "signal" : c.change === "down" ? "amber" : "neutral"}>{c.change === "up" ? "Load up" : c.change === "down" ? "Load down" : "Hold"}</Badge></div><p className="mt-1 text-fg-muted">{c.reason}</p></li>))}{!result.changes.length && <li className="text-sm text-fg-subtle">Log weights next time and the plan will progress them for you.</li>}</ul>
       <Button className="w-full" size="lg" onClick={onDone}>Done</Button>
     </div>
   );
   return (
     <div className="space-y-5">
-      <div><div className="mb-1.5 text-sm font-medium">Session RPE</div><div className="grid grid-cols-6 gap-1.5">{[5, 6, 7, 8, 9, 10].map((n) => <button key={n} type="button" aria-pressed={rpe === n} onClick={() => setRpe(n)} className={cn("h-10 text-sm font-medium", rpe === n ? "bg-ember text-ember-fg" : "bg-surface-2 hover:bg-surface-3")}>{n}</button>)}</div></div>
+      <div><div className="mb-2 text-sm">Session RPE</div><div className="grid grid-cols-6 gap-1.5">{[5, 6, 7, 8, 9, 10].map((n) => <button key={n} type="button" aria-pressed={rpe === n} onClick={() => setRpe(n)} className={cn("h-11 rounded-full border text-sm transition-colors", rpe === n ? "border-volt bg-volt text-volt-fg" : "border-rule text-fg-muted hover:border-fg hover:text-fg")}>{n}</button>)}</div></div>
       <Scale label="Soreness" value={soreness} set={setSoreness} lo="none" hi="can't sit" />
       <Scale label="Fatigue" value={fatigue} set={setFatigue} lo="fresh" hi="wrecked" />
       <Scale label="Enjoyment" value={mood} set={setMood} lo="dreaded it" hi="loved it" />
@@ -496,7 +504,7 @@ function Benchmark({ inst, units, onUse }: { inst: Instance; units: "metric" | "
         <>
           <div className="flex items-center justify-between gap-2">
             <span className="text-2xs uppercase tracking-label text-fg-subtle">Last time · {dayMonth(b.last.date)}</span>
-            <button type="button" onClick={openHistory} className="inline-flex items-center gap-1 text-xs text-ember hover:underline">History <ChevronRight className="size-3.5" /></button>
+            <button type="button" onClick={openHistory} className="inline-flex items-center gap-1 text-xs text-volt hover:underline">History <ChevronRight className="size-3.5" /></button>
           </div>
           <div className="mt-2 flex flex-wrap gap-1.5">
             {b.last.sets.map((x, i) => (
@@ -505,7 +513,7 @@ function Benchmark({ inst, units, onUse }: { inst: Instance; units: "metric" | "
               </button>))}
           </div>
           {b.bestWeight || b.bestE1rm ? (
-            <div className="mt-2.5 grid grid-cols-2 gap-2 border-t border-border pt-2.5">
+            <div className="mt-2.5 grid grid-cols-2 gap-2 border-t border-rule pt-2.5">
               <div className="min-w-0"><div className="text-[10px] uppercase tracking-label text-fg-subtle">Heaviest</div><div className="truncate text-sm font-medium tabular">{b.bestWeight ? `${fmtKg(b.bestWeight.weightKg, units)} ${unit} × ${b.bestWeight.reps}` : "-"}</div></div>
               <div className="min-w-0"><div className="text-[10px] uppercase tracking-label text-fg-subtle">Best max</div><div className="truncate text-sm font-medium tabular">{b.bestE1rm ? `${fmtKg(b.bestE1rm.e1rm, units)} ${unit}` : "-"}</div></div>
             </div>
@@ -532,62 +540,4 @@ function effortWord(rpe: number): string {
   let best: readonly [string, number] = EFFORT[0];
   for (const e of EFFORT) if (Math.abs(e[1] - rpe) < Math.abs(best[1] - rpe)) best = e;
   return best[0];
-}
-
-/**
- * One quantity: a labelled row whose value carries its unit inline, and whose keys appear
- * directly beneath it when it is the one being edited.
- *
- * Ported from 21st.dev's Unit Field (design/refs/components-21st-unitfield). The point is
- * comprehension, not density: the previous console put weight and reps side by side with a
- * single shared key row underneath, so "what do these keys change?" was answered only by a
- * 45% opacity difference. Here the keys sit under the row they drive, so position answers it.
- */
-function Quantity({
-  label, value, unit, active, onSelect, onNudge, stepFor, keys = true,
-}: {
-  label: string; value: string; unit: string; active: boolean;
-  onSelect: () => void; onNudge: (d: number) => void; stepFor: (d: number) => string;
-  /** False when a rack of real loads replaces the keys for this quantity. */
-  keys?: boolean;
-}) {
-  const row = useRef<HTMLDivElement>(null);
-  // The keypad is tall enough to push this row off the top of a phone, and typing a number
-  // you cannot see is worse than any stepper. Opening the editor brings its figure up first.
-  useEffect(() => {
-    if (!active) return;
-    const id = requestAnimationFrame(() => row.current?.scrollIntoView({ block: "start", behavior: "smooth" }));
-    return () => cancelAnimationFrame(id);
-  }, [active]);
-  return (
-    <div ref={row} className="scroll-mt-14 border-b border-rule">
-      <button
-        type="button"
-        onClick={onSelect}
-        aria-pressed={active}
-        aria-label={`Edit ${label}, currently ${value} ${unit}`}
-        className="flex w-full items-baseline justify-between gap-3 px-3 py-2.5 text-left"
-      >
-        <span className="meta min-w-0 truncate">{label}</span>
-        <span className="font-display shrink-0 text-4xl leading-none tabular">
-          {value}
-          <span className="ml-1.5 text-base text-fg-muted">{unit}</span>
-        </span>
-      </button>
-      {active && keys ? (
-        <div className="grid grid-cols-4 gap-px bg-rule" aria-label={`Adjust ${label}`}>
-          {[-2, -1, 1, 2].map((d) => (
-            <button
-              key={d}
-              type="button"
-              onClick={() => onNudge(d)}
-              className="h-12 touch-manipulation bg-bg text-base tabular transition-colors hover:bg-fg hover:text-bg active:bg-fg active:text-bg"
-            >
-              {d > 0 ? "+" : "−"}{stepFor(d)}
-            </button>
-          ))}
-        </div>
-      ) : null}
-    </div>
-  );
 }

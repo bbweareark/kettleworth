@@ -18,7 +18,7 @@ export function GrowthPanel({ growth }: { growth: Growth }) {
   const pct = ((growth.total - prev) / Math.max(1, growth.nextLevelAt - prev)) * 100;
   const reduce = useReducedMotion();
   return (
-    <section className="relative overflow-hidden p-6 border border-rule">
+    <section className="relative overflow-hidden rounded-lg border border-rule p-6">
       <div className="relative flex flex-wrap items-end justify-between gap-6">
         <div>
           <div className="eyebrow">Growth</div>
@@ -49,7 +49,7 @@ export function PhysiqueCharts({ timeline, trends, unit }: { timeline: Point[]; 
       <div>
         <div className="mb-2 flex flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between"><h3 className="font-display text-base">Body fat estimate</h3><span className="text-xs text-fg-subtle">{trends.bodyFat.sentence}</span></div>
         {hasBf ? (<div className="h-56"><ResponsiveContainer><LineChart data={data} margin={{ left: 0, right: 8, top: 8, bottom: 0 }}><CartesianGrid stroke="var(--color-border)" vertical={false} /><XAxis dataKey="date" {...axis} minTickGap={24} interval="preserveStartEnd" /><YAxis {...axis} width={30} tickCount={4} domain={["dataMin - 3", "dataMax + 3"]} /><Tooltip {...tip} formatter={(v, n) => [`${v}%`, n === "bf" ? "Estimate" : n === "lo" ? "Low" : "High"]} /><Line type="monotone" dataKey="hi" stroke="var(--color-border-strong)" strokeDasharray="3 3" dot={false} connectNulls /><Line type="monotone" dataKey="lo" stroke="var(--color-border-strong)" strokeDasharray="3 3" dot={false} connectNulls /><Line type="monotone" dataKey="bf" stroke="var(--color-ember)" strokeWidth={2.5} dot={{ r: 4 }} connectNulls /></LineChart></ResponsiveContainer></div>) : <NotYet value={lastBf ? `${lastBf.bf}%` : null} label={lastBf ? "Latest estimate" : "Body fat"} hint={lastBf ? "Take another body check in a few weeks and the line starts. Dashed lines will show the range." : "Take a body check to start the estimate line."} />}
-        {timeline.filter((t) => t.note).slice(-1).map((t) => <p key={t.date} className="mt-2 text-xs text-fg-subtle"><Sparkles className="mr-1 inline size-3 text-ember" />{t.note}</p>)}
+        {timeline.filter((t) => t.note).slice(-1).map((t) => <p key={t.date} className="mt-2 text-xs text-fg-subtle"><Sparkles className="mr-1 inline size-3 text-volt" />{t.note}</p>)}
       </div>
     </div>
   );
@@ -60,12 +60,12 @@ export function CompareSlider({ before, after }: { before: { id: string; date: s
   const [x, setX] = useState(50);
   return (
     <div className="space-y-2">
-      <div className="relative aspect-[3/4] max-h-[520px] w-full overflow-hidden bg-surface-2 select-none" style={{ maxWidth: 390 }}>
+      <div className="relative aspect-[3/4] max-h-[520px] w-full overflow-hidden bg-bg select-none" style={{ maxWidth: 390 }}>
         <img src={`/api/photos/${after.id}`} alt={`After, ${after.date}`} className="absolute inset-0 size-full object-cover" draggable={false} />
         <div className="absolute inset-0 overflow-hidden" style={{ width: `${x}%` }}><img src={`/api/photos/${before.id}`} alt={`Before, ${before.date}`} className="absolute inset-0 size-full max-w-none object-cover" style={{ width: `${10000 / x}%` }} draggable={false} /></div>
         <div className="absolute inset-y-0" style={{ left: `calc(${x}% - 1px)` }}><div className="h-full w-0.5 bg-rule" /><div className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 border border-white/60 bg-black/60 px-2 py-1 text-2xs font-semibold text-white">⇆</div></div>
         <span className="absolute left-3 top-3 bg-black/60 px-2 py-0.5 text-2xs font-semibold text-white">{before.date}</span>
-        <span className="absolute right-3 top-3 bg-ember px-2 py-0.5 text-2xs font-semibold text-ember-fg">{after.date}</span>
+        <span className="absolute right-3 top-3 bg-volt px-2 py-0.5 text-2xs font-semibold text-volt-fg">{after.date}</span>
         <input type="range" min={2} max={98} value={x} onChange={(e) => setX(Number(e.target.value))} aria-label="Compare before and after" className="absolute inset-0 h-full w-full cursor-ew-resize opacity-0" />
       </div>
       <p className="text-xs text-fg-subtle"><TrendingUp className="mr-1 inline size-3" /> Drag to compare your first and latest front photos.</p>

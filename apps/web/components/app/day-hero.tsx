@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { Check, ChevronRight, Moon, Trophy } from "lucide-react";
-import { pastDayLabel } from "@kettleworth/core";
-import { MissedOffer } from "./missed-offer";
+import { ArrowUpRight } from "lucide-react";
+import { Readout } from "@kettleworth/ui";
 
 type Next = { id: string; name: string; scheduledOn: string; estimatedMinutes: number } | null;
 const WEEKDAY = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -15,60 +14,36 @@ export function whenLabel(dateIso: string, todayIso: string): string {
   return `${WEEKDAY[d.getUTCDay()]!.slice(0, 3)} ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
 }
 
-function UpNext({ next, todayIso, train }: { next: Next; todayIso: string; train?: boolean }) {
-  if (!next) return <p className="text-sm text-white/70">That was the last session of this block.</p>;
-  return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <Link href={`/app/session/${next.id}`} className="group inline-flex items-center gap-3 bg-black/35 px-4 py-3 border border-rule-strong transition-colors hover:bg-black/50">
-        <span><span className="block text-2xs uppercase tracking-label text-white/60">Up next · {whenLabel(next.scheduledOn, todayIso)}</span><span className="block font-display text-lg tracking-tight text-white">{next.name}</span></span>
-        <span className="inline-flex items-center gap-1 text-sm text-white/70 group-hover:text-white">Preview <ChevronRight className="size-4" /></span>
-      </Link>
-      {train ? <Link href={`/app/session/${next.id}?start=1`} className="text-sm text-white/60 underline-offset-4 hover:text-white hover:underline">Train today instead</Link> : null}
-    </div>
-  );
-}
-
-/** Today's session is finished: say so, show what it added up to, and only preview what comes next. */
-export function DoneHero({ name, art, summary, next, todayIso, unit }: { name: string; art: string; summary: { sets: number; volumeKg: number; minutes: number | null; records: number } | null; next: Next; todayIso: string; unit: "kg" | "lb" }) {
+/**
+ * Today's session is finished.
+ *
+ * This used to be a second photographic hero with white type over a gradient. The screen head
+ * already carries the photograph, so a panel here would be a second hero competing with the
+ * first; what is left is what the lifter actually wants after training - what the session added
+ * up to, and what is next.
+ */
+export function DonePanel({ name, summary, next, todayIso, unit }: { name: string; summary: { sets: number; volumeKg: number; minutes: number | null; records: number } | null; next: Next; todayIso: string; unit: "kg" | "lb" }) {
   const vol = summary ? (unit === "kg" ? summary.volumeKg : Math.round(summary.volumeKg * 2.20462)) : 0;
   return (
-    <section className="relative overflow-hidden border border-rule" aria-label="Today's session is done">
-      <img src={art} alt="" aria-hidden className="absolute inset-0 size-full object-cover opacity-60 grayscale-[35%]" />
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(100deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_80%,transparent)_55%,color-mix(in_oklch,var(--color-bg)_45%,transparent)_100%)]" />
-      <div className="relative space-y-6 p-6 md:p-8">
-        <div>
-          <span className="inline-flex items-center gap-1.5 text-2xs uppercase tracking-label text-fg"><Check className="size-3.5" /> Done for today</span>
-          <h2 className="mt-2 font-display text-4xl leading-[0.95] tracking-tightest md:text-5xl">{name}, done.</h2>
-          <p className="mt-2 max-w-md text-sm text-fg-muted">The work is in. Eat, sleep, and let it turn into strength.</p>
-        </div>
-        {summary ? (
-          <dl className="grid max-w-lg grid-cols-2 gap-3 sm:grid-cols-4">
-            {[["Sets", String(summary.sets)], [`Volume · ${unit}`, vol.toLocaleString("en-GB")], ["Minutes", summary.minutes != null ? String(summary.minutes) : "-"], ["Records", String(summary.records)]].map(([l, v]) => (
-              <div key={l} className="px-3 py-2.5 border border-rule"><dt className="text-2xs uppercase tracking-label text-fg-subtle">{l}</dt><dd className="mt-0.5 flex items-center gap-1.5 font-display text-2xl tabular tracking-tight">{l === "Records" && summary.records > 0 ? <Trophy className="size-4 text-ember" /> : null}{v}</dd></div>
-            ))}
-          </dl>
-        ) : null}
-        <UpNext next={next} todayIso={todayIso} />
-      </div>
-    </section>
-  );
-}
-
-/** Nothing scheduled today: rest is part of the plan. A session missed earlier in the week is offered, never forced. */
-export function RestHero({ art, next, missed, todayIso }: { art: string; next: Next; missed?: { id: string; name: string; scheduledOn: string } | null; todayIso: string }) {
-  return (
-    <section className="relative overflow-hidden border border-rule" aria-label="Rest day">
-      <img src={art} alt="" aria-hidden className="absolute inset-0 size-full object-cover opacity-50 grayscale-[45%]" />
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(100deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_82%,transparent)_55%,color-mix(in_oklch,var(--color-bg)_50%,transparent)_100%)]" />
-      <div className="relative space-y-5 p-6 md:p-8">
-        <div>
-          <span className="inline-flex items-center gap-1.5 text-2xs uppercase tracking-label text-fg"><Moon className="size-3.5" /> Rest day</span>
-          <h2 className="mt-2 font-display text-4xl leading-[0.95] tracking-tightest md:text-5xl">No session today.</h2>
-          <p className="mt-2 max-w-md text-sm text-fg-muted">{next ? `Next up is ${next.name}, ${whenLabel(next.scheduledOn, todayIso)}.` : "Your block is nearly done."} Muscle is built between sessions: walk, eat well, sleep early.</p>
-        </div>
-        {missed ? <MissedOffer id={missed.id} name={missed.name} when={pastDayLabel(missed.scheduledOn, todayIso)} nextLabel={next ? `${next.name} ${whenLabel(next.scheduledOn, todayIso)}` : null} /> : null}
-        {next ? <UpNext next={next} todayIso={todayIso} train={!missed} /> : null}
-      </div>
+    <section aria-label="Today's session is done" className="border-t border-rule pt-4">
+      <p className="meta">Done for today</p>
+      <h2 className="mt-1 font-display text-2xl">{name}, done.</h2>
+      <p className="measure mt-2 text-sm text-fg-muted">The work is in. Eat, sleep, and let it turn into strength.</p>
+      {summary ? (
+        <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-4">
+          <Readout label="Sets" value={summary.sets} />
+          <Readout label="Volume" value={vol.toLocaleString("en-GB")} unit={unit} />
+          <Readout label="Minutes" value={summary.minutes != null ? summary.minutes : "–"} />
+          <Readout label="Records" value={summary.records} accent={summary.records > 0} note={summary.records > 0 ? "personal best" : undefined} />
+        </dl>
+      ) : null}
+      {next ? (
+        <Link href={`/app/session/${next.id}`} className="mt-5 inline-flex items-center gap-1.5 text-sm text-fg transition-colors hover:text-volt">
+          Up next: {next.name}, {whenLabel(next.scheduledOn, todayIso)} <ArrowUpRight className="size-4" aria-hidden />
+        </Link>
+      ) : (
+        <p className="mt-5 text-sm text-fg-muted">That was the last session of this block.</p>
+      )}
     </section>
   );
 }

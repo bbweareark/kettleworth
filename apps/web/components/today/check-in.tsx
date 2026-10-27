@@ -29,16 +29,16 @@ export function WeeklyCheckIn({ weekNumber, applied }: { weekNumber: number; app
     { k: "ease" as const, I: Wind, t: "Ease off", d: "Loads drop 8% this week." },
   ];
   return (
-    <motion.section initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="relative overflow-hidden p-5 border border-rule">
-      <div className="mb-3 flex items-center gap-2"><Sparkles className="size-4 text-ember" /><span className="eyebrow">Week {weekNumber} check-in</span></div>
+    <motion.section initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-lg border border-rule bg-surface p-4">
+      <div className="mb-3 flex items-center gap-2"><Sparkles className="size-4 text-volt" /><span className="eyebrow">Week {weekNumber} check-in</span></div>
       {result ? (
-        <div><h3 className="font-display text-xl tracking-tighter">Applied.</h3><ul className="mt-2 space-y-1.5 text-sm text-fg-muted">{summarise(result).map((t, i) => <li key={i} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-ember" />{t}</li>)}</ul></div>
+        <div><h3 className="font-display text-xl">Applied.</h3><ul className="mt-2 space-y-1.5 text-sm text-fg-muted">{summarise(result).map((t, i) => <li key={i} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-volt" />{t}</li>)}</ul></div>
       ) : (
         <>
-          <h3 className="font-display text-xl tracking-tighter">How do you want this week to feel?</h3>
+          <h3 className="font-display text-xl">How do you want this week to feel?</h3>
           {applied.length ? <p className="mt-1 text-sm text-fg-muted">From last week the engine already decided: {applied[applied.length - 1]!.reason}</p> : <p className="mt-1 text-sm text-fg-muted">Your call shapes the week; the engine keeps it safe.</p>}
           <div className="mt-4 grid gap-2 sm:grid-cols-3">{opts.map((o) => (
-            <button key={o.k} type="button" disabled={!!busy} onClick={() => choose(o.k)} className={cn("flex items-start gap-3 border border-border p-3 text-left transition-colors hover:border-ember hover:", busy === o.k && "border-ember ")}><o.I className="mt-0.5 size-4 shrink-0 text-ember" /><span><span className="block text-sm font-medium">{o.t}</span><span className="text-xs text-fg-muted">{o.d}</span></span></button>))}</div>
+            <button key={o.k} type="button" disabled={!!busy} onClick={() => choose(o.k)} className={cn("flex items-start gap-3 rounded-md border p-3.5 text-left transition-colors", busy === o.k ? "border-volt bg-bg" : "border-rule hover:border-rule-strong")}><o.I className="mt-0.5 size-4 shrink-0 text-fg-muted" aria-hidden /><span><span className="block text-sm">{o.t}</span><span className="text-xs text-fg-muted">{o.d}</span></span></button>))}</div>
         </>
       )}
     </motion.section>

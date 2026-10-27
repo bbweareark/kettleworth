@@ -6,30 +6,38 @@ import { Loader2 } from "lucide-react";
 import { cn } from "../lib/cn";
 
 /*
- * Hard rectangle, no radius, no shadow (DNA: teenage engineering measures radius 0 and
- * shadows none). The label treatment is measured from tines.com: uppercase, small, heavy,
- * letterspaced. Tines wraps it in a 990px pill; that is rejected here, and so is the pill
- * generally, since four of this owner's six apps already use one.
+ * A pill, in sentence case.
+ *
+ * Ported from Get Ripe (design/refs/cta-get-ripe) and Lando Norris (design/refs/hero-lando-norris):
+ * both use a filled pill for the action and a hairline pill for the alternative, with the label
+ * set in the text face at a normal weight. Integrated Biosciences' own CTA is a pill pair too,
+ * which is why the DNA's 8px button radius is deviated from on purpose (recorded in SECTION-MAP).
+ *
+ * The previous system's uppercase letterspaced label is gone. In this DNA that treatment belongs
+ * only to `meta` — the small mono label that names a figure — and using it on buttons as well
+ * made every piece of small text look like the same component.
  */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-none uppercase tracking-label font-semibold transition-colors duration-(--dur-fast) ease-out select-none disabled:pointer-events-none disabled:opacity-40 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-medium transition-colors duration-150 ease-out select-none disabled:pointer-events-none disabled:opacity-40 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        primary: "bg-ember text-ember-fg hover:bg-ember-hover",
-        secondary: "border border-rule-strong text-fg hover:bg-fg hover:text-bg",
-        ghost: "text-fg-muted hover:text-fg",
-        outline: "border border-rule-strong text-fg hover:bg-fg hover:text-bg",
-        danger: "border border-rose text-rose hover:bg-rose hover:text-fg-on-fill",
-        link: "text-fg underline underline-offset-4 decoration-1 hover:text-ember p-0 h-auto normal-case tracking-normal font-normal",
+        // Volt is rationed: one filled pill per viewport, and it is the thing to do next.
+        primary: "bg-volt text-volt-fg hover:bg-volt-hover",
+        secondary: "border border-rule-strong text-fg hover:border-fg hover:bg-surface",
+        ghost: "text-fg-muted hover:bg-surface hover:text-fg",
+        outline: "border border-rule-strong text-fg hover:border-fg hover:bg-surface",
+        danger: "border border-rule-strong text-fg-muted hover:border-fg hover:bg-fg hover:text-bg",
+        link: "text-fg underline underline-offset-4 decoration-1 hover:text-volt p-0 h-auto rounded-none font-normal",
       },
       size: {
-        sm: "h-9 px-4 text-[0.6875rem] [&_svg]:size-3.5",
-        md: "h-11 px-5 text-meta [&_svg]:size-4",
-        lg: "h-13 px-7 text-meta [&_svg]:size-4",
-        xl: "h-14 px-8 text-sm [&_svg]:size-4",
+        sm: "h-10 px-4 text-sm [&_svg]:size-3.5",
+        md: "h-11 px-5 text-sm [&_svg]:size-4",
+        lg: "h-13 px-7 text-base [&_svg]:size-4",
+        // 56px: the sticky bottom action, measured from Get Ripe's mobile capture.
+        xl: "h-14 px-8 text-base [&_svg]:size-5",
         icon: "size-11 px-0 [&_svg]:size-4",
-        "icon-sm": "size-9 px-0 [&_svg]:size-3.5",
+        "icon-sm": "size-10 px-0 [&_svg]:size-3.5",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },

@@ -23,16 +23,16 @@ export function ProgrammeCalendar({ weeks, sessions, mesocycles, currentWeekId }
           return (
             <div key={w.id} className={cn("grid grid-cols-[6rem_3rem_repeat(7,1fr)] items-center gap-1 py-1.5", currentWeekId === w.id && "/60")}>
               <span className="truncate text-xs font-medium text-fg-muted">{first ? meso?.name : ""}</span>
-              <span className={cn("font-display text-sm tabular", w.isDeload ? "text-ember" : "text-fg")}>{w.weekNumber}{w.isDeload ? "·d" : ""}</span>
+              <span className={cn("font-display text-sm tabular", w.isDeload ? "text-volt" : "text-fg")}>{w.weekNumber}{w.isDeload ? "·d" : ""}</span>
               {days.map((_, di) => {
                 const s = ws.find((x) => dayIndex(x.scheduledOn) === di);
                 if (!s) return <span key={di} className="mx-auto size-2 rounded-full bg-rule" />;
-                const cls = s.status === "completed" ? "bg-signal" : s.status === "skipped" ? "bg-rule" : s.status === "in_progress" ? "bg-ember animate-pulse-soft" : s.scheduledOn < today ? "bg-rose/70" : "bg-fg/80";
+                const cls = s.status === "completed" ? "bg-fg" : s.status === "skipped" ? "bg-rule" : s.status === "in_progress" ? "bg-volt animate-pulse-soft" : s.scheduledOn < today ? "bg-rose/70" : "bg-fg/80";
                 return <Link key={di} href={`/app/session/${s.id}`} title={`${s.name} · ${s.scheduledOn}`} aria-label={`${s.name} on ${s.scheduledOn}, ${s.status}`} className="group mx-auto grid size-7 place-items-center hover:bg-rule"><span className={cn("size-3 rounded-full transition-transform group-hover:scale-125", cls)} /></Link>;
               })}
             </div>);
         })}
-        <div className="mt-3 flex flex-wrap gap-4 text-2xs uppercase tracking-label text-fg-subtle"><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-signal" /> done</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-fg/80" /> planned</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-rose/70" /> missed</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-rule" /> skipped</span><span className="flex items-center gap-1.5"><span className="text-ember">·d</span> deload</span></div>
+        <div className="mt-3 flex flex-wrap gap-4 text-2xs uppercase tracking-label text-fg-subtle"><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-fg" /> done</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-fg/80" /> planned</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-rose/70" /> missed</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-rule" /> skipped</span><span className="flex items-center gap-1.5"><span className="text-volt">·d</span> deload</span></div>
       </div>
     </div>
   );

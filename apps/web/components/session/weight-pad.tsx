@@ -3,7 +3,7 @@ import { cn } from "@kettleworth/ui";
 import { Delete } from "lucide-react";
 
 /**
- * Type the weight. Any weight.
+ * Type the number. Any number.
  *
  * This is the real port of 21st.dev's Number Pad by Bankk roll
  * (design/refs/components-21st-numberpad): one dominant readout, a hard grid of equal keys,
@@ -17,8 +17,10 @@ import { Delete } from "lucide-react";
  *
  * A keypad has no such ceiling. Every value is three taps away, including 0, 0.5, 1, 2.5 and
  * 137.5, and the ladder survives beside it as an accelerator rather than as the only route.
+ * design/SECTION-MAP.md carries it over unchanged for exactly that reason; what the revamp
+ * changed is the readout it drives, which is now the 96px figure above it.
  */
-const KEYS = ["7", "8", "9", "4", "5", "6", "1", "2", "3", ".", "0"] as const;
+const KEYS = ["7", "8", "9", "4", "5", "6", "1", "2", "3"] as const;
 
 /** Appends a keystroke, keeping the string a number a lifter could mean. */
 export function press(current: string, key: string): string {
@@ -31,29 +33,34 @@ export function press(current: string, key: string): string {
   return Number(next) > 9999 ? current : next;
 }
 
-export function WeightPad({
+export function Keypad({
   value,
   unit,
+  label,
   quick,
   quickNote,
+  decimal = true,
   onChange,
 }: {
   value: string;
   unit: string;
-  /** Common loads for this equipment: an accelerator, never the only way in. */
-  quick: number[];
-  quickNote: string;
+  /** Names the quantity the keys drive, for anyone using a screen reader. */
+  label: string;
+  /** Common values for this equipment: an accelerator, never the only way in. */
+  quick?: number[];
+  quickNote?: string;
+  decimal?: boolean;
   onChange: (next: string) => void;
 }) {
   return (
-    <div className="border-b border-rule">
-      {quick.length ? (
-        <div className="border-b border-rule">
-          <div className="flex items-baseline justify-between gap-3 px-3 pt-2">
+    <div>
+      {quick?.length ? (
+        <div className="border-b border-rule pb-3">
+          <div className="flex items-baseline justify-between gap-3">
             <span className="meta">{quickNote}</span>
             <span className="meta">or type it</span>
           </div>
-          <div className="scrollbar-none flex gap-px overflow-x-auto px-3 pb-2 pt-1.5" role="group" aria-label="Common loads">
+          <div className="scrollbar-none mt-2 flex gap-1.5 overflow-x-auto pb-0.5" role="group" aria-label={`Common ${label}`}>
             {quick.map((v) => {
               const on = Math.abs(Number(value) - v) < 0.001 && value !== "";
               return (
@@ -64,8 +71,8 @@ export function WeightPad({
                   aria-pressed={on}
                   onClick={() => onChange(String(v))}
                   className={cn(
-                    "h-11 shrink-0 touch-manipulation px-3 text-sm tabular transition-colors",
-                    on ? "bg-fg text-bg" : "bg-bg text-fg-muted hover:bg-fg hover:text-bg",
+                    "h-11 shrink-0 touch-manipulation rounded-full border px-4 text-sm tabular transition-colors",
+                    on ? "border-fg bg-fg text-bg" : "border-rule text-fg-muted hover:border-rule-strong hover:text-fg",
                   )}
                 >
                   {v}
@@ -76,27 +83,37 @@ export function WeightPad({
         </div>
       ) : null}
 
-      <div className="grid grid-cols-3 gap-px bg-rule" role="group" aria-label={`Enter the weight in ${unit}`}>
+      {/* 3 x 4, keys 56px, as measured on the reference's mobile capture. */}
+      <div className="mt-3 grid grid-cols-3 gap-1.5" role="group" aria-label={`Enter the ${label} in ${unit}`}>
         {KEYS.map((k) => (
-          <button
-            key={k}
-            type="button"
-            onClick={() => onChange(press(value, k))}
-            className="h-14 touch-manipulation bg-bg font-display text-xl tabular transition-colors hover:bg-fg hover:text-bg active:bg-fg active:text-bg"
-          >
-            {k}
-          </button>
+          <Key key={k} onClick={() => onChange(press(value, k))}>{k}</Key>
         ))}
-        <button
-          type="button"
-          aria-label="Delete the last digit"
-          onClick={() => onChange(press(value, "back"))}
-          className="flex h-14 touch-manipulation items-center justify-center bg-bg transition-colors hover:bg-fg hover:text-bg active:bg-fg active:text-bg"
-        >
+        {decimal ? (
+          <Key onClick={() => onChange(press(value, "."))} label="Decimal point">.</Key>
+        ) : (
+          <Key onClick={() => onChange("")} label={`Clear the ${label}`}>
+            <span className="font-mono text-meta uppercase tracking-label">clr</span>
+          </Key>
+        )}
+        <Key onClick={() => onChange(press(value, "0"))}>0</Key>
+        <Key onClick={() => onChange(press(value, "back"))} label="Delete the last digit">
           <Delete className="size-5" aria-hidden />
-        </button>
+        </Key>
       </div>
     </div>
+  );
+}
+
+function Key({ children, onClick, label }: { children: React.ReactNode; onClick: () => void; label?: string }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className="flex h-14 touch-manipulation items-center justify-center rounded-md border border-rule bg-surface font-display text-2xl tabular transition-colors hover:border-rule-strong hover:bg-bg active:bg-fg active:text-bg"
+    >
+      {children}
+    </button>
   );
 }
 
@@ -116,7 +133,7 @@ export function PlateDiagram({ plates, unit }: { plates: number[]; unit: string 
           key={`${p}-${i}`}
           aria-hidden
           style={{ height: 8 + Math.round((p / max) * 18) }}
-          className="w-1.5 bg-fg"
+          className="w-1.5 rounded-sm bg-fg"
         />
       ))}
       <span className="meta ml-1.5">a side</span>

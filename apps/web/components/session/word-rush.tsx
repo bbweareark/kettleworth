@@ -103,16 +103,16 @@ export function WordRush({
       </div>
 
       {/* the run clock: the only moving thing on the screen */}
-      <div className="h-0.5 w-full bg-rule" aria-hidden>
+      <div className="h-1 w-full overflow-hidden rounded-full bg-rule" aria-hidden>
         <motion.div
-          className={cn("h-full", remaining < 0.3 ? "bg-ember" : "bg-fg")}
+          className={cn("h-full rounded-full", remaining < 0.3 ? "bg-volt" : "bg-fg")}
           style={{ width: phase === "playing" ? `${Math.max(0, remaining) * 100}%` : "0%" }}
           transition={reduce ? { duration: 0 } : { duration: 0 }}
         />
       </div>
 
       <div className="flex items-baseline justify-between gap-4 py-3">
-        <span className="font-display text-3xl tabular">{phase === "playing" ? index : (result?.score ?? 0)}</span>
+        <span className="font-display text-figure leading-none tabular">{phase === "playing" ? index : (result?.score ?? 0)}</span>
         <span className="meta">Best {best}</span>
       </div>
 
@@ -127,7 +127,7 @@ export function WordRush({
                 key={opt}
                 type="button"
                 onClick={() => answer(i as 0 | 1)}
-                className="h-20 touch-manipulation border border-rule px-2 text-base transition-colors hover:border-rule-strong hover:bg-fg hover:text-bg active:bg-fg active:text-bg"
+                className="h-20 touch-manipulation rounded-md border border-rule px-2 text-base transition-colors hover:border-fg active:bg-fg active:text-bg"
               >
                 {opt}
               </button>
@@ -149,7 +149,7 @@ export function WordRush({
             type="button"
             onClick={start}
             autoFocus={phase === "over"}
-            className="mt-4 h-14 w-full touch-manipulation bg-fg text-bg text-meta uppercase tracking-label transition-colors hover:bg-ember hover:text-ember-fg"
+            className="mt-4 h-14 w-full touch-manipulation rounded-full bg-volt text-base text-volt-fg transition-colors hover:bg-volt-hover"
           >
             {phase === "ready" ? "Start" : "Go again"}
           </button>
@@ -157,7 +157,7 @@ export function WordRush({
       )}
 
       {restLeft != null && restLeft <= 10 && (
-        <p className="mt-3 border-t border-rule pt-2 text-sm text-ember" role="status">
+        <p className="mt-3 border-t border-rule pt-2 text-sm text-volt" role="status">
           Rest is nearly up. Put the phone down.
         </p>
       )}

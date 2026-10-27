@@ -12,7 +12,7 @@ export function ExerciseMedia({ name, images, video, className, compact }: { nam
   const real = ready && video.provider === "mux";
   const yt = ready && video.provider === "youtube";
   return (
-    <div className={cn("relative overflow-hidden bg-surface-2", compact ? "aspect-[4/3]" : "aspect-video lg:aspect-[4/3]", className)}>
+    <div className={cn("relative overflow-hidden bg-bg", compact ? "aspect-[4/3]" : "aspect-video lg:aspect-[4/3]", className)}>
       {yt ? (
         <iframe title={`${name} demonstration`} src={`https://www.youtube-nocookie.com/embed/${video!.playbackId}?rel=0&modestbranding=1&playsinline=1${compact ? "&mute=1" : ""}`} className="absolute inset-0 size-full" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen loading="lazy" referrerPolicy="strict-origin-when-cross-origin" />
       ) : real ? (

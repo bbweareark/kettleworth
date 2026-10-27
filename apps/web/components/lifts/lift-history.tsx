@@ -24,7 +24,7 @@ export function TrendChart({ points, units, className }: { points: { date: strin
   const min = Math.min(...vals), max = Math.max(...vals), span = Math.max(1, max - min);
   const W = 300, H = 100, pad = 8;
   const xy = vals.map((v, i) => [pad + (i / (vals.length - 1)) * (W - pad * 2), H - pad - ((v - min) / span) * (H - pad * 2)] as const);
-  const line = xy.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join("");
+  const line = xy.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
   const area = `${pad},${H - pad} ${line} ${W - pad},${H - pad}`;
   const unit = units === "metric" ? "kg" : "lb";
   const change = vals[vals.length - 1]! - vals[0]!;
@@ -32,7 +32,7 @@ export function TrendChart({ points, units, className }: { points: { date: strin
     <figure className={cn("p-3 border border-rule", className)}>
       <figcaption className="mb-2 flex items-baseline justify-between gap-2 px-1">
         <span className="text-2xs uppercase tracking-label text-fg-subtle">Estimated max</span>
-        <span className={cn("text-xs tabular", change >= 0 ? "text-fg" : "text-ember")}>{change >= 0 ? "+" : "\u2212"}{Math.abs(Math.round(change * 10) / 10)} {unit} over {points.length} sessions</span>
+        <span className={cn("text-xs tabular", change >= 0 ? "text-fg" : "text-volt")}>{change >= 0 ? "+" : "\u2212"}{Math.abs(Math.round(change * 10) / 10)} {unit} over {points.length} sessions</span>
       </figcaption>
       <div className="flex gap-2">
         <div className="flex w-8 shrink-0 flex-col justify-between py-0.5 text-right text-2xs tabular text-fg-subtle"><span>{Math.round(max)}</span><span>{Math.round(min)}</span></div>
@@ -56,7 +56,7 @@ export function LiftHistory({ data, units }: { data: LiftHistoryData; units: "me
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-3 gap-2">
-        <Stat icon={<Trophy className="size-3.5 text-ember" />} label="Heaviest" value={data.bestWeight ? `${fmtKg(data.bestWeight.weightKg, units)} × ${data.bestWeight.reps}` : "-"} sub={data.bestWeight ? dayMonth(data.bestWeight.date) : ""} />
+        <Stat icon={<Trophy className="size-3.5 text-volt" />} label="Heaviest" value={data.bestWeight ? `${fmtKg(data.bestWeight.weightKg, units)} × ${data.bestWeight.reps}` : "-"} sub={data.bestWeight ? dayMonth(data.bestWeight.date) : ""} />
         <Stat icon={<TrendingUp className="size-3.5 text-fg" />} label="Best max" value={data.bestE1rm ? `${fmtKg(data.bestE1rm.e1rm, units)} ${unit}` : "-"} sub={data.bestE1rm ? `${fmtKg(data.bestE1rm.weightKg, units)} × ${data.bestE1rm.reps}` : ""} />
         <Stat icon={<Calendar className="size-3.5 text-fg" />} label="Sessions" value={String(data.sessions)} sub={data.records ? `${data.records} record${data.records === 1 ? "" : "s"}` : ""} />
       </div>
@@ -64,11 +64,11 @@ export function LiftHistory({ data, units }: { data: LiftHistoryData; units: "me
       {note ? <p className="px-1 text-xs text-fg-subtle">{note}</p> : null}
       <ol className="space-y-2">
         {data.history.map((h) => (
-          <li key={h.sessionId} className="bg-rule p-3 border border-rule">
+          <li key={h.sessionId} className="rounded-md bg-bg p-3">
             <div className="flex items-baseline justify-between gap-2"><span className="text-sm font-medium">{dayMonth(h.date)}<span className="ml-2 text-xs font-normal text-fg-subtle">{h.name}</span></span><span className="shrink-0 text-2xs tabular text-fg-subtle">{h.e1rm ? `est. ${fmtKg(h.e1rm, units)} ${unit}` : ""}</span></div>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {h.sets.map((s, i) => { const isTop = !!h.top && s.weightKg === h.top.weightKg && s.reps === h.top.reps; return (
-                <span key={i} className={cn("inline-flex h-7 items-center  px-2.5 text-xs tabular border", isTop ? " text-fg border-ember" : "text-fg-muted border-rule-strong")}>{fmtKg(s.weightKg, units)} × {s.reps}{s.rpe ? <span className="ml-1 text-fg-subtle">@{s.rpe}</span> : null}</span>); })}
+                <span key={i} className={cn("inline-flex h-7 items-center  px-2.5 text-xs tabular border", isTop ? " text-fg border-volt" : "text-fg-muted border-rule-strong")}>{fmtKg(s.weightKg, units)} × {s.reps}{s.rpe ? <span className="ml-1 text-fg-subtle">@{s.rpe}</span> : null}</span>); })}
             </div>
           </li>
         ))}

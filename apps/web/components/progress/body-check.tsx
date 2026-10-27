@@ -7,7 +7,7 @@ import { MuscleFigure } from "@/components/muscle-figure";
 
 type Analysis = { summary: string; build: string; bodyFatRangePct: [number, number] | null; strengths: string[]; focusAreas: { muscle: string; reason: string }[]; posture: string[]; caveats: string[]; analysedAt: string };
 type Photo = { id: string; takenOn: string; pose: string; analysis: Analysis | null };
-const label = (m: string) => m.replace(/_/g, "");
+const label = (m: string) => m.replace(/_/g, " ");
 
 export function BodyCheck({ initial, ai, priorityMuscles, sex = "male" }: { initial: Photo[]; ai: boolean; priorityMuscles: string[]; sex?: "male" | "female" | "other" }) {
   const router = useRouter();
@@ -65,7 +65,7 @@ export function BodyCheck({ initial, ai, priorityMuscles, sex = "male" }: { init
       {photos.length ? (
         <ul className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">{photos.map((p) => (
           <li key={p.id} className="relative shrink-0">
-            <button type="button" onClick={() => setSelected((s) => { const n = new Set(s); n.has(p.id) ? n.delete(p.id) : n.add(p.id); return n; })} aria-pressed={selected.has(p.id)} className={cn("block overflow-hidden border-2", selected.has(p.id) ? "border-ember" : "border-transparent")}>
+            <button type="button" onClick={() => setSelected((s) => { const n = new Set(s); n.has(p.id) ? n.delete(p.id) : n.add(p.id); return n; })} aria-pressed={selected.has(p.id)} className={cn("block overflow-hidden border-2", selected.has(p.id) ? "border-volt" : "border-transparent")}>
               <img src={`/api/photos/${p.id}`} alt={`${p.pose} photo ${p.takenOn}`} className="h-32 w-24 object-cover" />
             </button>
             <div className="mt-1 flex items-center justify-between text-2xs text-fg-subtle"><span className="capitalize">{p.pose} · {p.takenOn.slice(5)}</span>{p.analysis ? <ScanLine className="size-3 text-fg" /> : null}</div>
@@ -74,11 +74,11 @@ export function BodyCheck({ initial, ai, priorityMuscles, sex = "male" }: { init
       ) : <p className="text-sm text-fg-muted">Add a front, side and back photo in the same light every few weeks. The trend matters more than any single picture.</p>}
       {photos.length ? <div className="flex flex-wrap items-center gap-2"><Button size="sm" onClick={analyse} loading={busy === "analyse"} disabled={!ai || !selected.size}><Sparkles /> Read selected ({selected.size})</Button>{!ai && <span className="text-xs text-fg-subtle">Photo reads are unavailable on this server; photos are stored only.</span>}</div> : null}
       {latest ? (
-        <div className="space-y-3 border border-border p-4">
+        <div className="space-y-3 rounded-lg border border-rule bg-surface p-4">
           <CoachPulse label="Read" items={[{ text: latest.summary, tone: "ember" }, ...latest.strengths.map((t) => ({ text: t, tone: "signal" as const })), ...latest.posture.map((t) => ({ text: t, tone: "sky" as const }))]} />
           <div className="flex items-center gap-4"><MuscleFigure muscles={priorityMuscles} sex={sex} size="md" caption={priorityMuscles.length > 0} /><div className="flex flex-wrap gap-2"><Badge tone="outline" className="capitalize">{label(latest.build)} build</Badge>{latest.bodyFatRangePct ? <Badge tone="outline">Body fat ~{latest.bodyFatRangePct[0]} to {latest.bodyFatRangePct[1]}%</Badge> : null}</div></div>
-          <div><div className="eyebrow mb-2">Where to focus</div><ul className="grid gap-2 sm:grid-cols-2">{latest.focusAreas.map((f) => <li key={f.muscle} className="bg-surface-2 p-3 text-sm"><span className="font-medium capitalize">{label(f.muscle)}</span>{priorityMuscles.includes(f.muscle) ? <Check className="ml-1 inline size-3.5 text-fg" /> : null}<p className="text-fg-muted">{f.reason}</p></li>)}</ul></div>
-          {latest.caveats.length ? <p className="text-xs text-fg-subtle">{latest.caveats.join("")}</p> : null}
+          <div><div className="eyebrow mb-2">Where to focus</div><ul className="grid gap-2 sm:grid-cols-2">{latest.focusAreas.map((f) => <li key={f.muscle} className="bg-bg p-3 text-sm"><span className="font-medium capitalize">{label(f.muscle)}</span>{priorityMuscles.includes(f.muscle) ? <Check className="ml-1 inline size-3.5 text-fg" /> : null}<p className="text-fg-muted">{f.reason}</p></li>)}</ul></div>
+          {latest.caveats.length ? <p className="text-xs text-fg-subtle">{latest.caveats.join(" ")}</p> : null}
           <div className="flex flex-wrap gap-2"><Button size="sm" onClick={() => apply("priorityMuscles")} loading={busy === "priorityMuscles"}>Prioritise these in my programme</Button>{latest.bodyFatRangePct ? <Button size="sm" variant="secondary" onClick={() => apply("bodyFat")} loading={busy === "bodyFat"}>Use this body-fat estimate</Button> : null}</div>
           <p className="text-2xs text-fg-subtle">A visual read, not a measurement or a diagnosis. Lighting, clothing and pose change what can be seen.</p>
         </div>

@@ -46,9 +46,9 @@ export function RestDeck(p: Props) {
     requestAnimationFrame(() => panel.current?.scrollIntoView({ block: "end", behavior: reduce ? "auto" : "smooth" }));
   };
   return (
-    <div className="mt-4 border-t border-rule pt-3">
-      {/* five hard keys, equal width, hairline-separated: the same key language as the set console */}
-      <div className="mb-3 grid grid-cols-5 gap-px bg-rule" role="tablist" aria-label="Rest deck">{modes.map(([m, I, l]) => <button key={m} role="tab" aria-selected={mode === m} type="button" onClick={() => pick(m)} className={cn("flex h-13 flex-col items-center justify-center gap-1 text-2xs uppercase tracking-label transition-colors", mode === m ? "bg-fg text-bg" : "bg-bg text-fg-muted hover:text-fg")}><I className="size-3.5" />{l}</button>)}</div>
+    <div className="mt-5 border-t border-rule pt-4">
+      {/* Five tabs as a pill group, the one navigation shape this system has. */}
+      <div className="scrollbar-none mb-4 flex gap-1.5 overflow-x-auto pb-0.5" role="tablist" aria-label="Rest deck">{modes.map(([m, I, l]) => <button key={m} role="tab" aria-selected={mode === m} type="button" onClick={() => pick(m)} className={cn("inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full border px-4 text-sm transition-colors", mode === m ? "border-fg bg-fg text-bg" : "border-rule text-fg-muted hover:border-rule-strong hover:text-fg")}><I className="size-3.5" aria-hidden />{l}</button>)}</div>
       <AnimatePresence mode="wait" initial={false}>
         <motion.div ref={panel} key={mode} className="scroll-mb-24" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
           {mode === "drill" && (
@@ -70,7 +70,7 @@ export function RestDeck(p: Props) {
 }
 
 function Loading({ label }: { label: string }) {
-  return <div className="space-y-2 py-1" aria-busy><div className="meta">{label}</div><div className="h-5 w-3/4 animate-pulse bg-rule-strong" /><div className="h-11 animate-pulse bg-rule" /><div className="h-11 animate-pulse bg-rule" /></div>;
+  return <div className="space-y-2 py-1" aria-busy><div className="meta">{label}</div><div className="h-5 w-3/4 animate-pulse rounded-sm bg-rule-strong" /><div className="h-12 animate-pulse rounded-md bg-rule" /><div className="h-12 animate-pulse rounded-md bg-rule" /></div>;
 }
 
 async function record(body: Record<string, unknown>) { try { await fetch("/api/rest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); } catch {} }
@@ -86,13 +86,13 @@ function QuizCard({ quiz, sessionId, onDone, onNext }: { quiz: Quiz | null; sess
   const correct = picked === quiz.answer;
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between border-b border-rule pb-2 meta"><span>Quiz · {quiz.tag}</span>{picked == null ? <span className={cn("tabular", left <= 5 && "text-ember")}>{left}s</span> : null}</div>
+      <div className="mb-2 flex items-center justify-between border-b border-rule pb-2 meta"><span>Quiz · {quiz.tag}</span>{picked == null ? <span className={cn("tabular", left <= 5 && "text-volt")}>{left}s</span> : null}</div>
       <p className="font-display text-xl leading-snug">{quiz.q}</p>
-      <div className="mt-3 grid gap-px bg-rule">{quiz.options.map((o, i) => (
-        <button key={i} type="button" disabled={picked != null} onClick={() => answer(i)} className={cn("px-3 py-3 text-left text-sm transition-colors", picked == null ? "bg-bg hover:bg-fg hover:text-bg" : i === quiz.answer ? "bg-fg text-bg" : i === picked ? "bg-bg text-ember" : "bg-bg opacity-45")}>
+      <div className="mt-4 grid gap-1.5">{quiz.options.map((o, i) => (
+        <button key={i} type="button" disabled={picked != null} onClick={() => answer(i)} className={cn("rounded-md border px-4 py-3 text-left text-sm transition-colors", picked == null ? "border-rule hover:border-fg" : i === quiz.answer ? "border-fg bg-fg text-bg" : i === picked ? "border-volt text-volt" : "border-rule opacity-45")}>
           <span className="flex items-center gap-2">{picked != null && i === quiz.answer ? <Check className="size-4" /> : picked === i ? <X className="size-4" /> : null}{o}</span>
         </button>))}</div>
-      {picked != null && <><p className="measure mt-3 text-sm text-fg-muted"><span className={cn("font-medium", correct ? "text-fg" : "text-ember")}>{picked === -1 ? "Time." : correct ? "Right, +10 Growth." : "Not quite."}</span> {quiz.why}</p><Button size="sm" variant="ghost" className="mt-2" onClick={onNext}>Next question</Button></>}
+      {picked != null && <><p className="measure mt-3 text-sm text-fg-muted"><span className={cn("font-medium", correct ? "text-fg" : "text-volt")}>{picked === -1 ? "Time." : correct ? "Right, +10 Growth." : "Not quite."}</span> {quiz.why}</p><Button size="sm" variant="ghost" className="mt-2" onClick={onNext}>Next question</Button></>}
     </div>
   );
 }
@@ -110,8 +110,8 @@ function BreatheCard({ restSeconds, sessionId }: { restSeconds: number; sessionI
   const scale = phase === "Inhale" ? 1 + (t / pat.inhale) * 0.5 : phase === "Hold" ? 1.5 : 1.5 - ((t - pat.inhale - pat.hold) / pat.exhale) * 0.5;
   return (
     <div className="flex items-center gap-5">
-      {/* a square that breathes, not a glowing orb: the DNA allows no shadow and no radius */}
-      <div className="grid size-24 shrink-0 place-items-center border border-rule"><motion.div animate={reduce ? {} : { scale }} transition={{ duration: 1, ease: "linear" }} className="size-12 bg-ember" /></div>
+      {/* A shape that breathes, not a glowing orb: the DNA allows no shadow and no blur. */}
+      <div className="grid size-24 shrink-0 place-items-center rounded-lg border border-rule"><motion.div animate={reduce ? {} : { scale }} transition={{ duration: 1, ease: "linear" }} className="size-12 rounded-md bg-volt" /></div>
       <div><div className="meta">Breathe · {pat.inhale}-{pat.hold}-{pat.exhale} · cycle {cycles + 1} of {pat.cycles}</div><div className="font-display text-3xl">{phase}</div><p className="measure mt-1 text-sm text-fg-muted">Nose in, long exhale. Slower breathing brings heart rate down faster between sets, so the next set starts fresher.</p></div>
     </div>
   );
@@ -127,7 +127,7 @@ function PredictCard({ nextSet, sessionId, onPrediction }: { nextSet: Props["nex
       <div className="meta">Call your next set</div>
       <p className="font-display text-xl">How many reps will you get?</p>
       <p className="measure text-sm text-fg-muted">Target {lo} to {hi}. Calling it honestly trains the skill that makes effort ratings useful. Within one rep earns Growth.</p>
-      <div className="mt-3 flex flex-wrap gap-px bg-rule p-px">{opts.map((n) => <button key={n} type="button" disabled={v != null} onClick={() => { setV(n); onPrediction?.(n); record({ sessionId, kind: "predict", itemId: `predict-${Date.now()}`, correct: null, detail: { predicted: n, lo, hi } }); }} className={cn("size-11 text-sm font-medium tabular transition-colors", v === n ? "bg-ember text-ember-fg" : "bg-bg hover:bg-fg hover:text-bg")}>{n}</button>)}</div>
+      <div className="mt-4 flex flex-wrap gap-1.5">{opts.map((n) => <button key={n} type="button" disabled={v != null} onClick={() => { setV(n); onPrediction?.(n); record({ sessionId, kind: "predict", itemId: `predict-${Date.now()}`, correct: null, detail: { predicted: n, lo, hi } }); }} className={cn("size-12 rounded-full border text-sm tabular transition-colors", v === n ? "border-volt bg-volt text-volt-fg" : "border-rule text-fg-muted hover:border-fg hover:text-fg")}>{n}</button>)}</div>
       {v != null && <p className="mt-2 text-sm">Locked in: {v}. Log the set and we'll compare.</p>}
     </div>
   );

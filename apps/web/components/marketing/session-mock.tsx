@@ -13,7 +13,7 @@ export function SessionMock() {
       <p className="mt-1 text-sm text-fg-muted">5 × 3 to 5 @ RPE 8 · 3 min rest</p>
       <div className="mt-4 space-y-2">
         {sets.map((s) => (
-          <div key={s.n} className={`flex items-center gap-3 border px-3 py-2 ${s.done ? "border-border bg-surface-2" : "border-border-strong bg-surface"}`}>
+          <div key={s.n} className={`flex items-center gap-3 border px-3 py-2 ${s.done ? "border-rule bg-bg" : "border-rule-strong bg-surface"}`}>
             <span className="w-5 text-xs text-fg-subtle tabular">{s.warm ? "W" : s.n - 2}</span>
             <span className="font-mono text-sm tabular">{s.w} kg</span>
             <span className="text-fg-subtle">×</span>

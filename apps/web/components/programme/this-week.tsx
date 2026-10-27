@@ -15,7 +15,7 @@ export function ThisWeek({ sessions, todayIso, openMissedId }: { sessions: Sess[
   const days = Array.from({ length: 7 }, (_, i) => addDays(monday, i));
   const nextId = sessions.find((s) => s.scheduledOn > todayIso && s.status === "planned")?.id;
   return (
-    <section className="p-4 border border-rule sm:p-5" aria-label="This week">
+    <section className="rounded-lg border border-rule bg-surface p-4 sm:p-5" aria-label="This week">
       <div className="mb-3 flex items-baseline justify-between gap-2"><h2 className="font-display text-lg tracking-tight">This week</h2><span className="text-xs text-fg-subtle">Tap a day to see or start it</span></div>
       <ol className="space-y-2">
         {days.map((day) => {
@@ -29,9 +29,9 @@ export function ThisWeek({ sessions, todayIso, openMissedId }: { sessions: Sess[
           return list.map((s) => {
             const status = s.status === "completed" ? { t: "Done", c: "text-fg bg-fg text-bg" }
               : s.status === "skipped" ? { t: "Skipped", c: "text-fg-subtle bg-rule" }
-              : s.status === "in_progress" ? { t: "In progress", c: "text-ember " }
-              : day === todayIso ? { t: "Today", c: "text-bg bg-ember" }
-              : day < todayIso ? { t: "Missed", c: s.id === openMissedId ? "text-ember " : "text-fg-subtle bg-rule" }
+              : s.status === "in_progress" ? { t: "In progress", c: "text-volt " }
+              : day === todayIso ? { t: "Today", c: "text-bg bg-volt" }
+              : day < todayIso ? { t: "Missed", c: s.id === openMissedId ? "text-volt " : "text-fg-subtle bg-rule" }
               : s.id === nextId ? { t: "Up next", c: "text-fg bg-rule" } : null;
             const muted = s.status === "completed" || s.status === "skipped" || (day < todayIso && s.id !== openMissedId);
             return (

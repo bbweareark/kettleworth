@@ -9,6 +9,15 @@ import { Button, Textarea, Badge, CoachPulse, cn, toast } from "@kettleworth/ui"
 type Letter = { id: string; weekStartsOn: string; headline: string; body: string; adaptations: { kind: string; reason: string }[]; readAt: string | null; generatedBy: string };
 type Msg = { id: string; role: "user" | "coach"; content: string; actions: { type: string; summary: string; applied: boolean }[]; at: string };
 
+/**
+ * The coach: letters on the left, conversation on the right.
+ *
+ * The previous build stacked four photographic panels on this screen - one for the head, one
+ * for the empty state, one behind every open letter and one behind the chat - each with its
+ * own gradient. Four images with text over them is not atmosphere, it is noise, and it is
+ * what the DNA reference refuses to do. The screen head carries the one photograph; the
+ * letters and the conversation are set on the raised surface where words belong.
+ */
 export function CoachView({ letters, history, ai, name }: { letters: Letter[]; history: Msg[]; ai: boolean; name: string }) {
   const reduce = useReducedMotion();
   const router = useRouter();
@@ -43,42 +52,75 @@ export function CoachView({ letters, history, ai, name }: { letters: Letter[]; h
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr]">
-      <section className="space-y-4">
-        <div className="relative overflow-hidden p-6 border border-rule"><img src="/art/coach.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-85" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_75%,transparent)_60%,transparent_100%)]" />
-        <div className="flex items-end justify-between gap-3"><div><p className="eyebrow">Sunday letter</p><h1 className="font-display text-4xl tracking-tightest">Your week, read back.</h1></div><Button size="sm" variant="secondary" onClick={generate} loading={gen}><Mail /> Write this week's</Button></div></div>
-        {letters.length === 0 ? <div className="relative overflow-hidden p-5 border border-rule"><img src="/art/letter.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-70" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_70%,transparent)_100%)]" /><p className="max-w-sm text-sm text-fg-muted">Every Sunday evening the coach writes you a short letter: what moved, what stalled, what changes next week and why. Complete a session and write the first one now.</p></div> : (
-          <div className="space-y-2">{letters.map((l) => (
-            <article key={l.id} className={cn("relative overflow-hidden border border-rule transition-colors", open === l.id ? "bg-surface/70" : "bg-surface/30 hover:")}>
-              {open === l.id ? <><img src="/art/letter.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-40" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-bg)_60%,transparent)_0%,var(--color-bg)_40%)]" /></> : null}
-              <button type="button" onClick={() => setOpen(open === l.id ? null : l.id)} className="flex w-full items-center justify-between gap-3 p-5 text-left">
-                <div><div className="text-2xs uppercase tracking-label text-fg-subtle">Week of {dayMonth(l.weekStartsOn, true)}</div><h2 className="font-display text-xl tracking-tighter">{l.headline}</h2></div>
-                {!l.readAt && <Badge tone="amber">New</Badge>}
-              </button>
-              <AnimatePresence initial={false}>{open === l.id && (
-                <motion.div initial={reduce ? false : { height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }} className="overflow-hidden">
-                  <div className="prose-coach px-5 pb-5 text-[15px] leading-relaxed text-fg-muted">{l.body.split("\n\n").map((p, i) => <p key={i}>{p}</p>)}
-                    {l.adaptations.length ? <ul className="mt-4 space-y-1.5 border-t border-border pt-4 text-sm">{l.adaptations.map((a, i) => <li key={i} className="flex gap-2"><Sparkles className="mt-0.5 size-3.5 shrink-0 text-ember" />{a.reason}</li>)}</ul> : null}
-                    <p className="mt-3 text-2xs text-fg-subtle">{l.generatedBy === "rules" ? "Written from your numbers by the rules engine." : "Written by the coach from your numbers."}</p>
+      <section>
+        <div className="flex flex-wrap items-baseline justify-between gap-3 border-t border-rule pt-4">
+          <h2 className="font-display text-xl">Sunday letters</h2>
+          <Button size="sm" variant="secondary" onClick={generate} loading={gen}><Mail /> Write this week&apos;s</Button>
+        </div>
+
+        {letters.length === 0 ? (
+          <p className="measure mt-4 text-sm text-fg-muted">Every Sunday evening the coach writes you a short letter: what moved, what stalled, what changes next week and why. Complete a session and write the first one now.</p>
+        ) : (
+          <div className="mt-4 space-y-2">
+            {letters.map((l) => (
+              <article key={l.id} className={cn("overflow-hidden rounded-lg border transition-colors", open === l.id ? "border-rule-strong bg-surface" : "border-rule bg-surface/60 hover:border-rule-strong")}>
+                <button type="button" onClick={() => setOpen(open === l.id ? null : l.id)} aria-expanded={open === l.id} className="flex w-full items-center justify-between gap-3 p-4 text-left">
+                  <div className="min-w-0">
+                    <p className="meta">Week of {dayMonth(l.weekStartsOn, true)}</p>
+                    <h3 className="mt-0.5 font-display text-xl">{l.headline}</h3>
                   </div>
-                </motion.div>)}</AnimatePresence>
-            </article>))}</div>
+                  {!l.readAt ? <Badge tone="volt">New</Badge> : null}
+                </button>
+                <AnimatePresence initial={false}>
+                  {open === l.id ? (
+                    <motion.div initial={reduce ? false : { height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }} className="overflow-hidden">
+                      <div className="prose-coach border-t border-rule px-4 py-4 text-[15px] leading-relaxed text-fg-muted">
+                        {l.body.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}
+                        {l.adaptations.length ? (
+                          <ul className="mt-4 space-y-2 border-t border-rule pt-4 text-sm">
+                            {l.adaptations.map((a, i) => <li key={i} className="flex gap-2.5"><Sparkles className="mt-0.5 size-3.5 shrink-0 text-volt" aria-hidden />{a.reason}</li>)}
+                          </ul>
+                        ) : null}
+                        <p className="meta mt-4">{l.generatedBy === "rules" ? "Written from your numbers by the rules engine." : "Written by the coach from your numbers."}</p>
+                      </div>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+              </article>
+            ))}
+          </div>
         )}
       </section>
-      <section className="relative flex min-h-[560px] flex-col overflow-hidden border border-rule">
-        <img src="/art/coach-chat.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-60" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--color-bg)_55%,transparent)_0%,color-mix(in_oklch,var(--color-bg)_92%,transparent)_35%,var(--color-bg)_100%)]" />
-        <div className="border-b border-border p-5"><p className="eyebrow">Talk to the coach</p><h2 className="font-display text-xl tracking-tighter">Ask anything about your training, {name}.</h2><p className="mt-1 text-xs text-fg-subtle">Grounded in your profile, plan, logs and readiness. Changes go through the rules engine and are shown here.</p></div>
-        <div className="flex-1 space-y-3 overflow-y-auto p-5">
-          {msgs.length === 0 && <div className="flex flex-wrap gap-2">{suggestions.map((s) => <button key={s} type="button" onClick={() => setText(s)} className="border border-border px-3 py-1.5 text-xs text-fg-muted hover:border-border-strong hover:text-fg">{s}</button>)}</div>}
+
+      <section className="flex min-h-[560px] flex-col overflow-hidden rounded-lg border border-rule bg-surface">
+        <div className="border-b border-rule p-4">
+          <p className="meta">Talk to your coach</p>
+          <h2 className="mt-0.5 font-display text-xl">Ask anything about your training, {name}.</h2>
+          <p className="measure mt-1 text-xs text-fg-subtle">Grounded in your profile, plan, logs and readiness. Changes go through the rules engine and are shown here.</p>
+        </div>
+        <div className="flex-1 space-y-3 overflow-y-auto p-4">
+          {msgs.length === 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {suggestions.map((s) => (
+                <button key={s} type="button" onClick={() => setText(s)} className="rounded-full border border-rule px-4 py-2 text-xs text-fg-muted transition-colors hover:border-rule-strong hover:text-fg">{s}</button>
+              ))}
+            </div>
+          ) : null}
           {msgs.map((m) => (
-            <div key={m.id} className={cn("max-w-[88%] px-4 py-3 text-sm leading-relaxed", m.role === "user" ? "ml-auto  text-fg" : "bg-surface-2 text-fg")}>
+            <div key={m.id} className={cn("max-w-[88%] rounded-lg px-4 py-3 text-sm leading-relaxed", m.role === "user" ? "ml-auto border border-rule-strong text-fg" : "bg-bg text-fg")}>
               {m.content}
-              {m.actions.length ? <ul className="mt-2 space-y-1 border-t border-border pt-2 text-xs">{m.actions.map((a, i) => <li key={i} className={cn("flex items-center gap-1.5", a.applied ? "text-fg" : "text-ember")}>{a.applied ? <Check className="size-3.5" /> : <X className="size-3.5" />}{a.summary}</li>)}</ul> : null}
-            </div>))}
-          {busy && <CoachPulse avatar="/art/seal.png" label="Coach" items={[{ text: "Reading your last two weeks…", tone: "ember" }]} />}
+              {m.actions.length ? (
+                <ul className="mt-2 space-y-1 border-t border-rule pt-2 text-xs">
+                  {m.actions.map((a, i) => <li key={i} className={cn("flex items-center gap-1.5", a.applied ? "text-fg" : "text-fg-subtle")}>{a.applied ? <Check className="size-3.5" aria-hidden /> : <X className="size-3.5" aria-hidden />}{a.summary}</li>)}
+                </ul>
+              ) : null}
+            </div>
+          ))}
+          {busy ? <CoachPulse avatar="/art/seal.png" label="Coach" items={[{ text: "Reading your last two weeks…", tone: "ember" }]} /> : null}
           <div ref={bottom} />
         </div>
-        <form onSubmit={send} className="flex items-end gap-2 border-t border-border p-3">
-          <Textarea value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }} placeholder={ai ? "Message your coach…" : "Ask about readiness, upcoming sessions or recent performance."} className="min-h-11 flex-1 resize-none py-2.5" rows={1} />
+        <form onSubmit={send} className="flex items-end gap-2 border-t border-rule p-3">
+          <Textarea value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }} placeholder={ai ? "Message your coach…" : "Ask about readiness, upcoming sessions or recent performance."} className="min-h-12 flex-1 resize-none py-3" rows={1} />
           <Button type="submit" size="icon" aria-label="Send" loading={busy} disabled={!text.trim()}><Send /></Button>
         </form>
       </section>

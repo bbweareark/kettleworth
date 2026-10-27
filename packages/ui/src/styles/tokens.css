@@ -66,6 +66,44 @@
   --radius-full: 9999px;
 
   --spacing-section: 56px;
+  /* The in-app page spine's own rhythm, phone-first, against the reference's 80-120px. */
+  --spacing-app-section: 2.5rem;
+
+  --tracking-tightest: -0.035em;
+
+  /*
+   * Motion. DESIGN.md allows two signature moments and a 150ms colour transition for
+   * everything else; these are the shared primitives both signatures and the dialogs are
+   * built from. Every one of them is neutralised by the reduced-motion rule in @layer base.
+   */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --animate-fade-up: fade-up 420ms var(--ease-out-quart) both;
+  --animate-fade-in: fade-in 180ms ease-out both;
+  --animate-sheet-in: sheet-in 300ms var(--ease-out-quart) both;
+  --animate-pulse-soft: pulse-soft 1.6s ease-in-out infinite;
+  --animate-unmask: unmask 760ms var(--ease-out-quart) both;
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes sheet-in {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
+  /* Signature 2: photography enters by unmasking from the bottom edge, never by fading. */
+  @keyframes unmask {
+    from { clip-path: inset(100% 0 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+  }
 
   /* The reference states it outright: no shadows, no gradients. */
 
@@ -92,6 +130,7 @@
   --color-fg-on-fill: var(--kw-accent-fg);
   --color-volt: var(--kw-accent);
   --color-volt-fg: var(--kw-accent-fg);
+  --color-volt-hover: var(--kw-accent-hover);
   --color-ember: var(--kw-accent);
   --color-ember-hover: var(--kw-accent-hover);
   --color-ember-soft: var(--kw-accent-soft);
@@ -134,6 +173,8 @@
 
   --kw-done: #f4f5f2;
   --kw-done-soft: #2c3133;
+
+  --dur-fast: 150ms;
 }
 
 /* Daylight: the same composition under a different light, not a second design. */
@@ -194,6 +235,7 @@
      files that already reference it keep working; recomposed screens use volt. */
   --color-volt: var(--kw-accent);
   --color-volt-fg: var(--kw-accent-fg);
+  --color-volt-hover: var(--kw-accent-hover);
   --color-ember: var(--kw-accent);
   --color-ember-hover: var(--kw-accent-hover);
   --color-ember-soft: var(--kw-accent-soft);
@@ -245,6 +287,19 @@
     border-radius: var(--radius-sm);
   }
 
+  /*
+   * The marketing page's section spine. Content is visible by default; the hidden state is
+   * gated behind .js-reveal, which the Reveal component only adds once mounted and only when
+   * the reader has not asked for reduced motion.
+   */
+  .js-reveal [data-reveal=""] {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  [data-reveal] {
+    transition: opacity 560ms var(--ease-out-quart) var(--reveal-delay, 0ms), transform 560ms var(--ease-out-quart) var(--reveal-delay, 0ms);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -253,6 +308,7 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
+      clip-path: none !important;
     }
   }
 }
@@ -298,7 +354,7 @@
 
 /* Text over photography always sits on one of these, never on the bare image. */
 @utility scrim {
-  background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--kw-bg) 88%, transparent) 70%, var(--kw-bg) 100%);
+  background: linear-gradient(180deg, transparent 0%, transparent 55%, color-mix(in srgb, var(--kw-bg) 70%, transparent) 82%, var(--kw-bg) 100%);
 }
 
 @utility rule-dashed {

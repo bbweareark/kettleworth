@@ -1,14 +1,17 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CheckCircle2, Circle, Clock, Sparkles, XCircle } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { requireUser } from "@/lib/session";
 import { getProfile, getProgrammeOverview, todayState, sessionsWithExercises } from "@kettleworth/api";
 import { localTodayIso, localTimeZone } from "@/lib/local-date";
 import { ThisWeek } from "@/components/programme/this-week";
-import { Badge, Button, Card, CardContent, Progress, cn } from "@kettleworth/ui";
+import { Button, Progress, Readout, ReadoutRow } from "@kettleworth/ui";
 import { VolumeChart } from "@/components/programme/volume-chart";
 import { ProgrammeCalendar } from "@/components/programme/calendar";
-import { AppStack } from "@/components/app/stack";
+import { Screen } from "@/components/app/screen";
+import { ScreenHero } from "@/components/app/hero";
+import { Panel } from "@/components/app/panel";
+import { ART } from "@/lib/art";
 
 export const metadata = { title: "Programme" };
 export const dynamic = "force-dynamic";
@@ -27,33 +30,76 @@ export default async function Programme() {
   if (!o) redirect("/app/programme/new");
   const { programme: p, weeks, sessions, exercises, currentWeek, mesocycles } = o;
   const pct = o.totalSessions ? (o.completedSessions / o.totalSessions) * 100 : 0;
-  const byWeek = new Map(weeks.map((w) => [w.id, sessions.filter((s) => s.weekId === w.id)]));
   const plan = p.plan;
+  const block = mesocycles.find((m) => m.id === currentWeek?.mesocycleId)?.name ?? mesocycles[0]?.name ?? null;
+
+  /*
+   * The one number here, from design/SECTION-MAP.md: the week of the block. A periodised plan
+   * only makes sense if you know where in it you are - which week it is decides whether a
+   * heavy session is the plan working or the plan slipping. The accented line names the block
+   * phase, which is the thing that number means.
+   */
+  const weekNo = currentWeek?.weekNumber ?? 1;
+
   return (
-    <AppStack>
-      <div className="relative -mx-4 -mt-6 overflow-hidden px-4 pb-8 pt-10 sm:-mx-6 sm:px-6 lg:-mt-8 lg:lg:border lg:border-rule">
-        <img src="/art/programme.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-80" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_80%,transparent)_50%,color-mix(in_oklch,var(--color-bg)_40%,transparent)_100%)]" /><div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,transparent_50%,var(--color-bg)_100%)]" />
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div><p className="eyebrow">Programme</p><h1 className="font-display text-4xl tracking-tightest md:text-5xl">{p.name}</h1><p className="mt-1 text-fg-muted">{p.summary}</p></div>
-        <div className="flex gap-2"><Button asChild><Link href="/app/programme/new?continue=1">Extend: next block <Sparkles /></Link></Button><Button asChild variant="secondary"><Link href="/app/programme/new">Start over</Link></Button></div>
+    <Screen flush>
+      <ScreenHero
+        art={ART.programme}
+        priority
+        eyebrow={`Programme · ${p.name}`}
+        label="Week of the block"
+        value={weekNo}
+        unit={`of ${p.totalWeeks}`}
+        second={block ? `${block} phase.` : p.summary}
+      />
+
+      <ReadoutRow className="border-t-0 pt-0">
+        <Readout label="Sessions done" value={o.completedSessions} note={`of ${o.totalSessions}`} />
+        <Readout label="Days a week" value={p.daysPerWeek} />
+        <Readout label="Block" value={block ?? "–"} />
+        <Readout label="Complete" value={Math.round(pct)} unit="%" accent={pct >= 100} />
+      </ReadoutRow>
+
+      <div>
+        <Progress value={pct} className="h-1" label={`${Math.round(pct)}% of the block complete`} />
+        <p className="measure mt-3 text-sm text-fg-muted">{p.summary}</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Button asChild variant="secondary"><Link href="/app/programme/new?continue=1">Extend: next block <Sparkles /></Link></Button>
+          <Button asChild variant="ghost"><Link href="/app/programme/new">Start over</Link></Button>
+        </div>
       </div>
-      </div>
-      <div className="grid grid-cols-3 divide-x divide-border border border-rule">
-        <div className="p-4"><div className="text-2xs uppercase tracking-label text-fg-subtle">Done</div><div className="font-display mt-1 text-4xl tabular tracking-tightest">{o.completedSessions}<span className="text-lg text-fg-subtle">/{o.totalSessions}</span></div></div>
-        <div className="p-4"><div className="text-2xs uppercase tracking-label text-fg-subtle">Week</div><div className="font-display mt-1 text-4xl tabular tracking-tightest">{currentWeek?.weekNumber ?? 1}<span className="text-lg text-fg-subtle">/{p.totalWeeks}</span></div></div>
-        <div className="p-4"><div className="text-2xs uppercase tracking-label text-fg-subtle">Block</div><div className="font-display mt-1 truncate text-2xl tracking-tighter">{mesocycles.find((m) => m.id === currentWeek?.mesocycleId)?.name ?? mesocycles[0]?.name}</div></div>
-      </div>
-      <Progress value={pct} className="h-1" />
+
       <ThisWeek sessions={weekSessions} todayIso={todayIso} openMissedId={openMissedId} />
-      <section className="p-5 border border-rule">
-        <h2 className="mb-3 font-display text-base">Whole block</h2>
+
+      <Panel title="Whole block" note={`${p.totalWeeks} weeks, ${mesocycles.length} phase${mesocycles.length === 1 ? "" : "s"}.`}>
         <ProgrammeCalendar weeks={weeks} sessions={sessions} mesocycles={mesocycles} currentWeekId={currentWeek?.id ?? null} />
-      </section>
+      </Panel>
+
       <div className="grid gap-4 lg:grid-cols-2">
-        <details className="p-5 border border-rule"><summary className="cursor-pointer font-display text-base">Coach note</summary>{p.coachNote ? <div className="prose-coach mt-3 text-sm text-fg-muted">{p.coachNote.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}</div> : null}<h4 className="mt-4 text-2xs uppercase tracking-label text-fg-subtle">Why this programme</h4><ul className="mt-2 space-y-1.5 text-sm text-fg-muted">{p.rationale.map((r) => <li key={r} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-ember" />{r}</li>)}</ul></details>
-        <div className="p-5 border border-rule"><h3 className="mb-3 font-display text-base">Weekly sets per muscle</h3><VolumeChart data={plan.weeklyVolumeBySet} /></div>
+        <Panel title="Why this programme" note="Written when the block was built.">
+          {p.coachNote ? <div className="prose-coach text-sm text-fg-muted">{p.coachNote.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}</div> : null}
+          <ul className="mt-4 space-y-2 text-sm text-fg-muted">
+            {p.rationale.map((r) => (
+              <li key={r} className="flex gap-2.5"><span aria-hidden className="mt-2 size-1 shrink-0 rounded-full bg-volt" />{r}</li>
+            ))}
+          </ul>
+        </Panel>
+        <Panel title="Weekly sets per muscle" note="What the block asks of each group every week.">
+          <VolumeChart data={plan.weeklyVolumeBySet} />
+        </Panel>
       </div>
-      <details><summary className="cursor-pointer text-sm font-medium text-fg-muted">Exercise index ({Object.keys(exercises).length})</summary><ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{Object.values(exercises).sort((a, b) => a.name.localeCompare(b.name)).map((e) => <li key={e.id}><Link href={`/library/${e.slug}`} className="text-sm text-ember hover:underline">{e.name}</Link><span className="ml-2 text-xs text-fg-subtle capitalize">{e.primaryMuscles.map((m) => m.replace("_", "")).join(", ")}</span></li>)}</ul></details>
-    </AppStack>
+
+      <details className="border-t border-rule pt-4">
+        <summary className="cursor-pointer text-sm text-fg-muted transition-colors hover:text-fg">Exercise index ({Object.keys(exercises).length})</summary>
+        <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {Object.values(exercises).sort((a, b) => a.name.localeCompare(b.name)).map((e) => (
+            <li key={e.id} className="text-sm">
+              <Link href={`/library/${e.slug}`} className="text-fg transition-colors hover:text-volt">{e.name}</Link>
+              <span className="ml-2 text-xs capitalize text-fg-subtle">{e.primaryMuscles.map((m) => m.replace("_", " ")).join(", ")}</span>
+            </li>
+          ))}
+        </ul>
+      </details>
+    </Screen>
   );
 }

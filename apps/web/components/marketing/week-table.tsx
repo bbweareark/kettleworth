@@ -49,8 +49,8 @@ export function WeekTable({ className }: { className?: string }) {
           >
             <td className="py-3 pr-3 text-meta uppercase tracking-label text-fg-subtle">{r.day}</td>
             <td className="py-3 pr-3">
-              <span className={cn("font-display text-lg", r.state === "now" && "text-ember")}>{r.name}</span>
-              {r.state === "now" && <span className="meta ml-2 text-ember">Today</span>}
+              <span className={cn("font-display text-lg", r.state === "now" && "text-volt")}>{r.name}</span>
+              {r.state === "now" && <span className="meta ml-2 text-volt">Today</span>}
               {r.state === "done" && <span className="meta ml-2 text-fg">Done</span>}
             </td>
             <td className="hidden py-3 pr-3 text-sm text-fg-muted sm:table-cell">{r.focus}</td>

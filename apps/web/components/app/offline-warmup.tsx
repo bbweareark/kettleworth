@@ -29,5 +29,5 @@ export function OfflineWarmup({ sessionHref, images }: { sessionHref: string | n
     return () => { window.removeEventListener("online", on); window.removeEventListener("offline", off); };
   }, [sessionHref, images]);
   if (!offline && !queued) return null;
-  return <div className="fixed bottom-[calc(3.5rem+env(safe-area-inset-bottom)+0.5rem)] left-1/2 z-40 -translate-x-1/2 border border-border bg-bg-elevated/90 px-3 py-1.5 text-xs text-fg-muted shadow-pop lg:bottom-4" role="status"><WifiOff className="mr-1.5 inline size-3.5 text-ember" />{offline ? "Offline: logging saves on this device" : `${queued} change${queued > 1 ? "s" : ""} waiting to sync`}</div>;
+  return <div className="fixed bottom-[calc(3.5rem+env(safe-area-inset-bottom)+0.5rem)] left-1/2 z-40 -translate-x-1/2 border border-rule bg-bg-elevated/90 px-3 py-1.5 text-xs text-fg-muted shadow-pop lg:bottom-4" role="status"><WifiOff className="mr-1.5 inline size-3.5 text-volt" />{offline ? "Offline: logging saves on this device" : `${queued} change${queued > 1 ? "s" : ""} waiting to sync`}</div>;
 }

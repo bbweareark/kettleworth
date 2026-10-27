@@ -5,7 +5,7 @@ import { useNow } from "@/lib/use-now";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 import { Users, Shield, Flame, Trophy, MessageSquare, Send, Check, X, Plus, Flag, Ban, Lock, Eye } from "lucide-react";
-import { Button, Field, Input, Textarea, Switch, Segmented, Tabs, TabsList, TabsTrigger, TabsContent, Dialog, DialogContent, toast, cn } from "@kettleworth/ui";
+import { Button, Field, Input, Textarea, Switch, Segmented, Tabs, TabsList, TabsTrigger, TabsContent, Dialog, DialogContent, Readout, ReadoutRow, toast, cn } from "@kettleworth/ui";
 
 type Me = { handle: string; displayName: string; bio: string | null; city: string | null; country: string | null; trainTogether: boolean; visibility: "public" | "members" | "private" };
 type Match = { userId: string; handle: string; displayName: string; bio: string | null; city: string | null; level: string | null; goals: string[]; styles: string[]; trainTogether: boolean; score: number; reasons: string[]; status: string | null; matchId: string | null; initiatedByMe: boolean; growth: number; growthLevel: number; streakWeeks: number };
@@ -21,9 +21,9 @@ async function api(path: string, body?: unknown, method = "POST") {
   if (!r.ok) throw new Error(j.error ?? "Failed");
   return j;
 }
-/** A square 1:1 tile, not a gradient disc: the DNA frames images 1:1 at radius 0 and rations colour. */
+/** An initial in a hairline circle. No gradient disc, no photograph we do not have. */
 function Avatar({ name, size = 40 }: { name: string; size?: number }) {
-  return <span aria-hidden className="grid shrink-0 place-items-center border border-rule font-display text-fg-muted" style={{ width: size, height: size, fontSize: size * 0.4 }}>{name.slice(0, 1).toUpperCase()}</span>;
+  return <span aria-hidden className="grid shrink-0 place-items-center rounded-full border border-rule font-display text-fg-muted" style={{ width: size, height: size, fontSize: size * 0.4 }}>{name.slice(0, 1).toUpperCase()}</span>;
 }
 const daysLeft = (iso: string, now: number | null) => (now == null ? 0 : Math.max(0, Math.ceil((new Date(iso).getTime() - now) / 86400000)));
 
@@ -41,31 +41,28 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
   const stagger = (i: number) => (reduce ? {} : { initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { delay: 0.05 * i, duration: 0.4 } });
 
   return (
-    <div className="space-y-8">
-      <div className="relative overflow-hidden p-8 border border-rule md:p-10">
-        <img src="/art/community.jpg" alt="" aria-hidden className="absolute inset-0 -z-20 size-full object-cover opacity-85" />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--color-bg)_0%,color-mix(in_oklch,var(--color-bg)_78%,transparent)_50%,color-mix(in_oklch,var(--color-bg)_25%,transparent)_100%)]" />
-        <p className="eyebrow">Community</p>
-        <h1 className="font-display text-4xl tracking-tightest md:text-5xl">People who train like you.</h1>
-        <p className="mt-2 max-w-lg text-fg-muted">Matched on goals, level and schedule. Nothing about you is visible until you say so.</p>
-        <div className="mt-5 flex flex-wrap items-center gap-2">
-          {p.me ? <span className="inline-flex items-center gap-1.5 bg-black/40 px-3 py-1 text-xs">{p.me.visibility === "private" ? <Lock className="size-3" /> : <Eye className="size-3" />}{p.me.visibility === "private" ? "Private" : p.me.visibility === "members" ? "Visible to members" : "Public"} · @{p.me.handle}</span> : null}
-          <Button size="sm" variant={p.me ? "ghost" : "primary"} onClick={() => setEditing(true)}>{p.me ? "Edit profile" : "Create your profile"}</Button>
-        </div>
+    <div className="space-y-app-section">
+      <div className="flex flex-wrap items-center gap-2">
+        {p.me ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-rule px-3.5 py-1.5 text-xs text-fg-muted">
+            {p.me.visibility === "private" ? <Lock className="size-3" aria-hidden /> : <Eye className="size-3" aria-hidden />}
+            {p.me.visibility === "private" ? "Private" : p.me.visibility === "members" ? "Visible to members" : "Public"} · @{p.me.handle}
+          </span>
+        ) : null}
+        <Button size="sm" variant={p.me ? "ghost" : "primary"} onClick={() => setEditing(true)}>{p.me ? "Edit profile" : "Create your profile"}</Button>
       </div>
 
-      {/* Stats strip */}
-      <div className="grid grid-cols-3 gap-3">
-        {[{ I: Users, n: p.partners.length, l: "Partners" }, { I: Flame, n: p.groups.filter((g) => g.joined).length, l: "Groups" }, { I: Trophy, n: p.challenges.filter((c) => c.joined).length, l: "Challenges" }].map((s, i) => (
-          <motion.div key={s.l} {...stagger(i)} className="border-t border-rule py-4 pr-4"><div className="meta">{s.l}</div><div className="mt-1 font-display text-3xl tabular">{s.n}</div></motion.div>
+      <ReadoutRow className="sm:grid-cols-3">
+        {[{ n: p.partners.length, l: "Partners" }, { n: p.groups.filter((g) => g.joined).length, l: "Groups" }, { n: p.challenges.filter((c) => c.joined).length, l: "Challenges" }].map((st, i) => (
+          <motion.div key={st.l} {...stagger(i)}><Readout label={st.l} value={st.n} /></motion.div>
         ))}
-      </div>
+      </ReadoutRow>
 
       {p.pending.length ? (
         <section className="space-y-2">
-          <p className="eyebrow">Wants to train with you</p>
+          <p className="meta">Wants to train with you</p>
           {p.pending.map((r) => (
-            <div key={r.matchId} className="flex items-center gap-3 p-3 border border-ember"><Avatar name={r.displayName} /><div className="flex-1"><div className="text-sm font-medium">{r.displayName}</div><div className="text-xs text-fg-muted">@{r.handle}</div></div>
+            <div key={r.matchId} className="flex items-center gap-3 rounded-lg border border-volt bg-surface p-3"><Avatar name={r.displayName} /><div className="flex-1"><div className="text-sm font-medium">{r.displayName}</div><div className="text-xs text-fg-muted">@{r.handle}</div></div>
               <Button size="sm" loading={busy === r.matchId + "y"} onClick={() => run(r.matchId + "y", () => api("partner/respond", { matchId: r.matchId, accept: true }), "You're partners")}><Check className="size-4" />Accept</Button>
               <Button size="sm" variant="ghost" onClick={() => run(r.matchId + "n", () => api("partner/respond", { matchId: r.matchId, accept: false }))}><X className="size-4" /></Button></div>
           ))}
@@ -77,18 +74,18 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
 
         <TabsContent value="people" className="mt-4 space-y-6">
           {p.partners.length ? (
-            <div className="space-y-2"><p className="eyebrow">Your partners</p>
+            <div className="space-y-2"><p className="meta">Your partners</p>
               <div className="grid gap-2 sm:grid-cols-2">{p.partners.map((pt) => (
-                <div key={pt.matchId} className="flex items-center gap-3 p-3 border border-rule"><Avatar name={pt.displayName} /><div className="flex-1"><div className="text-sm font-medium">{pt.displayName}</div><div className="text-xs text-fg-muted">{pt.sessionsThisWeek} session{pt.sessionsThisWeek === 1 ? "" : "s"} this week · level {pt.growthLevel}{pt.streakWeeks ? ` · ${pt.streakWeeks} wk streak` : ""}</div></div><Button size="sm" variant="ghost" onClick={() => setChat(pt)}><MessageSquare className="size-4" />Message</Button></div>))}</div>
+                <div key={pt.matchId} className="flex items-center gap-3 rounded-lg border border-rule bg-surface p-3"><Avatar name={pt.displayName} /><div className="flex-1"><div className="text-sm font-medium">{pt.displayName}</div><div className="text-xs text-fg-muted">{pt.sessionsThisWeek} session{pt.sessionsThisWeek === 1 ? "" : "s"} this week · level {pt.growthLevel}{pt.streakWeeks ? ` · ${pt.streakWeeks} wk streak` : ""}</div></div><Button size="sm" variant="ghost" onClick={() => setChat(pt)}><MessageSquare className="size-4" />Message</Button></div>))}</div>
             </div>
           ) : null}
-          <div className="space-y-2"><p className="eyebrow">Suggested for you</p>
-            {p.matchReason ? <div className="p-5 border border-rule"><Shield className="size-5 text-ember" /><p className="mt-2 text-sm text-fg-muted">{p.matchReason}</p><Button size="sm" className="mt-3" onClick={() => setEditing(true)}>{p.me ? "Change visibility" : "Create profile"}</Button></div>
-            : p.matches.length === 0 ? <div className="p-5 border border-rule"><p className="text-sm text-fg-muted">No one close enough yet. Matches appear as members with your goals and schedule opt in.</p></div>
+          <div className="space-y-2"><p className="meta">Suggested for you</p>
+            {p.matchReason ? <div className="rounded-lg border border-rule bg-surface p-5"><Shield className="size-5 text-volt" aria-hidden /><p className="mt-2 text-sm text-fg-muted">{p.matchReason}</p><Button size="sm" className="mt-3" onClick={() => setEditing(true)}>{p.me ? "Change visibility" : "Create profile"}</Button></div>
+            : p.matches.length === 0 ? <div className="rounded-lg border border-rule bg-surface p-5"><p className="text-sm text-fg-muted">No one close enough yet. Matches appear as members with your goals and schedule opt in.</p></div>
             : <div className="border-t border-rule">{p.matches.map((m, i) => (
               <motion.div key={m.userId} {...stagger(i)} className="relative border-b border-rule py-4">
-                <div className="flex items-start gap-3"><Avatar name={m.displayName} size={44} /><div className="min-w-0 flex-1"><div className="flex items-center gap-2"><span className="truncate font-medium">{m.displayName}</span><span className="ml-auto px-2 py-0.5 font-display text-xs tabular text-ember">{m.score}%</span></div><div className="truncate text-xs text-fg-muted">@{m.handle}{m.city ? ` · ${m.city}` : ""}{m.level ? ` · ${m.level}` : ""}</div><div className="mt-0.5 text-2xs uppercase tracking-label text-ember">Level {m.growthLevel} · {m.growth} Growth{m.streakWeeks ? ` · ${m.streakWeeks} wk streak` : ""}</div></div></div>
-                <div className="mt-3 flex flex-wrap gap-1.5">{m.reasons.slice(0, 3).map((r) => <span key={r} className="bg-surface-2 px-2 py-0.5 text-2xs text-fg-muted">{r}</span>)}</div>
+                <div className="flex items-start gap-3"><Avatar name={m.displayName} size={44} /><div className="min-w-0 flex-1"><div className="flex items-center gap-2"><span className="truncate font-medium">{m.displayName}</span><span className="ml-auto font-display text-sm tabular text-volt">{m.score}%</span></div><div className="truncate text-xs text-fg-muted">@{m.handle}{m.city ? ` · ${m.city}` : ""}{m.level ? ` · ${m.level}` : ""}</div><div className="meta mt-0.5">Level {m.growthLevel} · {m.growth} Growth{m.streakWeeks ? ` · ${m.streakWeeks} wk streak` : ""}</div></div></div>
+                <div className="mt-3 flex flex-wrap gap-1.5">{m.reasons.slice(0, 3).map((r) => <span key={r} className="rounded-full border border-rule px-2.5 py-1 text-2xs text-fg-muted">{r}</span>)}</div>
                 <div className="mt-3 flex items-center gap-2">
                   {m.status === "accepted" ? <span className="text-xs text-fg">Partners</span> : m.status === "suggested" && m.initiatedByMe ? <span className="text-xs text-fg-subtle">Request sent</span> : m.status === "suggested" ? <Button size="sm" loading={busy === m.userId} onClick={() => run(m.userId, () => api("partner", { userId: m.userId }), "You're partners")}>Accept</Button> : <Button size="sm" loading={busy === m.userId} onClick={() => run(m.userId, () => api("partner", { userId: m.userId }), "Request sent")}>Train together</Button>}
                   <button type="button" className="ml-auto text-fg-subtle hover:text-fg" aria-label="Block" onClick={() => run("b" + m.userId, () => api("block", { userId: m.userId }), "Blocked")}><Ban className="size-4" /></button>
@@ -99,8 +96,8 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
         </TabsContent>
 
         <TabsContent value="groups" className="mt-4 space-y-3">
-          <div className="flex items-center justify-between"><p className="eyebrow">Groups</p><Button size="sm" variant="ghost" onClick={() => setNewGroup(true)}><Plus className="size-4" />New group</Button></div>
-          {p.groups.length === 0 ? <div className="p-5 border border-rule"><p className="text-sm text-fg-muted">No groups yet. Start one for your gym, your city or your split.</p></div> : null}
+          <div className="flex items-center justify-between"><p className="meta">Groups</p><Button size="sm" variant="ghost" onClick={() => setNewGroup(true)}><Plus className="size-4" />New group</Button></div>
+          {p.groups.length === 0 ? <div className="rounded-lg border border-rule bg-surface p-5"><p className="text-sm text-fg-muted">No groups yet. Start one for your gym, your city or your split.</p></div> : null}
           <div className="border-t border-rule">{p.groups.map((g, i) => (
             <motion.div key={g.id} {...stagger(i)} className="flex flex-col border-b border-rule py-4">
               <div className="font-display text-lg tracking-tight">{g.name}</div>
@@ -112,18 +109,18 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
 
         <TabsContent value="challenges" className="mt-4 space-y-6">
           <div className="space-y-3">
-            <div className="flex items-end justify-between gap-3"><p className="eyebrow">Growth board</p><span className="text-2xs text-fg-subtle">Every session, set, weigh-in, check-in and answered question counts.</span></div>
+            <div className="flex items-end justify-between gap-3"><p className="meta">Growth board</p><span className="text-2xs text-fg-subtle">Every session, set, weigh-in, check-in and answered question counts.</span></div>
             {p.growthBoard.length ? <ol className="grid gap-1.5 sm:grid-cols-2">{p.growthBoard.slice(0, 10).map((b, j) => (
-              <li key={b.userId} className={cn("flex items-center gap-3 px-3 py-2 text-sm border border-rule", b.me ? "" : "")}><span className="w-4 text-right font-display text-xs text-fg-subtle tabular">{j + 1}</span><Avatar name={b.displayName} size={26} /><span className="min-w-0 flex-1 truncate">{b.displayName}{b.me ? " (you)" : ""}<span className="ml-2 text-2xs uppercase tracking-label text-fg-subtle">lvl {b.level}{b.streakWeeks ? ` · ${b.streakWeeks} wk` : ""}</span></span><span className="font-display tabular">{b.growth}</span></li>))}</ol>
+              <li key={b.userId} className={cn("flex items-center gap-3 rounded-lg border px-3.5 py-2.5 text-sm", b.me ? "border-volt bg-surface" : "border-rule")}><span className="w-4 text-right font-display text-xs text-fg-subtle tabular">{j + 1}</span><Avatar name={b.displayName} size={26} /><span className="min-w-0 flex-1 truncate">{b.displayName}{b.me ? " (you)" : ""}<span className="ml-2 text-2xs uppercase tracking-label text-fg-subtle">lvl {b.level}{b.streakWeeks ? ` · ${b.streakWeeks} wk` : ""}</span></span><span className="font-display tabular">{b.growth}</span></li>))}</ol>
             : <p className="text-sm text-fg-muted">Set your profile to members-only to appear on the board.</p>}
           </div>
-          <p className="eyebrow">Challenges</p>
+          <p className="meta">Challenges</p>
           <div className="grid gap-3 md:grid-cols-2">{p.challenges.map((c, i) => (
-            <motion.div key={c.id} {...stagger(i)} className="p-4 border border-rule">
-              <div className="flex items-start gap-3"><div className="grid size-10 shrink-0 place-items-center"><Trophy className="size-5 text-ember" /></div><div className="flex-1"><div className="font-display text-lg tracking-tight">{c.name}</div><div className="text-xs text-fg-muted">Completed sessions · {now == null ? "" : `${daysLeft(c.endsOn, now)} day${daysLeft(c.endsOn, now) === 1 ? "" : "s"} left`} · {c.participants} in</div></div>
+            <motion.div key={c.id} {...stagger(i)} className="rounded-lg border border-rule bg-surface p-4">
+              <div className="flex items-start gap-3"><div className="grid size-10 shrink-0 place-items-center"><Trophy className="size-5 text-volt" aria-hidden /></div><div className="flex-1"><div className="font-display text-lg tracking-tight">{c.name}</div><div className="text-xs text-fg-muted">Completed sessions · {now == null ? "" : `${daysLeft(c.endsOn, now)} day${daysLeft(c.endsOn, now) === 1 ? "" : "s"} left`} · {c.participants} in</div></div>
                 <Button size="sm" variant={c.joined ? "ghost" : "primary"} loading={busy === c.id} onClick={() => run(c.id, () => api("challenges/join", { challengeId: c.id, join: !c.joined }), c.joined ? "Left challenge" : "You're in")}>{c.joined ? "Leave" : "Join"}</Button></div>
               {c.board.length ? <ol className="mt-4 space-y-1.5">{c.board.slice(0, 5).map((b, j) => (
-                <li key={b.userId} className={cn("flex items-center gap-3 px-2 py-1.5 text-sm", b.me && "")}><span className="w-4 text-right font-display text-xs text-fg-subtle tabular">{j + 1}</span><Avatar name={b.displayName} size={24} /><span className="flex-1 truncate">{b.displayName}{b.me ? " (you)" : ""}</span><span className="font-display tabular">{b.score}</span></li>))}</ol> : <p className="mt-3 text-xs text-fg-subtle">Be the first in. Every completed session counts automatically.</p>}
+                <li key={b.userId} className={cn("flex items-center gap-3 rounded-full px-3 py-1.5 text-sm", b.me && "bg-bg")}><span className="w-4 text-right font-display text-xs text-fg-subtle tabular">{j + 1}</span><Avatar name={b.displayName} size={24} /><span className="flex-1 truncate">{b.displayName}{b.me ? " (you)" : ""}</span><span className="font-display tabular">{b.score}</span></li>))}</ol> : <p className="mt-3 text-xs text-fg-subtle">Be the first in. Every completed session counts automatically.</p>}
             </motion.div>))}</div>
         </TabsContent>
       </Tabs>
@@ -154,7 +151,7 @@ function ProfileDialog({ open, onClose, me, defaultName, onSaved }: { open: bool
         </div>
         <Field label="A line about you"><Textarea value={f.bio ?? ""} onChange={(e) => setF({ ...f, bio: e.target.value })} className="min-h-16" /></Field>
         <Field label="Who can see you" hint="Private hides you from matching entirely."><Segmented value={f.visibility} onChange={(v) => setF({ ...f, visibility: v })} options={[{ value: "private", label: "Private" }, { value: "members", label: "Members" }, { value: "public", label: "Public" }]} /></Field>
-        <label className="flex items-center justify-between gap-3 bg-surface-2 px-3 py-2.5 text-sm"><span>Open to training together in person</span><Switch checked={f.trainTogether} onCheckedChange={(v) => setF({ ...f, trainTogether: v })} /></label>
+        <label className="flex items-center justify-between gap-3 rounded-sm border border-rule bg-bg px-3.5 py-3 text-sm"><span>Open to training together in person</span><Switch checked={f.trainTogether} onCheckedChange={(v) => setF({ ...f, trainTogether: v })} /></label>
         <div className="flex justify-end gap-2"><Button variant="ghost" onClick={onClose}>Cancel</Button><Button loading={busy} onClick={save}>Save</Button></div>
       </div>
     </DialogContent></Dialog>
@@ -184,15 +181,15 @@ function GroupDialog({ id, onClose }: { id: string | null; onClose: () => void }
         <div className="max-h-[50vh] space-y-3 overflow-y-auto pr-1">
           {feed?.posts.length === 0 ? <p className="text-sm text-fg-muted">Quiet so far. Say hello.</p> : null}
           {feed?.posts.map((po) => (
-            <div key={po.id} className="bg-surface-2 p-3">
+            <div key={po.id} className="rounded-lg bg-bg p-3">
               <div className="flex items-center gap-2"><Avatar name={po.author.displayName} size={28} /><span className="text-sm font-medium">{po.author.displayName}</span><span className="text-2xs text-fg-subtle"><LocalDateTime iso={po.createdAt} time={false} /></span>
                 <button type="button" className="ml-auto text-fg-subtle hover:text-fg" aria-label="Report post" onClick={async () => { const why = prompt("What's wrong?"); if (why) { await api("report", { targetType: "post", targetId: po.id, reason: why }); toast.success("Reported"); } }}><Flag className="size-3.5" /></button></div>
               <p className="mt-2 whitespace-pre-wrap text-sm">{po.body}</p>
               <div className="mt-2 flex items-center gap-3 text-xs">
-                <button type="button" className={cn("inline-flex items-center gap-1", po.reacted ? "text-ember" : "text-fg-subtle hover:text-fg")} onClick={async () => { await api("reactions", { postId: po.id }); await load(); }}><Flame className="size-3.5" />{po.reactions}</button>
+                <button type="button" className={cn("inline-flex items-center gap-1", po.reacted ? "text-volt" : "text-fg-subtle hover:text-fg")} onClick={async () => { await api("reactions", { postId: po.id }); await load(); }}><Flame className="size-3.5" />{po.reactions}</button>
                 <span className="text-fg-subtle">{po.comments.length} repl{po.comments.length === 1 ? "y" : "ies"}</span>
               </div>
-              {po.comments.map((c) => <div key={c.id} className="mt-2 border-l-2 border-border pl-3 text-sm"><span className="font-medium">{c.author.displayName}</span> <span className="text-fg-muted">{c.body}</span></div>)}
+              {po.comments.map((c) => <div key={c.id} className="mt-2 border-l border-rule-strong pl-3 text-sm"><span className="font-medium">{c.author.displayName}</span> <span className="text-fg-muted">{c.body}</span></div>)}
               <div className="mt-2 flex gap-2"><Input value={reply[po.id] ?? ""} onChange={(e) => setReply({ ...reply, [po.id]: e.target.value })} placeholder="Reply" className="h-9 text-sm" onKeyDown={async (e) => { if (e.key === "Enter" && (reply[po.id] ?? "").trim()) { await api("comments", { postId: po.id, body: reply[po.id] }); setReply({ ...reply, [po.id]: "" }); await load(); } }} /></div>
             </div>))}
         </div>
@@ -210,9 +207,9 @@ function ChatDialog({ partner, onClose }: { partner: Partner | null; onClose: ()
   return (
     <Dialog open={!!partner} onOpenChange={(o) => !o && onClose()}><DialogContent title={partner?.displayName ?? ""} description="Only the two of you can read this.">
       <div className="space-y-3">
-        <div className="flex max-h-[50vh] min-h-40 flex-col gap-2 overflow-y-auto bg-surface-2 p-3">
+        <div className="flex max-h-[50vh] min-h-40 flex-col gap-2 overflow-y-auto rounded-lg bg-bg p-3">
           {msgs.length === 0 ? <p className="m-auto text-sm text-fg-subtle">Say hi. Plan a session.</p> : null}
-          {msgs.map((m) => <div key={m.id} className={cn("max-w-[80%] px-3 py-2 text-sm", m.senderId === partner?.userId ? "self-start bg-surface" : "self-end bg-ember text-white")}>{m.body}</div>)}
+          {msgs.map((m) => <div key={m.id} className={cn("max-w-[80%] px-3 py-2 text-sm", m.senderId === partner?.userId ? "self-start rounded-lg bg-surface" : "self-end rounded-lg bg-volt text-volt-fg")}>{m.body}</div>)}
         </div>
         <div className="flex gap-2"><Input value={text} onChange={(e) => setText(e.target.value)} placeholder="Message" onKeyDown={(e) => e.key === "Enter" && send()} /><Button loading={busy} onClick={send} aria-label="Send"><Send className="size-4" /></Button></div>
       </div>

@@ -6,11 +6,17 @@ import { Button, cn } from "@kettleworth/ui";
 
 export type CheckCard = { kind: "cue" | "mistake" | "safety" | "foryou"; text: string };
 
+/*
+ * One accent, so the four kinds are told apart by their icon and their label, not by four
+ * invented hues. The previous table reached for rose, amber and black-on-amber, all three of
+ * which resolved to the same accent once the system was rationed to one - and two of them
+ * put white or black text on it, which this accent cannot carry.
+ */
 const STYLE = {
-  cue: { icon: Lightbulb, label: "Do this", ring: "border-ember/50", glow: "var(--color-ember)", chip: "bg-ember text-ember-fg" },
-  mistake: { icon: XCircle, label: "Not this", ring: "border-ember/50", glow: "var(--color-rose)", chip: "bg-rose text-white" },
-  safety: { icon: ShieldAlert, label: "Protect", ring: "border-ember/50", glow: "var(--color-amber)", chip: "bg-amber text-black" },
-  foryou: { icon: ShieldAlert, label: "For you", ring: "border-ember/60", glow: "var(--color-amber)", chip: "bg-amber text-black" },
+  cue: { icon: Lightbulb, label: "Do this", chip: "bg-volt text-volt-fg" },
+  mistake: { icon: XCircle, label: "Not this", chip: "border border-rule-strong text-fg" },
+  safety: { icon: ShieldAlert, label: "Protect", chip: "border border-rule-strong text-fg" },
+  foryou: { icon: ShieldAlert, label: "For you", chip: "bg-volt text-volt-fg" },
 } as const;
 
 /**
@@ -26,8 +32,8 @@ export function FormCheck({ exerciseId, name, cards, image, onReady }: { exercis
   if (seen === null || !cards.length) return null;
   const done = () => { try { localStorage.setItem(key, String((seen ?? 0) + 1)); } catch {} setSeen((s) => (s ?? 0) + 1); setOpen(false); onReady?.(); };
   if (!open) return (
-    <button type="button" onClick={() => setOpen(true)} className="flex w-full items-center gap-3 border border-border bg-surface-2 px-4 py-2.5 text-left text-sm transition-colors hover:border-border-strong">
-      <span className="flex -space-x-1">{cards.slice(0, 3).map((c, k) => { const I = STYLE[c.kind].icon; return <span key={k} className={cn("grid size-6 place-items-center  border-2 border-bg", STYLE[c.kind].chip)}><I className="size-3" /></span>; })}</span>
+    <button type="button" onClick={() => setOpen(true)} className="flex w-full items-center gap-3 rounded-lg border border-rule bg-surface px-4 py-3 text-left text-sm transition-colors hover:border-rule-strong">
+      <span className="flex -space-x-1">{cards.slice(0, 3).map((c, k) => { const I = STYLE[c.kind].icon; return <span key={k} className={cn("grid size-6 place-items-center rounded-full ring-2 ring-surface", STYLE[c.kind].chip)}><I className="size-3" /></span>; })}</span>
       <span className="flex-1 text-fg-muted">Set-up check for {name}</span><ChevronRight className="size-4 text-fg-subtle" />
     </button>
   );
@@ -41,7 +47,7 @@ export function FormCheck({ exerciseId, name, cards, image, onReady }: { exercis
     less. Read together they also make more sense, because they describe one position.
   */
   return (
-    <div className="border-y border-rule py-3" role="group" aria-label={`Set-up check for ${name}`}>
+    <div className="rounded-lg border border-rule bg-surface p-4" role="group" aria-label={`Set-up check for ${name}`}>
       <div className="flex items-baseline justify-between gap-3">
         <span className="meta">Do this</span>
         <button type="button" onClick={done} className="meta underline underline-offset-4 hover:text-fg">
@@ -53,7 +59,7 @@ export function FormCheck({ exerciseId, name, cards, image, onReady }: { exercis
           const S = STYLE[c.kind]; const I = S.icon;
           return (
             <li key={k} className="flex items-start gap-2.5 text-sm leading-snug">
-              <I aria-hidden className="mt-0.5 size-4 shrink-0 text-ember" />
+              <I aria-hidden className="mt-0.5 size-4 shrink-0 text-volt" />
               <span className="measure">{c.text}</span>
             </li>
           );
@@ -71,8 +77,8 @@ export function RestTip({ cards }: { cards: CheckCard[] }) {
   const c = cards[i]; if (!c) return null; const S = STYLE[c.kind]; const I = S.icon;
   return (
     <div className="mt-4 flex items-start gap-3 p-3 text-sm">
-      <span className={cn("grid size-7 shrink-0 place-items-center ", S.chip)}><I className="size-3.5" /></span>
-      <div className="min-w-0"><div className="text-2xs font-semibold uppercase tracking-label text-fg-subtle">While you rest · {S.label}</div><AnimatePresence mode="wait" initial={false}><motion.p key={i} initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={reduce ? undefined : { opacity: 0 }} className="text-fg">{c.text}</motion.p></AnimatePresence></div>
+      <span className={cn("grid size-7 shrink-0 place-items-center rounded-full", S.chip)}><I className="size-3.5" /></span>
+      <div className="min-w-0"><div className="meta">While you rest · {S.label}</div><AnimatePresence mode="wait" initial={false}><motion.p key={i} initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={reduce ? undefined : { opacity: 0 }} className="text-fg">{c.text}</motion.p></AnimatePresence></div>
     </div>
   );
 }

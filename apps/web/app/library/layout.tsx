@@ -7,7 +7,7 @@ export default async function LibraryLayout({ children }: { children: React.Reac
   return (
     <div className="flex min-h-dvh flex-col">
       <SiteHeader signedIn={!!session} />
-      <main className="page flex-1 py-8">{children}</main>
+      <main className="page flex-1 pb-8 pt-20">{children}</main>
       <SiteFooter />
     </div>
   );

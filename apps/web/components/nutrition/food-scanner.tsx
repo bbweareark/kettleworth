@@ -68,7 +68,7 @@ export function BarcodeScanner({ onProduct, onClose }: { onProduct: (p: Product)
         {state === "scanning" ? (
           <div aria-hidden className="pointer-events-none absolute inset-0 grid place-items-center">
             <div className="relative h-28 w-3/4 border-2 border-fg">
-              <div className="absolute inset-x-3 top-1/2 h-0.5 -translate-y-1/2 animate-pulse bg-ember" />
+              <div className="absolute inset-x-3 top-1/2 h-0.5 -translate-y-1/2 animate-pulse bg-volt" />
             </div>
           </div>
         ) : null}
@@ -97,7 +97,7 @@ export function ProductCard({ product, busy, onLog, onCancel }: { product: Produ
   const brandShort = product.brand?.replace(/\b(services|limited|ltd|plc|inc|sa\/nv|sa|nv|gmbh|llc|uk|group|company|co)\b\.?/gi, "").replace(/\s+/g, "").trim() ?? "";
   const label = brandShort && !product.name.toLowerCase().includes(brandShort.toLowerCase()) ? `${brandShort} ${product.name}` : product.name;
   return (
-    <div className="space-y-4 p-4 border border-rule">
+    <div className="space-y-4 rounded-lg border border-rule bg-surface p-4">
       <div className="flex items-start gap-3">
         {product.imageUrl ? <img src={product.imageUrl} alt="" className="size-16 shrink-0 bg-white object-contain p-1" /> : <div className="grid size-16 shrink-0 place-items-center bg-rule"><ScanBarcode className="size-6 text-fg-subtle" /></div>}
         <div className="min-w-0 flex-1">
@@ -107,9 +107,9 @@ export function ProductCard({ product, busy, onLog, onCancel }: { product: Produ
         </div>
       </div>
       <div className="flex flex-wrap items-end gap-3">
-        {serving ? <div className="inline-flex bg-rule p-1 border border-rule">{(["serving", "amount"] as const).map((x) => <button key={x} type="button" onClick={() => setMode(x)} className={cn("h-8  px-3 text-sm", mode === x ? "bg-fg text-bg" : "text-fg-muted")}>{x === "serving" ? "Servings" : product.unit === "ml" ? "Millilitres" : "Grams"}</button>)}</div> : null}
+        {serving ? <div className="inline-flex items-center gap-1 rounded-full border border-rule bg-surface p-1">{(["serving", "amount"] as const).map((x) => <button key={x} type="button" onClick={() => setMode(x)} className={cn("h-8  px-3 text-sm", mode === x ? "bg-fg text-bg" : "text-fg-muted")}>{x === "serving" ? "Servings" : product.unit === "ml" ? "Millilitres" : "Grams"}</button>)}</div> : null}
         {mode === "serving" && serving ? (
-          <div className="flex gap-1">{[0.5, 1, 1.5, 2, 3].map((s) => <button key={s} type="button" onClick={() => setServings(s)} className={cn("h-9 min-w-10  px-3 text-sm tabular border", servings === s ? "bg-ember text-ember-fg ring-ember" : "text-fg-muted border-rule-strong")}>{s}</button>)}</div>
+          <div className="flex gap-1">{[0.5, 1, 1.5, 2, 3].map((s) => <button key={s} type="button" onClick={() => setServings(s)} className={cn("h-9 min-w-10  px-3 text-sm tabular border", servings === s ? "bg-volt text-volt-fg ring-volt" : "text-fg-muted border-rule-strong")}>{s}</button>)}</div>
         ) : (
           <label className="flex items-center gap-2 text-sm"><Input inputMode="decimal" value={String(amount)} onChange={(e) => setAmount(Math.max(0, Number(e.target.value.replace(/[^0-9.]/g, "")) || 0))} className="h-9 w-24" aria-label={`Amount in ${product.unit}`} />{product.unit}</label>
         )}
@@ -137,8 +137,8 @@ export function PhotoButton({ busy, onPhoto }: { busy: boolean; onPhoto: (f: Fil
   return (
     <>
       <input ref={input} type="file" accept="image/*" capture="environment" className="sr-only" aria-label="Photograph your food" onChange={(e) => { const f = e.target.files?.[0]; if (f) onPhoto(f); e.target.value = ""; }} />
-      <button type="button" disabled={busy} onClick={() => input.current?.click()} className="group relative flex min-h-36 flex-col items-start justify-end overflow-hidden bg-[linear-gradient(140deg,color-mix(in_oklch,var(--color-ember)_22%,transparent),transparent_70%)] p-4 text-left border border-ember transition-transform active:scale-[0.99] disabled:opacity-60">
-        <div className="mb-auto grid size-11 place-items-center">{busy ? <Loader2 className="size-5 animate-spin text-ember" /> : <Camera className="size-5 text-ember" />}</div>
+      <button type="button" disabled={busy} onClick={() => input.current?.click()} className="group relative flex min-h-36 flex-col items-start justify-end overflow-hidden bg-[linear-gradient(140deg,color-mix(in_oklch,var(--color-ember)_22%,transparent),transparent_70%)] p-4 text-left border border-volt transition-transform active:scale-[0.99] disabled:opacity-60">
+        <div className="mb-auto grid size-11 place-items-center">{busy ? <Loader2 className="size-5 animate-spin text-volt" /> : <Camera className="size-5 text-volt" />}</div>
         <div className="mt-4 font-display text-lg tracking-tight">{busy ? "Reading your plate" : "Photograph your plate"}</div>
         <div className="text-xs text-fg-muted">{busy ? "Identifying each item and its portion" : "Every item and portion, itemised"}</div>
         <ImagePlus aria-hidden className="absolute -right-3 -top-3 size-24 text-white/[0.03]" />

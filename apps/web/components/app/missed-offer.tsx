@@ -19,13 +19,13 @@ export function MissedOffer({ id, name, when, nextLabel }: { id: string; name: s
     setGone(true); toast.message(`${name} skipped. It comes round again next week.`); router.refresh();
   }
   return (
-    <div className="bg-black/40 p-4 border border-ember">
-      <p className="text-2xs uppercase tracking-label text-ember">Missed {when}</p>
-      <p className="mt-1 font-display text-xl tracking-tight text-white">{name}</p>
-      <p className="mt-1 text-sm text-white/70">Today is free, so you can fit it in{nextLabel ? ` before ${nextLabel}` : ""}. Or let it go and stay on schedule.</p>
+    <div className="rounded-lg border border-volt bg-surface p-4">
+      <p className="meta text-volt">Missed {when}</p>
+      <p className="mt-1 font-display text-xl">{name}</p>
+      <p className="measure mt-1 text-sm text-fg-muted">Today is free, so you can fit it in{nextLabel ? ` before ${nextLabel}` : ""}. Or let it go and stay on schedule.</p>
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <Link href={`/app/session/${id}?start=1`} className="inline-flex h-10 items-center gap-2 bg-fg px-4 text-sm font-semibold text-bg active:scale-[0.98]"><Play className="size-4" /> Train it today</Link>
-        <button type="button" disabled={busy} onClick={letGo} className="inline-flex h-10 items-center px-3 text-sm text-white/70 border border-rule-strong hover:text-white disabled:opacity-50">{busy ? "Skipping..." : "Skip it"}</button>
+        <Link href={`/app/session/${id}?start=1`} className="inline-flex h-11 items-center gap-2 rounded-full bg-volt px-5 text-sm text-volt-fg transition-colors hover:bg-volt-hover"><Play className="size-4" /> Train it today</Link>
+        <button type="button" disabled={busy} onClick={letGo} className="inline-flex h-11 items-center rounded-full border border-rule-strong px-4 text-sm text-fg-muted transition-colors hover:border-fg hover:text-fg disabled:opacity-50">{busy ? "Skipping..." : "Skip it"}</button>
       </div>
     </div>
   );

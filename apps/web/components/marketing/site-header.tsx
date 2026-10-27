@@ -1,101 +1,124 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Menu, X } from "lucide-react";
-import { BrandMark, cn } from "@kettleworth/ui";
+import { Button, BrandMark, cn } from "@kettleworth/ui";
 
 /**
- * A permanent labelled row, replicated from teenage.engineering's own nav
- * (design/refs/dna-teenage-engineering/desktop.png).
+ * The same floating pill group and full-screen menu the app uses.
  *
- * What the reference does and this does too: category headings with their sub-links always
- * visible rather than hidden behind hover, tiny light type, the wordmark set as plain text at
- * the same weight as everything else, and no call to action in the nav at all (measured: 25
- * links, 0 CTAs). It does not change on scroll, so there is no pill morph here either.
+ * Ported from Clonix (design/refs/navbar-clonix) for the overlay and from Integrated
+ * Biosciences for the pill group that floats over the imagery rather than sitting in a bar.
+ * It replaces the permanent three-column labelled row taken from teenage.engineering: that
+ * row was 25 always-visible links and no call to action, which suited a catalogue of products
+ * and did not suit a page whose job is to get one block written.
+ *
+ * Unlike the app's menu this one carries a call to action, because on a public page the next
+ * step is the point.
  */
-const GROUPS = [
-  { label: "Training", links: [{ href: "/#week", t: "The week" }, { href: "/#block", t: "The block" }, { href: "/#method", t: "Method" }] },
-  { label: "Library", links: [{ href: "/library", t: "850 movements" }, { href: "/library?q=squat", t: "Search" }] },
-  { label: "Account", links: [{ href: "/sign-in", t: "Sign in" }, { href: "/sign-up", t: "Start free" }] },
+const LINKS = [
+  { href: "/#week", label: "The week" },
+  { href: "/#block", label: "The block" },
+  { href: "/#method", label: "Method" },
+  { href: "/library", label: "Library" },
 ];
 
 export function SiteHeader({ signedIn }: { signedIn: boolean }) {
   const [open, setOpen] = useState(false);
   const path = usePathname();
-  const groups = signedIn
-    ? GROUPS.map((g) => (g.label === "Account" ? { ...g, links: [{ href: "/app", t: "Open app" }] } : g))
-    : GROUPS;
+  const reduce = useReducedMotion();
+  const cta = signedIn ? { href: "/app", label: "Open app" } : { href: "/sign-up", label: "Start free" };
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+  }, [open]);
 
   return (
-    <header className="border-b border-rule">
-      <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6">
-        <div className="flex items-start justify-between gap-8 py-4">
-          <Link href="/" aria-label="Kettleworth home" className="flex shrink-0 items-start gap-2 pt-0.5">
-            <BrandMark size={18} />
-            <span className="font-display text-lg leading-[1.05]">
-              kettle
-              <br />
-              worth
-            </span>
-          </Link>
-
-          <nav aria-label="Primary" className="hidden gap-10 md:flex">
-            {groups.map((g) => (
-              <div key={g.label}>
-                <p className="meta mb-1.5">{g.label}</p>
-                <ul className="space-y-0.5">
-                  {g.links.map((l) => (
-                    <li key={l.href + l.t}>
-                      <Link
-                        href={l.href}
-                        aria-current={path === l.href ? "page" : undefined}
-                        className={cn(
-                          "text-sm transition-colors duration-(--dur-fast) hover:text-fg",
-                          path === l.href ? "text-fg" : "text-fg-muted",
-                        )}
-                      >
-                        {l.t}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </nav>
-
-          <button
-            type="button"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-            className="grid size-11 shrink-0 place-items-center text-fg md:hidden"
+    <>
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-40">
+        <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-3 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6">
+          <Link
+            href="/"
+            aria-label="Kettleworth home"
+            className="pointer-events-auto inline-flex h-11 items-center gap-2 rounded-full border border-rule bg-surface/90 pl-3.5 pr-4 backdrop-blur-sm transition-colors hover:border-rule-strong"
           >
-            {open ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
+            <BrandMark size={14} />
+            <span className="font-display text-sm">kettleworth</span>
+          </Link>
+          <div className="pointer-events-auto flex items-center gap-2">
+            <Button asChild size="sm" className="hidden sm:inline-flex"><Link href={cta.href}>{cta.label}</Link></Button>
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-expanded={open}
+              aria-label="Menu"
+              className="inline-flex size-11 items-center justify-center rounded-full border border-rule bg-surface/90 backdrop-blur-sm transition-colors hover:border-rule-strong"
+            >
+              <Menu className="size-4" strokeWidth={1.75} aria-hidden />
+            </button>
+          </div>
         </div>
       </div>
 
-      {open && (
-        <nav aria-label="Primary mobile" className="border-t border-rule md:hidden">
-          <div className="mx-auto w-full max-w-[1200px] px-4 py-2 sm:px-6">
-            {groups.map((g) => (
-              <div key={g.label} className="border-b border-rule py-3 last:border-b-0">
-                <p className="meta mb-2">{g.label}</p>
-                <ul>
-                  {g.links.map((l) => (
-                    <li key={l.href + l.t}>
-                      <Link href={l.href} onClick={() => setOpen(false)} className="flex h-11 items-center font-display text-xl">
-                        {l.t}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+      <AnimatePresence>
+        {open ? (
+          <motion.div
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -12 }}
+            transition={{ duration: 0.28, ease: [0.25, 1, 0.5, 1] }}
+            className="fixed inset-0 z-50 flex flex-col bg-bg"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
+          >
+            <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6">
+              <span className="inline-flex h-11 items-center gap-2">
+                <BrandMark size={14} />
+                <span className="font-display text-sm">kettleworth</span>
+              </span>
+              <button type="button" autoFocus onClick={() => setOpen(false)} aria-label="Close menu" className="inline-flex size-11 items-center justify-center rounded-full border border-rule bg-surface transition-colors hover:border-rule-strong">
+                <X className="size-4" strokeWidth={1.75} aria-hidden />
+              </button>
+            </div>
+
+            <nav aria-label="Primary" className="mx-auto flex w-full max-w-[1200px] flex-1 flex-col justify-end overflow-y-auto px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:px-6 lg:justify-center">
+              <ul className="w-full">
+                {LINKS.map((l, n) => (
+                  <motion.li
+                    key={l.href}
+                    initial={reduce ? false : { opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: reduce ? 0 : 0.04 + n * 0.028, duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+                    className="border-b border-rule"
+                  >
+                    <Link
+                      href={l.href}
+                      onClick={() => setOpen(false)}
+                      aria-current={path === l.href ? "page" : undefined}
+                      className={cn("flex items-baseline justify-between gap-4 py-3.5 font-display text-2xl transition-colors", path === l.href ? "text-volt" : "text-fg hover:text-fg-muted")}
+                    >
+                      {l.label}
+                      <span className="meta">{String(n + 1).padStart(2, "0")}</span>
+                    </Link>
+                  </motion.li>
+                ))}
+              </ul>
+              <div className="mt-6 flex flex-wrap gap-2">
+                <Button asChild size="lg"><Link href={cta.href} onClick={() => setOpen(false)}>{cta.label}</Link></Button>
+                {!signedIn ? <Button asChild size="lg" variant="secondary"><Link href="/sign-in" onClick={() => setOpen(false)}>Sign in</Link></Button> : null}
               </div>
-            ))}
-          </div>
-        </nav>
-      )}
-    </header>
+            </nav>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </>
   );
 }

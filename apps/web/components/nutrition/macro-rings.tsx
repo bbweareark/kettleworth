@@ -49,7 +49,7 @@ export function MacroRings({ targets, logged }: { targets: Macros; logged: Macro
               </div>
               <div aria-hidden className="mt-2 h-1 w-full overflow-hidden bg-rule">
                 <div
-                  className="h-full bg-ember transition-[width] duration-700 ease-out-quart"
+                  className="h-full bg-volt transition-[width] duration-700 ease-out-quart"
                   style={{ width: `${pct}%` }}
                 />
               </div>

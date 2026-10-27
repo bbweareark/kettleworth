@@ -12,7 +12,7 @@ export function EstimateCard({ items: initial, note, source, busy, onLog, onCanc
   const kept = rows.filter((r) => r.keep);
   const total = useMemo(() => kept.reduce((a, r) => ({ calories: a.calories + r.calories * r.scale, p: a.p + r.proteinG * r.scale, c: a.c + r.carbsG * r.scale, f: a.f + r.fatG * r.scale }), { calories: 0, p: 0, c: 0, f: 0 }), [kept]);
   return (
-    <div className="space-y-3 p-4 border border-rule">
+    <div className="space-y-3 rounded-lg border border-rule bg-surface p-4">
       <div className="flex items-baseline justify-between gap-3">
         <div className="text-2xs uppercase tracking-label text-fg-subtle">{source === "photo" ? "Read from your photo" : source === "drink" ? "Calculated" : "Smart estimate"}</div>
         <div className="font-display text-2xl tabular">{Math.round(total.calories)}<span className="ml-1 text-sm font-normal text-fg-subtle">kcal</span></div>
@@ -22,7 +22,7 @@ export function EstimateCard({ items: initial, note, source, busy, onLog, onCanc
         {rows.map((r, i) => (
           <li key={`${r.name}-${i}`} className={cn("p-3 border border-rule transition-opacity", !r.keep && "opacity-40")}>
             <div className="flex items-start gap-2">
-              <span className={cn("mt-1.5 size-2 shrink-0 rounded-full", r.confidence === "high" ? "bg-signal" : r.confidence === "medium" ? "bg-amber" : "bg-rose")} title={`${r.confidence} confidence`} aria-label={`${r.confidence} confidence`} />
+              <span className={cn("mt-1.5 size-2 shrink-0 rounded-full", r.confidence === "high" ? "bg-fg" : r.confidence === "medium" ? "bg-amber" : "bg-rose")} title={`${r.confidence} confidence`} aria-label={`${r.confidence} confidence`} />
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline justify-between gap-2"><span className="truncate text-sm font-medium">{r.name}</span><span className="shrink-0 font-display text-sm tabular">{Math.round(r.calories * r.scale)}</span></div>
                 <div className="text-xs text-fg-subtle">{r.portion} · P {Math.round(r.proteinG * r.scale)} · C {Math.round(r.carbsG * r.scale)} · F {Math.round(r.fatG * r.scale)}</div>

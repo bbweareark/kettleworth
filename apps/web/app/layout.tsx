@@ -57,7 +57,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en" data-theme={theme} suppressHydrationWarning className={`${antonio.variable} ${geist.variable} ${geistMono.variable}`}>
       <body className="min-h-dvh bg-bg text-fg">
         <TooltipProvider>{children}</TooltipProvider>
-        <Toaster position="top-center" toastOptions={{ className: "!bg-bg-elevated !border-border !text-fg !shadow-pop !" }} />
+        <Toaster position="top-center" toastOptions={{ className: "!bg-bg-elevated !border-rule !text-fg !shadow-pop !" }} />
       </body>
     </html>
   );

@@ -12,7 +12,7 @@ export function LiftsList({ lifts, units }: { lifts: Lift[]; units: "metric" | "
     <ul className="grid gap-2 sm:grid-cols-2">
       {lifts.map((l) => (
         <li key={l.id}>
-          <Link href={`/app/progress/lifts/${l.id}`} className="flex items-center gap-3 p-3 border border-rule transition-colors hover:bg-surface">
+          <Link href={`/app/progress/lifts/${l.id}`} className="flex items-center gap-3 rounded-lg border border-rule p-3.5 transition-colors hover:border-rule-strong hover:bg-surface">
             <div className="min-w-0 flex-1">
               <div className="truncate font-medium">{l.name}</div>
               <div className="mt-0.5 truncate text-xs text-fg-subtle">{l.bestWeight ? `Heaviest ${fmtKg(l.bestWeight.weightKg, units)} ${unit} × ${l.bestWeight.reps}` : "Bodyweight"}{l.bestE1rm ? ` · est. max ${fmtKg(l.bestE1rm.e1rm, units)} ${unit}` : ""}</div>

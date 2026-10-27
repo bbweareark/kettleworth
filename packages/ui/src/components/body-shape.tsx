@@ -55,8 +55,8 @@ export function BodyShapePicker({ value, onChange, sex = "male", className }: { 
       {BODY_SHAPES.map((o, i) => {
         const active = value === o.pct;
         return (
-          <button key={o.pct} type="button" role="radio" aria-checked={active} onClick={() => onChange(active ? undefined : o.pct)} className={cn("group flex flex-col items-center gap-1.5 border p-3 text-center transition-all", active ? "border-ember bg-ember-soft shadow-glow" : "border-border bg-surface-2 hover:border-border-strong")}>
-            <span className={cn("relative block aspect-[3/4] w-full overflow-hidden border border-rule transition-transform group-hover:scale-[1.03]", active && "border-ember")}><img src={`/art/body/shape-${sex === "female" ? "f" : "m"}-${i}.jpg`} alt="" className="size-full object-cover object-top" /></span>
+          <button key={o.pct} type="button" role="radio" aria-checked={active} onClick={() => onChange(active ? undefined : o.pct)} className={cn("group flex flex-col items-center gap-1.5 border p-3 text-center transition-all", active ? "border-volt bg-volt-soft shadow-glow" : "border-rule bg-bg hover:border-rule-strong")}>
+            <span className={cn("relative block aspect-[3/4] w-full overflow-hidden border border-rule transition-transform group-hover:scale-[1.03]", active && "border-volt")}><img src={`/art/body/shape-${sex === "female" ? "f" : "m"}-${i}.jpg`} alt="" className="size-full object-cover object-top" /></span>
             <span className="text-xs font-medium">{o.label}</span>
             <span className="text-2xs text-fg-subtle">{o.hint}</span>
           </button>

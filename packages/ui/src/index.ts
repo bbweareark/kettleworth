@@ -7,6 +7,7 @@ export * from "./components/badge";
 export * from "./components/progress";
 export * from "./components/ring";
 export * from "./components/stat";
+export * from "./components/figure";
 export * from "./components/skeleton";
 export * from "./components/empty";
 export * from "./components/dialog";
