@@ -1,4 +1,64 @@
-# UI-DECISIONS.md
+# UI-DECISIONS — Kettleworth
+
+**Path B full revamp, 27 Oct 2026.** The owner judged the previous direction wrong: "the
+direction is wrong, redesign it completely." Everything below the horizontal rule is the
+superseded teenage engineering record, kept because the reasoning in it is still the clearest
+account of what was tried and why it failed.
+
+| Pillar | Choice | Reference (opened this session) | What was taken |
+|---|---|---|---|
+| **DNA** | Integrated Biosciences, "bioluminescent laboratory at midnight" | [styles.refero.design](https://styles.refero.design/style/80099f79-72b7-4367-b2e9-6a3d4a3e9e6a) + live at integratedbiosciences.com (`design/refs/dna-integrated-biosciences`) | Near-black ground, hierarchy carved by **size and tightening negative tracking** rather than weight, flat surfaces with hairline delineation, one high-chroma accent that activates only on small interactive elements, real radius |
+| **Navbar** | Full Screen | navbar.gallery, example **Clonix** (`design/refs/navbar-clonix`) | Full-screen nav behind a floating pill trigger. Chosen because huge targets beat a small tab bar for someone mid-set |
+| **Hero** | Full-bleed photograph, figure carried beneath | supahero.io, example **Lando Norris** (`design/refs/hero-lando-norris`) | Photography bleeding edge to edge, giant condensed type beneath on black, the accent carrying a second line, floating pill nav over the image |
+| **CTA** | Pill action, one per viewport | cta.gallery, example **Get Ripe** (`design/refs/cta-get-ripe`) | A filled pill in the nav plus a sticky bottom pill action |
+| **Footer** | Bold | footer.design, example **Reality Is__** (`design/refs/footer-reality-is`) | Oversized wordmark, few links, accent rule above |
+| **Motion** | Counting figure + edge-to-edge image reveal | scrolltide.co (`design/refs/motion-scrolltide-index`) | Two signature moments only. No scroll-reveal-on-everything: five apps in this portfolio already do that |
+| **Icons** | lucide line, one weight | 3dicons.co, rejected for this build | The product's own photography and figures are the art. A 3D icon set would fight a dark athletic surface |
+| **Components** | Number Pad (kept), Unit Field rows (kept) | 21st.dev (`design/refs/components-21st-numberpad`, `-unitfield`) | Rethemed, not replaced. They solved real problems and a revamp that discards working parts to look busy is its own failure |
+| **Intelligence** | uupm.cc baseline only | uupm.cc (`design/refs/intel-uupm`) | Loading, empty and z-index discipline. **None of its taste** — it recommends Inter and glassmorphism, both banned here |
+
+**Not taken from any reference:** brand marks, logos, wordmarks, copy, illustration or assets.
+Structure, rhythm and behaviour only.
+
+## What changed, concretely
+
+| | Before | After |
+|---|---|---|
+| Ground | Sheet `#f6f8f7`, light by default | Ink `#16191a`, **dark by default** — the app is used in a gym, in poor light |
+| Display face | Archivo Expanded | **Antonio** condensed — a five-character load stays legible at 96px on a 390px phone |
+| Text / mono | Archivo (all three roles) | **Geist** + **Geist Mono** |
+| Radius | **0 everywhere** | 8 / 12 / 18 / 28px and pills |
+| Accent | Ember orange | **Volt** `#ccff1a`, rationed to the live set, the figure being changed, and the one action |
+| Hierarchy | Uniform small type | Carved by size: a `--text-figure` of 96px, one per screen |
+| Font payload | 90KB | **79KB** (three faces, latin subsets) |
+
+Uniqueness checked the way the gate checks it, resolving the worktree to the project identity:
+**no collision against the other 11 apps.** The first attempt did collide — `footer_example:
+decimals` is already used by ascent — and my own `registry.py` run had missed it because it
+read the original checkout's `choices.json` rather than the worktree's. The gate caught it.
+
+## Accessibility, measured in both themes
+
+| | fg | muted | subtle | accent as text | text on accent |
+|---|---|---|---|---|---|
+| Carbon | 16.15:1 | 9.05:1 | 5.62:1 | 15.05:1 | 15.05:1 |
+| Daylight | 16.15:1 | 7.00:1 | 5.31:1 | 6.27:1 | 6.27:1 |
+
+Two real failures were found and fixed before shipping: daylight `subtle` measured **4.45:1**
+(under AA), and the bright chartreuse measured **1.86:1** as text on the bone ground. No single
+bright accent can serve both as a fill and as text, so daylight carries its own darkened
+chartreuse that clears 6.27:1 in both roles.
+
+## Status: foundation shipped, screens in progress
+
+This commit lands the system — concept, references, tokens, typefaces, themes — which changes
+every screen at once. It is **not** the finished revamp: the screens still carry their previous
+compositions under new tokens, and a token swap is explicitly not a redesign. The signature
+composition work (the load as the largest thing on each screen, the full-bleed hero, the
+full-screen nav, the sticky pill action) follows screen by screen against `design/SECTION-MAP.md`.
+
+---
+
 
 Path: **B — full revamp.** The owner said he does not like the UI and UX and asked for it to
 be completely rewired. That settles it. The previous build was also, by the skill's own

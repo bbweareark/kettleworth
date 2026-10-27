@@ -1,0 +1,543 @@
+{
+  "title": "Integrated Biosciences — Engineering the future of aging medicine",
+  "url": "https://integratedbio.com/",
+  "fonts": [
+    [
+      "Aspekta",
+      266
+    ],
+    [
+      "Roboto Mono",
+      47
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "Engineering the future of aging medicine.",
+      "family": "Aspekta",
+      "size": "112px",
+      "weight": "400",
+      "lineHeight": "112px",
+      "letterSpacing": "-3.36px",
+      "color": "rgb(255, 255, 255)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "Multimodal aging datasets and AI-driven drug discovery for age-related",
+      "family": "Aspekta",
+      "size": "24px",
+      "weight": "400",
+      "lineHeight": "28.8px",
+      "letterSpacing": "-0.48px",
+      "color": "rgb(255, 255, 255)",
+      "transform": "none"
+    },
+    "h3": {
+      "text": "Combining aging datasets, chemistry, and AI into an engine of discover",
+      "family": "Aspekta",
+      "size": "76px",
+      "weight": "400",
+      "lineHeight": "83.6px",
+      "letterSpacing": "-1.52px",
+      "color": "rgb(34, 47, 48)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "Multimodal aging datasets and AI-driven drug discovery for age-related",
+      "family": "Aspekta",
+      "size": "24px",
+      "weight": "400",
+      "lineHeight": "28.8px",
+      "letterSpacing": "-0.48px",
+      "color": "rgb(255, 255, 255)",
+      "transform": "none"
+    },
+    "small": null,
+    "link": {
+      "text": "",
+      "family": "Aspekta",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "16px",
+      "letterSpacing": "-0.1px",
+      "color": "rgb(34, 47, 48)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "fg rgb(34, 47, 48)",
+      127
+    ],
+    [
+      "border rgb(34, 47, 48)",
+      126
+    ],
+    [
+      "fg rgb(255, 255, 255)",
+      126
+    ],
+    [
+      "border rgb(255, 255, 255)",
+      125
+    ],
+    [
+      "fg rgba(34, 47, 48, 0.8)",
+      58
+    ],
+    [
+      "border rgba(34, 47, 48, 0.8)",
+      58
+    ],
+    [
+      "bg rgb(34, 47, 48)",
+      8
+    ],
+    [
+      "bg rgb(247, 247, 245)",
+      4
+    ],
+    [
+      "bg rgb(255, 255, 255)",
+      4
+    ],
+    [
+      "bg rgb(0, 0, 0)",
+      2
+    ],
+    [
+      "bg rgba(255, 255, 255, 0.1)",
+      2
+    ],
+    [
+      "bg rgba(255, 255, 255, 0.8)",
+      1
+    ],
+    [
+      "border rgba(34, 47, 48, 0.05)",
+      1
+    ],
+    [
+      "fg rgb(201, 203, 190)",
+      1
+    ],
+    [
+      "border rgb(201, 203, 190)",
+      1
+    ],
+    [
+      "bg rgb(206, 247, 158)",
+      1
+    ],
+    [
+      "bg rgb(231, 232, 225)",
+      1
+    ],
+    [
+      "bg rgb(238, 238, 238)",
+      1
+    ],
+    [
+      "bg rgb(68, 94, 95)",
+      1
+    ],
+    [
+      "border rgba(255, 255, 255, 0.2)",
+      1
+    ]
+  ],
+  "bodyBg": "rgb(247, 247, 245)",
+  "htmlBg": "rgb(247, 247, 245)",
+  "sections": [
+    {
+      "top": 0,
+      "height": 4809,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(247, 247, 245)",
+      "maxWidth": "none",
+      "heading": "Engineering the future of aging medicine.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "100px normal",
+        "children": 2
+      },
+      "imageCount": 21
+    },
+    {
+      "top": 0,
+      "height": 900,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Engineering the future of aging medicine.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "100px normal",
+        "children": 2
+      },
+      "imageCount": 3
+    },
+    {
+      "top": 900,
+      "height": 834,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(247, 247, 245)",
+      "maxWidth": "none",
+      "heading": "Combining aging datasets, chemistry, and AI into an engine o",
+      "layout": {
+        "display": "grid",
+        "columns": "441.328px 882.672px",
+        "gap": "44px 20px",
+        "children": 2
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 1734,
+      "height": 420,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "grid",
+        "columns": "480px 480px 480px",
+        "gap": "0px",
+        "children": 3
+      },
+      "imageCount": 3
+    },
+    {
+      "top": 2154,
+      "height": 496,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 3
+      },
+      "imageCount": 0
+    },
+    {
+      "top": 2780,
+      "height": 732,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "grid",
+        "columns": "662px 662px",
+        "gap": "44px 20px",
+        "children": 2
+      },
+      "imageCount": 3
+    },
+    {
+      "top": 3512,
+      "height": 1297,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(238, 238, 238)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 3
+      },
+      "imageCount": 10
+    }
+  ],
+  "nav": {
+    "position": "static",
+    "top": 0,
+    "height": 0,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "borderBottom": "0px none rgb(34, 47, 48)",
+    "boxShadow": "none",
+    "linkCount": 4,
+    "links": [
+      "",
+      "COMPANY",
+      "NEWSROOM",
+      "WORK WITH US"
+    ],
+    "ctaCount": 1,
+    "ctaSamples": [
+      {
+        "text": "WORK WITH US",
+        "bg": "rgb(34, 47, 48)",
+        "color": "rgb(255, 255, 255)",
+        "radius": "8px",
+        "height": 46
+      }
+    ],
+    "logoLeft": 48,
+    "maxWidth": "none",
+    "padding": "0px",
+    "linkStyle": {
+      "text": "",
+      "family": "Aspekta",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "16px",
+      "letterSpacing": "-0.1px",
+      "color": "rgb(34, 47, 48)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "DISCOVER OUR COMPANY",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(34, 47, 48)",
+      "border": "0px none rgb(34, 47, 48)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 48,
+      "padding": "0px",
+      "fontSize": "0px",
+      "fontWeight": "400",
+      "family": "Aspekta",
+      "letterSpacing": "-0.1px",
+      "transform": "none",
+      "count": 3
+    },
+    {
+      "text": "COMPANY",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(34, 47, 48)",
+      "border": "0px none rgb(34, 47, 48)",
+      "radius": "8px",
+      "shadow": "none",
+      "height": 39,
+      "padding": "8px 17px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "Roboto Mono",
+      "letterSpacing": "normal",
+      "transform": "uppercase",
+      "count": 2
+    },
+    {
+      "text": "DISCOVER OUR COMPANY",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(255, 255, 255)",
+      "border": "0px none rgb(255, 255, 255)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 48,
+      "padding": "0px",
+      "fontSize": "0px",
+      "fontWeight": "400",
+      "family": "Aspekta",
+      "letterSpacing": "-0.1px",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "WORK WITH US",
+      "bg": "rgb(34, 47, 48)",
+      "color": "rgb(255, 255, 255)",
+      "border": "0px none rgba(0, 0, 0, 0)",
+      "radius": "8px",
+      "shadow": "none",
+      "height": 46,
+      "padding": "8px 20px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "Roboto Mono",
+      "letterSpacing": "normal",
+      "transform": "uppercase",
+      "count": 1
+    },
+    {
+      "text": "Scroll",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgba(0, 0, 0, 0)",
+      "border": "1px solid rgba(255, 255, 255, 0.2)",
+      "radius": "16px",
+      "shadow": "none",
+      "height": 48,
+      "padding": "0px",
+      "fontSize": "0px",
+      "fontWeight": "400",
+      "family": "Aspekta",
+      "letterSpacing": "-0.1px",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": null,
+  "imagery": {
+    "count": 4,
+    "samples": [
+      {
+        "tag": "video",
+        "w": 1416,
+        "h": 876,
+        "ratio": "1.62",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 623,
+        "h": 500,
+        "ratio": "1.25",
+        "radius": "12px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 616,
+        "h": 495,
+        "ratio": "1.24",
+        "radius": "16px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "canvas",
+        "w": 1440,
+        "h": 844,
+        "ratio": "1.71",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 5,
+    "gradients": 9,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 0,
+    "sample": null
+  },
+  "footer": {
+    "height": 844,
+    "bg": "rgb(0, 0, 0)",
+    "paddingTop": "40px",
+    "paddingBottom": "24px",
+    "columns": 3,
+    "columnsTemplate": "none",
+    "linkCount": 8,
+    "largestText": {
+      "text": "We are advancing small molecule therapeu",
+      "size": "42px",
+      "weight": "400",
+      "family": "Aspekta",
+      "color": "rgb(255, 255, 255)"
+    },
+    "borderTop": "0px none rgb(255, 255, 255)"
+  },
+  "motion": {
+    "libs": [
+      "lenis"
+    ],
+    "elementsWithTransition": 46,
+    "elementsWithAnimation": 0,
+    "transforms": 55,
+    "stickyElements": 0,
+    "videoCount": 1,
+    "canvasCount": 1,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 5613,
+    "containerMaxWidths": [
+      [
+        "1620px",
+        7
+      ],
+      [
+        "176px",
+        1
+      ],
+      [
+        "1070px",
+        1
+      ],
+      [
+        "640px",
+        1
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "8px",
+        9
+      ],
+      [
+        "12px 0px 0px 12px",
+        5
+      ],
+      [
+        "20px 20px 0px",
+        4
+      ],
+      [
+        "16px",
+        3
+      ],
+      [
+        "12px",
+        2
+      ],
+      [
+        "0px 0px 40px 40px",
+        1
+      ]
+    ],
+    "shadows": [],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": {
+    "height": 0,
+    "top": -900,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "static"
+  },
+  "mobileNav": {
+    "height": 0,
+    "visibleControls": [
+      "Integrated Bioscienc",
+      "Toggle Menu",
+      "Company",
+      "Newsroom",
+      "Work with us",
+      "hello@integratedbio."
+    ],
+    "hasMenuButton": true
+  },
+  "label": "DNA / Integrated Biosciences",
+  "capturedAt": "2026-10-27T06:57:25.952Z"
+}

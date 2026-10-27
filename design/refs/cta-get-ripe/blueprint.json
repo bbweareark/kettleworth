@@ -1,0 +1,613 @@
+{
+  "title": "RIPE - Leadership Is a Lifestyle",
+  "url": "https://www.get-ripe.com/",
+  "fonts": [
+    [
+      "Inter",
+      954
+    ],
+    [
+      "sans-serif",
+      297
+    ],
+    [
+      "BN Nautic Grotesk Bold",
+      150
+    ],
+    [
+      "SeriouslyNostalgic Condensed",
+      8
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "LEADERSHIP IS A LIFESTYLE.",
+      "family": "BN Nautic Grotesk Bold",
+      "size": "128px",
+      "weight": "700",
+      "lineHeight": "104px",
+      "letterSpacing": "normal",
+      "color": "rgb(255, 247, 235)",
+      "transform": "uppercase"
+    },
+    "h2": {
+      "text": "OUR WORK IS POTENTIAL. WE MEET YOU WHERE YOU ARE. THEN WE PUSH YOU FUR",
+      "family": "BN Nautic Grotesk Bold",
+      "size": "72px",
+      "weight": "700",
+      "lineHeight": "56px",
+      "letterSpacing": "normal",
+      "color": "rgb(10, 23, 20)",
+      "transform": "uppercase"
+    },
+    "h3": {
+      "text": "Get Your Mind Ripe",
+      "family": "Inter",
+      "size": "20px",
+      "weight": "600",
+      "lineHeight": "28px",
+      "letterSpacing": "-0.25px",
+      "color": "rgb(255, 247, 235)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "Pre-order Get Your Mind RIPE by November 2 and the live workshop with ",
+      "family": "Inter",
+      "size": "13px",
+      "weight": "400",
+      "lineHeight": "20px",
+      "letterSpacing": "normal",
+      "color": "rgb(10, 23, 20)",
+      "transform": "none"
+    },
+    "small": null,
+    "link": {
+      "text": "",
+      "family": "sans-serif",
+      "size": "12px",
+      "weight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 238)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "fg rgb(10, 23, 20)",
+      916
+    ],
+    [
+      "border rgb(10, 23, 20)",
+      916
+    ],
+    [
+      "fg rgb(0, 0, 0)",
+      251
+    ],
+    [
+      "border rgb(0, 0, 0)",
+      251
+    ],
+    [
+      "fg rgb(255, 247, 235)",
+      158
+    ],
+    [
+      "border rgb(255, 247, 235)",
+      158
+    ],
+    [
+      "fg rgb(0, 0, 238)",
+      56
+    ],
+    [
+      "border rgb(0, 0, 238)",
+      56
+    ],
+    [
+      "fg rgb(97, 128, 91)",
+      19
+    ],
+    [
+      "border rgb(97, 128, 91)",
+      19
+    ],
+    [
+      "bg rgb(10, 23, 20)",
+      17
+    ],
+    [
+      "bg rgba(10, 23, 20, 0.08)",
+      8
+    ],
+    [
+      "fg rgba(10, 23, 20, 0.64)",
+      8
+    ],
+    [
+      "border rgba(10, 23, 20, 0.64)",
+      8
+    ],
+    [
+      "bg rgb(239, 229, 212)",
+      7
+    ],
+    [
+      "bg rgb(255, 248, 187)",
+      5
+    ],
+    [
+      "bg rgba(10, 23, 20, 0.48)",
+      4
+    ],
+    [
+      "bg rgb(255, 247, 235)",
+      3
+    ],
+    [
+      "bg rgb(97, 128, 91)",
+      3
+    ],
+    [
+      "bg rgb(187, 208, 183)",
+      2
+    ]
+  ],
+  "bodyBg": "rgb(239, 229, 212)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 0,
+      "height": 900,
+      "paddingTop": "200px",
+      "paddingBottom": "80px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "LEADERSHIP IS A LIFESTYLE.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "24px",
+        "children": 2
+      },
+      "imageCount": 1
+    },
+    {
+      "top": 900,
+      "height": 286,
+      "paddingTop": "80px",
+      "paddingBottom": "80px",
+      "bg": "rgb(239, 229, 212)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "10px",
+        "children": 3
+      },
+      "imageCount": 0
+    },
+    {
+      "top": 1186,
+      "height": 1204,
+      "paddingTop": "37px",
+      "paddingBottom": "80px",
+      "bg": "rgb(239, 229, 212)",
+      "maxWidth": "none",
+      "heading": "OUR WORK IS POTENTIAL. WE MEET YOU WHERE YOU ARE. THEN WE PU",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "80px",
+        "children": 2
+      },
+      "imageCount": 6
+    },
+    {
+      "top": 2390,
+      "height": 927,
+      "paddingTop": "120px",
+      "paddingBottom": "32px",
+      "bg": "rgb(239, 229, 212)",
+      "maxWidth": "none",
+      "heading": "High-performing teams aren't born. They're coached.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "16px",
+        "children": 2
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 3317,
+      "height": 184,
+      "paddingTop": "52px",
+      "paddingBottom": "52px",
+      "bg": "rgb(239, 229, 212)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "20px",
+        "children": 6
+      },
+      "imageCount": 0
+    },
+    {
+      "top": 3501,
+      "height": 1243,
+      "paddingTop": "124px",
+      "paddingBottom": "80px",
+      "bg": "rgb(239, 229, 212)",
+      "maxWidth": "none",
+      "heading": "LEADERSHIP FELT STALE. WE CHANGED THAT.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "0px",
+        "children": 2
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 4744,
+      "height": 1312,
+      "paddingTop": "160px",
+      "paddingBottom": "160px",
+      "bg": "rgb(10, 23, 20)",
+      "maxWidth": "none",
+      "heading": "When leadership becomes a way of being in the world, everyth",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "32px",
+        "children": 2
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 5296,
+      "height": 600,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "100%",
+      "heading": "\"Over my career I've worked with four different coaches, all",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "64px",
+        "children": 24
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 6056,
+      "height": 988,
+      "paddingTop": "120px",
+      "paddingBottom": "120px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "FOLLOW US",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "64px",
+        "children": 2
+      },
+      "imageCount": 8
+    },
+    {
+      "top": 6364,
+      "height": 464,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "grid",
+        "columns": "348px 348px 348px 348px",
+        "gap": "16px",
+        "children": 4
+      },
+      "imageCount": 8
+    }
+  ],
+  "nav": {
+    "position": "relative",
+    "top": 40,
+    "height": 72,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "borderBottom": "0px none rgb(0, 0, 0)",
+    "boxShadow": "none",
+    "linkCount": 7,
+    "links": [
+      "",
+      "For Individuals",
+      "For Companies",
+      "GYMR",
+      "About",
+      "Blog",
+      "LET'S GO"
+    ],
+    "ctaCount": 2,
+    "ctaSamples": [
+      {
+        "text": "",
+        "bg": "rgb(255, 247, 235)",
+        "color": "rgb(0, 0, 238)",
+        "radius": "0px",
+        "height": 20
+      },
+      {
+        "text": "LET'S GO",
+        "bg": "rgba(10, 23, 20, 0.08)",
+        "color": "rgb(0, 0, 238)",
+        "radius": "32px",
+        "height": 40
+      }
+    ],
+    "logoLeft": 400,
+    "maxWidth": "none",
+    "padding": "16px 0px 0px",
+    "linkStyle": {
+      "text": "",
+      "family": "sans-serif",
+      "size": "12px",
+      "weight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 238)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "LET'S GO",
+      "bg": "rgba(10, 23, 20, 0.08)",
+      "color": "rgb(0, 0, 238)",
+      "border": "0px none rgb(0, 0, 238)",
+      "radius": "32px",
+      "shadow": "none",
+      "height": 40,
+      "padding": "0px 16px",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "family": "sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 7
+    },
+    {
+      "text": "",
+      "bg": "rgba(255, 247, 235, 0)",
+      "color": "rgb(0, 0, 0)",
+      "border": "0px none rgb(0, 0, 0)",
+      "radius": "16px",
+      "shadow": "none",
+      "height": 40,
+      "padding": "0px",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "family": "sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "STAY RIPE",
+      "bg": "rgba(10, 23, 20, 0.08)",
+      "color": "rgb(0, 0, 0)",
+      "border": "0px outset rgb(0, 0, 0)",
+      "radius": "32px",
+      "shadow": "none",
+      "height": 40,
+      "padding": "0px 16px",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "family": "sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": {
+    "height": 24,
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "0px none rgb(10, 23, 20)",
+    "radius": "0px",
+    "padding": "0px",
+    "fontSize": "16px",
+    "shadow": "none"
+  },
+  "imagery": {
+    "count": 15,
+    "samples": [
+      {
+        "tag": "video",
+        "w": 1459,
+        "h": 912,
+        "ratio": "1.60",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 400,
+        "h": 515,
+        "ratio": "0.78",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "GYMR workbook spread with motivational typography ",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 400,
+        "h": 515,
+        "ratio": "0.78",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Woman crouching by wall covered in notes and plann",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 400,
+        "h": 515,
+        "ratio": "0.78",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Close-up of desk with sneakers, colored pencils, s",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 400,
+        "h": 515,
+        "ratio": "0.78",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "GYMR workbook spread with motivational typography ",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 400,
+        "h": 515,
+        "ratio": "0.78",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Woman crouching by wall covered in notes and plann",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 400,
+        "h": 515,
+        "ratio": "0.78",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Close-up of desk with sneakers, colored pencils, s",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 141,
+        "h": 132,
+        "ratio": "1.07",
+        "radius": "16px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 0,
+    "gradients": 8,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 0,
+    "sample": null
+  },
+  "footer": {
+    "height": 1033,
+    "bg": "rgb(239, 229, 212)",
+    "paddingTop": "160px",
+    "paddingBottom": "32px",
+    "columns": 14,
+    "columnsTemplate": "none",
+    "linkCount": 4,
+    "largestText": {
+      "text": "A newsletter that respects your time and",
+      "size": "64px",
+      "weight": "400",
+      "family": "SeriouslyNostalgic Condensed",
+      "color": "rgb(10, 23, 20)"
+    },
+    "borderTop": "0px none rgb(0, 0, 0)"
+  },
+  "motion": {
+    "libs": [
+      "framer"
+    ],
+    "elementsWithTransition": 8,
+    "elementsWithAnimation": 0,
+    "transforms": 29,
+    "stickyElements": 0,
+    "videoCount": 1,
+    "canvasCount": 0,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 8079,
+    "containerMaxWidths": [
+      [
+        "918px",
+        5
+      ],
+      [
+        "680px",
+        4
+      ],
+      [
+        "1440px",
+        4
+      ],
+      [
+        "448px",
+        3
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "24px",
+        18
+      ],
+      [
+        "32px",
+        15
+      ],
+      [
+        "16px",
+        10
+      ]
+    ],
+    "shadows": [],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": {
+    "height": 72,
+    "top": 40,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "relative"
+  },
+  "mobileNav": {
+    "height": 72,
+    "visibleControls": [
+      "Ripe Logo Homepage L",
+      "LET'S GO"
+    ],
+    "hasMenuButton": false
+  },
+  "label": "CTA / Get Ripe",
+  "capturedAt": "2026-10-27T07:01:13.366Z"
+}

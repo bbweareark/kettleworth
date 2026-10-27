@@ -1,0 +1,642 @@
+{
+  "title": "Clonix – Multipurpose Online Agency for Creative Brands",
+  "url": "https://clonix.framer.website/",
+  "fonts": [
+    [
+      "sans-serif",
+      2911
+    ],
+    [
+      "Inter Display",
+      380
+    ],
+    [
+      "Apfel Grotezk",
+      191
+    ],
+    [
+      "Instrument Serif",
+      1
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "Cl",
+      "family": "Apfel Grotezk",
+      "size": "32px",
+      "weight": "500",
+      "lineHeight": "32px",
+      "letterSpacing": "-1.28px",
+      "color": "rgb(255, 255, 255)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "We combine bold creativity with strategy to drive actual results.",
+      "family": "Apfel Grotezk",
+      "size": "64px",
+      "weight": "500",
+      "lineHeight": "64px",
+      "letterSpacing": "-2.56px",
+      "color": "rgb(4, 20, 20)",
+      "transform": "none"
+    },
+    "h3": {
+      "text": "01",
+      "family": "Apfel Grotezk",
+      "size": "48px",
+      "weight": "500",
+      "lineHeight": "52.8px",
+      "letterSpacing": "-1.92px",
+      "color": "rgb(4, 20, 20)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "//",
+      "family": "Apfel Grotezk",
+      "size": "18px",
+      "weight": "500",
+      "lineHeight": "19.8px",
+      "letterSpacing": "normal",
+      "color": "rgb(228, 240, 75)",
+      "transform": "none"
+    },
+    "small": null,
+    "link": {
+      "text": "Cl nix.",
+      "family": "sans-serif",
+      "size": "12px",
+      "weight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 238)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "fg rgb(0, 0, 0)",
+      2251
+    ],
+    [
+      "border rgb(0, 0, 0)",
+      2251
+    ],
+    [
+      "fg rgb(0, 0, 238)",
+      414
+    ],
+    [
+      "border rgb(0, 0, 238)",
+      414
+    ],
+    [
+      "fg rgb(4, 20, 20)",
+      245
+    ],
+    [
+      "border rgb(4, 20, 20)",
+      245
+    ],
+    [
+      "fg rgb(255, 255, 255)",
+      207
+    ],
+    [
+      "border rgb(255, 255, 255)",
+      207
+    ],
+    [
+      "fg rgb(238, 238, 238)",
+      186
+    ],
+    [
+      "border rgb(238, 238, 238)",
+      186
+    ],
+    [
+      "fg rgb(244, 246, 245)",
+      115
+    ],
+    [
+      "border rgb(244, 246, 245)",
+      115
+    ],
+    [
+      "bg rgb(4, 20, 20)",
+      94
+    ],
+    [
+      "bg rgb(244, 246, 245)",
+      58
+    ],
+    [
+      "fg rgb(119, 119, 119)",
+      32
+    ],
+    [
+      "border rgb(119, 119, 119)",
+      32
+    ],
+    [
+      "bg rgb(255, 255, 255)",
+      28
+    ],
+    [
+      "fg rgb(51, 51, 51)",
+      23
+    ],
+    [
+      "border rgb(51, 51, 51)",
+      23
+    ],
+    [
+      "bg rgb(10, 41, 43)",
+      16
+    ]
+  ],
+  "bodyBg": "rgb(255, 255, 255)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 70,
+      "height": 1810,
+      "paddingTop": "80px",
+      "paddingBottom": "80px",
+      "bg": "rgb(4, 20, 20)",
+      "maxWidth": "none",
+      "heading": "We Build Brands That Demand Attention.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "0px",
+        "children": 5
+      },
+      "imageCount": 32
+    },
+    {
+      "top": 3559,
+      "height": 2270,
+      "paddingTop": "80px",
+      "paddingBottom": "80px",
+      "bg": "rgb(4, 20, 20)",
+      "maxWidth": "none",
+      "heading": "What We Do Best, And Then Some.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "80px",
+        "children": 7
+      },
+      "imageCount": 33
+    },
+    {
+      "top": 5829,
+      "height": 2528,
+      "paddingTop": "80px",
+      "paddingBottom": "80px",
+      "bg": "rgb(238, 238, 238)",
+      "maxWidth": "none",
+      "heading": "Built Different. On Purpose.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "0px",
+        "children": 4
+      },
+      "imageCount": 24
+    },
+    {
+      "top": 8356,
+      "height": 2170,
+      "paddingTop": "80px",
+      "paddingBottom": "80px",
+      "bg": "rgb(4, 20, 20)",
+      "maxWidth": "none",
+      "heading": "Work That Speaks Louder Than Pitches.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "80px",
+        "children": 5
+      },
+      "imageCount": 21
+    },
+    {
+      "top": 10526,
+      "height": 2466,
+      "paddingTop": "80px",
+      "paddingBottom": "80px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": "No Guesswork. Just a Proven System.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "0px",
+        "children": 4
+      },
+      "imageCount": 17
+    },
+    {
+      "top": 12993,
+      "height": 1356,
+      "paddingTop": "80px",
+      "paddingBottom": "80px",
+      "bg": "rgb(4, 20, 20)",
+      "maxWidth": "none",
+      "heading": "Transparent Pricing. No Surprises. Just Results That Pay for",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "0px",
+        "children": 5
+      },
+      "imageCount": 38
+    },
+    {
+      "top": 14349,
+      "height": 1912,
+      "paddingTop": "80px",
+      "paddingBottom": "80px",
+      "bg": "rgb(238, 238, 238)",
+      "maxWidth": "none",
+      "heading": "Don't Take Our Word for It. Take Theirs.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "0px",
+        "children": 6
+      },
+      "imageCount": 34
+    },
+    {
+      "top": 16261,
+      "height": 1317,
+      "paddingTop": "80px",
+      "paddingBottom": "80px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": "Got Questions? We've Got Answers.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "0px",
+        "children": 4
+      },
+      "imageCount": 15
+    }
+  ],
+  "nav": {
+    "position": "relative",
+    "top": 0,
+    "height": 70,
+    "bg": "rgb(4, 20, 20)",
+    "backdrop": "blur(20px)",
+    "borderBottom": "0px none rgb(0, 0, 0)",
+    "boxShadow": "none",
+    "linkCount": 1,
+    "links": [
+      "Cl nix."
+    ],
+    "ctaCount": 0,
+    "ctaSamples": [],
+    "logoLeft": 102,
+    "maxWidth": "none",
+    "padding": "20px 80px",
+    "linkStyle": {
+      "text": "Cl nix.",
+      "family": "sans-serif",
+      "size": "12px",
+      "weight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 238)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "Learn More Learn More",
+      "bg": "rgb(4, 20, 20)",
+      "color": "rgb(0, 0, 238)",
+      "border": "0px none rgb(0, 0, 238)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 43,
+      "padding": "4px 4px 4px 12px",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "family": "sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 9
+    },
+    {
+      "text": "Explore Services Explore Ser",
+      "bg": "rgb(228, 240, 75)",
+      "color": "rgb(0, 0, 238)",
+      "border": "0px none rgb(0, 0, 238)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 43,
+      "padding": "4px 4px 4px 12px",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "family": "sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 4
+    },
+    {
+      "text": "Cl nix.",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 238)",
+      "border": "0px none rgb(0, 0, 238)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "0px",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "family": "sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 3
+    },
+    {
+      "text": "Get Started Get Started",
+      "bg": "rgb(255, 255, 255)",
+      "color": "rgb(0, 0, 238)",
+      "border": "0px none rgb(0, 0, 238)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 33,
+      "padding": "4px 4px 4px 12px",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "family": "sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "",
+      "bg": "rgb(228, 240, 75)",
+      "color": "rgb(4, 20, 20)",
+      "border": "0px none rgb(4, 20, 20)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 42,
+      "padding": "8px",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "family": "sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Hire for Custom Site Hire fo",
+      "bg": "rgb(255, 255, 255)",
+      "color": "rgb(0, 0, 238)",
+      "border": "0px none rgb(0, 0, 238)",
+      "radius": "16px",
+      "shadow": "rgba(0, 0, 0, 0.14) 0px 0.711334px 0.711334px -0.55px, rgba(0, 0, 0, 0.14) 0px 1.93715px 1.93715px -1.1px, rgba(0, 0, 0, 0.13) 0px 4.25328px 4.25328px -1.65px, rgba(0, 0, 0, 0.13) 0px 9.44132px 9.44132px -2.2px, rgba(0, 0, 0, 0.11) 0px 24px 24px -2.75px",
+      "height": 42,
+      "padding": "4px",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "family": "sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Remix for Free Remix for Fre",
+      "bg": "rgb(223, 2, 3)",
+      "color": "rgb(0, 0, 238)",
+      "border": "0px none rgb(0, 0, 238)",
+      "radius": "16px",
+      "shadow": "rgba(0, 0, 0, 0.14) 0px 0.711334px 0.711334px -0.55px, rgba(0, 0, 0, 0.14) 0px 1.93715px 1.93715px -1.1px, rgba(0, 0, 0, 0.13) 0px 4.25328px 4.25328px -1.65px, rgba(0, 0, 0, 0.13) 0px 9.44132px 9.44132px -2.2px, rgba(0, 0, 0, 0.11) 0px 24px 24px -2.75px",
+      "height": 42,
+      "padding": "4px",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "family": "sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": {
+    "height": 12,
+    "bg": "rgba(255, 255, 255, 0.75)",
+    "border": "0px none rgb(0, 0, 0)",
+    "radius": "0px",
+    "padding": "0px",
+    "fontSize": "12px",
+    "shadow": "none"
+  },
+  "imagery": {
+    "count": 33,
+    "samples": [
+      {
+        "tag": "img",
+        "w": 774,
+        "h": 774,
+        "ratio": "1.00",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 154,
+        "h": 86,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 1256,
+        "h": 700,
+        "ratio": "1.79",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 1256,
+        "h": 700,
+        "ratio": "1.79",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 813,
+        "h": 813,
+        "ratio": "1.00",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 256,
+        "h": 254,
+        "ratio": "1.01",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 256,
+        "h": 254,
+        "ratio": "1.01",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 256,
+        "h": 254,
+        "ratio": "1.01",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 1,
+    "gradients": 4,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 0,
+    "sample": null
+  },
+  "footer": {
+    "height": 1164,
+    "bg": "rgb(4, 20, 20)",
+    "paddingTop": "80px",
+    "paddingBottom": "80px",
+    "columns": 8,
+    "columnsTemplate": "none",
+    "linkCount": 19,
+    "largestText": {
+      "text": "Let’s Build Something That Defines Your ",
+      "size": "64px",
+      "weight": "500",
+      "family": "Apfel Grotezk",
+      "color": "rgb(255, 255, 255)"
+    },
+    "borderTop": "0px none rgb(0, 0, 0)"
+  },
+  "motion": {
+    "libs": [
+      "lenis",
+      "framer"
+    ],
+    "elementsWithTransition": 1,
+    "elementsWithAnimation": 0,
+    "transforms": 144,
+    "stickyElements": 18,
+    "videoCount": 3,
+    "canvasCount": 1,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 18742,
+    "containerMaxWidths": [
+      [
+        "1350px",
+        11
+      ],
+      [
+        "400px",
+        6
+      ],
+      [
+        "800px",
+        4
+      ],
+      [
+        "460px",
+        4
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "20px",
+        105
+      ],
+      [
+        "40px",
+        2
+      ],
+      [
+        "16px",
+        2
+      ],
+      [
+        "12px",
+        2
+      ],
+      [
+        "11px",
+        2
+      ],
+      [
+        "500px",
+        1
+      ]
+    ],
+    "shadows": [
+      "rgb(255, 255, 255) 0px 0px 0px 2px",
+      "rgba(0, 0, 0, 0.04) 0px 0.711334px 0.711334px -0.55px, rgba(0, 0, 0, 0.04) 0px 1.93715px 1.93715px -1.1px, rgba(0, 0, 0, 0.04) 0px 4.25329px 4.25329px -1.65px, rgba(0, 0, 0, 0.04) 0px 9.44132px 9.44132px -2.2px, rgba(0, 0, 0, 0.04) 0px 24px 24px -2.75px",
+      "rgba(0, 0, 0, 0.25) -2px -1px 4px 0px inset",
+      "rgba(0, 0, 0, 0.06) 0px 0.602187px 1.08394px -1px, rgba(0, 0, 0, 0.06) 0px 2.28853px 4.11936px -2px, rgba(0, 0, 0, 0.04) 0px 10px 18px -3px",
+      "rgba(0, 0, 0, 0.03) 0.398096px 0.398096px 1.91418px -0.6875px, rgba(0, 0, 0, 0.03) 1.20725px 1.20725px 5.80487px -1.375px, rgba(0, 0, 0, 0.03) 3.19133px 3.19133px 15.3449px -2.0625px, rgba(0, 0, 0, 0.02) 10px 10px 48.0833px -2.75px"
+    ],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": {
+    "height": 70,
+    "top": 0,
+    "bg": "rgb(4, 20, 20)",
+    "backdrop": "blur(20px)",
+    "boxShadow": "none",
+    "position": "relative"
+  },
+  "mobileNav": {
+    "height": 70,
+    "visibleControls": [
+      "Cl\nnix."
+    ],
+    "hasMenuButton": false
+  },
+  "label": "navbar / Clonix full-screen",
+  "capturedAt": "2026-10-27T06:59:24.739Z"
+}

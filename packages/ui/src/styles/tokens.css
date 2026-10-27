@@ -1,69 +1,77 @@
 /*
  * Kettleworth design tokens.
  *
- * DNA: teenage engineering, "industrial catalogue under studio light", measured live at
- * teenage.engineering (design/refs/dna-teenage-engineering/blueprint.md).
+ * DNA: Integrated Biosciences, "bioluminescent laboratory at midnight", ported from its
+ * published DESIGN.md at styles.refero.design and measured on the live site
+ * (design/refs/dna-integrated-biosciences/). Replaces the teenage engineering system, which
+ * the owner judged the wrong direction for this product — see design/CONCEPT.md.
  *
- * The three rules that define this system, all measured from the reference:
- *   radius 0 everywhere, no shadows ever, zero cards.
- * Depth comes from hairline rules and one inverted band. Values live only in DESIGN.md.
+ * The three rules that define this system, all from the reference:
+ *   1. A near-black ground. Never pure black, never a light page by default.
+ *   2. Hierarchy is carved by SIZE and tightening negative tracking, never by weight.
+ *   3. One high-chroma accent, which activates only on small interactive elements.
+ * Surfaces stay flat: no shadows, no gradients, hairlines do the delineation.
+ *
+ * Values live in DESIGN.md. Nothing downstream may invent a colour or a size.
  */
 @import "tailwindcss";
 
 @theme {
-  /* One family, two axes. Display = width 112%, weight 300. Text = width 100%. */
-  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  /* Antonio carries every figure: condensed, so a five-character load still fits a phone at
+     display size. Geist carries language. Geist Mono carries counters and timers. */
+  --font-display: var(--font-antonio), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
-  /* Type scale, compressed on purpose: the reference tops out at 40px. */
+  /* Scale ported from the reference's own ramp (16 → 158px, tracking -0.001 → -0.03em),
+     compressed at the top because this is a phone-first product. */
   --text-2xs: 0.6875rem;
-  --text-2xs--line-height: 1.1;
-  --text-meta: 0.75rem;
-  --text-meta--line-height: 1.11;
+  --text-2xs--line-height: 1.2;
+  --text-2xs--letter-spacing: 0.08em;
+  --text-meta: 0.6875rem;
+  --text-meta--line-height: 1.2;
   --text-meta--letter-spacing: 0.08em;
-  --text-xs: 0.75rem;
-  --text-xs--line-height: 1.2;
-  --text-sm: 0.875rem;
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.3;
+  --text-sm: 0.9375rem;
   --text-sm--line-height: 1.4;
-  --text-base: 1rem;
-  --text-base--line-height: 1.5;
-  --text-lg: 1.1875rem;
-  --text-lg--line-height: 1.15;
-  --text-xl: 1.375rem;
-  --text-xl--line-height: 1.15;
-  --text-2xl: 1.625rem;
-  --text-2xl--line-height: 1.11;
-  --text-3xl: 2rem;
-  --text-3xl--line-height: 1.08;
-  --text-4xl: 2.5rem;
-  --text-4xl--line-height: 1.08;
-  --text-5xl: 3.5rem;
-  --text-5xl--line-height: 1.04;
-  --text-hero: clamp(2rem, 4.2vw, 3.5rem);
-  --text-hero--line-height: 1.08;
-  --text-hero--letter-spacing: -0.015em;
-  --tracking-tighter: -0.015em;
-  --tracking-tightest: -0.02em;
+  --text-base: 1.0625rem;
+  --text-base--line-height: 1.45;
+  --text-lg: 1.3125rem;
+  --text-lg--line-height: 1.3;
+  --text-xl: 1.6875rem;
+  --text-xl--line-height: 1.2;
+  --text-2xl: 2.25rem;
+  --text-2xl--line-height: 1.15;
+  --text-3xl: 3.25rem;
+  --text-3xl--line-height: 1.05;
+  --text-4xl: 4rem;
+  --text-4xl--line-height: 1;
+  /* The load. One per screen, and the largest thing on it. */
+  --text-figure: 6rem;
+  --text-figure--line-height: 0.95;
+  --text-figure-xl: 8.25rem;
+  --text-figure-xl--line-height: 0.92;
+
   --tracking-label: 0.08em;
+  --tracking-figure: -0.03em;
 
-  /* Shape: the whole system is square. */
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-  --radius-xl: 0px;
-  --radius-2xl: 0px;
-  --radius-3xl: 0px;
-  --radius-full: 9999px; /* only ever a dot or an avatar, never a container */
+  /* Real radius. The sharpest break from the old system, which was 0 everywhere. */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 28px;
+  --radius-2xl: 28px;
+  --radius-3xl: 28px;
+  --radius-full: 9999px;
 
-  /* Rhythm, measured: 66px section gap, 15px element gap, 1200px max. */
-  --spacing-section: 66px;
-  --spacing-element: 15px;
-  --spacing-row: 44px;
-  --spacing-app-section: 32px;
-  --container-content: 1200px;
+  --spacing-section: 56px;
 
-  /* Semantic colours, resolved from the theme layer below. */
+  /* The reference states it outright: no shadows, no gradients. */
+
+  /* Declared here so Tailwind generates the utilities, and re-declared on each theme selector
+     below so nested theme islands resolve. Both are required: the alias is resolved once at
+     :root, which is why a nested island used to keep the root theme. */
   --color-bg: var(--kw-bg);
   --color-bg-elevated: var(--kw-surface);
   --color-surface: var(--kw-surface);
@@ -82,107 +90,87 @@
   --color-fg-subtle: var(--kw-fg-subtle);
   --color-fg-inverse: var(--kw-band-fg);
   --color-fg-on-fill: var(--kw-accent-fg);
+  --color-volt: var(--kw-accent);
+  --color-volt-fg: var(--kw-accent-fg);
   --color-ember: var(--kw-accent);
   --color-ember-hover: var(--kw-accent-hover);
   --color-ember-soft: var(--kw-accent-soft);
   --color-ember-fg: var(--kw-accent-fg);
   --color-signal: var(--kw-done);
   --color-signal-soft: var(--kw-done-soft);
-  --color-amber: var(--kw-attention);
-  --color-amber-soft: var(--kw-attention-soft);
-  --color-rose: var(--kw-danger);
-  --color-rose-soft: var(--kw-danger-soft);
-  --color-sky: var(--kw-rest);
-  --color-series-1: var(--kw-accent);
-  --color-series-2: var(--kw-rest);
-  --color-series-3: var(--kw-done);
-  --color-series-4: var(--kw-fg-muted);
-  --color-series-5: var(--kw-attention);
-  --color-series-6: var(--kw-danger);
+  --color-amber: var(--kw-accent);
+  --color-rose: var(--kw-accent);
+  --color-sky: var(--kw-fg-muted);
 
-  /* Elevation does not exist. These stay so nothing downstream breaks. */
   --shadow-card: none;
   --shadow-pop: none;
   --shadow-glow: none;
-
-  /* Motion: the reference measures 0 animations. We are nearly as still. */
-  --ease-out: cubic-bezier(0.2, 0, 0, 1);
-  --ease-in-out: cubic-bezier(0.2, 0, 0, 1);
-  --ease-spring: cubic-bezier(0.2, 0, 0, 1);
-  --ease-out-quart: cubic-bezier(0.2, 0, 0, 1);
-  --dur-fast: 120ms;
-  --dur-base: 200ms;
-  --dur-slow: 200ms;
-  --dur-hero: 200ms;
-  --animate-pulse-soft: pulse-soft 2s ease-in-out infinite;
-  --animate-ring: ring 0.9s var(--ease-out) both;
-  --animate-fade-in: fade-in var(--dur-base) var(--ease-out) both;
-  --animate-sheet-in: sheet-in var(--dur-base) var(--ease-out) both;
-  --animate-fade-up: sheet-in var(--dur-base) var(--ease-out) both;
-}
-
-@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes sheet-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-@keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
-@keyframes ring { from { stroke-dashoffset: var(--ring-len); } to { stroke-dashoffset: var(--ring-offset); } }
-
-/* ---- Sheet (light). The default: a cool drafting ground, not warm paper. ---- */
-:root, [data-theme="light"] {
-  color-scheme: light;
-  --kw-bg: #f6f8f7;
-  --kw-surface: #f6f8f7;
-  --kw-surface-2: #eff1f0;
-  --kw-band: #0f0e12;
-  --kw-band-fg: #f1f2f2;
-  --kw-fg: #000000;
-  --kw-fg-muted: #5a5a5a;
-  --kw-fg-subtle: #6e6e6e; /* 4.78:1 on the sheet ground; #8a8a8a measured 3.24:1 and failed AA */
-  --kw-rule: #e5e5e5;
-  --kw-rule-strong: #000000;
-  --kw-accent: #a8431a;
-  --kw-accent-hover: #8c3714;
-  --kw-accent-soft: rgb(168 67 26 / 0.1);
-  --kw-accent-fg: #f6f8f7;
-  --kw-done: #1f6b4a;
-  --kw-done-soft: rgb(31 107 74 / 0.1);
-  --kw-attention: #8a5d0f;
-  --kw-attention-soft: rgb(138 93 15 / 0.1);
-  --kw-danger: #96231c;
-  --kw-danger-soft: rgb(150 35 28 / 0.1);
-  --kw-rest: #3a5a77;
-}
-
-/* ---- Carbon (dark). Re-picked, not inverted: #0f0e12, never pure black. ---- */
-[data-theme="dark"] {
-  color-scheme: dark;
-  --kw-bg: #0f0e12;
-  --kw-surface: #141318;
-  --kw-surface-2: #191820;
-  --kw-band: #f6f8f7;
-  --kw-band-fg: #0f0e12;
-  --kw-fg: #f1f2f2;
-  --kw-fg-muted: #a9a9ad;
-  --kw-fg-subtle: #8a8a90; /* 5.60:1 on the carbon ground; #76767c measured 4.26:1 */
-  --kw-rule: #2a2930;
-  --kw-rule-strong: #f1f2f2;
-  --kw-accent: #d98049;
-  --kw-accent-hover: #e89460;
-  --kw-accent-soft: rgb(217 128 73 / 0.12);
-  --kw-accent-fg: #0f0e12;
-  --kw-done: #5fa880;
-  --kw-done-soft: rgb(95 168 128 / 0.12);
-  --kw-attention: #c9a227;
-  --kw-attention-soft: rgb(201 162 39 / 0.12);
-  --kw-danger: #d4706a;
-  --kw-danger-soft: rgb(212 112 106 / 0.12);
-  --kw-rest: #7fa3c0;
 }
 
 /*
- * Tailwind resolves the --color-* aliases once at :root, so a nested [data-theme] island
- * keeps the root theme unless the aliases are re-pointed on the theme selectors themselves.
+ * Carbon is the default. This product is used in a gym, often in poor light, and the DNA is a
+ * dark room with one hard light. Daylight is the variant, not the base.
  */
-[data-theme="dark"], [data-theme="light"] {
+:root,
+[data-theme="dark"] {
+  --kw-bg: #16191a;
+  --kw-surface: #1e2223;
+  --kw-surface-2: #1e2223;
+  --kw-band: #000000;
+  --kw-band-fg: #f4f5f2;
+
+  --kw-rule: #2c3133;
+  --kw-rule-strong: #434a4c;
+
+  --kw-fg: #f4f5f2;
+  --kw-fg-muted: #b4bbb9;
+  --kw-fg-subtle: #8b9391;
+
+  /* Volt. Only where effort is: the live set, the figure being changed, the one action. */
+  --kw-accent: #ccff1a;
+  --kw-accent-hover: #d9ff4d;
+  --kw-accent-soft: #232a10;
+  --kw-accent-fg: #16191a;
+
+  --kw-done: #f4f5f2;
+  --kw-done-soft: #2c3133;
+}
+
+/* Daylight: the same composition under a different light, not a second design. */
+[data-theme="light"] {
+  --kw-bg: #f4f5f2;
+  --kw-surface: #ffffff;
+  --kw-surface-2: #ffffff;
+  --kw-band: #16191a;
+  --kw-band-fg: #f4f5f2;
+
+  --kw-rule: #d9dcd6;
+  --kw-rule-strong: #b2b7b0;
+
+  --kw-fg: #16191a;
+  --kw-fg-muted: #4d5553;
+  --kw-fg-subtle: #5f6764; /* 5.31:1 on bone; #6b7370 measured 4.45:1 and failed AA */
+
+  /* Daylight needs its own accent value. The same token is used both as text on the ground
+     and as a fill carrying text, and no bright chartreuse can do both: #ccff1a measures
+     1.86:1 as text on bone. This darkened chartreuse clears 6.27:1 in BOTH roles, carrying
+     bone text when filled. It is the same hue family, not a different accent. */
+  --kw-accent: #4d6200;
+  --kw-accent-hover: #3d4e00;
+  --kw-accent-soft: #eef9c9;
+  --kw-accent-fg: #f4f5f2;
+
+  --kw-done: #16191a;
+  --kw-done-soft: #e4e7e0;
+}
+
+/*
+ * Tailwind resolves --color-* aliases once at :root, so every theme that can be active must
+ * re-declare them. This was a real bug: nested theme islands kept the root theme.
+ */
+:root,
+[data-theme="dark"],
+[data-theme="light"] {
   --color-bg: var(--kw-bg);
   --color-bg-elevated: var(--kw-surface);
   --color-surface: var(--kw-surface);
@@ -190,54 +178,77 @@
   --color-surface-3: var(--kw-surface-2);
   --color-band: var(--kw-band);
   --color-band-fg: var(--kw-band-fg);
+
   --color-border: var(--kw-rule);
   --color-border-strong: var(--kw-rule-strong);
   --color-rule: var(--kw-rule);
   --color-rule-strong: var(--kw-rule-strong);
-  --color-well: var(--kw-surface-2);
-  --color-well-strong: var(--kw-surface-2);
+
   --color-fg: var(--kw-fg);
   --color-fg-muted: var(--kw-fg-muted);
   --color-fg-subtle: var(--kw-fg-subtle);
   --color-fg-inverse: var(--kw-band-fg);
   --color-fg-on-fill: var(--kw-accent-fg);
+
+  /* `volt` is the name in DESIGN.md. `ember` keeps pointing at the same value so the sixty-odd
+     files that already reference it keep working; recomposed screens use volt. */
+  --color-volt: var(--kw-accent);
+  --color-volt-fg: var(--kw-accent-fg);
   --color-ember: var(--kw-accent);
   --color-ember-hover: var(--kw-accent-hover);
   --color-ember-soft: var(--kw-accent-soft);
   --color-ember-fg: var(--kw-accent-fg);
   --color-signal: var(--kw-done);
   --color-signal-soft: var(--kw-done-soft);
-  --color-amber: var(--kw-attention);
-  --color-amber-soft: var(--kw-attention-soft);
-  --color-rose: var(--kw-danger);
-  --color-rose-soft: var(--kw-danger-soft);
-  --color-sky: var(--kw-rest);
+  --color-amber: var(--kw-accent);
+  --color-rose: var(--kw-accent);
+  --color-sky: var(--kw-fg-muted);
 }
 
 @layer base {
-  * { border-color: var(--color-rule); }
-  html { -webkit-text-size-adjust: 100%; }
+  * {
+    border-color: var(--color-rule);
+  }
+
+  html {
+    color-scheme: dark;
+    background: var(--color-bg);
+  }
+
+  [data-theme="light"] {
+    color-scheme: light;
+  }
+
   body {
     background: var(--color-bg);
     color: var(--color-fg);
     font-family: var(--font-sans);
-    font-weight: 300;
-    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
-  /* Display is the same family at a wider width and a light weight. Never bold. */
-  h1, h2, h3, .font-display {
+
+  /* Figures are the subject of this design, so they are always tabular and always tight. */
+  .font-display {
     font-family: var(--font-display);
-    font-stretch: 112%;
-    font-weight: 300;
-    letter-spacing: -0.015em;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: var(--tracking-figure);
   }
-  /* The product is a table: every figure is tabular so the columns line up. */
-  .tabular, .font-display, th, td { font-variant-numeric: tabular-nums; }
-  ::selection { background: var(--color-ember); color: var(--color-ember-fg); }
-  :focus-visible { outline: 2px solid var(--color-ember); outline-offset: 2px; border-radius: 0; }
+
+  ::selection {
+    background: var(--color-volt);
+    color: var(--color-volt-fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-volt);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -246,21 +257,59 @@
   }
 }
 
-/* The sheet's structural vocabulary: three rule weights and nothing else. */
-@utility measure { max-width: 62ch; }
-@utility band { background: var(--color-band); color: var(--color-band-fg); }
+@utility measure {
+  max-width: 62ch;
+}
+
+@utility band {
+  background: var(--color-band);
+  color: var(--color-band-fg);
+}
+
+/* The small uppercase label that names a figure. The reference uses mono for exactly this. */
 @utility meta {
+  font-family: var(--font-mono);
   font-size: var(--text-meta);
-  line-height: 1.11;
-  letter-spacing: 0.08em;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  font-weight: 500;
   color: var(--color-fg-subtle);
 }
-@utility rule-dashed { border: 0; border-top: 1px solid var(--color-rule); }
-@utility scrollbar-none { scrollbar-width: none; &::-webkit-scrollbar { display: none; } }
 
-/* Kept so existing call sites keep compiling; all three are flat now, by design. */
-@utility surface { background: var(--color-surface); border: 1px solid var(--color-rule); }
-@utility glass { background: var(--color-bg); border-bottom: 1px solid var(--color-rule); }
-@utility scrim { background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--color-band) 78%, transparent)); }
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-meta);
+  line-height: 1.2;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-fg-subtle);
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* A raised surface. Flat, separated by value and a hairline, never by a shadow. */
+@utility surface {
+  background: var(--color-surface);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-lg);
+}
+
+/* Text over photography always sits on one of these, never on the bare image. */
+@utility scrim {
+  background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--kw-bg) 88%, transparent) 70%, var(--kw-bg) 100%);
+}
+
+@utility rule-dashed {
+  border: 0;
+  border-top: 1px solid var(--color-rule);
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+}
+
+@utility glass {
+  background: var(--color-surface);
+}

@@ -1,85 +1,51 @@
-# SECTION-MAP — the replication contract
+# SECTION-MAP — what each surface replicates
 
-Every section of the rebuild, mapped to the reference section it replicates, with the measured
-values it must hit. Reference measurements come from `design/refs/*/blueprint.md`.
+**Rewritten 27 Oct 2026 for the Path B revamp.** One row per surface, mapped to the reference
+section it ports, with the values it must hit. Build against this file, not against memory.
 
-## Marketing page
+## The through-line
 
-| # | Our section | Replicates | Reference measurement | Our value |
-|---|-------------|-----------|----------------------|-----------|
-| 1 | Nav | teenage.engineering nav | permanent row of 5 labelled groups, 25 links visible, **0 CTAs**, link 16px w100, nav bg transparent, no border, no blur, no scroll change | Same: 4 labelled groups + sub-links, no CTA in nav, 14px w400 (readability), transparent, no scroll morph |
-| 2 | Hero | teenage.engineering catalogue grid | cells edge-to-edge, **0 cell padding**, radius 0, 1:1 images, label beneath each cell at 19px w300 | **The week as a table.** 7 day-rows, column heads 12px uppercase, heavy rule under head, hairline between rows, zero padding on the number columns |
-| 3 | Conveyor | figureandplot.com input→output track | horizontal track of uniform tiles, one quiet label per group, centre node fixed | Block weeks as a horizontal track under a fixed NOW marker. One signature moment |
-| 4 | Method | teenage.engineering ruled bands | hairline `#e5e5e5` rules organise content into bands; **no background fills, no cards** | Numbered editorial index 01–04, hairline between, type-led. **Zero cards** |
-| 5 | Proof band | teenage.engineering dark band `#0f0e12` | one inverted band acting as a display-case wall | Full-bleed dark band, one sentence, one image at 1:1 unframed |
-| 6 | CTA | tines.com button pair | primary filled + secondary outlined, identical size, label uppercase 13px w700 | Same pairing, radius 0 instead of 990px, accent fill |
-| 7 | Footer | teenage.engineering footer | 7 columns, 96px tall, 7 tiny links, dark band, largest text 19px w300 | 4 columns of small links on the dark band, 12px meta heads. **No giant wordmark** |
+Every screen answers one question with one number, rendered at `--text-figure` (96px) or
+larger, with everything else as support type around it. That is the signature idea, and it is
+the reason the DNA was chosen: Integrated Biosciences carves hierarchy by size, not weight.
 
-## App surfaces — one language, applied
+| Screen | The one number | Supporting |
+|---|---|---|
+| Today | Load lifted this week | Session to do, readiness, streak |
+| Session | The weight on the bar | Set track, reps, effort |
+| Progress | Estimated max on the lift in view | Curve, history |
+| Nutrition | Calories remaining today | Macro bars |
+| Programme | Week number of the block | Day table |
+| Community | Your Growth | Board |
 
-Every app screen is the same atom: **a ruled row with a numbered margin**. No cards anywhere.
+## Surface map
 
-| Surface | Composition |
+| Surface | Replicates | Measured target |
+|---|---|---|
+| **App shell** | IB's rounded inset canvas over a darker ground (`dna-integrated-biosciences/desktop.png`) | Ground `#16191a`, content inset with `--radius-xl` at desktop, full-bleed on phone |
+| **Navigation** | Clonix full-screen nav (`navbar-clonix`), triggered by a floating pill — the pill group is IB's and Get Ripe's | Trigger: 44px pill, top-right, floats over content. Open: full-screen, items at `--text-2xl`, one per row, thumb-reachable |
+| **Today hero** | Lando Norris (`hero-lando-norris/scrolled.png`): full-bleed photograph bleeding edge to edge, the figure carried on black beneath it | Image 16:9 full-bleed, no border, no radius at the top edge. Figure at 96px directly under it, accent on the second line |
+| **Primary action** | Get Ripe (`cta-get-ripe/mobile.png`): a filled pill in the nav, paired pills under the headline | Sticky bottom pill, 56px tall, `--radius-pill`, volt fill, ink text. Exactly one per viewport |
+| **Session console** | 21st.dev Number Pad (`components-21st-numberpad`), kept — it is the only control that reaches every value | Figure at 96px, keypad 3×4, keys 56px, one commit |
+| **Footer** | Decimals (`footer-decimals`), Bold | Oversized wordmark, few links, volt rule above |
+| **Figures** | IB's display treatment | Antonio, tracking −0.03em at 96px, tabular |
+
+## Carried over unchanged
+
+Not everything from the old system was wrong, and a revamp that throws away working parts to
+look busy is its own failure:
+
+- **The keypad.** It is the only weight control that reaches 0, 0.5, 1 and 137.5. Rethemed,
+  not replaced.
+- **`loadLadder()`** and the plate maths. Correct domain logic, now feeding the keypad's quick row.
+- **One statement of the target**, the plain-word effort scale, and the set track reading
+  "done / now / to come". Those were comprehension wins, not styling.
+
+## Deliberate deviations from the references
+
+| Deviation | Why |
 |---|---|
-| Today | Date line, then the session as a **table**: margin number, exercise, sets x reps, target load. Heavy rule under the head. One primary action. |
-| Programme | The block as the **conveyor** (weeks across, NOW marker fixed), then this week as ruled day-rows. |
-| Session player | The set list as a table; the active row inverted to the dark band. Entry is a row, not a card. |
-| Progress | Lifts as a ruled table sorted by the number that matters; charts are hairline, no fills. |
-| Nutrition | Targets as a table of numbers; the day's log as ruled rows. |
-| Coach | Letters as a dated ruled list; the reading view is a measure-capped column. |
-| Community | Ruled list of people and groups, no avatar cards. |
-| Settings | Ruled rows, label left, control right. |
-| Onboarding | One question per screen, left-aligned, progress as a rule that fills. |
-
-## Score targets (`references/replication.md`)
-
-Nav height within 8px · display within 10% · section rhythm within 15% · button shape class
-identical · same column count · imagery framed the same · footer style and column count ·
-ground/surface relationship · motion spec implemented · "same family" in three seconds.
-Minimum 8/10 to ship.
-
-## Set console, second pass — ported from 21st.dev Unit Field
-
-| What | Reference (Unit Field, arikchakma) | Measured target here |
-|---|---|---|
-| Quantity | One labelled row per quantity, never a side-by-side split | `WEIGHT` row, `REPS` row |
-| Unit | Lives **inside** the value (`200px`, `0°`), never a caption beneath | `0 kg`, `15 reps` |
-| Label | Quiet, fixed left column; value right-aligned tabular | `meta` left, `font-display tabular` right |
-| Rows | Separated by hairline rules, zero fills | `border-b border-rule` |
-| Keys | — (Unit Field scrubs; a scrub fights a scrolling page on touch) | Key row sits **under the selected row**, so position says what it drives |
-
-**Why this replaces the previous pass.** The Number Pad port fixed height (579px → 494px) but not
-comprehension. Measured on a phone the console carried 16 interactive controls, 11 bordered
-regions and 12 uppercase micro-labels, and it stated the same target three times in three
-dialects: `SET 2 OF 3 · TARGET 12 TO 15 @ 9`, `REPS · AIM 12 TO 15`, and `RPE 9`. The weight
-and reps figures sat either side of a 19px `×` at 40px each, so neither dominated, and which
-one the keys drove was signalled only by 45% opacity.
-
-## Weight entry — ported from 21st.dev Iso Fader
-
-| What | Reference (Iso Fader, Daiwiik Harihar) | Here |
-|---|---|---|
-| Control | A ladder of discrete detents, not a continuous slide | The loads this equipment actually has |
-| Readout | The exact value read separately as a figure | The Unit Field row above it |
-| Hierarchy | Tick height carries the scale | Tick height reads the load, so the strip has the shape of a rack |
-| Orientation | Vertical fader travel | Horizontal: a thumb works across a phone, not up it |
-| Not taken | Dark chrome, LED colour ramp, inertial physics | A flick with momentum inside a scrolling page sets the wrong weight |
-
-**Why a ladder and not a stepper.** The console offered the current weight plus or minus a
-fixed step, which cannot reach most real loads:
-
-- a dumbbell rack jumps **22.5 → 25** with nothing between, so stepping 22.5 by 5 produced
-  **27.5**, a dumbbell most racks do not carry;
-- a barbell can only make totals its plates can build, and no sequence of ±5 respects that;
-- kettlebells are cast in fixed sizes (24, not 25);
-- a pin stack moves in whole plates.
-
-`loadLadder()` in `packages/core/src/load.ts` returns the real rungs per equipment kind, with
-10 tests asserting exactly these cases. `PlateDiagram` draws what goes on the sleeve, each
-plate a bar whose height is its weight, replacing the written "20 + 10 + 2.5".
-
-## Set-up check — cut, not restyled
-
-Measured on a phone: the session screen ran **1573px against a 659px viewport**, and the
-set-up check took **193px to show one sentence** ("Elbows tucked, upper arms still") behind a
-1 of 3 pager and a NEXT button. The cues are worth keeping; the carousel around them is not.
+| Accent is chartreuse `#ccff1a`, not IB's pale lime `#cef79e` | IB's is a biological signal at low chroma; this product needs a floodlit one. Lando Norris and Get Ripe both land on high-chroma yellow-green for performance |
+| Two display sizes (96/132px), not IB's six above 58px | A phone-first product. The reference is a desktop marketing site |
+| Section gap 56px on phone, against the reference's 80–120px | Same reason |
+| Pill buttons, where IB uses 8px radius | Taken from Get Ripe and Lando Norris, both of which use pills for actions; IB's own CTA is a pill pair too |

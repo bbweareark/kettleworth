@@ -1,0 +1,572 @@
+{
+  "title": "McLaren Formula 1 Driver — Lando Norris",
+  "url": "https://landonorris.com/",
+  "fonts": [
+    [
+      "Mona Sans Variable",
+      1107
+    ],
+    [
+      "Brier",
+      37
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "LANDO NORRIS",
+      "family": "Mona Sans Variable",
+      "size": "38px",
+      "weight": "700",
+      "lineHeight": "44px",
+      "letterSpacing": "normal",
+      "color": "rgb(17, 17, 18)",
+      "transform": "uppercase"
+    },
+    "h2": {
+      "text": "2025 MCLAREN FORMULA 1 DRIVER",
+      "family": "Mona Sans Variable",
+      "size": "32px",
+      "weight": "700",
+      "lineHeight": "36px",
+      "letterSpacing": "normal",
+      "color": "rgb(17, 17, 18)",
+      "transform": "uppercase"
+    },
+    "h3": {
+      "text": "Season",
+      "family": "Mona Sans Variable",
+      "size": "12px",
+      "weight": "600",
+      "lineHeight": "15px",
+      "letterSpacing": "normal",
+      "color": "rgb(244, 244, 237)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "Most recent results, career stats and photos from trackside.",
+      "family": "Mona Sans Variable",
+      "size": "16.6667px",
+      "weight": "400",
+      "lineHeight": "20.8333px",
+      "letterSpacing": "normal",
+      "color": "rgb(40, 44, 32)",
+      "transform": "none"
+    },
+    "small": {
+      "text": "NEXT RACE",
+      "family": "Mona Sans Variable",
+      "size": "8.33333px",
+      "weight": "400",
+      "lineHeight": "8.33333px",
+      "letterSpacing": "normal",
+      "color": "rgb(83, 84, 80)",
+      "transform": "uppercase"
+    },
+    "link": null
+  },
+  "palette": [
+    [
+      "fg rgb(244, 244, 237)",
+      527
+    ],
+    [
+      "border rgb(244, 244, 237)",
+      527
+    ],
+    [
+      "fg rgb(40, 44, 32)",
+      250
+    ],
+    [
+      "border rgb(40, 44, 32)",
+      244
+    ],
+    [
+      "fg rgb(83, 84, 80)",
+      104
+    ],
+    [
+      "border rgb(83, 84, 80)",
+      104
+    ],
+    [
+      "fg rgb(17, 17, 18)",
+      102
+    ],
+    [
+      "border rgb(17, 17, 18)",
+      101
+    ],
+    [
+      "border rgb(210, 255, 0)",
+      94
+    ],
+    [
+      "fg rgb(210, 255, 0)",
+      88
+    ],
+    [
+      "border rgb(180, 184, 165)",
+      30
+    ],
+    [
+      "fg rgb(180, 184, 165)",
+      29
+    ],
+    [
+      "fg rgb(221, 225, 210)",
+      24
+    ],
+    [
+      "border rgb(221, 225, 210)",
+      24
+    ],
+    [
+      "bg rgb(210, 255, 0)",
+      22
+    ],
+    [
+      "bg rgb(59, 60, 56)",
+      19
+    ],
+    [
+      "fg rgb(185, 187, 173)",
+      11
+    ],
+    [
+      "border rgb(185, 187, 173)",
+      11
+    ],
+    [
+      "fg rgb(178, 199, 58)",
+      9
+    ],
+    [
+      "border rgb(178, 199, 58)",
+      9
+    ]
+  ],
+  "bodyBg": "rgb(244, 244, 237)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 0,
+      "height": 13579,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "LANDO NORRIS",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 4
+      },
+      "imageCount": 217
+    },
+    {
+      "top": 900,
+      "height": 900,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 4
+      },
+      "imageCount": 6
+    },
+    {
+      "top": 900,
+      "height": 900,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": null,
+      "imageCount": 3
+    },
+    {
+      "top": 1800,
+      "height": 1027,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "50px",
+        "children": 3
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 2827,
+      "height": 3143,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 12
+      },
+      "imageCount": 13
+    },
+    {
+      "top": 6870,
+      "height": 900,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "ON",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "50px",
+        "children": 2
+      },
+      "imageCount": 5
+    },
+    {
+      "top": 6870,
+      "height": 900,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": null,
+      "imageCount": 1
+    },
+    {
+      "top": 7770,
+      "height": 1697,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "HELMETS",
+      "layout": {
+        "display": "grid",
+        "columns": "331.266px 331.266px 331.266px 331.266px",
+        "gap": "normal 16.6667px",
+        "children": 2
+      },
+      "imageCount": 128
+    },
+    {
+      "top": 9468,
+      "height": 476,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": null,
+      "imageCount": 3
+    },
+    {
+      "top": 9943,
+      "height": 907,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "WORLD DRIVERS' CHAMPION",
+      "layout": {
+        "display": "grid",
+        "columns": "270.031px 270.031px 270.031px 270.031px",
+        "gap": "normal 16.6667px",
+        "children": 2
+      },
+      "imageCount": 7
+    },
+    {
+      "top": 10851,
+      "height": 796,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "PARTNERS",
+      "layout": {
+        "display": "grid",
+        "columns": "331.266px 331.266px 331.266px 331.266px",
+        "gap": "normal 16.6667px",
+        "children": 2
+      },
+      "imageCount": 20
+    },
+    {
+      "top": 11647,
+      "height": 965,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "WHAT’S UPON SOCIALS",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "33.3333px",
+        "children": 6
+      },
+      "imageCount": 8
+    },
+    {
+      "top": 12612,
+      "height": 967,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(244, 244, 237)",
+      "maxWidth": "none",
+      "heading": "ALWAYS BRINGING THE FIGHT.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 5
+      },
+      "imageCount": 20
+    }
+  ],
+  "nav": null,
+  "buttons": [
+    {
+      "text": "Store STORE",
+      "bg": "rgb(210, 255, 0)",
+      "color": "rgb(40, 44, 32)",
+      "border": "1px solid rgb(210, 255, 0)",
+      "radius": "7.2px",
+      "shadow": "none",
+      "height": 50,
+      "padding": "0px 13.3333px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "Mona Sans Variable",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 6
+    },
+    {
+      "text": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(244, 244, 237)",
+      "border": "0px none rgb(244, 244, 237)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 50,
+      "padding": "0px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "Mona Sans Variable",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(17, 17, 18)",
+      "border": "0px none rgb(244, 244, 237)",
+      "radius": "9.86667px",
+      "shadow": "none",
+      "height": 50,
+      "padding": "0px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "Mona Sans Variable",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": null,
+  "imagery": {
+    "count": 64,
+    "samples": [
+      {
+        "tag": "canvas",
+        "w": 800,
+        "h": 571,
+        "ratio": "1.40",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 296,
+        "h": 354,
+        "ratio": "0.84",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Lando in casual clothes walking through paddock",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 317,
+        "h": 317,
+        "ratio": "1.00",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Lando lifting trophy in tux",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 643,
+        "h": 589,
+        "ratio": "1.09",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Lando lifting tophy",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 251,
+        "h": 242,
+        "ratio": "1.04",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Lando playing golf",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 339,
+        "h": 312,
+        "ratio": "1.09",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Lando in f1 car",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 246,
+        "h": 292,
+        "ratio": "0.84",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Lando holding dog smiling",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 240,
+        "h": 240,
+        "ratio": "1.00",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Lando in tux",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 35,
+    "gradients": 1,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 0,
+    "sample": null
+  },
+  "footer": {
+    "height": 967,
+    "bg": "rgba(0, 0, 0, 0)",
+    "paddingTop": "0px",
+    "paddingBottom": "0px",
+    "columns": null,
+    "columnsTemplate": null,
+    "linkCount": 0,
+    "largestText": null,
+    "borderTop": "0px none rgb(40, 44, 32)"
+  },
+  "motion": {
+    "libs": [
+      "lenis",
+      "motion",
+      "scrolltrigger"
+    ],
+    "elementsWithTransition": 58,
+    "elementsWithAnimation": 0,
+    "transforms": 127,
+    "stickyElements": 4,
+    "videoCount": 0,
+    "canvasCount": 21,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 13579,
+    "containerMaxWidths": [
+      [
+        "1440px",
+        8
+      ],
+      [
+        "800px",
+        1
+      ],
+      [
+        "1068px",
+        1
+      ],
+      [
+        "231.667px",
+        1
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "44.2167px",
+        7
+      ],
+      [
+        "7.2px",
+        6
+      ],
+      [
+        "14px",
+        2
+      ],
+      [
+        "9.86667px",
+        1
+      ],
+      [
+        "2.66667px",
+        1
+      ]
+    ],
+    "shadows": [],
+    "baseFontSize": "13.3333px"
+  },
+  "scrolledNav": null,
+  "mobileNav": null,
+  "label": "hero / Lando Norris",
+  "capturedAt": "2026-10-27T07:00:08.945Z"
+}

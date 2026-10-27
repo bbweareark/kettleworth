@@ -1,0 +1,135 @@
+{
+  "title": "Reality is__",
+  "url": "https://www.reality-is.com/",
+  "fonts": [
+    [
+      "PP Neue Montreal Book",
+      46
+    ]
+  ],
+  "type": {
+    "h1": null,
+    "h2": null,
+    "h3": null,
+    "body": null,
+    "small": null,
+    "link": null
+  },
+  "palette": [
+    [
+      "fg rgb(0, 0, 0)",
+      37
+    ],
+    [
+      "border rgb(0, 0, 0)",
+      36
+    ],
+    [
+      "fg rgb(255, 255, 255)",
+      9
+    ],
+    [
+      "border rgb(255, 255, 255)",
+      9
+    ],
+    [
+      "bg rgb(255, 255, 255)",
+      1
+    ]
+  ],
+  "bodyBg": "rgb(255, 255, 255)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 0,
+      "height": 900,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": null,
+      "imageCount": 0
+    },
+    {
+      "top": 0,
+      "height": 314,
+      "paddingTop": "12px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": null,
+      "imageCount": 0
+    },
+    {
+      "top": 191,
+      "height": 519,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": null,
+      "imageCount": 0
+    }
+  ],
+  "nav": null,
+  "buttons": [],
+  "input": null,
+  "imagery": {
+    "count": 0,
+    "samples": [],
+    "svgIllustrations": 1,
+    "gradients": 0,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 0,
+    "sample": null
+  },
+  "footer": {
+    "height": 396,
+    "bg": "rgba(0, 0, 0, 0)",
+    "paddingTop": "0px",
+    "paddingBottom": "0px",
+    "columns": null,
+    "columnsTemplate": null,
+    "linkCount": 6,
+    "largestText": null,
+    "borderTop": "0px none rgb(0, 0, 0)"
+  },
+  "motion": {
+    "libs": [
+      "lottie"
+    ],
+    "elementsWithTransition": 11,
+    "elementsWithAnimation": 0,
+    "transforms": 1,
+    "stickyElements": 1,
+    "videoCount": 6,
+    "canvasCount": 1,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 4767,
+    "containerMaxWidths": [
+      [
+        "2500px",
+        4
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "4px",
+        1
+      ]
+    ],
+    "shadows": [],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": null,
+  "mobileNav": null,
+  "label": "footer / Reality Is__",
+  "capturedAt": "2026-10-27T07:36:12.577Z"
+}
