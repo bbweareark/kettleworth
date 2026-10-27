@@ -16,7 +16,7 @@ export default async function Library({ searchParams }: { searchParams: Promise<
   return (
     <div className="space-y-app-section">
       <div>
-        <Figure label="Movements in the library" value={initial.total} />
+        <Figure labelAs="h1" label="Movements in the library" value={initial.total} />
         <p className="measure mt-3 text-sm text-fg-muted">Search by name, muscle, equipment or pattern. Cues, mistakes and a demo on every one.</p>
       </div>
       <LibraryBrowser initial={initial} initialQuery={sp} />

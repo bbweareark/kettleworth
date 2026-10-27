@@ -69,7 +69,7 @@ export function BodyCheck({ initial, ai, priorityMuscles, sex = "male" }: { init
               <img src={`/api/photos/${p.id}`} alt={`${p.pose} photo ${p.takenOn}`} className="h-32 w-24 object-cover" />
             </button>
             <div className="mt-1 flex items-center justify-between text-2xs text-fg-subtle"><span className="capitalize">{p.pose} · {p.takenOn.slice(5)}</span>{p.analysis ? <ScanLine className="size-3 text-fg" /> : null}</div>
-            <button type="button" aria-label="Delete photo" onClick={() => remove(p.id)} className="absolute right-1 top-1 grid size-6 place-items-center bg-black/60 text-white hover:bg-rose"><Trash2 className="size-3" /></button>
+            <button type="button" aria-label="Delete photo" onClick={() => remove(p.id)} className="absolute right-1.5 top-1.5 grid size-7 place-items-center rounded-full bg-black/70 text-white transition-colors hover:bg-volt hover:text-volt-fg"><Trash2 className="size-3" /></button>
           </li>))}</ul>
       ) : <p className="text-sm text-fg-muted">Add a front, side and back photo in the same light every few weeks. The trend matters more than any single picture.</p>}
       {photos.length ? <div className="flex flex-wrap items-center gap-2"><Button size="sm" onClick={analyse} loading={busy === "analyse"} disabled={!ai || !selected.size}><Sparkles /> Read selected ({selected.size})</Button>{!ai && <span className="text-xs text-fg-subtle">Photo reads are unavailable on this server; photos are stored only.</span>}</div> : null}

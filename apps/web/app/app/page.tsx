@@ -79,16 +79,17 @@ export default async function Today() {
 
   return (
     <>
-      <Screen flush className={startHref || !prog ? "pb-32" : undefined}>
-        <ScreenHero
-          art={art}
-          priority
-          eyebrow={`${new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })} · ${firstName}`}
-          label="Load lifted this week"
-          value={weekLoad}
-          unit={u}
-          second={second}
-        />
+      <ScreenHero
+        art={art}
+        priority
+        eyebrow={`${new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })} · ${firstName}`}
+        label="Load lifted this week"
+        value={weekLoad}
+        unit={u}
+        second={second}
+      />
+
+      <Screen flush className={startHref || !prog ? "pt-10 pb-32" : "pt-10"}>
 
         <OfflineWarmup sessionHref={startHref} images={[...(today ? [art] : []), ...(detail?.instances ?? []).map((i) => i.exercise.imageUrls[0]).filter((x): x is string => !!x)]} />
 

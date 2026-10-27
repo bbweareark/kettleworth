@@ -46,7 +46,7 @@ export default async function Progress() {
     : "Log a working set and the curve starts.";
 
   return (
-    <Screen flush>
+    <>
       <ScreenHero
         art={genderedArt("progress", rec.profile.sex)}
         priority
@@ -58,90 +58,93 @@ export default async function Progress() {
         second={second}
       />
 
-      <ReadoutRow>
-        <Readout label="Sessions" value={p.completedSessions} />
-        <Readout label="Week streak" value={p.streakWeeks} note={p.streakWeeks ? "alive" : "start one"} accent={p.streakWeeks > 0} />
-        <Readout label="Volume this week" value={w(p.tonnageThisWeek) ?? 0} unit={u} note={p.tonnageLastWeek ? `${w(p.tonnageLastWeek)} last week` : undefined} />
-        <Readout label="Personal records" value={p.prs.length} />
-      </ReadoutRow>
+      <Screen flush className="pt-10">
 
-      <GrowthPanel growth={phys.growth} />
+        <ReadoutRow>
+          <Readout label="Sessions" value={p.completedSessions} />
+          <Readout label="Week streak" value={p.streakWeeks} note={p.streakWeeks ? "alive" : "start one"} accent={p.streakWeeks > 0} />
+          <Readout label="Volume this week" value={w(p.tonnageThisWeek) ?? 0} unit={u} note={p.tonnageLastWeek ? `${w(p.tonnageLastWeek)} last week` : undefined} />
+          <Readout label="Personal records" value={p.prs.length} />
+        </ReadoutRow>
 
-      <section className="border-t border-rule pt-4">
-        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-          <h2 className="font-display text-xl">Every lift, and where it stands.</h2>
-          <p className="measure meta">Last session, heaviest set and best estimated max. Tap one for its history.</p>
+        <GrowthPanel growth={phys.growth} />
+
+        <section className="border-t border-rule pt-4">
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+            <h2 className="font-display text-xl">Every lift, and where it stands.</h2>
+            <p className="measure meta">Last session, heaviest set and best estimated max. Tap one for its history.</p>
+          </div>
+          <LiftsList lifts={JSON.parse(JSON.stringify(lifts))} units={rec.profile.units} />
+        </section>
+
+        <section className="border-t border-rule pt-4">
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+            <h2 className="font-display text-xl">Where the work went.</h2>
+            <p className="measure meta">Working sets per muscle group this week. Lit means trained.</p>
+          </div>
+          <MuscleGrid setsByMuscle={p.volumeThisWeek} lastWeek={p.volumeLastWeek} sex={rec.profile.sex ?? null} />
+        </section>
+
+        <section className="border-t border-rule pt-4">
+          <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+            <h2 className="font-display text-xl">What the mirror can&apos;t measure.</h2>
+            <p className="measure meta">Photo reads are smoothed against your weigh-ins, so a change in lighting never looks like a change in you.</p>
+          </div>
+          <div className={phys.compare ? "grid gap-8 lg:grid-cols-[minmax(0,390px)_1fr]" : ""}>
+            {phys.compare ? <CompareSlider before={phys.compare.before} after={phys.compare.after} /> : null}
+            <PhysiqueCharts timeline={phys.timeline} trends={phys.trends} unit={u} />
+          </div>
+        </section>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Panel title="Strength trend" note="Estimated 1RM per week for your most-trained lifts.">
+            {p.strength.length ? <E1RMChart series={p.strength.map((s) => ({ name: s.name, points: s.series.map((x) => ({ week: x.week, value: w(x.e1rm)! })) }))} unit={u} /> : <EmptyState title="No lifts logged yet" description="Log weights in the session player and trends appear here." />}
+          </Panel>
+          <Panel title="Weekly tonnage" note="Total weight lifted: sets × reps × load.">
+            {p.weeklyTonnage.length ? <TonnageChart data={p.weeklyTonnage.map((x) => ({ week: x.week, kg: w(x.kg)! }))} unit={u} /> : <EmptyState title="Nothing yet" description="Complete a session to see volume." />}
+          </Panel>
+          <Panel title="Sets per muscle" note="This week against last week.">
+            <VolumeCompare thisWeek={p.volumeThisWeek} lastWeek={p.volumeLastWeek} />
+          </Panel>
+          <Panel title="Bodyweight" note="Weigh in weekly, same time of day.">
+            {p.measurements.filter((m) => m.weightKg != null).length ? <WeightChart data={p.measurements.filter((m) => m.weightKg != null).map((m) => ({ date: m.measuredOn, value: w(m.weightKg)! }))} unit={u} /> : <p className="text-sm text-fg-subtle">No weigh-ins yet.</p>}
+            <MeasurementForm units={units} />
+          </Panel>
         </div>
-        <LiftsList lifts={JSON.parse(JSON.stringify(lifts))} units={rec.profile.units} />
-      </section>
 
-      <section className="border-t border-rule pt-4">
-        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-          <h2 className="font-display text-xl">Where the work went.</h2>
-          <p className="measure meta">Working sets per muscle group this week. Lit means trained.</p>
+        <BodyCheck initial={photos.map((x) => ({ id: x.id, takenOn: x.takenOn, pose: x.pose, analysis: x.analysis ?? null }))} ai={aiAvailable()} priorityMuscles={rec.profile.priorityMuscles} sex={rec.profile.sex ?? "male"} />
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Panel title="Personal records">
+            {p.prs.length ? (
+              <ul className="divide-y divide-rule">
+                {p.prs.map((pr) => (
+                  <li key={pr.id} className="flex items-baseline justify-between gap-3 py-2.5 text-sm">
+                    <span className="min-w-0 truncate">{pr.name}</span>
+                    <span className="shrink-0 tabular text-fg-muted">{w(pr.weightKg)} {u} × {pr.reps} · e1RM {w(pr.value)} {u}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-fg-subtle">Beat your best estimated 1RM on any lift and it lands here.</p>
+            )}
+          </Panel>
+          <Panel title="Recent sessions">
+            {p.recentSessions.length ? (
+              <ul className="divide-y divide-rule">
+                {p.recentSessions.map((s, i) => (
+                  <li key={i} className="flex items-center justify-between gap-3 py-2.5 text-sm">
+                    <span className="min-w-0 truncate">{s.name}</span>
+                    <span className="flex shrink-0 items-center gap-2 text-fg-muted">{s.sessionRpe ? <Badge tone="outline">RPE {s.sessionRpe}</Badge> : null}{dayMonth(s.scheduledOn)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-fg-subtle">No sessions completed yet.</p>
+            )}
+          </Panel>
         </div>
-        <MuscleGrid setsByMuscle={p.volumeThisWeek} lastWeek={p.volumeLastWeek} sex={rec.profile.sex ?? null} />
-      </section>
-
-      <section className="border-t border-rule pt-4">
-        <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-          <h2 className="font-display text-xl">What the mirror can&apos;t measure.</h2>
-          <p className="measure meta">Photo reads are smoothed against your weigh-ins, so a change in lighting never looks like a change in you.</p>
-        </div>
-        <div className={phys.compare ? "grid gap-8 lg:grid-cols-[minmax(0,390px)_1fr]" : ""}>
-          {phys.compare ? <CompareSlider before={phys.compare.before} after={phys.compare.after} /> : null}
-          <PhysiqueCharts timeline={phys.timeline} trends={phys.trends} unit={u} />
-        </div>
-      </section>
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title="Strength trend" note="Estimated 1RM per week for your most-trained lifts.">
-          {p.strength.length ? <E1RMChart series={p.strength.map((s) => ({ name: s.name, points: s.series.map((x) => ({ week: x.week, value: w(x.e1rm)! })) }))} unit={u} /> : <EmptyState title="No lifts logged yet" description="Log weights in the session player and trends appear here." />}
-        </Panel>
-        <Panel title="Weekly tonnage" note="Total weight lifted: sets × reps × load.">
-          {p.weeklyTonnage.length ? <TonnageChart data={p.weeklyTonnage.map((x) => ({ week: x.week, kg: w(x.kg)! }))} unit={u} /> : <EmptyState title="Nothing yet" description="Complete a session to see volume." />}
-        </Panel>
-        <Panel title="Sets per muscle" note="This week against last week.">
-          <VolumeCompare thisWeek={p.volumeThisWeek} lastWeek={p.volumeLastWeek} />
-        </Panel>
-        <Panel title="Bodyweight" note="Weigh in weekly, same time of day.">
-          {p.measurements.filter((m) => m.weightKg != null).length ? <WeightChart data={p.measurements.filter((m) => m.weightKg != null).map((m) => ({ date: m.measuredOn, value: w(m.weightKg)! }))} unit={u} /> : <p className="text-sm text-fg-subtle">No weigh-ins yet.</p>}
-          <MeasurementForm units={units} />
-        </Panel>
-      </div>
-
-      <BodyCheck initial={photos.map((x) => ({ id: x.id, takenOn: x.takenOn, pose: x.pose, analysis: x.analysis ?? null }))} ai={aiAvailable()} priorityMuscles={rec.profile.priorityMuscles} sex={rec.profile.sex ?? "male"} />
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title="Personal records">
-          {p.prs.length ? (
-            <ul className="divide-y divide-rule">
-              {p.prs.map((pr) => (
-                <li key={pr.id} className="flex items-baseline justify-between gap-3 py-2.5 text-sm">
-                  <span className="min-w-0 truncate">{pr.name}</span>
-                  <span className="shrink-0 tabular text-fg-muted">{w(pr.weightKg)} {u} × {pr.reps} · e1RM {w(pr.value)} {u}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-fg-subtle">Beat your best estimated 1RM on any lift and it lands here.</p>
-          )}
-        </Panel>
-        <Panel title="Recent sessions">
-          {p.recentSessions.length ? (
-            <ul className="divide-y divide-rule">
-              {p.recentSessions.map((s, i) => (
-                <li key={i} className="flex items-center justify-between gap-3 py-2.5 text-sm">
-                  <span className="min-w-0 truncate">{s.name}</span>
-                  <span className="flex shrink-0 items-center gap-2 text-fg-muted">{s.sessionRpe ? <Badge tone="outline">RPE {s.sessionRpe}</Badge> : null}{dayMonth(s.scheduledOn)}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-fg-subtle">No sessions completed yet.</p>
-          )}
-        </Panel>
-      </div>
-    </Screen>
+        </Screen>
+    </>
   );
 }

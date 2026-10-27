@@ -41,7 +41,7 @@ export default async function Nutrition() {
         : `${Math.abs(Math.round(left))} kcal over. Tomorrow is a new day.`;
 
   return (
-    <Screen flush>
+    <>
       <ScreenHero
         art={ART.nutrition}
         priority
@@ -52,36 +52,39 @@ export default async function Nutrition() {
         second={second}
       />
 
-      {t.warnings.length ? (
-        <div className="flex items-start gap-2.5 rounded-lg border border-rule-strong bg-surface p-4 text-sm">
-          <AlertTriangle className="mt-0.5 size-4 shrink-0 text-volt" aria-hidden />
-          <div className="measure">{t.warnings.map((w) => <p key={w}>{w}</p>)}</div>
-        </div>
-      ) : null}
+      <Screen flush className="pt-10">
 
-      <ReadoutRow className="border-t-0 pt-0">
-        <Readout label="Target" value={t.calories} unit="kcal" note={`${t.proteinG} g protein`} />
-        <Readout label="Train day" value={t.trainingDayCalories} unit="kcal" />
-        <Readout label="Rest day" value={t.restDayCalories} unit="kcal" />
-        <Readout label="Water" value={(t.waterMl / 1000).toFixed(1)} unit="L" />
-      </ReadoutRow>
+        {t.warnings.length ? (
+          <div className="flex items-start gap-2.5 rounded-lg border border-rule-strong bg-surface p-4 text-sm">
+            <AlertTriangle className="mt-0.5 size-4 shrink-0 text-volt" aria-hidden />
+            <div className="measure">{t.warnings.map((w) => <p key={w}>{w}</p>)}</div>
+          </div>
+        ) : null}
 
-      <section className="border-t border-rule pt-4">
-        <h2 className="font-display text-xl">Where today stands.</h2>
-        <div className="mt-4">
-          <MacroRings targets={t} logged={eaten} />
-        </div>
-        <details className="mt-4 text-xs">
-          <summary className="cursor-pointer text-fg-muted transition-colors hover:text-fg">Why these numbers</summary>
-          <ul className="measure mt-2 space-y-1 text-fg-subtle">{t.rationale.map((r) => <li key={r}>{r}</li>)}</ul>
-        </details>
-      </section>
+        <ReadoutRow className="border-t-0 pt-0">
+          <Readout label="Target" value={t.calories} unit="kcal" note={`${t.proteinG} g protein`} />
+          <Readout label="Train day" value={t.trainingDayCalories} unit="kcal" />
+          <Readout label="Rest day" value={t.restDayCalories} unit="kcal" />
+          <Readout label="Water" value={(t.waterMl / 1000).toFixed(1)} unit="L" />
+        </ReadoutRow>
 
-      <FoodLogView date={today} initial={log.map((l) => ({ id: l.id, slot: l.slot, label: l.label, macros: l.macros, servings: l.servings, source: l.source as "manual" }))} targets={t} recipes={Object.values(mp.recipes).map((r) => ({ id: r.id, name: r.name, macros: r.macros }))} />
+        <section className="border-t border-rule pt-4">
+          <h2 className="font-display text-xl">Where today stands.</h2>
+          <div className="mt-4">
+            <MacroRings targets={t} logged={eaten} />
+          </div>
+          <details className="mt-4 text-xs">
+            <summary className="cursor-pointer text-fg-muted transition-colors hover:text-fg">Why these numbers</summary>
+            <ul className="measure mt-2 space-y-1 text-fg-subtle">{t.rationale.map((r) => <li key={r}>{r}</li>)}</ul>
+          </details>
+        </section>
 
-      <MealPlanView initial={{ weekStartsOn: mp.weekStartsOn, plan: mp.plan, coachNote: mp.coachNote }} recipes={Object.fromEntries(Object.values(mp.recipes).map((r) => [r.id, { id: r.id, name: r.name, description: r.description, prepMinutes: r.prepMinutes, steps: r.steps, ingredients: r.ingredients, macros: r.macros, tags: r.tags }]))} targets={t} />
+        <FoodLogView date={today} initial={log.map((l) => ({ id: l.id, slot: l.slot, label: l.label, macros: l.macros, servings: l.servings, source: l.source as "manual" }))} targets={t} recipes={Object.values(mp.recipes).map((r) => ({ id: r.id, name: r.name, macros: r.macros }))} />
 
-      <p className="measure text-xs text-fg-subtle">Kettleworth gives general nutrition guidance, not medical advice. If you have a medical condition, are pregnant, or have a history of disordered eating, please work with a registered dietitian.</p>
-    </Screen>
+        <MealPlanView initial={{ weekStartsOn: mp.weekStartsOn, plan: mp.plan, coachNote: mp.coachNote }} recipes={Object.fromEntries(Object.values(mp.recipes).map((r) => [r.id, { id: r.id, name: r.name, description: r.description, prepMinutes: r.prepMinutes, steps: r.steps, ingredients: r.ingredients, macros: r.macros, tags: r.tags }]))} targets={t} />
+
+        <p className="measure text-xs text-fg-subtle">Kettleworth gives general nutrition guidance, not medical advice. If you have a medical condition, are pregnant, or have a history of disordered eating, please work with a registered dietitian.</p>
+        </Screen>
+    </>
   );
 }

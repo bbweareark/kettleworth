@@ -253,16 +253,19 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
     try { localStorage.setItem("kw-bar-entry", next); } catch {}
     if (totalDisp == null) return;
     setW(next === "side" ? String(Math.max(0, round((totalDisp - barDisp) / 2, 2))) : String(round(totalDisp, 2)));
+    setTyped((t) => ({ ...t, w: true }));
   }
   const [r, setR] = useState(logged?.reps != null ? String(logged.reps) : set.reps != null ? String(set.reps) : set.repRange ? String(set.repRange[1]) : "");
   const [rpe, setRpe] = useState<number | null>(logged?.rpe ?? set.targetRpe ?? null);
   const [busy, setBusy] = useState(false);
   const [challenge, setChallenge] = useState<string | null>(null);
-  useEffect(() => { const l = doneOf(set.setNumber); setW(toField(l?.weightKg ?? set.weightKg)); setR(l?.reps != null ? String(l.reps) : set.reps != null ? String(set.reps) : set.repRange ? String(set.repRange[1]) : ""); setRpe(l?.rpe ?? set.targetRpe ?? null); setChallenge(null); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [set.setNumber]);
+  useEffect(() => { const l = doneOf(set.setNumber); setW(toField(l?.weightKg ?? set.weightKg)); setR(l?.reps != null ? String(l.reps) : set.reps != null ? String(set.reps) : set.repRange ? String(set.repRange[1]) : ""); setRpe(l?.rpe ?? set.targetRpe ?? null); setChallenge(null); setTyped({ w: false, r: false }); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [set.setNumber]);
   // Which figure the key row drives. One pad, two targets (21st.dev Number Pad).
   const [pad, setPad] = useState<"w" | "r">("w");
+  const [typed, setTyped] = useState<{ w: boolean; r: boolean }>({ w: false, r: false });
   // The keypad is tall enough to push the figure off the top of a phone, and typing a number
-  // you cannot see is worse than any stepper. Switching the pad brings its figure up first.
+  // you cannot see is worse than any stepper. Switching the pad brings its figure up first,
+  // clearing the floating nav pill (44px under a 12px inset) rather than parking under it.
   const padRow = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const id = requestAnimationFrame(() => padRow.current?.scrollIntoView({ block: "start", behavior: "smooth" }));
@@ -294,7 +297,7 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
   const planHint = set.weightKg != null ? `plan ${disp(set.weightKg)} ${unit}${model.kind === "handheld" ? ` ${model.hint}` : ""}` : model.hint;
   return (
     <section className="border-t border-rule pt-4" aria-label="Log sets">
-      <Benchmark inst={inst} units={units} onUse={(weightKg, reps, rpeVal) => { setW(toField(weightKg)); setR(reps != null ? String(reps) : ""); if (rpeVal != null) setRpe(rpeVal); }} />
+      <Benchmark inst={inst} units={units} onUse={(weightKg, reps, rpeVal) => { setW(toField(weightKg)); setR(reps != null ? String(reps) : ""); if (rpeVal != null) setRpe(rpeVal); setTyped({ w: true, r: true }); }} />
 
       {/* The set track: done / now / to come, which design/SECTION-MAP.md carries over. Pills
           now rather than hard cells, because every other control in this system is a pill. */}
@@ -328,7 +331,7 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
             is why the active one is volt - the DNA reserves the accent for the figure being
             changed.
           */}
-          <div ref={padRow} className="mt-2 flex scroll-mt-4 items-end justify-between gap-5">
+          <div ref={padRow} className="mt-2 flex scroll-mt-20 items-end justify-between gap-5">
             <button type="button" onClick={() => setPad("w")} aria-pressed={pad === "w"} className="min-w-0 text-left"
               aria-label={`Edit the ${model.label.toLowerCase()}, currently ${w || 0} ${unit}`}>
               <span className="meta block truncate">{model.label}{sideMode ? " · a side" : ""}</span>
@@ -353,9 +356,13 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
               value={pad === "w" ? w : r}
               unit={pad === "w" ? unit : "reps"}
               decimal={pad === "w"}
+              pristine={pad === "w" ? !typed.w : !typed.r}
               quick={pad === "w" && !sideMode ? ladder.values : undefined}
               quickNote={ladder.note || "common loads"}
-              onChange={pad === "w" ? setW : setR}
+              onChange={(next) => {
+                setTyped((t) => ({ ...t, [pad]: true }));
+                (pad === "w" ? setW : setR)(next);
+              }}
             />
           </div>
 

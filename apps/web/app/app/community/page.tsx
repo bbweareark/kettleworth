@@ -28,7 +28,7 @@ export default async function Community() {
     : "Set your profile to members-only to appear on the board.";
 
   return (
-    <Screen flush>
+    <>
       <ScreenHero
         art="/art/community.jpg"
         priority
@@ -39,7 +39,10 @@ export default async function Community() {
       >
         <p className="measure mt-3 text-sm text-fg-muted">Matched on goals, level and schedule. Nothing about you is visible until you say so.</p>
       </ScreenHero>
-      <CommunityView me={cp ? { handle: cp.handle, displayName: cp.displayName, bio: cp.bio, city: cp.city, country: cp.country, trainTogether: cp.trainTogether, visibility: cp.visibility } : null} defaultName={user.name.split(" ")[0] ?? "Lifter"} matches={m.matches} matchReason={m.reason} partners={ps} pending={pend.map((p) => ({ matchId: p.matchId, handle: p.from?.handle ?? "member", displayName: p.from?.displayName ?? "Member" }))} groups={gs.map((g) => ({ id: g.id, name: g.name, description: g.description, memberCount: g.memberCount, joined: g.joined }))} challenges={cs.map((c) => ({ id: c.id, name: c.name, endsOn: c.endsOn.toISOString(), joined: c.joined, participants: c.participants, board: c.board }))} growthBoard={board} />
-    </Screen>
+
+      <Screen flush className="pt-10">
+        <CommunityView me={cp ? { handle: cp.handle, displayName: cp.displayName, bio: cp.bio, city: cp.city, country: cp.country, trainTogether: cp.trainTogether, visibility: cp.visibility } : null} defaultName={user.name.split(" ")[0] ?? "Lifter"} matches={m.matches} matchReason={m.reason} partners={ps} pending={pend.map((p) => ({ matchId: p.matchId, handle: p.from?.handle ?? "member", displayName: p.from?.displayName ?? "Member" }))} groups={gs.map((g) => ({ id: g.id, name: g.name, description: g.description, memberCount: g.memberCount, joined: g.joined }))} challenges={cs.map((c) => ({ id: c.id, name: c.name, endsOn: c.endsOn.toISOString(), joined: c.joined, participants: c.participants, board: c.board }))} growthBoard={board} />
+        </Screen>
+    </>
   );
 }

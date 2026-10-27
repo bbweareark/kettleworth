@@ -51,12 +51,12 @@ export default async function Landing() {
       {/* 1 — Full-bleed photograph, the figure beneath it. */}
       <section aria-label="Your first block">
         <div className="relative w-full overflow-hidden">
-          <Unmask src="/art/landing.jpg" priority className="aspect-[5/4] w-full object-cover object-bottom sm:aspect-[16/9] lg:aspect-[2.4/1]" />
+          <Unmask src="/art/landing.jpg" priority className="aspect-[5/4] w-full object-cover sm:aspect-[16/9] lg:aspect-[2.4/1]" />
           <div aria-hidden className="scrim absolute inset-0" />
           <p className="meta absolute inset-x-0 bottom-3 mx-auto max-w-[1200px] px-4 sm:px-6">Adaptive strength training</p>
         </div>
         <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6">
-          <Figure label="Your first block" value={8} unit="weeks" className="pt-4" />
+          <Figure labelAs="h1" label="Your first block" value={8} unit="weeks" className="pt-4" />
           <p className="mt-2 font-display text-xl text-volt">Written in about two minutes.</p>
           <p className="measure mt-5 text-base text-fg-muted">
             Kettleworth writes the block, reads every set you log, and moves tomorrow&apos;s

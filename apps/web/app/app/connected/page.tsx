@@ -24,7 +24,7 @@ export default async function Connected({ searchParams }: { searchParams: Promis
   // The one number: readiness, because that is the only thing a connected wearable changes
   // about this app. Everything else on the screen is plumbing for it.
   return (
-    <Screen flush>
+    <>
       <ScreenHero
         art={ART.connected}
         priority
@@ -36,25 +36,28 @@ export default async function Connected({ searchParams }: { searchParams: Promis
         <p className="measure mt-3 text-sm text-fg-muted">{readiness.reasons.length ? readiness.reasons.join(" ") : "Sleep, HRV and readiness ease or push each session. You choose the data types; one tap disconnects and deletes."}</p>
       </ScreenHero>
 
-      <ReadoutRow className="border-t-0 pt-0">
-        <Readout label="Sleep" value={sleep?.value != null ? (sleep.value / 60).toFixed(1) : "–"} unit={sleep?.value != null ? "h" : undefined} />
-        <Readout label="HRV" value={hrv?.value != null ? Math.round(hrv.value) : "–"} unit={hrv?.value != null ? hrv.unit : undefined} />
-        <Readout label="Resting HR" value={rhr?.value != null ? Math.round(rhr.value) : "–"} unit={rhr?.value != null ? rhr.unit : undefined} />
-        <Readout label="Steps" value={steps?.value != null ? Math.round(steps.value) : "–"} />
-      </ReadoutRow>
+      <Screen flush className="pt-10">
 
-      <ProviderGrid catalogue={catalogue} connected={connected.map((c) => ({ ...c, lastSyncAt: c.lastSyncAt?.toISOString() ?? null, consentGivenAt: c.consentGivenAt.toISOString() }))} flash={sp} />
+        <ReadoutRow className="border-t-0 pt-0">
+          <Readout label="Sleep" value={sleep?.value != null ? (sleep.value / 60).toFixed(1) : "–"} unit={sleep?.value != null ? "h" : undefined} />
+          <Readout label="HRV" value={hrv?.value != null ? Math.round(hrv.value) : "–"} unit={hrv?.value != null ? hrv.unit : undefined} />
+          <Readout label="Resting HR" value={rhr?.value != null ? Math.round(rhr.value) : "–"} unit={rhr?.value != null ? rhr.unit : undefined} />
+          <Readout label="Steps" value={steps?.value != null ? Math.round(steps.value) : "–"} />
+        </ReadoutRow>
 
-      <Panel title="Sync from your phone">
-        <div className="flex items-start gap-4">
-          <div className="grid size-11 shrink-0 place-items-center rounded-full border border-rule text-fg-muted">
-            <Smartphone className="size-5" aria-hidden />
+        <ProviderGrid catalogue={catalogue} connected={connected.map((c) => ({ ...c, lastSyncAt: c.lastSyncAt?.toISOString() ?? null, consentGivenAt: c.consentGivenAt.toISOString() }))} flash={sp} />
+
+        <Panel title="Sync from your phone">
+          <div className="flex items-start gap-4">
+            <div className="grid size-11 shrink-0 place-items-center rounded-full border border-rule text-fg-muted">
+              <Smartphone className="size-5" aria-hidden />
+            </div>
+            <p className="measure text-sm text-fg-muted">Apple Health, Google Health Connect and Samsung Health live on the device, so they connect through the Kettleworth mobile app. Every provider maps into the same health model, so your priorities and toggles carry across.</p>
           </div>
-          <p className="measure text-sm text-fg-muted">Apple Health, Google Health Connect and Samsung Health live on the device, so they connect through the Kettleworth mobile app. Every provider maps into the same health model, so your priorities and toggles carry across.</p>
-        </div>
-      </Panel>
+        </Panel>
 
-      <p className="measure text-xs text-fg-subtle">Health data is encrypted at rest, never used for advertising and never sold. Kettleworth follows Apple HealthKit and Google Health Connect data policies.</p>
-    </Screen>
+        <p className="measure text-xs text-fg-subtle">Health data is encrypted at rest, never used for advertising and never sold. Kettleworth follows Apple HealthKit and Google Health Connect data policies.</p>
+        </Screen>
+    </>
   );
 }

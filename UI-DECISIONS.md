@@ -8,7 +8,7 @@ account of what was tried and why it failed.
 | Pillar | Choice | Reference (opened this session) | What was taken |
 |---|---|---|---|
 | **DNA** | Integrated Biosciences, "bioluminescent laboratory at midnight" | [styles.refero.design](https://styles.refero.design/style/80099f79-72b7-4367-b2e9-6a3d4a3e9e6a) + live at integratedbiosciences.com (`design/refs/dna-integrated-biosciences`) | Near-black ground, hierarchy carved by **size and tightening negative tracking** rather than weight, flat surfaces with hairline delineation, one high-chroma accent that activates only on small interactive elements, real radius |
-| **Navbar** | Full Screen | navbar.gallery, example **Clonix** (`design/refs/navbar-clonix`) | Full-screen nav behind a floating pill trigger. Chosen because huge targets beat a small tab bar for someone mid-set |
+| **Navbar** | Full Screen, over a five-tab strip | navbar.gallery, example **Clonix** (`design/refs/navbar-clonix`) | Full-screen nav behind a floating pill trigger, for the four destinations five tabs cannot carry. **Deviation:** the tab strip stays. It was removed for one build and the owner asked for it back; it is one tap where the thumb already is, and the menu only has to hold the overflow |
 | **Hero** | Full-bleed photograph, figure carried beneath | supahero.io, example **Lando Norris** (`design/refs/hero-lando-norris`) | Photography bleeding edge to edge, giant condensed type beneath on black, the accent carrying a second line, floating pill nav over the image |
 | **CTA** | Pill action, one per viewport | cta.gallery, example **Get Ripe** (`design/refs/cta-get-ripe`) | A filled pill in the nav plus a sticky bottom pill action |
 | **Footer** | Bold | footer.design, example **Reality Is__** (`design/refs/footer-reality-is`) | Oversized wordmark, few links, accent rule above |
@@ -467,3 +467,52 @@ stricter than the reference) · **link type 16px/24px on both**.
 - [x] Screenshot comparison against the reference, scored
 - [x] Card count <= reference (reference = 0)
 - [x] Ledger row appended
+
+
+## Screen-by-screen composition (27 Oct 2026)
+
+The system commit landed the tokens; this records the composition built on them. The
+through-line is one question, one number, from `design/SECTION-MAP.md`:
+
+| Screen | The one number | Verified |
+|---|---|---|
+| Today | Load lifted this week | 96px, volt second line, full-bleed session art |
+| Session | The weight on the bar | 96px and volt when being edited; keypad keys measured **56px**, 3x4 |
+| Progress | Estimated max on the strongest lift | falls back to a support-size placeholder when there is no lift data |
+| Nutrition | Calories remaining today | the only figure on the screen that changes during a day |
+| Programme | Week of the block | block phase on the accented line |
+| Community | Your Growth | the only figure on that screen that is yours |
+| Coach, Settings | *(words, not a figure)* | forcing a number on to a conversation or a form would be the habit this revamp undoes |
+
+### Verification log
+
+Run against a local dev server with a seeded account, not inferred from the code:
+
+- **Horizontal overflow:** 0px on all nine in-app screens at 360, 390, 768 and 1440px.
+- **Console and page errors:** none on any screen.
+- **Contrast, computed from what the browser paints**, every text node on seven screens in
+  both themes: **no AA failure in either theme.** One real failure was found and fixed on the
+  way - `this-week.tsx` painted rows with `bg-rule`, a hairline colour, which put graphite
+  text at 4.19:1.
+- **Session console:** keypad 12 keys at 56px, figure 96px in volt, no errors.
+- **Playwright:** both projects (desktop Chrome and Pixel 7).
+
+### Bugs this pass found, all pre-existing
+
+- `cn()` silently dropped every **custom font size**. tailwind-merge only knows Tailwind's own
+  scale, so `text-figure`, `text-figure-xl` and `text-meta` were each treated as a colour and
+  discarded whenever a text colour appeared in the same call. The weight on the session
+  console - the one number the whole design is built around - was rendering at body size next
+  to reps at 36px. `cn` now extends tailwind-merge with this project's scale.
+- The hero was never actually bleeding: a negative gutter reaches 24px, so on a wide canvas it
+  stopped 72px short and the rounded top corner it is meant to fill never appeared.
+- A pass had stripped separator strings repo-wide: the wordmark's `viewBox` read
+  `"0 0 5985680"`, both sparkline polylines joined every point into a single token, and
+  `name.split("")[0]` greeted people by their first letter.
+- The figure pages had **no `h1`** - the figure's label is now the page heading.
+- An empty figure rendered an en dash at 96px, which in a condensed face is a white bar.
+- **The keypad appended to a figure the plan had filled in.** Reps load with the target, so a
+  lifter who hit 8 against a target of 10 pressed `8` and got `108`; the same on a planned
+  load. The first digit now replaces a figure the lifter has not typed into yet, backspace
+  still works on what is shown, and four cases in `weight-entry.test.ts` hold the rule. This
+  one was surfaced by an e2e assertion failing, not by reading the code.

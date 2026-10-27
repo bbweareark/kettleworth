@@ -50,6 +50,8 @@ export function Figure({
   accent,
   className,
   children,
+  /** The element the label renders as. A screen's one figure names the page, so it is its h1. */
+  labelAs: Label = "p",
 }: {
   label: string;
   /** A number counts. A string is rendered as given, for a figure that is not a quantity. */
@@ -61,14 +63,21 @@ export function Figure({
   accent?: boolean;
   className?: string;
   children?: React.ReactNode;
+  labelAs?: "p" | "h1" | "h2";
 }) {
   const counted = useCount(typeof value === "number" ? value : 0, decimals);
   const shown = typeof value === "number" ? counted : value;
-  const text = size === "xl" ? "text-figure-xl" : size === "sm" ? "text-4xl" : "text-figure";
+  /*
+   * A screen with nothing to show yet must not render its placeholder at display size: an en
+   * dash at 96px in a condensed face is a white bar, which reads as a broken element rather
+   * than as "no reading yet". Anything without a digit in it drops to the support ramp.
+   */
+  const empty = typeof value === "string" && !/\d/.test(value);
+  const text = empty ? "text-2xl" : size === "xl" ? "text-figure-xl" : size === "sm" ? "text-4xl" : "text-figure";
   return (
     <div className={cn("min-w-0", className)}>
-      <p className="meta">{label}</p>
-      <p className={cn("font-display mt-1 flex items-baseline gap-2 leading-none", text, accent && "text-volt")}>
+      <Label className="meta">{label}</Label>
+      <p className={cn("font-display mt-1 flex items-baseline gap-2 leading-none", text, empty ? "text-fg-subtle" : accent && "text-volt")}>
         <span className="tabular">{shown}</span>
         {unit ? <span className="font-mono text-base tracking-normal text-fg-subtle">{unit}</span> : null}
       </p>
@@ -83,11 +92,14 @@ export function Figure({
  * that sit around the one number without competing with it.
  */
 export function Readout({ label, value, unit, note, className, accent }: { label: string; value: React.ReactNode; unit?: string; note?: React.ReactNode; className?: string; accent?: boolean }) {
+  // Grouped the same way Figure groups, so a readout never sits under a figure spelling the
+  // same quantity differently.
+  const shown = typeof value === "number" ? value.toLocaleString("en-GB") : value;
   return (
     <div className={cn("min-w-0", className)}>
       <p className="meta truncate">{label}</p>
-      <p className={cn("font-display mt-1 flex items-baseline gap-1.5 text-2xl leading-none", accent && "text-volt")}>
-        <span className="tabular">{value}</span>
+      <p className={cn("font-display mt-1 flex items-baseline gap-1.5 text-2xl leading-none", typeof value === "string" && !/\d/.test(value) ? "text-fg-subtle" : accent && "text-volt")}>
+        <span className="tabular">{shown}</span>
         {unit ? <span className="font-mono text-xs tracking-normal text-fg-subtle">{unit}</span> : null}
       </p>
       {note ? <p className="mt-1 truncate text-xs text-fg-subtle">{note}</p> : null}

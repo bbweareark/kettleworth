@@ -46,17 +46,18 @@ export function ScreenHero({
 }) {
   return (
     /*
-      The section cancels the page gutter so the photograph runs to the edge of the viewport,
-      and the block beneath re-establishes the content column. Without this the hero sat inside
-      the 16px gutter and was not a bleed at all - which is the whole point of the reference.
+      Rendered as a sibling of the content column, not inside it: the photograph spans the
+      whole canvas and the block beneath re-establishes the 1200px column. A negative gutter
+      cannot do this - it reaches 24px, so on a wide screen the bleed stopped short of the
+      canvas edge and the rounded top corner it is meant to fill never appeared.
     */
-    <section aria-label={label} className="-mx-4 sm:-mx-6">
+    <section aria-label={label}>
       <div className="relative w-full overflow-hidden lg:rounded-t-xl">
         <Unmask
           src={art}
           priority={priority}
           className={cn(
-            "w-full object-cover object-bottom",
+            "w-full object-cover",
             short ? "aspect-[16/9] sm:aspect-[21/9] lg:aspect-[32/9]" : "aspect-[5/4] sm:aspect-[16/9] lg:aspect-[2.6/1]",
           )}
         />
@@ -67,7 +68,7 @@ export function ScreenHero({
       </div>
       <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6">
         {value != null ? (
-          <Figure label={label} value={value} unit={unit} decimals={decimals} className="pt-4" />
+          <Figure labelAs="h1" label={label} value={value} unit={unit} decimals={decimals} className="pt-4" />
         ) : (
           <div className="pt-4">
             <p className="meta">{label}</p>

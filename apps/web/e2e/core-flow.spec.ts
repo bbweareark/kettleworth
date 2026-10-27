@@ -8,8 +8,9 @@ test.setTimeout(180_000);
 
 test("landing renders and links to sign-up", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("This is the week");
-  // The hero is a table, so assert the week actually renders, then the one primary action.
+  // The hero is a photograph with the block length carried beneath it as the page's figure,
+  // and the week is still on the page as a table further down.
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Your first block");
   await expect(page.getByRole("table").first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Start free" }).first()).toHaveAttribute("href", "/sign-up");
 });
@@ -63,20 +64,22 @@ test("sign up → intake → programme → session logging", async ({ page }) =>
   await page.waitForURL(/\/app\/programme\/new/);
   await page.getByRole("button", { name: /Generate programme/ }).click();
   await page.waitForURL(/\/app\/programme$/, { timeout: 60_000 });
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Muscle");
-  await expect(page.getByText("Week", { exact: true }).first()).toBeVisible();
+  // The programme's one number is the week of the block, so that is the page's heading; the
+  // block's own name sits in the eyebrow above it.
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Week of the block");
+  await expect(page.getByText(/Programme ·/).first()).toBeVisible();
 
   // Today → start session → log a set
   await page.goto("/app");
   await page.getByRole("link", { name: /Start session/ }).click();
   await page.waitForURL(/\/app\/session\//);
-  // The console is one labelled row per quantity (21st.dev Unit Field composition), not text
-  // fields: tap a row to edit it, the keys appear under that row, rate the effort, commit.
+  // The console is one figure and one keypad: tapping a quantity makes it the figure and
+  // points the keys at it, so typing must land on the one that was tapped and not the other.
   const console_ = page.locator('section[aria-label="Log sets"]');
-  await console_.getByRole("button", { name: /^Edit Reps/ }).click();
-  await console_.getByRole("button", { name: "+2", exact: true }).click();
-  // The keys must drive the row that was tapped, not the other one.
-  await expect(console_.getByRole("button", { name: /^Edit Weight/ })).toHaveAttribute("aria-label", /currently 0 /);
+  await console_.getByRole("button", { name: /^Edit the reps/ }).click();
+  await console_.getByRole("group", { name: /Enter the reps/ }).getByRole("button", { name: "8", exact: true }).click();
+  await expect(console_.getByRole("button", { name: /^Edit the reps/ })).toHaveAttribute("aria-label", /currently 8/);
+  await expect(console_.getByRole("button", { name: /^Edit the/ }).first()).toHaveAttribute("aria-label", /currently 0 /);
   await console_.getByRole("radio", { name: /^Right/ }).click();
   await console_.getByRole("button", { name: /^(Log set|Update set)$/ }).click();
   await expect(page.getByRole("timer")).toBeVisible();

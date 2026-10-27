@@ -23,12 +23,12 @@ the reason the DNA was chosen: Integrated Biosciences carves hierarchy by size, 
 | Surface | Replicates | Measured target |
 |---|---|---|
 | **App shell** | IB's rounded inset canvas over a darker ground (`dna-integrated-biosciences/desktop.png`) | Ground `#16191a`, content inset with `--radius-xl` at desktop, full-bleed on phone |
-| **Navigation** | Clonix full-screen nav (`navbar-clonix`), triggered by a floating pill — the pill group is IB's and Get Ripe's | Trigger: 44px pill, top-right, floats over content. Open: full-screen, items at `--text-2xl`, one per row, thumb-reachable |
+| **Navigation** | Clonix full-screen nav (`navbar-clonix`) for the overflow, triggered by a floating pill — the pill group is IB's and Get Ripe's | Trigger: 44px pill, top-right, floats over content. Open: full-screen, items at `--text-2xl`, one per row, thumb-reachable. **The five-tab strip stays** (h-16, volt disc on the current tab): it was removed for one build and the owner asked for it back, and it is one tap where the thumb already is. Desktop gets the same five as a pill group |
 | **Today hero** | Lando Norris (`hero-lando-norris/scrolled.png`): full-bleed photograph bleeding edge to edge, the figure carried on black beneath it | Image 16:9 full-bleed, no border, no radius at the top edge. Figure at 96px directly under it, accent on the second line |
 | **Primary action** | Get Ripe (`cta-get-ripe/mobile.png`): a filled pill in the nav, paired pills under the headline | Sticky bottom pill, 56px tall, `--radius-pill`, volt fill, ink text. Exactly one per viewport |
 | **Session console** | 21st.dev Number Pad (`components-21st-numberpad`), kept — it is the only control that reaches every value | Figure at 96px, keypad 3×4, keys 56px, one commit |
 | **Footer** | Decimals (`footer-decimals`), Bold | Oversized wordmark, few links, volt rule above |
-| **Figures** | IB's display treatment | Antonio, tracking −0.03em at 96px, tabular |
+| **Figures** | IB's display treatment | Antonio, tracking −0.03em at 96px, tabular. The label is the page's `h1`; an empty figure drops to `--text-2xl` rather than rendering a dash at 96px |
 
 ## Carried over unchanged
 
@@ -49,3 +49,12 @@ look busy is its own failure:
 | Two display sizes (96/132px), not IB's six above 58px | A phone-first product. The reference is a desktop marketing site |
 | Section gap 56px on phone, against the reference's 80–120px | Same reason |
 | Pill buttons, where IB uses 8px radius | Taken from Get Ripe and Lando Norris, both of which use pills for actions; IB's own CTA is a pill pair too |
+
+
+## Built, 27 Oct 2026
+
+Every row above is implemented and verified against a running server (see the verification log
+in `UI-DECISIONS.md`). Two deviations were added during the build and are recorded in the
+table: the tab strip stays alongside the full-screen menu, and the hero renders as a sibling of
+the content column rather than inside it, because a negative gutter cannot reach the canvas
+edge on a wide screen.

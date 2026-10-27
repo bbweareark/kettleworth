@@ -22,7 +22,7 @@ export function EstimateCard({ items: initial, note, source, busy, onLog, onCanc
         {rows.map((r, i) => (
           <li key={`${r.name}-${i}`} className={cn("p-3 border border-rule transition-opacity", !r.keep && "opacity-40")}>
             <div className="flex items-start gap-2">
-              <span className={cn("mt-1.5 size-2 shrink-0 rounded-full", r.confidence === "high" ? "bg-fg" : r.confidence === "medium" ? "bg-amber" : "bg-rose")} title={`${r.confidence} confidence`} aria-label={`${r.confidence} confidence`} />
+              <span className={cn("mt-1.5 size-2 shrink-0 rounded-full", r.confidence === "high" ? "bg-volt" : r.confidence === "medium" ? "bg-fg-muted" : "border border-rule-strong")} title={`${r.confidence} confidence`} aria-label={`${r.confidence} confidence`} />
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline justify-between gap-2"><span className="truncate text-sm font-medium">{r.name}</span><span className="shrink-0 font-display text-sm tabular">{Math.round(r.calories * r.scale)}</span></div>
                 <div className="text-xs text-fg-subtle">{r.portion} · P {Math.round(r.proteinG * r.scale)} · C {Math.round(r.carbsG * r.scale)} · F {Math.round(r.fatG * r.scale)}</div>

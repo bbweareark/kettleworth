@@ -42,7 +42,7 @@ export default async function Programme() {
   const weekNo = currentWeek?.weekNumber ?? 1;
 
   return (
-    <Screen flush>
+    <>
       <ScreenHero
         art={ART.programme}
         priority
@@ -53,53 +53,56 @@ export default async function Programme() {
         second={block ? `${block} phase.` : p.summary}
       />
 
-      <ReadoutRow className="border-t-0 pt-0">
-        <Readout label="Sessions done" value={o.completedSessions} note={`of ${o.totalSessions}`} />
-        <Readout label="Days a week" value={p.daysPerWeek} />
-        <Readout label="Block" value={block ?? "–"} />
-        <Readout label="Complete" value={Math.round(pct)} unit="%" accent={pct >= 100} />
-      </ReadoutRow>
+      <Screen flush className="pt-10">
 
-      <div>
-        <Progress value={pct} className="h-1" label={`${Math.round(pct)}% of the block complete`} />
-        <p className="measure mt-3 text-sm text-fg-muted">{p.summary}</p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Button asChild variant="secondary"><Link href="/app/programme/new?continue=1">Extend: next block <Sparkles /></Link></Button>
-          <Button asChild variant="ghost"><Link href="/app/programme/new">Start over</Link></Button>
+        <ReadoutRow className="border-t-0 pt-0">
+          <Readout label="Sessions done" value={o.completedSessions} note={`of ${o.totalSessions}`} />
+          <Readout label="Days a week" value={p.daysPerWeek} />
+          <Readout label="Block" value={block ?? "–"} />
+          <Readout label="Complete" value={Math.round(pct)} unit="%" accent={pct >= 100} />
+        </ReadoutRow>
+
+        <div>
+          <Progress value={pct} className="h-1" label={`${Math.round(pct)}% of the block complete`} />
+          <p className="measure mt-3 text-sm text-fg-muted">{p.summary}</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button asChild variant="secondary"><Link href="/app/programme/new?continue=1">Extend: next block <Sparkles /></Link></Button>
+            <Button asChild variant="ghost"><Link href="/app/programme/new">Start over</Link></Button>
+          </div>
         </div>
-      </div>
 
-      <ThisWeek sessions={weekSessions} todayIso={todayIso} openMissedId={openMissedId} />
+        <ThisWeek sessions={weekSessions} todayIso={todayIso} openMissedId={openMissedId} />
 
-      <Panel title="Whole block" note={`${p.totalWeeks} weeks, ${mesocycles.length} phase${mesocycles.length === 1 ? "" : "s"}.`}>
-        <ProgrammeCalendar weeks={weeks} sessions={sessions} mesocycles={mesocycles} currentWeekId={currentWeek?.id ?? null} />
-      </Panel>
+        <Panel title="Whole block" note={`${p.totalWeeks} weeks, ${mesocycles.length} phase${mesocycles.length === 1 ? "" : "s"}.`}>
+          <ProgrammeCalendar weeks={weeks} sessions={sessions} mesocycles={mesocycles} currentWeekId={currentWeek?.id ?? null} />
+        </Panel>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title="Why this programme" note="Written when the block was built.">
-          {p.coachNote ? <div className="prose-coach text-sm text-fg-muted">{p.coachNote.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}</div> : null}
-          <ul className="mt-4 space-y-2 text-sm text-fg-muted">
-            {p.rationale.map((r) => (
-              <li key={r} className="flex gap-2.5"><span aria-hidden className="mt-2 size-1 shrink-0 rounded-full bg-volt" />{r}</li>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Panel title="Why this programme" note="Written when the block was built.">
+            {p.coachNote ? <div className="prose-coach text-sm text-fg-muted">{p.coachNote.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}</div> : null}
+            <ul className="mt-4 space-y-2 text-sm text-fg-muted">
+              {p.rationale.map((r) => (
+                <li key={r} className="flex gap-2.5"><span aria-hidden className="mt-2 size-1 shrink-0 rounded-full bg-volt" />{r}</li>
+              ))}
+            </ul>
+          </Panel>
+          <Panel title="Weekly sets per muscle" note="What the block asks of each group every week.">
+            <VolumeChart data={plan.weeklyVolumeBySet} />
+          </Panel>
+        </div>
+
+        <details className="border-t border-rule pt-4">
+          <summary className="cursor-pointer text-sm text-fg-muted transition-colors hover:text-fg">Exercise index ({Object.keys(exercises).length})</summary>
+          <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {Object.values(exercises).sort((a, b) => a.name.localeCompare(b.name)).map((e) => (
+              <li key={e.id} className="text-sm">
+                <Link href={`/library/${e.slug}`} className="text-fg transition-colors hover:text-volt">{e.name}</Link>
+                <span className="ml-2 text-xs capitalize text-fg-subtle">{e.primaryMuscles.map((m) => m.replace("_", " ")).join(", ")}</span>
+              </li>
             ))}
           </ul>
-        </Panel>
-        <Panel title="Weekly sets per muscle" note="What the block asks of each group every week.">
-          <VolumeChart data={plan.weeklyVolumeBySet} />
-        </Panel>
-      </div>
-
-      <details className="border-t border-rule pt-4">
-        <summary className="cursor-pointer text-sm text-fg-muted transition-colors hover:text-fg">Exercise index ({Object.keys(exercises).length})</summary>
-        <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {Object.values(exercises).sort((a, b) => a.name.localeCompare(b.name)).map((e) => (
-            <li key={e.id} className="text-sm">
-              <Link href={`/library/${e.slug}`} className="text-fg transition-colors hover:text-volt">{e.name}</Link>
-              <span className="ml-2 text-xs capitalize text-fg-subtle">{e.primaryMuscles.map((m) => m.replace("_", " ")).join(", ")}</span>
-            </li>
-          ))}
-        </ul>
-      </details>
-    </Screen>
+        </details>
+        </Screen>
+    </>
   );
 }

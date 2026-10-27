@@ -40,6 +40,7 @@ export function Keypad({
   quick,
   quickNote,
   decimal = true,
+  pristine,
   onChange,
 }: {
   value: string;
@@ -50,8 +51,16 @@ export function Keypad({
   quick?: number[];
   quickNote?: string;
   decimal?: boolean;
+  /**
+   * True while the figure still shows what the plan prescribed rather than something the
+   * lifter typed. The first digit then replaces it instead of appending to it: reps arrive
+   * prefilled with the target, so tapping 8 after a target of 10 produced 108.
+   */
+  pristine?: boolean;
   onChange: (next: string) => void;
 }) {
+  // Backspace always works on what is shown; a digit on a pristine figure starts over.
+  const from = (k: string) => (pristine && k !== "back" ? "" : value);
   return (
     <div>
       {quick?.length ? (
@@ -86,16 +95,16 @@ export function Keypad({
       {/* 3 x 4, keys 56px, as measured on the reference's mobile capture. */}
       <div className="mt-3 grid grid-cols-3 gap-1.5" role="group" aria-label={`Enter the ${label} in ${unit}`}>
         {KEYS.map((k) => (
-          <Key key={k} onClick={() => onChange(press(value, k))}>{k}</Key>
+          <Key key={k} onClick={() => onChange(press(from(k), k))}>{k}</Key>
         ))}
         {decimal ? (
-          <Key onClick={() => onChange(press(value, "."))} label="Decimal point">.</Key>
+          <Key onClick={() => onChange(press(from("."), "."))} label="Decimal point">.</Key>
         ) : (
           <Key onClick={() => onChange("")} label={`Clear the ${label}`}>
             <span className="font-mono text-meta uppercase tracking-label">clr</span>
           </Key>
         )}
-        <Key onClick={() => onChange(press(value, "0"))}>0</Key>
+        <Key onClick={() => onChange(press(from("0"), "0"))}>0</Key>
         <Key onClick={() => onChange(press(value, "back"))} label="Delete the last digit">
           <Delete className="size-5" aria-hidden />
         </Key>

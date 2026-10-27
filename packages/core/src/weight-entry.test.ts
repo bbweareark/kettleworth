@@ -52,3 +52,32 @@ describe("the keystroke rules", () => {
     expect(press("9999", "9")).toBe("9999");
   });
 });
+
+/*
+ * A prefilled figure must be replaced by the first digit, not appended to.
+ *
+ * The console loads reps with the target from the plan, so a lifter who hit 8 after a target
+ * of 10 pressed "8" and got 108. The keypad calls press() with an empty string while the
+ * figure is still the plan's, which is what these cases describe.
+ */
+describe("first keystroke on a prefilled figure", () => {
+  const firstKey = (shown: string, key: string, pristine: boolean) => press(pristine ? "" : shown, key);
+
+  it("replaces the planned reps rather than appending to them", () => {
+    expect(firstKey("10", "8", true)).toBe("8");
+    expect(firstKey("10", "8", false)).toBe("108");
+  });
+
+  it("replaces a planned load, including one with a decimal", () => {
+    expect(firstKey("62.5", "6", true)).toBe("6");
+    expect(firstKey("100", "9", true)).toBe("9");
+  });
+
+  it("keeps typing once the figure is the lifter's own", () => {
+    expect(press(firstKey("10", "1", true), "2")).toBe("12");
+  });
+
+  it("still backspaces the shown value, because that is what is on screen", () => {
+    expect(press("10", "back")).toBe("1");
+  });
+});
