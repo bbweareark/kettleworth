@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { db, user, profile, bodyMeasurement, programme, trainingSession, exerciseInstance, personalRecord, nutritionPlan, mealPlan, foodLog, connectedProvider, healthSample, auditLog, decryptJson } from "@kettleworth/db";
+import { db, user, bodyMeasurement, programme, trainingSession, exerciseInstance, personalRecord, nutritionPlan, mealPlan, foodLog, connectedProvider, healthSample, auditLog, decryptJson } from "@kettleworth/db";
 import { disconnectProvider } from "./integrations";
 import { deleteAllPhotos } from "./photos";
 import { getProfile } from "./profile";

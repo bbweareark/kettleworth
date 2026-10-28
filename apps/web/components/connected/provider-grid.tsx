@@ -54,7 +54,7 @@ export function ProviderGrid({ catalogue, connected, flash }: { catalogue: Info[
       <Dialog open={!!consent} onOpenChange={(o) => !o && setConsent(null)}>
         {consent && (<DialogContent title={`Connect ${consent.displayName}`} description={consent.consentCopy}>
           <ul className="mb-4 space-y-2">{consent.metrics.map((m) => <li key={m} className="flex items-center justify-between text-sm"><span>{LABEL[m] ?? m}</span><Switch checked={chosen.has(m)} onCheckedChange={(on) => setChosen((s) => { const n = new Set(s); on ? n.add(m) : n.delete(m); return n; })} aria-label={LABEL[m]} /></li>)}</ul>
-          <p className="mb-4 text-xs text-fg-subtle">You'll be sent to {consent.displayName} to approve access. We store only the data types you keep on, encrypted. Disconnect any time to delete it.</p>
+          <p className="mb-4 text-xs text-fg-subtle">You&apos;ll be sent to {consent.displayName} to approve access. We store only the data types you keep on, encrypted. Disconnect any time to delete it.</p>
           <Button className="w-full" onClick={connect} loading={busy === consent.id} disabled={chosen.size === 0}>Continue to {consent.displayName}</Button>
         </DialogContent>)}
       </Dialog>

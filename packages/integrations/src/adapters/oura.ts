@@ -1,5 +1,5 @@
 import type { HealthMetric, HealthSample } from "@kettleworth/types";
-import { env, type Credentials, type ProviderAdapter } from "../adapter";
+import { env, type ProviderAdapter } from "../adapter";
 import { dateOnly, getJson, tokenRequest } from "../oauth";
 
 const API = "https://api.ouraring.com/v2/usercollection";

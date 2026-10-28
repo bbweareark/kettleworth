@@ -1,12 +1,9 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import {
-  makeQuestion, finishRun, windowMs,
-  GAME_MAX_RUNS, GAME_POINTS_PER_RUN, SCORING_THRESHOLD,
-  type Question, type RunResult,
-} from "@kettleworth/core";
+import { makeQuestion, finishRun, GAME_MAX_RUNS, GAME_POINTS_PER_RUN, SCORING_THRESHOLD, type Question, type RunResult } from "@kettleworth/core";
 import { cn } from "@kettleworth/ui";
+import { useClientValue } from "@/lib/use-client-value";
 
 /**
  * Word Rush. Two targets, one thumb, one mistake ends it.
@@ -36,18 +33,18 @@ export function WordRush({
   const [phase, setPhase] = useState<Phase>("ready");
   const [index, setIndex] = useState(0);
   const [q, setQ] = useState<Question | null>(null);
-  const [best, setBest] = useState(0);
+  // The best is per device and per language, not worth a round trip. Read straight from
+  // storage so the figure is right on the first paint rather than after one.
+  const storedBest = useClientValue(() => { try { return Number(localStorage.getItem("kw-rush-best") ?? 0) || 0; } catch { return 0; } }, 0);
+  const [beaten, setBeaten] = useState<number | null>(null);
+  const best = beaten ?? storedBest;
+  const setBest = setBeaten;
   const [runs, setRuns] = useState(scoringRunsThisSession);
   const [result, setResult] = useState<RunResult | null>(null);
   const [remaining, setRemaining] = useState(1);
   const deadline = useRef<number>(0);
   const raf = useRef<number | null>(null);
   const runSeed = useRef(seedKey);
-
-  // The best is per device and per language, not worth a round trip.
-  useEffect(() => {
-    try { setBest(Number(localStorage.getItem("kw-rush-best") ?? 0) || 0); } catch { /* private mode */ }
-  }, []);
 
   const end = useCallback((score: number) => {
     if (raf.current) cancelAnimationFrame(raf.current);
@@ -57,7 +54,7 @@ export function WordRush({
     setBest(r.best);
     try { localStorage.setItem("kw-rush-best", String(r.best)); } catch { /* private mode */ }
     if (r.points > 0) { setRuns((n) => n + 1); onScoringRun(r.points); }
-  }, [best, runs, onScoringRun]);
+  }, [best, runs, onScoringRun, setBest]);
 
   // One timer for the whole run, read on each frame, so the bar and the deadline agree.
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/session";
-import { getProfile, getCommunityProfile, findMatches, partners, pendingRequests, listGroups, listChallenges, growthBoard } from "@kettleworth/api";
+import { getProfile, getCommunityProfile, findMatches, partners, pendingRequests, listGroups, listChallenges, growthBoard, discoveryEnabled, inviteToken } from "@kettleworth/api";
 import { CommunityView } from "@/components/community/community-view";
 import { Screen } from "@/components/app/screen";
 import { ScreenHero } from "@/components/app/hero";
@@ -12,7 +12,7 @@ export default async function Community() {
   const user = await requireUser();
   const rec = await getProfile(user.id);
   if (!rec?.onboardingCompletedAt) redirect("/app/onboarding");
-  const [cp, m, ps, pend, gs, cs, board] = await Promise.all([getCommunityProfile(user.id), findMatches(user.id), partners(user.id), pendingRequests(user.id), listGroups(user.id), listChallenges(user.id), growthBoard(user.id)]);
+  const [cp, m, ps, pend, gs, cs, board, invite] = await Promise.all([getCommunityProfile(user.id), findMatches(user.id), partners(user.id), pendingRequests(user.id), listGroups(user.id), listChallenges(user.id), growthBoard(user.id), inviteToken(user.id)]);
 
   /*
    * The one number here, from design/SECTION-MAP.md: your Growth. It is the only figure on
@@ -37,11 +37,15 @@ export default async function Community() {
         value={mine?.growth ?? 0}
         second={second}
       >
-        <p className="measure mt-3 text-sm text-fg-muted">Matched on goals, level and schedule. Nothing about you is visible until you say so.</p>
+        <p className="measure mt-3 text-sm text-fg-muted">
+          {discoveryEnabled()
+            ? "Matched on goals, level and schedule. Nothing about you is visible until you say so."
+            : "Growth counts every session, set, weigh-in and check-in you log. Partners are people you invite, so nothing about you is shared until you send someone your link."}
+        </p>
       </ScreenHero>
 
       <Screen flush className="pt-10">
-        <CommunityView me={cp ? { handle: cp.handle, displayName: cp.displayName, bio: cp.bio, city: cp.city, country: cp.country, trainTogether: cp.trainTogether, visibility: cp.visibility } : null} defaultName={user.name.split(" ")[0] ?? "Lifter"} matches={m.matches} matchReason={m.reason} partners={ps} pending={pend.map((p) => ({ matchId: p.matchId, handle: p.from?.handle ?? "member", displayName: p.from?.displayName ?? "Member" }))} groups={gs.map((g) => ({ id: g.id, name: g.name, description: g.description, memberCount: g.memberCount, joined: g.joined }))} challenges={cs.map((c) => ({ id: c.id, name: c.name, endsOn: c.endsOn.toISOString(), joined: c.joined, participants: c.participants, board: c.board }))} growthBoard={board} />
+        <CommunityView me={cp ? { handle: cp.handle, displayName: cp.displayName, bio: cp.bio, city: cp.city, country: cp.country, trainTogether: cp.trainTogether, visibility: cp.visibility } : null} defaultName={user.name.split(" ")[0] ?? "Lifter"} matches={m.matches} matchReason={m.reason} partners={ps} pending={pend.map((p) => ({ matchId: p.matchId, handle: p.from?.handle ?? "member", displayName: p.from?.displayName ?? "Member" }))} groups={gs.map((g) => ({ id: g.id, name: g.name, description: g.description, memberCount: g.memberCount, joined: g.joined }))} challenges={cs.map((c) => ({ id: c.id, name: c.name, endsOn: c.endsOn.toISOString(), joined: c.joined, participants: c.participants, board: c.board }))} growthBoard={board} discovery={discoveryEnabled()} inviteToken={invite} />
         </Screen>
     </>
   );

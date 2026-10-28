@@ -516,3 +516,78 @@ Run against a local dev server with a seeded account, not inferred from the code
   load. The first digit now replaces a figure the lifter has not typed into yet, backspace
   still works on what is shown, and four cases in `weight-entry.test.ts` hold the rule. This
   one was surfaced by an e2e assertion failing, not by reading the code.
+
+
+## Community, cut back to invite-only (28 Oct 2026)
+
+The feature was already built - 12 tables, 11 routes, 21 service functions - so the decision
+was what to keep, not what to add. Two things made the stranger-facing half untenable:
+
+- **Reports had no reader.** Nothing in the app ever selected from the `report` table and
+  there was no admin screen, so every report ever made went into a sink. A button that
+  promises a response nobody can give is worse than no button. Reports now also reach a human
+  by email (`MODERATION_EMAIL`); that is not a moderation queue, but it is a person.
+- **`trainTogether` plus a city is strangers arranging to meet**, which needs identity checks
+  and a reporting SLA. Neither exists.
+
+There was also a cold start: with nobody signed up, matching rendered "No one close enough
+yet", and an empty social feature reads as a dead app.
+
+**Kept, because it works without a crowd:** the Growth board, challenges, and partners - now
+made by **invite link** rather than by matching strangers. The link is an HMAC over the
+member's handle, so it needs no table and cannot be forged or guessed; both sides consent in
+the open, one by sending it and the other by accepting.
+
+**Behind `COMMUNITY_DISCOVERY=on`, off by default:** matching by goals, level and city, the
+open group directory, and the in-person flag.
+
+Verified end to end with two real accounts: link generated, offer shown, accepted, partner
+visible to both, and a forged signature refused with a 404.
+
+## Lint debt cleared (28 Oct 2026)
+
+**32 errors to 0.** Most were mechanical - unescaped apostrophes, anonymous default exports,
+relative `location.href` assignments - but three were real:
+
+- `Scale` was declared **inside** `FinishForm`, so React saw a new component type on every
+  render and discarded the subtree, which is how a control loses focus while in use.
+- `switchEntry` closed over state declared below it, sitting in the temporal dead zone.
+- `weekAgo` was derived from UTC `now` while `todayIso` is the reader's **local** date, so
+  either side of midnight the two described different days.
+
+The `set-state-in-effect` family was mostly the legitimate "read a client-only value after
+mount" pattern. Rather than suppress it, those now go through `useClientValue`
+(`useSyncExternalStore` with a server snapshot), which is the sanctioned way to say the same
+thing and removes a render and a flash: the theme, the stored bar-entry mode, the set-up
+check count, the best Word Rush score, the meal slot and the invite link all read straight.
+`useNow` became a real subscription and `OfflineWarmup` subscribes to the browser's own
+online flag.
+
+Three remain as **documented exceptions** with a written reason each, not a blanket rule-off:
+two dialogs that fetch when they open, and the console re-seeding its entry fields when the
+focused set changes (a key would remount the keypad mid-session).
+
+11 warnings are left on purpose: `@next/next/no-img-element`, because the app's art and
+user photos are deliberately raw `<img>` with explicit dimensions rather than `next/image`.
+
+### Dead code, and the check that now catches it
+
+Nothing in the toolchain flagged unused declarations, so six imports the refactor orphaned
+went unnoticed until they were looked for by hand. Turning `noUnusedLocals` and
+`noUnusedParameters` on in the shared tsconfig surfaced **24 across the monorepo** - cheap
+enough to clear in one pass, and it cannot come back now.
+
+Most were stray icon imports, but the session player was carrying a whole dead console:
+`describePrescription`, `fmtW`, `RPE_WORDS`, `last`, `nudge`, `rackValue`, `step` and
+`planHint` all belonged to the plus/minus steppers the keypad replaced. `planHint` is the
+hint the owner asked to have removed; the markup went, the code did not.
+
+### A flaky test, and its real cause
+
+One full-suite run failed: the mobile worker's sign-up never reached the database and the
+test sat waiting for a redirect for three minutes. It passes alone and had passed in three
+prior parallel runs, so it is load against a dev server rather than a regression - but the
+spec also derived its account email from `Date.now()` alone at module scope, and the two
+projects start within milliseconds of each other. A collision there surfaces as exactly this
+hang rather than as a readable "that email is taken", so the email now carries the worker
+index and a random suffix.

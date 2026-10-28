@@ -14,7 +14,6 @@ export type RecipeInput = {
   tags: string[];
 };
 
-const SLOT_SHARE: Record<MealSlot, number> = { breakfast: 0.25, lunch: 0.3, dinner: 0.35, snack: 0.1, pre_workout: 0.08, post_workout: 0.12 };
 const TIER_RANK = { low: 0, medium: 1, high: 2 } as const;
 
 export function recipeAllowed(r: RecipeInput, profile: TrainingProfile): boolean {

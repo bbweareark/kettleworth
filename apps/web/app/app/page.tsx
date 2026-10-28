@@ -35,7 +35,7 @@ export default async function Today() {
   const detail = today ? await getSessionDetail(user.id, today.id) : null;
   const doneSummary = state.kind === "done" ? await sessionSummary(user.id, state.session.id) : null;
   const [unread, photos] = await Promise.all([hasUnreadLetter(user.id), listPhotos(user.id)]);
-  const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+  const weekAgo = new Date(new Date(`${todayIso}T12:00:00Z`).getTime() - 7 * 86400000).toISOString().slice(0, 10);
   const nudges = ritualNudges(rec.profile, { now: new Date(), weighedInToday: progress.measurements.some((m) => m.measuredOn === todayIso), photoThisWeek: photos.some((p) => p.takenOn >= weekAgo), sessionToday: state.kind === "today" || (state.kind === "in_progress" && state.session.scheduledOn === todayIso), sessionDone: state.kind === "done", letterUnread: unread });
   const units = rec.profile.units;
   const w = (kg: number) => Math.round(units === "metric" ? kg : kgToLb(kg));

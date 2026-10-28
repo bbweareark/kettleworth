@@ -242,8 +242,11 @@ function StepBody({ id, p, set, baseline }: { id: StepId; p: P; set: (x: P) => v
   const [hateResults, setHateResults] = useState<{ id: string; name: string }[]>([]);
   const [loveQ, setLoveQ] = useState("");
   const [loveResults, setLoveResults] = useState<{ id: string; name: string }[]>([]);
-  useEffect(() => { if (hateQ.length < 2) return setHateResults([]); const c = new AbortController(); fetch(`/api/library?q=${encodeURIComponent(hateQ)}&limit=6`, { signal: c.signal }).then((r) => r.json()).then((j) => setHateResults(j.items ?? [])).catch(() => {}); return () => c.abort(); }, [hateQ]);
-  useEffect(() => { if (loveQ.length < 2) return setLoveResults([]); const c = new AbortController(); fetch(`/api/library?q=${encodeURIComponent(loveQ)}&limit=6`, { signal: c.signal }).then((r) => r.json()).then((j) => setLoveResults(j.items ?? [])).catch(() => {}); return () => c.abort(); }, [loveQ]);
+  useEffect(() => { if (hateQ.length < 2) return; const c = new AbortController(); fetch(`/api/library?q=${encodeURIComponent(hateQ)}&limit=6`, { signal: c.signal }).then((r) => r.json()).then((j) => setHateResults(j.items ?? [])).catch(() => {}); return () => c.abort(); }, [hateQ]);
+  useEffect(() => { if (loveQ.length < 2) return; const c = new AbortController(); fetch(`/api/library?q=${encodeURIComponent(loveQ)}&limit=6`, { signal: c.signal }).then((r) => r.json()).then((j) => setLoveResults(j.items ?? [])).catch(() => {}); return () => c.abort(); }, [loveQ]);
+  // Too short a query shows nothing; there is no need to also empty the stored results.
+  const hateShown = hateQ.length < 2 ? [] : hateResults;
+  const loveShown = loveQ.length < 2 ? [] : loveResults;
   const toggle = <T,>(arr: T[] | undefined, v: T): T[] => ((arr ?? []).includes(v) ? (arr ?? []).filter((x) => x !== v) : [...(arr ?? []), v]);
 
   switch (id) {
@@ -288,12 +291,12 @@ function StepBody({ id, p, set, baseline }: { id: StepId; p: P; set: (x: P) => v
         <Field label="Styles you enjoy"><ChipGroup>{STYLES.map((s) => <Chip key={s.v} selected={(p.styles ?? []).includes(s.v)} onClick={() => set({ styles: toggle(p.styles, s.v) })}>{s.l}</Chip>)}</ChipGroup></Field>
         <Field label="Exercises you love" hint="Search the library. These get priority.">
           <div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" /><Input className="pl-9" value={loveQ} onChange={(e) => setLoveQ(e.target.value)} placeholder="e.g. hip thrust" /></div>
-          {loveResults.length ? <div className="mt-2 flex flex-wrap gap-2">{loveResults.map((r) => <Chip key={r.id} onClick={() => { set({ lovedExerciseIds: [...new Set([...(p.lovedExerciseIds ?? []), r.id])] }); setLoveQ(""); }}>{r.name}</Chip>)}</div> : null}
+          {loveShown.length ? <div className="mt-2 flex flex-wrap gap-2">{loveShown.map((r) => <Chip key={r.id} onClick={() => { set({ lovedExerciseIds: [...new Set([...(p.lovedExerciseIds ?? []), r.id])] }); setLoveQ(""); }}>{r.name}</Chip>)}</div> : null}
           {(p.lovedExerciseIds ?? []).length ? <div className="mt-2 flex flex-wrap gap-2">{p.lovedExerciseIds!.map((id) => <Badge key={id} tone="volt" className="normal-case tracking-normal">{id.replace(/-/g, " ")}<button aria-label={`Remove ${id}`} onClick={() => set({ lovedExerciseIds: p.lovedExerciseIds!.filter((x) => x !== id) })}><X className="size-3" /></button></Badge>)}</div> : null}
         </Field>
         <Field label="Exercises you hate" hint="Never programmed. Swaps are always offered anyway.">
           <div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" /><Input className="pl-9" value={hateQ} onChange={(e) => setHateQ(e.target.value)} placeholder="e.g. burpee" /></div>
-          {hateResults.length ? <div className="mt-2 flex flex-wrap gap-2">{hateResults.map((r) => <Chip key={r.id} onClick={() => { set({ hatedExerciseIds: [...new Set([...(p.hatedExerciseIds ?? []), r.id])] }); setHateQ(""); }}>{r.name}</Chip>)}</div> : null}
+          {hateShown.length ? <div className="mt-2 flex flex-wrap gap-2">{hateShown.map((r) => <Chip key={r.id} onClick={() => { set({ hatedExerciseIds: [...new Set([...(p.hatedExerciseIds ?? []), r.id])] }); setHateQ(""); }}>{r.name}</Chip>)}</div> : null}
           {(p.hatedExerciseIds ?? []).length ? <div className="mt-2 flex flex-wrap gap-2">{p.hatedExerciseIds!.map((id) => <Badge key={id} tone="neutral" className="normal-case tracking-normal">{id.replace(/-/g, " ")}<button aria-label={`Remove ${id}`} onClick={() => set({ hatedExerciseIds: p.hatedExerciseIds!.filter((x) => x !== id) })}><X className="size-3" /></button></Badge>)}</div> : null}
         </Field>
         <Field label="Music or vibe (optional)"><Input value={p.vibe ?? ""} onChange={(e) => set({ vibe: e.target.value || undefined })} placeholder="Loud, heavy, in and out" maxLength={200} /></Field>
@@ -340,7 +343,7 @@ function StepBody({ id, p, set, baseline }: { id: StepId; p: P; set: (x: P) => v
         <div className="grid gap-3 sm:grid-cols-2">{STEPS.filter((s) => s.id !== "review").map((s) => (<div key={s.id} className="rounded-lg border border-rule bg-surface p-3"><div className="meta mb-1">{s.id.replace(/_/g, " ")}</div><div className="text-sm">{(function () { return summaryFor(s.id, p); })()}</div></div>))}</div>
         {baseline ? (<div className="rounded-lg border border-rule bg-surface p-4"><h3 className="font-display mb-3 text-lg">Your baseline</h3><div className="grid grid-cols-2 gap-4 sm:grid-cols-4">{[["BMI", baseline.bmi], ["BMR", baseline.bmr, "kcal"], ["Maintenance", baseline.tdee, "kcal"], ["Target", baseline.targetCalories, "kcal"]].map(([l, v, u]) => (<div key={l as string}><div className="meta">{l as string}</div><div className="font-display text-xl tabular">{v ?? "-"} <span className="text-xs font-normal text-fg-muted">{u as string}</span></div></div>))}</div>{baseline.proteinG ? <p className="mt-3 text-sm text-fg-muted">Macros: {baseline.proteinG} g protein · {baseline.carbsG} g carbs · {baseline.fatG} g fat</p> : null}<ul className="mt-3 space-y-1.5 text-sm text-fg-muted">{baseline.explanations.map((e) => <li key={e} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-volt" />{e}</li>)}</ul></div>) : null}
         <p className="text-sm"><span className="text-volt">{Math.min(12, STEPS.length - 1) * INTAKE_STEP_POINTS} Growth earned before lifting a thing.</span> Building the programme adds {INTAKE_COMPLETE_POINTS} more. Showing up is the first rep.</p>
-        <p className="text-xs text-fg-subtle">Not medical advice. Kettleworth builds general fitness guidance from what you've told us; check with a professional if you have a medical condition.</p>
+        <p className="text-xs text-fg-subtle">Not medical advice. Kettleworth builds general fitness guidance from what you&apos;ve told us; check with a professional if you have a medical condition.</p>
       </div>);
   }
 }

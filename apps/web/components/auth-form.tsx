@@ -1,9 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Field, Input, toast } from "@kettleworth/ui";
 import { authClient } from "@/lib/auth-client";
+import { useClientValue } from "@/lib/use-client-value";
 
 export function AuthForm({ mode, providers }: { mode: "sign-in" | "sign-up"; providers: string[] }) {
   const router = useRouter();
@@ -12,9 +13,9 @@ export function AuthForm({ mode, providers }: { mode: "sign-in" | "sign-up"; pro
   const [name, setName] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [magicSent, setMagicSent] = useState(false);
-  // Until the page has loaded, a tap on the button would do nothing; keep it disabled so a quick tap on a slow phone is never lost.
-  const [ready, setReady] = useState(false);
-  useEffect(() => { setReady(true); }, []);
+  // Until the page has hydrated, a tap on the button would do nothing; keep it disabled so a
+  // quick tap on a slow phone is never lost.
+  const ready = useClientValue(() => true, false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();

@@ -35,7 +35,9 @@ export function RestDeck(p: Props) {
     if (s.fact) shown.current.push(s.fact.id);
     setServed(s);
   };
-  useEffect(() => { void load(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [p.seedKey]);
+  // One fresh card per rest, keyed by the rest itself.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { void load(); }, [p.seedKey]);
   const modes = [["drill", Zap, "Rush"], ["quiz", Brain, "Quiz"], ["breathe", Wind, "Breathe"], ["predict", Target, "Call it"], ["tip", Lightbulb, "Tip"]] as const;
   // The deck sits below the clock and the controls, so on a phone the chosen card starts off
   // screen. Pull its foot to the viewport foot on every switch: clock stays up, card is in reach.
@@ -128,7 +130,7 @@ function PredictCard({ nextSet, sessionId, onPrediction }: { nextSet: Props["nex
       <p className="font-display text-xl">How many reps will you get?</p>
       <p className="measure text-sm text-fg-muted">Target {lo} to {hi}. Calling it honestly trains the skill that makes effort ratings useful. Within one rep earns Growth.</p>
       <div className="mt-4 flex flex-wrap gap-1.5">{opts.map((n) => <button key={n} type="button" disabled={v != null} onClick={() => { setV(n); onPrediction?.(n); record({ sessionId, kind: "predict", itemId: `predict-${Date.now()}`, correct: null, detail: { predicted: n, lo, hi } }); }} className={cn("size-12 rounded-full border text-sm tabular transition-colors", v === n ? "border-volt bg-volt text-volt-fg" : "border-rule text-fg-muted hover:border-fg hover:text-fg")}>{n}</button>)}</div>
-      {v != null && <p className="mt-2 text-sm">Locked in: {v}. Log the set and we'll compare.</p>}
+      {v != null && <p className="mt-2 text-sm">Locked in: {v}. Log the set and we&apos;ll compare.</p>}
     </div>
   );
 }

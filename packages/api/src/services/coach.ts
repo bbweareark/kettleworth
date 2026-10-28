@@ -2,7 +2,6 @@ import { and, asc, desc, eq, gte, lt, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db, coachLetter, coachMessage, trainingSession, exerciseInstance, personalRecord, bodyMeasurement, healthSample, user } from "@kettleworth/db";
 import { adaptWeek, detectStaleness, isoWeek } from "@kettleworth/core";
-import type { TrainingProfile } from "@kettleworth/types";
 import { structured, aiAvailable, AI_MODEL } from "../ai/client";
 import { COACH_SYSTEM } from "../ai/prompts";
 import { cleanText } from "../ai/tasks";

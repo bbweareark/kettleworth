@@ -65,7 +65,7 @@ export function DrinkBuilder({ initial, dailyTarget, busy, onLog }: { initial?: 
             <div className="text-2xs uppercase tracking-label text-fg-subtle">Calories</div>
             <div className="flex items-baseline gap-1"><CountUp key={result.calories} value={result.calories} duration={reduce ? 0 : 450} className="font-display text-5xl tracking-tightest" /><span className="text-sm text-fg-subtle">kcal</span></div>
             <div className="mt-2 h-1.5 overflow-hidden bg-rule"><motion.div className="h-full bg-volt" animate={{ width: `${share * 100}%` }} transition={{ duration: reduce ? 0 : 0.35 }} /></div>
-            <div className="mt-1 text-2xs text-fg-subtle">{Math.round(share * 100)}% of today's {dailyTarget} kcal</div>
+            <div className="mt-1 text-2xs text-fg-subtle">{Math.round(share * 100)}% of today&apos;s {dailyTarget} kcal</div>
             <div className="mt-3 grid grid-cols-3 gap-2 text-center">{[["P", result.proteinG], ["C", result.carbsG], ["F", result.fatG]].map(([k, v]) => <div key={k as string} className="bg-rule py-1.5"><div className="font-display text-sm tabular">{v}</div><div className="text-[10px] uppercase tracking-wider text-fg-subtle">{k === "P" ? "protein" : k === "C" ? "carbs" : "fat"}</div></div>)}</div>
             {result.breakdown.length ? <ul className="mt-3 space-y-1 text-xs text-fg-muted">{result.breakdown.map((b) => <li key={b.label} className="flex justify-between gap-3"><span className="truncate">{b.label}</span><span className="tabular">{b.calories}</span></li>)}</ul> : <p className="mt-3 text-xs text-fg-subtle">Next to nothing. Hydration counts.</p>}
           </div>

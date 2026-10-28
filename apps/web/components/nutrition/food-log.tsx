@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Coffee, ScanBarcode, Sparkles, Search, Camera, UtensilsCrossed, X, Plus, CupSoda, ChefHat } from "lucide-react";
@@ -9,6 +9,7 @@ import { Button, Input, Textarea, cn, toast } from "@kettleworth/ui";
 import { DrinkBuilder } from "./drink-builder";
 import { EstimateCard, type EstItem } from "./estimate-card";
 import { BarcodeScanner, ProductCard, PhotoButton, preparePhoto, type Product } from "./food-scanner";
+import { useClientValue } from "@/lib/use-client-value";
 
 type Source = "manual" | "recipe" | "drink" | "barcode" | "photo" | "estimate";
 type Entry = { id: string; slot: MealSlot; label: string; macros: RecipeMacros; servings: number; source?: Source };
@@ -25,9 +26,13 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
   const router = useRouter();
   const reduce = useReducedMotion();
   const [entries, setEntries] = useState(initial);
-  const [slot, setSlot] = useState<MealSlot>("lunch");
-  // The server has no idea what time it is where you are; pick the meal from the phone's clock once it has loaded.
-  useEffect(() => { setSlot(slotForNow()); }, []);
+  // The server has no idea what time it is where you are, so the meal is picked from the
+  // phone's clock. Read as a client value, it is right on the first paint.
+  // `??` short-circuits, so the hook has to be called before the fallback, not inside it.
+  const nowSlot = useClientValue(slotForNow, "lunch" as MealSlot);
+  const [picked, setPicked] = useState<MealSlot | null>(null);
+  const slot = picked ?? nowSlot;
+  const setSlot = setPicked;
   const [mode, setMode] = useState<Mode>("drinks");
   const [busy, setBusy] = useState<string | null>(null);
   // Scan and describe state
@@ -91,7 +96,7 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
       {/* Today's meter */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <div className="eyebrow">Today's log</div>
+          <div className="eyebrow">Today&apos;s log</div>
           <div className="mt-1 flex items-baseline gap-2"><span className="font-display text-4xl tracking-tightest tabular">{Math.round(tot.calories)}</span><span className="text-sm text-fg-subtle">of {targets.calories} kcal</span></div>
         </div>
         <div className={cn(" px-3 py-1 text-sm tabular", left >= 0 ? "bg-fg text-bg" : " text-volt")}>{left >= 0 ? `${left} kcal left` : `${-left} kcal over`}</div>
@@ -122,7 +127,7 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
               </ul>
             </div>); })}
         </div>
-      ) : <p className="text-sm text-fg-muted">Nothing logged yet. Start with what you're drinking.</p>}
+      ) : <p className="text-sm text-fg-muted">Nothing logged yet. Start with what you&apos;re drinking.</p>}
 
       {/* Add */}
       <div className="space-y-4 rounded-lg border border-rule bg-surface p-4">

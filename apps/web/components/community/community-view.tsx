@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 import { Users, Shield, Flame, Trophy, MessageSquare, Send, Check, X, Plus, Flag, Ban, Lock, Eye } from "lucide-react";
 import { Button, Field, Input, Textarea, Switch, Segmented, Tabs, TabsList, TabsTrigger, TabsContent, Dialog, DialogContent, Readout, ReadoutRow, toast, cn } from "@kettleworth/ui";
+import { InvitePanel } from "./invite-panel";
 
 type Me = { handle: string; displayName: string; bio: string | null; city: string | null; country: string | null; trainTogether: boolean; visibility: "public" | "members" | "private" };
 type Match = { userId: string; handle: string; displayName: string; bio: string | null; city: string | null; level: string | null; goals: string[]; styles: string[]; trainTogether: boolean; score: number; reasons: string[]; status: string | null; matchId: string | null; initiatedByMe: boolean; growth: number; growthLevel: number; streakWeeks: number };
@@ -27,7 +28,7 @@ function Avatar({ name, size = 40 }: { name: string; size?: number }) {
 }
 const daysLeft = (iso: string, now: number | null) => (now == null ? 0 : Math.max(0, Math.ceil((new Date(iso).getTime() - now) / 86400000)));
 
-export function CommunityView(p: { me: Me | null; defaultName: string; matches: Match[]; matchReason: string | null; partners: Partner[]; pending: { matchId: string; handle: string; displayName: string }[]; groups: Group[]; challenges: Challenge[]; growthBoard: GrowthRow[] }) {
+export function CommunityView(p: { me: Me | null; defaultName: string; matches: Match[]; matchReason: string | null; partners: Partner[]; pending: { matchId: string; handle: string; displayName: string }[]; groups: Group[]; challenges: Challenge[]; growthBoard: GrowthRow[]; discovery: boolean; inviteToken: string | null }) {
   const router = useRouter();
   const reduce = useReducedMotion();
   const now = useNow();
@@ -53,7 +54,7 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
       </div>
 
       <ReadoutRow className="sm:grid-cols-3">
-        {[{ n: p.partners.length, l: "Partners" }, { n: p.groups.filter((g) => g.joined).length, l: "Groups" }, { n: p.challenges.filter((c) => c.joined).length, l: "Challenges" }].map((st, i) => (
+        {[{ n: p.partners.length, l: "Partners" }, ...(p.discovery ? [{ n: p.groups.filter((g) => g.joined).length, l: "Groups" }] : []), { n: p.challenges.filter((c) => c.joined).length, l: "Challenges" }].map((st, i) => (
           <motion.div key={st.l} {...stagger(i)}><Readout label={st.l} value={st.n} /></motion.div>
         ))}
       </ReadoutRow>
@@ -70,7 +71,7 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
       ) : null}
 
       <Tabs defaultValue="people">
-        <TabsList><TabsTrigger value="people">People</TabsTrigger><TabsTrigger value="groups">Groups</TabsTrigger><TabsTrigger value="challenges">Challenges</TabsTrigger></TabsList>
+        <TabsList><TabsTrigger value="people">Partners</TabsTrigger>{p.discovery ? <TabsTrigger value="groups">Groups</TabsTrigger> : null}<TabsTrigger value="challenges">Challenges</TabsTrigger></TabsList>
 
         <TabsContent value="people" className="mt-4 space-y-6">
           {p.partners.length ? (
@@ -79,6 +80,8 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
                 <div key={pt.matchId} className="flex items-center gap-3 rounded-lg border border-rule bg-surface p-3"><Avatar name={pt.displayName} /><div className="flex-1"><div className="text-sm font-medium">{pt.displayName}</div><div className="text-xs text-fg-muted">{pt.sessionsThisWeek} session{pt.sessionsThisWeek === 1 ? "" : "s"} this week · level {pt.growthLevel}{pt.streakWeeks ? ` · ${pt.streakWeeks} wk streak` : ""}</div></div><Button size="sm" variant="ghost" onClick={() => setChat(pt)}><MessageSquare className="size-4" />Message</Button></div>))}</div>
             </div>
           ) : null}
+          <InvitePanel token={p.inviteToken} hasProfile={!!p.me} />
+          {p.discovery ? (
           <div className="space-y-2"><p className="meta">Suggested for you</p>
             {p.matchReason ? <div className="rounded-lg border border-rule bg-surface p-5"><Shield className="size-5 text-volt" aria-hidden /><p className="mt-2 text-sm text-fg-muted">{p.matchReason}</p><Button size="sm" className="mt-3" onClick={() => setEditing(true)}>{p.me ? "Change visibility" : "Create profile"}</Button></div>
             : p.matches.length === 0 ? <div className="rounded-lg border border-rule bg-surface p-5"><p className="text-sm text-fg-muted">No one close enough yet. Matches appear as members with your goals and schedule opt in.</p></div>
@@ -93,8 +96,10 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
                 </div>
               </motion.div>))}</div>}
           </div>
+          ) : null}
         </TabsContent>
 
+        {p.discovery ? (
         <TabsContent value="groups" className="mt-4 space-y-3">
           <div className="flex items-center justify-between"><p className="meta">Groups</p><Button size="sm" variant="ghost" onClick={() => setNewGroup(true)}><Plus className="size-4" />New group</Button></div>
           {p.groups.length === 0 ? <div className="rounded-lg border border-rule bg-surface p-5"><p className="text-sm text-fg-muted">No groups yet. Start one for your gym, your city or your split.</p></div> : null}
@@ -106,6 +111,7 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
                 <div className="ml-auto flex gap-2">{g.joined ? <Button size="sm" variant="ghost" onClick={() => setOpenGroup(g.id)}>Open</Button> : null}<Button size="sm" variant={g.joined ? "ghost" : "primary"} loading={busy === g.id} onClick={() => run(g.id, () => api("groups/join", { groupId: g.id, join: !g.joined }), g.joined ? "Left group" : "Joined")}>{g.joined ? "Leave" : "Join"}</Button></div></div>
             </motion.div>))}</div>
         </TabsContent>
+        ) : null}
 
         <TabsContent value="challenges" className="mt-4 space-y-6">
           <div className="space-y-3">
@@ -125,20 +131,19 @@ export function CommunityView(p: { me: Me | null; defaultName: string; matches: 
         </TabsContent>
       </Tabs>
 
-      <p className="text-xs text-fg-subtle">Private by default. Your name, city and goals are shared only when you choose members-only or public. Block or report anyone from their card.</p>
+      <p className="measure text-xs text-fg-subtle">Private by default. Partners are people you invite, and nothing about you is shared until you send someone your link. Block anyone from their card.</p>
 
-      <ProfileDialog open={editing} onClose={() => setEditing(false)} me={p.me} defaultName={p.defaultName} onSaved={() => { setEditing(false); router.refresh(); }} />
-      <GroupDialog id={openGroup} onClose={() => setOpenGroup(null)} />
+      <ProfileDialog key={p.me?.handle ?? "new"} open={editing} onClose={() => setEditing(false)} me={p.me} defaultName={p.defaultName} discovery={p.discovery} onSaved={() => { setEditing(false); router.refresh(); }} />
+      <GroupDialog key={openGroup ?? "none"} id={openGroup} onClose={() => setOpenGroup(null)} />
       <NewGroupDialog open={newGroup} onClose={() => setNewGroup(false)} onCreated={() => { setNewGroup(false); router.refresh(); }} />
-      <ChatDialog partner={chat} onClose={() => setChat(null)} />
+      <ChatDialog key={chat?.matchId ?? "none"} partner={chat} onClose={() => setChat(null)} />
     </div>
   );
 }
 
-function ProfileDialog({ open, onClose, me, defaultName, onSaved }: { open: boolean; onClose: () => void; me: Me | null; defaultName: string; onSaved: () => void }) {
+function ProfileDialog({ open, onClose, me, defaultName, onSaved, discovery }: { open: boolean; onClose: () => void; me: Me | null; defaultName: string; onSaved: () => void; discovery: boolean }) {
   const [f, setF] = useState<Me>(me ?? { handle: "", displayName: defaultName, bio: "", city: "", country: "", trainTogether: false, visibility: "private" });
   const [busy, setBusy] = useState(false);
-  useEffect(() => { if (me) setF(me); }, [me]);
   async function save() { setBusy(true); try { await api("profile", f); onSaved(); toast.success("Profile saved"); } catch (e) { toast.error((e as Error).message); } finally { setBusy(false); } }
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}><DialogContent title="Community profile" description="Choose what others can see.">
@@ -150,8 +155,10 @@ function ProfileDialog({ open, onClose, me, defaultName, onSaved }: { open: bool
           <Field label="Country"><Input value={f.country ?? ""} onChange={(e) => setF({ ...f, country: e.target.value })} placeholder="Optional" /></Field>
         </div>
         <Field label="A line about you"><Textarea value={f.bio ?? ""} onChange={(e) => setF({ ...f, bio: e.target.value })} className="min-h-16" /></Field>
-        <Field label="Who can see you" hint="Private hides you from matching entirely."><Segmented value={f.visibility} onChange={(v) => setF({ ...f, visibility: v })} options={[{ value: "private", label: "Private" }, { value: "members", label: "Members" }, { value: "public", label: "Public" }]} /></Field>
-        <label className="flex items-center justify-between gap-3 rounded-sm border border-rule bg-bg px-3.5 py-3 text-sm"><span>Open to training together in person</span><Switch checked={f.trainTogether} onCheckedChange={(v) => setF({ ...f, trainTogether: v })} /></label>
+        <Field label="Who can see you" hint="Private keeps you off the Growth board. Partners you invite always see you."><Segmented value={f.visibility} onChange={(v) => setF({ ...f, visibility: v })} options={[{ value: "private", label: "Private" }, { value: "members", label: "Members" }, { value: "public", label: "Public" }]} /></Field>
+        {discovery ? (
+          <label className="flex items-center justify-between gap-3 rounded-sm border border-rule bg-bg px-3.5 py-3 text-sm"><span>Open to training together in person</span><Switch checked={f.trainTogether} onCheckedChange={(v) => setF({ ...f, trainTogether: v })} /></label>
+        ) : null}
         <div className="flex justify-end gap-2"><Button variant="ghost" onClick={onClose}>Cancel</Button><Button loading={busy} onClick={save}>Save</Button></div>
       </div>
     </DialogContent></Dialog>
@@ -172,7 +179,10 @@ function GroupDialog({ id, onClose }: { id: string | null; onClose: () => void }
   const [feed, setFeed] = useState<{ group: { name: string; description: string | null }; posts: Post[] } | null>(null);
   const [text, setText] = useState(""); const [busy, setBusy] = useState(false); const [reply, setReply] = useState<Record<string, string>>({});
   const load = async () => { if (!id) return; try { setFeed(await api(`groups?id=${id}`, undefined, "GET")); } catch (e) { toast.error((e as Error).message); } };
-  useEffect(() => { setFeed(null); void load(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [id]);
+  // Loads the feed when the dialog opens. The state lands after an await, not during the
+  // effect, and the dialog is keyed by id so there is nothing stale to clear first.
+  // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
+  useEffect(() => { void load(); }, [id]);
   async function post() { if (!id || !text.trim()) return; setBusy(true); try { await api("posts", { groupId: id, body: text }); setText(""); await load(); } catch (e) { toast.error((e as Error).message); } finally { setBusy(false); } }
   return (
     <Dialog open={!!id} onOpenChange={(o) => !o && onClose()}><DialogContent title={feed?.group.name ?? "Group"} description={feed?.group.description ?? undefined}>
@@ -202,7 +212,9 @@ function ChatDialog({ partner, onClose }: { partner: Partner | null; onClose: ()
   const [msgs, setMsgs] = useState<{ id: string; senderId: string; body: string; createdAt: string }[]>([]);
   const [text, setText] = useState(""); const [busy, setBusy] = useState(false);
   const load = async () => { if (!partner) return; const j = await api(`messages?matchId=${partner.matchId}`, undefined, "GET"); setMsgs(j.messages); };
-  useEffect(() => { setMsgs([]); void load(); const t = setInterval(load, 8000); return () => clearInterval(t); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [partner?.matchId]);
+  // Same, plus an eight-second poll while the thread is open.
+  // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
+  useEffect(() => { void load(); const t = setInterval(load, 8000); return () => clearInterval(t); }, [partner?.matchId]);
   async function send() { if (!partner || !text.trim()) return; setBusy(true); try { await api("messages", { matchId: partner.matchId, body: text }); setText(""); await load(); } catch (e) { toast.error((e as Error).message); } finally { setBusy(false); } }
   return (
     <Dialog open={!!partner} onOpenChange={(o) => !o && onClose()}><DialogContent title={partner?.displayName ?? ""} description="Only the two of you can read this.">

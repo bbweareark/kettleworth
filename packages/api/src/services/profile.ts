@@ -5,8 +5,6 @@ import { computeBaseline } from "@kettleworth/core";
 import { summariseProfile } from "../ai/tasks";
 
 type Sensitive = Pick<TrainingProfile, "injuries" | "medicalFlags" | "notes">;
-const SENSITIVE_KEYS: (keyof Sensitive)[] = ["injuries", "medicalFlags", "notes"];
-
 export type ProfileRecord = { userId: string; profile: TrainingProfile; baseline: BaselineMetrics | null; aiSummary: string | null; onboardingStep: number; onboardingCompletedAt: Date | null; intakeTranscript: { role: "coach" | "user"; text: string; at: string }[] };
 
 function split(p: TrainingProfile): { pub: TrainingProfile; sens: Sensitive } {

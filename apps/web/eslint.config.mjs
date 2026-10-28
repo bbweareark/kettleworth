@@ -1,2 +1,4 @@
 import nextVitals from "eslint-config-next/core-web-vitals";
-export default [...nextVitals, { ignores: [".next/**", "public/sw.js"] }];
+
+const config = [...nextVitals, { ignores: [".next/**", "public/sw.js"] }];
+export default config;

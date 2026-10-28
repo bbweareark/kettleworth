@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Lightbulb, ShieldAlert, XCircle, Check, ChevronRight } from "lucide-react";
-import { Button, cn } from "@kettleworth/ui";
+import { Lightbulb, ShieldAlert, XCircle, ChevronRight } from "lucide-react";
+import { cn } from "@kettleworth/ui";
+import { useClientValue } from "@/lib/use-client-value";
 
 export type CheckCard = { kind: "cue" | "mistake" | "safety" | "foryou"; text: string };
 
@@ -24,15 +25,23 @@ const STYLE = {
  * Shown the first 3 times an exercise appears for this user, then collapses to a single tap-to-reopen chip. Acknowledgement is per exercise
  * and stored locally, so it never nags but is impossible to miss on new movements.
  */
-export function FormCheck({ exerciseId, name, cards, image, onReady }: { exerciseId: string; name: string; cards: CheckCard[]; image?: string; onReady?: () => void }) {
+export function FormCheck({ exerciseId, name, cards, onReady }: { exerciseId: string; name: string; cards: CheckCard[]; onReady?: () => void }) {
   const key = `kw-formcheck:${exerciseId}`;
-  const [seen, setSeen] = useState<number | null>(null);
-  const [open, setOpen] = useState(false);
-  useEffect(() => { try { const n = Number(localStorage.getItem(key) ?? 0); setSeen(n); setOpen(n < 3 && cards.length > 0); } catch { setSeen(0); setOpen(cards.length > 0); } }, [key, cards.length]);
-  if (seen === null || !cards.length) return null;
-  const done = () => { try { localStorage.setItem(key, String((seen ?? 0) + 1)); } catch {} setSeen((s) => (s ?? 0) + 1); setOpen(false); onReady?.(); };
+  /*
+   * How many times this exercise's set-up check has been acknowledged on this device. It is
+   * read straight from storage rather than copied into state by an effect, so there is no
+   * second render and no flash of the wrong state on a new exercise.
+   */
+  const stored = useClientValue(() => { try { return Number(localStorage.getItem(key) ?? 0); } catch { return 0; } }, null as number | null);
+  const [bumped, setBumped] = useState<number | null>(null);
+  /** Set once the reader opens or closes it by hand, which overrides the count. */
+  const [override, setOverride] = useState<boolean | null>(null);
+  const count = bumped ?? stored;
+  const open = override ?? (count != null && count < 3 && cards.length > 0);
+  if (count === null || !cards.length) return null;
+  const done = () => { const next = count + 1; try { localStorage.setItem(key, String(next)); } catch {} setBumped(next); setOverride(false); onReady?.(); };
   if (!open) return (
-    <button type="button" onClick={() => setOpen(true)} className="flex w-full items-center gap-3 rounded-lg border border-rule bg-surface px-4 py-3 text-left text-sm transition-colors hover:border-rule-strong">
+    <button type="button" onClick={() => setOverride(true)} className="flex w-full items-center gap-3 rounded-lg border border-rule bg-surface px-4 py-3 text-left text-sm transition-colors hover:border-rule-strong">
       <span className="flex -space-x-1">{cards.slice(0, 3).map((c, k) => { const I = STYLE[c.kind].icon; return <span key={k} className={cn("grid size-6 place-items-center rounded-full ring-2 ring-surface", STYLE[c.kind].chip)}><I className="size-3" /></span>; })}</span>
       <span className="flex-1 text-fg-muted">Set-up check for {name}</span><ChevronRight className="size-4 text-fg-subtle" />
     </button>

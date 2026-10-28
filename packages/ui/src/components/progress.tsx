@@ -1,4 +1,3 @@
-import * as React from "react";
 import { cn } from "../lib/cn";
 
 export function Progress({ value, max = 100, className, tone = "ember", label }: { value: number; max?: number; className?: string; tone?: "ember" | "signal" | "amber" | "rose"; label?: string }) {

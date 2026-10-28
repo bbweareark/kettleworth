@@ -1,8 +1,8 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, Check, ChevronRight, ChevronDown, ChevronUp, Info, Repeat, WifiOff, ShieldAlert, AlertOctagon, Minus, Plus, RotateCcw, History, AlertTriangle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ChevronRight, ChevronDown, ChevronUp, Info, Repeat, WifiOff, RotateCcw, AlertTriangle } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { LoggedSet, PlannedSet, ExerciseSummary } from "@kettleworth/types";
 import { Badge, Button, Card, CardContent, Progress, Sheet, SheetContent, Segmented, Textarea, CoachPulse, Dialog, DialogContent, cn, toast, type PulseItem } from "@kettleworth/ui";
@@ -17,6 +17,7 @@ import { LiftHistory, fmtKg, type LiftHistoryData } from "@/components/lifts/lif
 import { dayMonth } from "@/lib/format";
 import { postResilient, flush, pending } from "@/lib/offline-queue";
 import { MuscleFigure } from "@/components/muscle-figure";
+import { useClientValue } from "@/lib/use-client-value";
 
 type BarWeights = Partial<Record<BarKind, number>>;
 type Exercise = { id: string; slug: string; name: string; primaryMuscles: string[]; equipment: string[]; imageUrls: string[]; cues: string[]; instructions: string[]; commonMistakes: string[]; pattern: string; mechanics?: "compound" | "isolation"; category?: string; unilateral?: boolean };
@@ -105,6 +106,8 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
     if (!isLast) setRest(set.restSeconds);
     else if (idx < instances.length - 1) { setRest(Math.min(set.restSeconds, 90)); }
     return { ok: true };
+    // `start` is rebuilt every render; depending on it would rebuild logSet every render too.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idx, instances.length, units, prediction, session.id, session.status]);
 
   async function resetExercise() {
@@ -173,7 +176,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
         {showInfo && (<div className="border-t border-rule bg-bg p-4 text-sm"><div className="grid gap-4 sm:grid-cols-2"><div><div className="eyebrow mb-1">Cues</div><ul className="space-y-1 text-fg-muted">{(cur.exercise.cues.length ? cur.exercise.cues : cur.exercise.instructions.slice(0, 4)).map((c) => <li key={c}>{c}</li>)}</ul></div><div><div className="eyebrow mb-1">Watch for</div><ul className="space-y-1 text-fg-muted">{cur.exercise.commonMistakes.length ? cur.exercise.commonMistakes.map((c) => <li key={c}>{c}</li>) : <li>Control the eccentric; stop 1 to 2 reps shy of failure unless told otherwise.</li>}</ul>{cur.cautions.filter((c) => c.level === "info").length ? <><div className="eyebrow mb-1 mt-3">Safety</div><ul className="space-y-1 text-fg-muted">{cur.cautions.filter((c) => c.level === "info").map((c, k) => <li key={k}>{c.text}</li>)}</ul></> : null}<p className="mt-2 text-xs text-fg-subtle">{cur.rationale}</p><Link href={`/library/${cur.exercise.slug}`} className="mt-2 inline-block text-volt hover:underline">Full exercise page</Link></div></div></div>)}
       </Card>
 
-      {!curDone && <FormCheck key={`check-${cur.id}`} exerciseId={cur.exerciseId} name={cur.exercise.name} cards={cards} image={cur.exercise.imageUrls[0]} />}
+      {!curDone && <FormCheck key={`check-${cur.id}`} exerciseId={cur.exerciseId} name={cur.exercise.name} cards={cards} />}
 
       {rest != null ? <RestTimer key={rest + "-" + doneSets} seconds={rest} why={restWhy} onDone={() => setRest(null)} onSkip={() => setRest(null)}><RestDeck units={units} sessionId={session.id} seedKey={`${session.id}:${cur.id}:${doneSets}`} restSeconds={rest} seen={seenRest} onSeen={(id) => setSeenRest((s) => [...s, id])} tips={restCards} nextSet={(() => { const n = cur.plannedSets.find((ps) => !cur.loggedSets.some((l) => l.setNumber === ps.setNumber && l.completed)); return n ? { repRange: n.repRange, reps: n.reps } : null; })()} onPrediction={setPrediction} /></RestTimer> : null}
 
@@ -202,17 +205,6 @@ function PrescriptionNumerals({ sets }: { sets: PlannedSet[] }) {
   if (f.tempo) cells.push([f.tempo, "tempo"]);
   return <div className="flex flex-wrap gap-x-5 gap-y-1">{cells.map(([v, l]) => <div key={l}><span className="font-display text-2xl tabular tracking-tighter">{v}</span><span className="ml-1 text-2xs uppercase tracking-label text-fg-subtle">{l}</span></div>)}</div>;
 }
-function describePrescription(sets: PlannedSet[]): string {
-  const w = sets.filter((s) => s.type === "working");
-  if (!w.length) return `${sets.length} sets`;
-  const f = w[0]!;
-  const reps = f.repRange ? `${f.repRange[0]} to ${f.repRange[1]}` : f.reps ?? "";
-  return `${w.length} × ${reps}${f.targetRpe ? ` @ RPE ${f.targetRpe}` : ""}${f.targetRir != null ? ` (${f.targetRir} in reserve)` : ""} · ${Math.round(f.restSeconds / 60 * 10) / 10} min rest${f.tempo ? ` · tempo ${f.tempo}` : ""}`;
-}
-const fmtW = (kg: number | null, units: "metric" | "imperial") => (kg == null ? "-" : units === "metric" ? `${round(kg, 1)}` : `${round(kgToLb(kg), 1)}`);
-
-const RPE_WORDS: Record<number, string> = { 6: "4 left", 7: "3 left", 8: "2 left", 9: "1 left", 10: "0 left" };
-
 /**
  * The set console. One set is in focus at a time with big tactile numerals: weight and reps step by real plate increments,
  * effort is a five-stop scale in reps-in-reserve language, and the target and last time sit beside the numbers so the
@@ -225,24 +217,28 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
   const firstOpen = sets.find((s) => !doneOf(s.setNumber))?.setNumber ?? sets[sets.length - 1]!.setNumber;
   const [focus, setFocus] = useState<number>(firstOpen);
   const prevDone = useRef(inst.loggedSets.filter((l) => l.completed).length);
-  useEffect(() => { const n = inst.loggedSets.filter((l) => l.completed).length; if (n !== prevDone.current) { prevDone.current = n; setFocus(sets.find((s) => !doneOf(s.setNumber))?.setNumber ?? sets[sets.length - 1]!.setNumber); } /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [inst.loggedSets]);
+  // Follows the logged sets only: re-running when the helpers change would move the focus
+  // out from under the lifter mid-set.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { const n = inst.loggedSets.filter((l) => l.completed).length; if (n !== prevDone.current) { prevDone.current = n; setFocus(sets.find((s) => !doneOf(s.setNumber))?.setNumber ?? sets[sets.length - 1]!.setNumber); } }, [inst.loggedSets]);
   const set = sets.find((s) => s.setNumber === focus) ?? sets[0]!;
   const logged = doneOf(set.setNumber);
-  const last = inst.lastTime?.find((l) => l.setNumber === set.setNumber && l.completed) ?? inst.lastTime?.filter((l) => l.completed).at(-1) ?? null;
   const model = loadModel({ name: inst.exercise.name, equipment: inst.exercise.equipment as never, unilateral: !!inst.exercise.unilateral });
   const metric = units === "metric";
   const toDisp = (kg: number) => round(metric ? kg : kgToLb(kg), 2);
   const disp = (kg: number | null | undefined) => (kg == null ? "" : String(round(metric ? kg : kgToLb(kg), 1)));
   const barKg = model.kind === "bar" ? (barWeights[model.bar] ?? DEFAULT_BARS_KG[units][model.bar]) : 0;
   const barDisp = model.kind === "bar" ? round(toDisp(barKg), 1) : 0;
-  // Bars can be entered as the total or per side; the choice is remembered on this device.
-  const [entry, setEntry] = useState<"total" | "side">("total");
-  useEffect(() => { try { if (model.kind === "bar" && localStorage.getItem("kw-bar-entry") === "side") setEntry("side"); } catch {} /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, []);
+  // Bars can be entered as the total or per side; the choice is remembered on this device
+  // and read straight from storage, so the field does not flip after the first render.
+  const storedEntry = useClientValue(() => { try { return localStorage.getItem("kw-bar-entry") === "side" ? "side" : "total"; } catch { return "total"; } }, "total" as "total" | "side");
+  const [pickedEntry, setPickedEntry] = useState<"total" | "side" | null>(null);
+  /** Whether each figure still shows the plan's number or something the lifter typed. */
+  const [typed, setTyped] = useState<{ w: boolean; r: boolean }>({ w: false, r: false });
+  const entry = pickedEntry ?? (model.kind === "bar" ? storedEntry : "total");
+  const setEntry = setPickedEntry;
   const sideMode = model.kind === "bar" && entry === "side";
   const toField = (totalKg: number | null | undefined) => (totalKg == null ? "" : sideMode ? String(Math.max(0, round((toDisp(totalKg) - barDisp) / 2, 2))) : disp(totalKg));
-  const step = model.kind === "bar" ? (sideMode ? (metric ? 1.25 : 2.5) : (metric ? 2.5 : 5))
-    : model.kind === "handheld" ? (model.implement === "kettlebell" ? (metric ? 4 : 5) : (metric ? 2.5 : 5))
-    : model.kind === "stack" ? (metric ? 5 : 10) : (metric ? 2.5 : 5);
   const [w, setW] = useState(() => toField(logged?.weightKg ?? set.weightKg));
   const [barOpen, setBarOpen] = useState(false);
   const fieldToTotalDisp = (v: string) => (v === "" ? null : sideMode ? Number(v) * 2 + barDisp : Number(v));
@@ -259,10 +255,15 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
   const [rpe, setRpe] = useState<number | null>(logged?.rpe ?? set.targetRpe ?? null);
   const [busy, setBusy] = useState(false);
   const [challenge, setChallenge] = useState<string | null>(null);
-  useEffect(() => { const l = doneOf(set.setNumber); setW(toField(l?.weightKg ?? set.weightKg)); setR(l?.reps != null ? String(l.reps) : set.reps != null ? String(set.reps) : set.repRange ? String(set.repRange[1]) : ""); setRpe(l?.rpe ?? set.targetRpe ?? null); setChallenge(null); setTyped({ w: false, r: false }); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [set.setNumber]);
+  /*
+   * Re-seeds the entry fields from the plan when the focused set changes. A key would be the
+   * idiomatic alternative, but the fields live in the same component as the set track and
+   * remounting it would restart the keypad and the exit animation mid-session.
+   */
+  // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
+  useEffect(() => { const l = doneOf(set.setNumber); setW(toField(l?.weightKg ?? set.weightKg)); setR(l?.reps != null ? String(l.reps) : set.reps != null ? String(set.reps) : set.repRange ? String(set.repRange[1]) : ""); setRpe(l?.rpe ?? set.targetRpe ?? null); setChallenge(null); setTyped({ w: false, r: false }); }, [set.setNumber]);
   // Which figure the key row drives. One pad, two targets (21st.dev Number Pad).
   const [pad, setPad] = useState<"w" | "r">("w");
-  const [typed, setTyped] = useState<{ w: boolean; r: boolean }>({ w: false, r: false });
   // The keypad is tall enough to push the figure off the top of a phone, and typing a number
   // you cannot see is worse than any stepper. Switching the pad brings its figure up first,
   // clearing the floating nav pill (44px under a 12px inset) rather than parking under it.
@@ -271,7 +272,6 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
     const id = requestAnimationFrame(() => padRow.current?.scrollIntoView({ block: "start", behavior: "smooth" }));
     return () => cancelAnimationFrame(id);
   }, [pad]);
-  const nudge = (which: "w" | "r", d: number) => { if (which === "w") setW((x) => String(Math.max(0, round((Number(x) || 0) + d * step, 2)))); else setR((x) => String(Math.max(0, (Number(x) || 0) + d))); };
   const values = () => { const t = fieldToTotalDisp(w); return { weightKg: t == null ? null : metric ? t : lbToKg(t), reps: r === "" ? null : Number(r), rpe, barKg: model.kind === "bar" ? barKg : null }; };
   const submit = async (confirmed = false) => { setBusy(true); const res = await onLog(set, values(), confirmed); setBusy(false); if (!res.ok) setChallenge(res.reason); else setChallenge(null); };
   const target = set.repRange ? `${set.repRange[0]} to ${set.repRange[1]}` : set.reps != null ? String(set.reps) : "";
@@ -281,8 +281,6 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
   // The loads this equipment can actually be set to. Empty means the quantity is continuous
   // and the plus/minus keys step it freely.
   const ladder = loadLadder(model, units, barDisp);
-  // The raw figure, so the rack highlights only what is actually set.
-  const rackValue = Number(w) || 0;
   const makeup = (() => {
     if (model.kind === "bar") {
       if (totalNow == null) return `${barDisp} ${unit} ${BAR_NAMES[model.bar].toLowerCase()}`;
@@ -294,7 +292,6 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
     if (model.kind === "handheld" && model.count === 2 && totalNow) return `A pair of ${round(totalNow, 1)} ${unit} ${model.implement}s`;
     return null;
   })();
-  const planHint = set.weightKg != null ? `plan ${disp(set.weightKg)} ${unit}${model.kind === "handheld" ? ` ${model.hint}` : ""}` : model.hint;
   return (
     <section className="border-t border-rule pt-4" aria-label="Log sets">
       <Benchmark inst={inst} units={units} onUse={(weightKg, reps, rpeVal) => { setW(toField(weightKg)); setR(reps != null ? String(reps) : ""); if (rpeVal != null) setRpe(rpeVal); setTyped({ w: true, r: true }); }} />
@@ -445,6 +442,24 @@ function SwapList({ instanceId, onPick }: { instanceId: string; onPick: (e: Exer
   );
 }
 
+/**
+ * A five-stop scale. Declared here rather than inside FinishForm: a component created during
+ * render is a new type every time, so React discards the subtree and rebuilds it, which is
+ * how a control loses focus while you are using it.
+ */
+function Scale({ label, value, set, lo, hi }: { label: string; value: number | null; set: (v: number) => void; lo: string; hi: string }) {
+  return (
+    <div>
+      <div className="mb-2 flex items-baseline justify-between gap-3 text-sm"><span>{label}</span><span className="meta">{lo} → {hi}</span></div>
+      <div className="grid grid-cols-5 gap-1.5">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button key={n} type="button" aria-pressed={value === n} onClick={() => set(n)} className={cn("h-11 rounded-full border text-sm transition-colors", value === n ? "border-volt bg-volt text-volt-fg" : "border-rule text-fg-muted hover:border-fg hover:text-fg")}>{n}</button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function FinishForm({ sessionId, onDone }: { sessionId: string; units: "metric" | "imperial"; onDone: () => void }) {
   const [rpe, setRpe] = useState<number | null>(null);
   const [soreness, setSoreness] = useState<number | null>(null);
@@ -462,9 +477,6 @@ function FinishForm({ sessionId, onDone }: { sessionId: string; units: "metric" 
     if (!r.ok) { toast.message("Saved on this device", { description: "Your session will be completed and the next loads set when you're back online." }); setResult({ changes: [] }); return; }
     setResult(r.data);
   }
-  const Scale = ({ label, value, set, lo, hi }: { label: string; value: number | null; set: (v: number) => void; lo: string; hi: string }) => (
-    <div><div className="mb-2 flex items-baseline justify-between gap-3 text-sm"><span>{label}</span><span className="meta">{lo} → {hi}</span></div><div className="grid grid-cols-5 gap-1.5">{[1, 2, 3, 4, 5].map((n) => <button key={n} type="button" aria-pressed={value === n} onClick={() => set(n)} className={cn("h-11 rounded-full border text-sm transition-colors", value === n ? "border-volt bg-volt text-volt-fg" : "border-rule text-fg-muted hover:border-fg hover:text-fg")}>{n}</button>)}</div></div>
-  );
   if (result) return (
     <div className="space-y-4">
       <div className="rounded-lg bg-fg p-4 text-bg"><p className="font-display text-xl">Session logged.</p><p className="text-sm opacity-70">Here&apos;s what changes next time, and why.</p></div>

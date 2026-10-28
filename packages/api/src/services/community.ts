@@ -1,9 +1,73 @@
 import { and, asc, desc, eq, gte, inArray, ne, or, sql } from "drizzle-orm";
-import { randomUUID } from "node:crypto";
+import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 import { db, communityProfile, group, groupMember, post, comment, reaction, match, message, challenge, challengeEntry, report, block, profile, trainingSession, user, auditLog } from "@kettleworth/db";
 import { rankMatches, type MatchProfile } from "@kettleworth/core";
 import { getProfile } from "./profile";
 import { growthForUsers } from "./photos";
+import { sendEmail } from "../email";
+
+/**
+ * Discovery is off.
+ *
+ * Everything in this file still works, but matching strangers by goals, level and **city**,
+ * and letting them arrange to train together in person, is a different product from a
+ * training app: it needs identity checks, a reporting queue somebody reads, and an answer
+ * when it goes wrong. None of that exists here, so the stranger-facing half is behind a flag
+ * that is off unless an operator turns it on, and partners are made by invite instead.
+ *
+ * Invite-only also removes the cold start. A matching screen with nobody in it reads as a
+ * dead app; a link you send a friend works on day one.
+ */
+export const discoveryEnabled = () => process.env.COMMUNITY_DISCOVERY === "on";
+
+// ---------- Invites: you bring your own partner ----------
+const inviteSecret = () => process.env.BETTER_AUTH_SECRET ?? "";
+/** Signature over the handle, so a link cannot be forged or guessed from a known handle. */
+function sign(handle: string): string {
+  return createHmac("sha256", inviteSecret()).update(`kw-invite:${handle}`).digest("base64url").slice(0, 24);
+}
+function signatureMatches(handle: string, sig: string): boolean {
+  const want = Buffer.from(sign(handle));
+  const got = Buffer.from(sig);
+  return want.length === got.length && timingSafeEqual(want, got);
+}
+
+/** The token a member shares. Stateless, so there is nothing to store and nothing to leak. */
+export async function inviteToken(userId: string): Promise<string | null> {
+  const me = await getCommunityProfile(userId);
+  if (!me || !inviteSecret()) return null;
+  return `${me.handle}.${sign(me.handle)}`;
+}
+
+/** Who is behind an invite link, for the "X wants to train with you" screen. */
+export async function inviteOwner(token: string) {
+  const i = token.lastIndexOf(".");
+  if (i < 1) return null;
+  const handle = token.slice(0, i);
+  if (!inviteSecret() || !signatureMatches(handle, token.slice(i + 1))) return null;
+  const [row] = await db().select().from(communityProfile).where(eq(communityProfile.handle, handle)).limit(1);
+  return row ?? null;
+}
+
+/**
+ * Both sides have consented by this point - one made the link, the other opened it and
+ * pressed accept - so the match is created accepted rather than as a request.
+ */
+export async function acceptInvite(userId: string, token: string) {
+  const owner = await inviteOwner(token);
+  if (!owner) throw new Error("That invite link is not valid");
+  if (owner.userId === userId) throw new Error("That is your own invite link");
+  const blocked = await db().select().from(block).where(or(and(eq(block.blockerId, userId), eq(block.blockedId, owner.userId)), and(eq(block.blockerId, owner.userId), eq(block.blockedId, userId)))).limit(1);
+  if (blocked.length) throw new Error("That invite link is not valid");
+  const [existing] = await db().select().from(match).where(or(and(eq(match.userA, userId), eq(match.userB, owner.userId)), and(eq(match.userA, owner.userId), eq(match.userB, userId)))).limit(1);
+  if (existing) {
+    if (existing.status !== "accepted") await db().update(match).set({ status: "accepted" }).where(eq(match.id, existing.id));
+    return { matchId: existing.id, displayName: owner.displayName };
+  }
+  const [row] = await db().insert(match).values({ userA: owner.userId, userB: userId, score: 1, status: "accepted" }).returning();
+  await db().insert(auditLog).values({ userId, action: "community.invite.accept", target: owner.userId });
+  return { matchId: row!.id, displayName: owner.displayName };
+}
 
 // ---------- Profile (private by default) ----------
 export async function getCommunityProfile(userId: string) {
@@ -21,6 +85,7 @@ export async function upsertCommunityProfile(userId: string, p: { handle: string
 
 // ---------- Matching (only members who opted in) ----------
 export async function findMatches(userId: string, limit = 8) {
+  if (!discoveryEnabled()) return { matches: [], reason: null };
   const me = await getCommunityProfile(userId);
   const rec = await getProfile(userId);
   if (!me || !rec || me.visibility === "private") return { matches: [], reason: me?.visibility === "private" ? "Your community profile is private. Switch to members-only to be matched." : "Create a community profile to be matched." };
@@ -49,7 +114,13 @@ export async function partners(userId: string) {
   const week = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
   const done = ids.length ? await db().select({ userId: trainingSession.userId, n: sql<number>`count(*)::int` }).from(trainingSession).where(and(inArray(trainingSession.userId, ids), eq(trainingSession.status, "completed"), gte(trainingSession.scheduledOn, week))).groupBy(trainingSession.userId) : [];
   const growth = await growthForUsers(ids);
-  return rows.map((r) => { const id = r.userA === userId ? r.userB : r.userA; const cp = profiles.find((p) => p.userId === id); const g = growth[id]; return { matchId: r.id, userId: id, handle: cp?.handle ?? "member", displayName: cp?.displayName ?? "Member", sessionsThisWeek: done.find((d) => d.userId === id)?.n ?? 0, growth: g?.total ?? 0, growthLevel: g?.level ?? 0, streakWeeks: g?.streakWeeks ?? 0 }; });
+  /*
+   * Someone can accept an invite before making a community profile, and showing them to the
+   * partner who invited them as "Member" is both unhelpful and slightly cold. The account
+   * name is already known, and these two have agreed to train together.
+   */
+  const names = ids.length ? await db().select({ id: user.id, name: user.name }).from(user).where(inArray(user.id, ids)) : [];
+  return rows.map((r) => { const id = r.userA === userId ? r.userB : r.userA; const cp = profiles.find((p) => p.userId === id); const g = growth[id]; return { matchId: r.id, userId: id, handle: cp?.handle ?? "member", displayName: cp?.displayName ?? names.find((n) => n.id === id)?.name ?? "Member", sessionsThisWeek: done.find((d) => d.userId === id)?.n ?? 0, growth: g?.total ?? 0, growthLevel: g?.level ?? 0, streakWeeks: g?.streakWeeks ?? 0 }; });
 }
 export async function pendingRequests(userId: string) {
   const rows = await db().select().from(match).where(and(eq(match.userB, userId), eq(match.status, "suggested")));
@@ -73,6 +144,7 @@ export async function thread(userId: string, matchId: string) {
 
 // ---------- Groups ----------
 export async function listGroups(userId: string) {
+  if (!discoveryEnabled()) return [];
   const gs = await db().select().from(group).where(eq(group.visibility, "public")).orderBy(desc(group.memberCount));
   const mine = await db().select({ groupId: groupMember.groupId }).from(groupMember).where(eq(groupMember.userId, userId));
   const set = new Set(mine.map((m) => m.groupId));
@@ -144,7 +216,22 @@ export async function joinChallenge(userId: string, challengeId: string, join: b
 }
 
 // ---------- Safety ----------
-export async function reportContent(userId: string, targetType: "post" | "comment" | "user", targetId: string, reason: string) { await db().insert(report).values({ reporterId: userId, targetType, targetId, reason: reason.slice(0, 500) }); await db().insert(auditLog).values({ userId, action: "community.report", target: `${targetType}:${targetId}` }); }
+export async function reportContent(userId: string, targetType: "post" | "comment" | "user", targetId: string, reason: string) {
+  await db().insert(report).values({ reporterId: userId, targetType, targetId, reason: reason.slice(0, 500) });
+  await db().insert(auditLog).values({ userId, action: "community.report", target: `${targetType}:${targetId}` });
+  /*
+   * The report table had no reader and no admin screen anywhere in the app, so every report
+   * ever made went into a sink. This does not make it a moderation queue, but it does put a
+   * human on the other end of the button, which is the part that was missing.
+   */
+  const to = process.env.MODERATION_EMAIL;
+  if (!to) return;
+  await sendEmail({
+    to,
+    subject: `Kettleworth report: ${targetType}`,
+    text: `Reporter: ${userId}\nTarget: ${targetType} ${targetId}\n\n${reason.slice(0, 500)}`,
+  }).catch((e) => console.warn("report email", e));
+}
 export async function blockUser(userId: string, otherId: string, on: boolean) { if (on) await db().insert(block).values({ blockerId: userId, blockedId: otherId }).onConflictDoNothing(); else await db().delete(block).where(and(eq(block.blockerId, userId), eq(block.blockedId, otherId))); await db().update(match).set({ status: "declined" }).where(or(and(eq(match.userA, userId), eq(match.userB, otherId)), and(eq(match.userA, otherId), eq(match.userB, userId)))); }
 export async function memberName(userId: string) { const [u] = await db().select({ name: user.name }).from(user).where(eq(user.id, userId)); return u?.name ?? "Member"; }
 

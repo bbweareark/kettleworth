@@ -7,16 +7,18 @@ import { Button } from "@kettleworth/ui";
 export function RestTimer({ seconds, onDone, onSkip, children, why }: { seconds: number; onDone: () => void; onSkip: () => void; children?: React.ReactNode; why?: string }) {
   const [left, setLeft] = useState(seconds);
   const [total, setTotal] = useState(seconds);
-  const endAt = useRef(Date.now() + seconds * 1000);
+  // Set when the interval starts, so nothing impure runs during render.
+  const endAt = useRef(0);
   const done = useRef(false);
   useEffect(() => {
+    endAt.current = Date.now() + seconds * 1000;
     const t = setInterval(() => {
       const l = Math.max(0, Math.round((endAt.current - Date.now()) / 1000));
       setLeft(l);
       if (l === 0 && !done.current) { done.current = true; try { navigator.vibrate?.([120, 60, 120]); } catch {} beep(); onDone(); }
     }, 250);
     return () => clearInterval(t);
-  }, [onDone]);
+  }, [onDone, seconds]);
   const adjust = (d: number) => { endAt.current += d * 1000; setTotal((t) => Math.max(5, t + d)); };
   const pct = total ? (left / total) * 100 : 0;
   const mm = Math.floor(left / 60), ss = String(left % 60).padStart(2, "0");

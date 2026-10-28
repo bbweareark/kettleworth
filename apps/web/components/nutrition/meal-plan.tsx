@@ -1,9 +1,10 @@
 "use client";
 import { dayMonth } from "@/lib/format";
-import { useEffect, useMemo, useState } from "react";
-import { RefreshCw, Repeat, ShoppingBasket, Clock } from "lucide-react";
+import { useMemo, useState } from "react";
+import { RefreshCw, Repeat, ShoppingBasket } from "lucide-react";
 import type { WeeklyMealPlan, NutritionTargets, MealSlot, RecipeMacros } from "@kettleworth/types";
 import { Badge, Button, Card, CardContent, Chip, ChipGroup, Progress, Sheet, SheetContent, toast, cn } from "@kettleworth/ui";
+import { useClientValue } from "@/lib/use-client-value";
 
 type Recipe = { id: string; name: string; description: string; prepMinutes: number; steps: string[]; ingredients: { name: string; quantity: number; unit: string }[]; macros: RecipeMacros; tags: string[] };
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -11,8 +12,7 @@ const SLOT_ORDER: MealSlot[] = ["breakfast", "pre_workout", "lunch", "post_worko
 
 export function MealPlanView({ initial, recipes, targets }: { initial: { weekStartsOn: string; plan: WeeklyMealPlan; coachNote: string | null }; recipes: Record<string, Recipe>; targets: NutritionTargets }) {
   const [state, setState] = useState(initial);
-  const [day, setDay] = useState(0);
-  useEffect(() => { setDay(Math.min(6, (new Date().getDay() + 6) % 7)); }, []);
+  const [day, setDay] = useState(useClientValue(() => Math.min(6, (new Date().getDay() + 6) % 7), 0));
   const [open, setOpen] = useState<Recipe | null>(null);
   const [swap, setSwap] = useState<{ day: number; slot: MealSlot } | null>(null);
   const [grocery, setGrocery] = useState(false);
@@ -22,7 +22,7 @@ export function MealPlanView({ initial, recipes, targets }: { initial: { weekSta
   async function regenerate() { setBusy(true); const r = await fetch("/api/nutrition/mealplan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ weekStartsOn: state.weekStartsOn, force: true }) }); setBusy(false); if (!r.ok) return toast.error("Couldn't rebuild"); setState(await r.json()); toast.success("New week planned"); }
   return (
     <Card><CardContent className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-display text-lg">This week's meals</h2><p className="text-xs text-fg-subtle">Week of {dayMonth(state.weekStartsOn)} · est. £{state.plan.estimatedWeeklyCost.toFixed(2)} groceries</p></div><div className="flex gap-2"><Button variant="secondary" size="sm" onClick={() => setGrocery(true)}><ShoppingBasket /> Grocery list</Button><Button variant="ghost" size="sm" onClick={regenerate} loading={busy}><RefreshCw /> Rebuild</Button></div></div>
+      <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-display text-lg">This week&apos;s meals</h2><p className="text-xs text-fg-subtle">Week of {dayMonth(state.weekStartsOn)} · est. £{state.plan.estimatedWeeklyCost.toFixed(2)} groceries</p></div><div className="flex gap-2"><Button variant="secondary" size="sm" onClick={() => setGrocery(true)}><ShoppingBasket /> Grocery list</Button><Button variant="ghost" size="sm" onClick={regenerate} loading={busy}><RefreshCw /> Rebuild</Button></div></div>
       {state.coachNote ? <details className="text-sm text-fg-muted"><summary className="cursor-pointer text-xs uppercase tracking-label text-fg-subtle">Coach note</summary><p className="mt-2">{state.coachNote}</p></details> : null}
       <ChipGroup role="tablist">{DAYS.map((d, i) => <Chip key={d} role="tab" aria-selected={day === i} selected={day === i} onClick={() => setDay(i)} className="h-8 px-3 text-xs">{d}</Chip>)}</ChipGroup>
       <div className="grid gap-3 sm:grid-cols-4"><MacroBar label="kcal" value={tot.calories} target={targets.calories} /><MacroBar label="protein" value={tot.proteinG} target={targets.proteinG} unit="g" /><MacroBar label="carbs" value={tot.carbsG} target={targets.carbsG} unit="g" /><MacroBar label="fat" value={tot.fatG} target={targets.fatG} unit="g" /></div>

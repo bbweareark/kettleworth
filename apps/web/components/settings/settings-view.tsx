@@ -1,6 +1,6 @@
 "use client";
 import { BAR_NAMES, BAR_CHOICES_KG, BAR_CHOICES_LB, DEFAULT_BARS_KG, kgToLb, lbToKg, type BarKind } from "@kettleworth/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Download, LogOut, Moon, Sun, Trash2, Plane, Thermometer, Bandage, Clock, Baby, CircleDot } from "lucide-react";
 import type { TrainingProfile } from "@kettleworth/types";
@@ -8,22 +8,26 @@ import { Button, Chip, ChipGroup, Field, Input, Segmented, Slider, toast } from 
 import { Panel } from "@/components/app/panel";
 import { Screen } from "@/components/app/screen";
 import { authClient } from "@/lib/auth-client";
+import { useClientValue } from "@/lib/use-client-value";
 
 export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { user: { name: string; email: string }; profile: TrainingProfile | null; aiSummary: string | null; providerCount: number; ai: boolean }) {
   const router = useRouter();
-  const [theme, setTheme] = useState<"system" | "light" | "dark">("dark");
+  // Carbon is the default, so the control reads "Carbon" before the cookie is known too.
+  const cookieTheme = useClientValue(() => (/(?:^|; )kw-theme=light/.test(document.cookie) ? "light" : "dark"), "dark" as const);
+  const [chosen, setChosen] = useState<"system" | "light" | "dark" | null>(null);
+  const theme = chosen ?? cookieTheme;
   const [p, setP] = useState<Partial<TrainingProfile>>(profile ?? {});
   const [busy, setBusy] = useState<string | null>(null);
   const [confirmText, setConfirmText] = useState("");
-  useEffect(() => { const m = document.cookie.match(/(?:^|; )kw-theme=(light|dark)/); if (m) setTheme(m[1] as "light" | "dark"); }, []);
+
   function applyTheme(t: "system" | "light" | "dark") {
-    setTheme(t);
+    setChosen(t);
     const year = 60 * 60 * 24 * 365;
     document.cookie = t === "system" ? "kw-theme=; path=/; max-age=0; samesite=lax" : `kw-theme=${t}; path=/; max-age=${year}; samesite=lax`;
     document.documentElement.dataset.theme = t === "light" ? "light" : "dark";
   }
   async function save() { setBusy("save"); const r = await fetch("/api/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ patch: p }) }); setBusy(null); if (!r.ok) return toast.error("Couldn't save"); toast.success("Profile updated. Regenerate your programme to apply changes."); router.refresh(); }
-  async function del() { setBusy("delete"); const r = await fetch("/api/account/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ confirm: "DELETE" }) }); setBusy(null); if (!r.ok) return toast.error("Couldn't delete"); await authClient.signOut(); window.location.href = "/"; }
+  async function del() { setBusy("delete"); const r = await fetch("/api/account/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ confirm: "DELETE" }) }); setBusy(null); if (!r.ok) return toast.error("Couldn't delete"); await authClient.signOut(); window.location.assign(new URL("/", window.location.origin)); }
   const set = (patch: Partial<TrainingProfile>) => setP((x) => ({ ...x, ...patch }));
   const rit = p.rituals ?? {};
   const setRit = (patch: Partial<NonNullable<TrainingProfile["rituals"]>>) => set({ rituals: { ...rit, ...patch } });
@@ -85,7 +89,7 @@ export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { 
       </Panel>
       <Panel title="Your data">
         <p className="measure text-sm text-fg-muted">Export everything we hold about you as JSON, or delete your account. Deleting revokes {providerCount} connected provider{providerCount === 1 ? "" : "s"}, removes all synced health data and cannot be undone.</p>
-        <div className="mt-4 flex flex-wrap gap-2"><Button asChild variant="secondary"><a href="/api/account/export" download><Download /> Export my data</a></Button><Button variant="ghost" onClick={async () => { await authClient.signOut(); window.location.href = "/"; }}><LogOut /> Sign out</Button></div>
+        <div className="mt-4 flex flex-wrap gap-2"><Button asChild variant="secondary"><a href="/api/account/export" download><Download /> Export my data</a></Button><Button variant="ghost" onClick={async () => { await authClient.signOut(); window.location.assign(new URL("/", window.location.origin)); }}><LogOut /> Sign out</Button></div>
         <div className="mt-5 rounded-md border border-rule-strong p-4">
           <p className="meta">Delete account</p>
           <div className="mt-2 flex flex-wrap items-center gap-2"><Input className="max-w-[200px]" placeholder='Type "DELETE"' value={confirmText} onChange={(e) => setConfirmText(e.target.value)} aria-label="Type DELETE to confirm" /><Button variant="danger" disabled={confirmText !== "DELETE"} loading={busy === "delete"} onClick={del}><Trash2 /> Delete permanently</Button></div>

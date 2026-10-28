@@ -1,5 +1,4 @@
 "use client";
-import * as React from "react";
 import * as S from "@radix-ui/react-slider";
 import { cn } from "../lib/cn";
 export function Slider({ className, ...p }: S.SliderProps) {

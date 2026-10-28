@@ -1,11 +1,12 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Swords, Shield, Check, Timer, Flame, ChevronRight, Home } from "lucide-react";
 import { shouldAskAboutSession, pastDayLabel, type SideQuest } from "@kettleworth/core";
 import { Button, cn, toast } from "@kettleworth/ui";
+import { useClientValue } from "@/lib/use-client-value";
 
 type Board = {
   main: { sessionId: string; name: string; scheduledOn: string; status: string; points: number; overdue: boolean } | null;
@@ -25,8 +26,8 @@ export function QuestBoard({ board: initial, todayIso }: { board: Board; todayIs
   const [board, setBoard] = useState(initial);
   const [busy, setBusy] = useState<string | null>(null);
   const [claimed, setClaimed] = useState(false);
-  const [localHour, setLocalHour] = useState<number | null>(null);
-  useEffect(() => { setLocalHour(new Date().getHours()); }, []);
+  // The hour where the reader is, which the server cannot know.
+  const localHour = useClientValue(() => new Date().getHours(), null as number | null);
 
   const ask = useMemo(() => {
     if (!board.main || localHour == null) return false;
@@ -85,7 +86,7 @@ export function QuestBoard({ board: initial, todayIso }: { board: Board; todayIs
                   <p className="font-display text-lg">{board.main.overdue ? `Did you do ${board.main.name} ${pastDayLabel(board.main.scheduledOn, todayIso)}?` : "Did you train today?"}</p>
                   <p className="text-sm text-fg-muted">Answer honestly. There is a way to keep the week alive either way.</p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <Button size="sm" loading={busy === "done"} onClick={() => answer("done")}><Check className="size-4" />Yes, it's done</Button>
+                    <Button size="sm" loading={busy === "done"} onClick={() => answer("done")}><Check className="size-4" />Yes, it&apos;s done</Button>
                     <Button size="sm" variant="secondary" loading={busy === "not_yet"} onClick={() => answer("not_yet")}>Not yet, later</Button>
                     <Button size="sm" variant="secondary" loading={busy === "swap"} onClick={() => answer("swap")}><Home className="size-4" />No, give me 10 minutes</Button>
                   </div>

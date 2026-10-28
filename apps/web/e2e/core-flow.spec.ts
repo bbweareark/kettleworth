@@ -1,6 +1,11 @@
 import { test, expect } from "@playwright/test";
 
-const email = `e2e-${Date.now()}@kettleworth.test`;
+/*
+ * Unique per worker, not just per millisecond: the two projects start together, and a
+ * timestamp alone can collide, which surfaces as the second sign-up hanging rather than as a
+ * readable "that email is taken".
+ */
+const email = `e2e-${Date.now()}-${process.env.TEST_PARALLEL_INDEX ?? "0"}-${Math.random().toString(36).slice(2, 7)}@kettleworth.test`;
 const password = "correct-horse-battery";
 
 test.describe.configure({ mode: "serial" });
