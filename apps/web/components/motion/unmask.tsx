@@ -1,5 +1,6 @@
 "use client";
 import { motion, useReducedMotion } from "motion/react";
+import { artSrcSet, FULL_BLEED } from "@/lib/art-srcset";
 
 /**
  * Motion signature 2: photography enters by unmasking from the bottom edge, never by fading.
@@ -11,19 +12,30 @@ import { motion, useReducedMotion } from "motion/react";
  *
  * Reduced motion renders the image in place with no clip at all.
  */
-export function Unmask({ src, alt = "", className, priority }: { src: string; alt?: string; className?: string; priority?: boolean }) {
+export function Unmask({ src, alt = "", className, priority, sizes = FULL_BLEED }: { src: string; alt?: string; className?: string; priority?: boolean; sizes?: string }) {
   const reduce = useReducedMotion();
-  return (
+  const webp = artSrcSet(src);
+  const img = (
     <motion.img
       src={src}
       alt={alt}
       aria-hidden={alt === "" ? true : undefined}
       fetchPriority={priority ? "high" : undefined}
+      loading={priority ? "eager" : "lazy"}
       decoding="async"
       initial={reduce ? false : { clipPath: "inset(100% 0 0 0)" }}
       animate={{ clipPath: "inset(0% 0 0 0)" }}
       transition={{ duration: 0.76, ease: [0.25, 1, 0.5, 1] }}
       className={className}
     />
+  );
+  // The JPEG stays as the fallback source; a browser that takes the WebP never fetches it.
+  return webp ? (
+    <picture>
+      <source type="image/webp" srcSet={webp} sizes={sizes} />
+      {img}
+    </picture>
+  ) : (
+    img
   );
 }

@@ -4,6 +4,7 @@ import { getProfile, getCommunityProfile, findMatches, partners, pendingRequests
 import { CommunityView } from "@/components/community/community-view";
 import { Screen } from "@/components/app/screen";
 import { ScreenHero } from "@/components/app/hero";
+import { levelAt } from "@kettleworth/core";
 
 export const metadata = { title: "Community" };
 export const dynamic = "force-dynamic";
@@ -17,15 +18,26 @@ export default async function Community() {
   /*
    * The one number here, from design/SECTION-MAP.md: your Growth. It is the only figure on
    * this screen that is yours rather than someone else's, and it is what every row on the
-   * board is ranked by, so putting it at the top names the unit the screen is counted in.
+   * board is ranked by.
+   *
+   * The supporting line used to read "Level 0, 3 on the board", which was wrong twice over: a
+   * private profile is not on the board at all, and it was being given a rank among the only
+   * other rows the query could see, while levels started at zero so every new member read as
+   * having none. What is left is true whoever is looking - how far the next level is.
    */
   const mine = board.find((b) => b.me) ?? null;
-  const rank = mine ? board.findIndex((b) => b.me) + 1 : 0;
-  const second = mine
-    ? rank === 1
-      ? "Top of the board."
-      : `Level ${mine.level}${rank ? `, ${rank} on the board` : ""}.`
-    : "Set your profile to members-only to appear on the board.";
+  const onBoard = cp != null && cp.visibility !== "private";
+  const rank = onBoard && mine ? board.findIndex((b) => b.me) + 1 : 0;
+  const toNext = mine ? Math.max(0, levelAt(mine.level + 1) - mine.growth) : 0;
+  const second = !cp
+    ? "Create a profile and your Growth starts counting."
+    : rank === 1
+      ? `Level ${mine!.level}, top of the board.`
+      : rank > 1
+        ? `Level ${mine!.level}, ${rank} on the board.`
+        : mine
+          ? `Level ${mine.level}. ${toNext} to the next.`
+          : "Log a session and your Growth starts counting.";
 
   return (
     <>

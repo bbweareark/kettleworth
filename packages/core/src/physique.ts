@@ -58,11 +58,19 @@ export function growthPoints(g: GrowthInputs): { total: number; breakdown: { lab
     { label: "Rest game", points: (g.plateDrills ?? 0) * GAME_POINTS_PER_RUN },
   ];
   const total = breakdown.reduce((a, b) => a + b.points, 0);
-  // Levels widen: 500, 1200, 2100, 3200 ... (n^2 * 100 + 400n)
-  let level = 0; while (total >= levelAt(level + 1)) level++;
+  /*
+   * Levels start at 1 and widen: level 2 at 500, 3 at 1200, 4 at 2100 (n^2 * 100 + 400n).
+   *
+   * They used to start at 0, so everyone who had not yet earned 500 Growth - which is every
+   * new member, and anyone the app is showing a partner card for - read as "Level 0". No
+   * product counts its first level as zero, and it looked like a figure that had failed to
+   * load rather than a level.
+   */
+  let level = 1; while (total >= levelAt(level + 1)) level++;
   return { total, breakdown, level, nextLevelAt: levelAt(level + 1) };
 }
-const levelAt = (n: number) => n * n * 100 + 400 * n;
+/** The total at which level `n` is reached. Level 1 is the floor, so it needs nothing. */
+export const levelAt = (n: number) => (n <= 1 ? 0 : (n - 1) * (n - 1) * 100 + 400 * (n - 1));
 
 /** Trend summary for a series: slope per week and a plain sentence. */
 export function trend(points: { date: string; value: number | null }[], unit: string, lowerIsBetter = false): { perWeek: number | null; sentence: string } {

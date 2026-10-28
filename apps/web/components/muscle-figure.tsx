@@ -1,4 +1,5 @@
 import { cn } from "@kettleworth/ui";
+import { artSrcSet } from "@/lib/art-srcset";
 
 /**
  * Bronze figure with the working muscles lit from within. One base figure per sex, front and back, and one lit
@@ -36,7 +37,7 @@ export function MuscleFigure({ muscles, sex, className, size = "md", caption = t
   return (
     <figure className={cn("flex shrink-0 flex-col items-center gap-1.5", className)}>
       <div className={cn("relative overflow-hidden border border-rule", dim)}>
-        <img src={figureSrc(sex, lead)} alt={lead ? `${GROUP_LABEL[lead]} lit on a bronze figure` : "Bronze figure"} className="size-full object-cover object-top" />
+        <img src={figureSrc(sex, lead)} srcSet={artSrcSet(figureSrc(sex, lead))} sizes="200px" loading="lazy" decoding="async" alt={lead ? `${GROUP_LABEL[lead]} lit on a bronze figure` : "Bronze figure"} className="size-full object-cover object-top" />
         <div aria-hidden className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_45%,transparent_40%,rgba(0,0,0,0.35)_100%)]" />
       </div>
       {caption && groups.length ? <figcaption className="max-w-[9rem] text-center text-2xs uppercase tracking-label text-fg-subtle">{groups.map((g) => GROUP_LABEL[g]).join(" · ")}</figcaption> : null}
@@ -52,7 +53,7 @@ export function MuscleMap({ muscles, sex, className }: { muscles: string[]; sex?
   return (
     <div className={cn("flex gap-2", className)}>
       {[["front", front], ["back", back]].map(([view, g]) => (
-        <div key={view as string} className="relative aspect-[3/4] w-1/2 overflow-hidden border border-rule"><img src={figureSrc(sex, g as MuscleGroup | null, view as "front" | "back")} alt="" className="size-full object-cover object-top" /></div>
+        <div key={view as string} className="relative aspect-[3/4] w-1/2 overflow-hidden border border-rule"><img src={figureSrc(sex, g as MuscleGroup | null, view as "front" | "back")} srcSet={artSrcSet(figureSrc(sex, g as MuscleGroup | null, view as "front" | "back"))} sizes="200px" loading="lazy" decoding="async" alt="" className="size-full object-cover object-top" /></div>
       ))}
     </div>
   );
@@ -67,7 +68,7 @@ export function MuscleGrid({ setsByMuscle, lastWeek, sex, className }: { setsByM
     <div className={cn("grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6", className)}>
       {ALL_GROUPS.map((g) => { const n = now[g] ?? 0; const d = n - (prev[g] ?? 0); const lit = n > 0; return (
         <div key={g} className={cn("relative overflow-hidden border transition-all", lit ? "border-volt" : "border-rule")}>
-          <img src={figureSrc(sex, lit ? g : null, BACK_VIEW.has(g) ? "back" : "front")} alt="" className={cn("aspect-[3/4] w-full object-cover object-top", !lit && "opacity-40 saturate-50")} />
+          <img src={figureSrc(sex, lit ? g : null, BACK_VIEW.has(g) ? "back" : "front")} srcSet={artSrcSet(figureSrc(sex, lit ? g : null, BACK_VIEW.has(g) ? "back" : "front"))} sizes="160px" loading="lazy" decoding="async" alt="" className={cn("aspect-[3/4] w-full object-cover object-top", !lit && "opacity-40 saturate-50")} />
           <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.75))] p-2">
             <div className="text-2xs uppercase tracking-label text-fg-subtle">{GROUP_LABEL[g]}</div>
             <div className="flex items-baseline gap-1"><span className={cn("font-display text-xl tabular", lit ? "text-fg" : "text-fg-subtle")}>{n}</span><span className="text-2xs text-fg-subtle">sets</span>{d !== 0 && lastWeek ? <span className={cn("ml-auto text-2xs tabular", d > 0 ? "text-fg" : "text-volt")}>{d > 0 ? "+" : ""}{d}</span> : null}</div>

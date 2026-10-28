@@ -591,3 +591,56 @@ spec also derived its account email from `Date.now()` alone at module scope, and
 projects start within milliseconds of each other. A collision there surfaces as exactly this
 hang rather than as a readable "that email is taken", so the email now carries the worker
 index and a random suffix.
+
+
+## Mobile fixes and performance (28 Oct 2026)
+
+### Two things that were broken
+
+The floating nav pill is `fixed`, so it sat over **whatever scrolled under it**. On Today that
+reads as intentional - the thing underneath is a photograph - but everywhere else it covered
+content, and on Community it covered the handle and the Edit profile link. It now slides out
+of the way on the way down the page and returns on the way up. Nothing about how it looks
+changed; it just stops standing on the content.
+
+Growth levels started at **0**, so every new member, and every partner card, read "Level 0" -
+which looks like a figure that failed to load rather than a level. Levels are 1-based now; the
+thresholds themselves are untouched. The Community line also claimed a **board rank for
+private profiles**, who are not on the board at all. It says how far the next level is
+instead, which is true whoever is looking.
+
+### Performance, without touching the design
+
+Measured against a production build, not inferred:
+
+| | before | after |
+|---|---|---|
+| Today images | 613KB | **28KB** |
+| Today JS | 820KB | **760KB** |
+| Progress images | 452KB | **53KB** |
+| Progress JS | 1221KB | **728KB** |
+| Community images | 216KB | **17KB** |
+
+**Images were the headline.** The art is 2688x1520 and was going to a 390px phone untouched -
+the Today hero alone was 605KB and it is the LCP element. `scripts/art-webp.sh` writes an
+800px and a 1600px WebP beside each source (605KB becomes 21KB, visually identical), and the
+images carry a `srcset` so the browser picks. The variants are committed, so the build and the
+deploy need nothing; only the script needs `cwebp`, and only when the art changes.
+
+**Recharts, 361KB, was loading with Progress** for charts you have to scroll twice to reach.
+`next/dynamic` alone was not enough - it fetches on mount - so each chart also waits until the
+reader is within 400px of it. The leak that kept it in the bundle anyway was a re-export:
+`VolumeCompare` is bars made of divs, but it lived in the same module as the charts, so
+importing it pulled the whole library. It now lives in a module with no Recharts in it.
+
+**The cache warm-up fired thirteen parallel requests** the moment the service worker was
+ready, every time Today loaded, competing with the page still trying to become interactive. It
+waits for idle now, goes three at a time, and does not run at all on a metered or 2G
+connection - the person it would hurt most.
+
+**`optimizePackageImports`** for lucide-react, recharts and motion: config only, and it
+replaced a 285KB barrel chunk with a 117KB one.
+
+What is left is ~730-760KB of JS on every screen, nearly all React, the Next runtime, Radix
+and motion. Cutting it further means changing the animation plumbing across every component,
+which is not worth the risk to a design that is signed off.

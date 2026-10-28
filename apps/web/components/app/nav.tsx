@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Home, Dumbbell, TrendingUp, Salad, MessageCircle, Menu, X } from "lucide-react";
 import { cn, BrandMark } from "@kettleworth/ui";
+import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 
 /**
  * Five tabs at the thumb, and a full-screen menu behind a pill for everything else.
@@ -42,6 +43,7 @@ export function AppNav({ name }: { name: string }) {
   const [open, setOpen] = useState(false);
   const active = useActive();
   const reduce = useReducedMotion();
+  const hidden = useHideOnScroll();
   const path = usePathname();
   /*
    * Onboarding is a corridor, not a destination: there is nothing to navigate to until the
@@ -68,7 +70,7 @@ export function AppNav({ name }: { name: string }) {
   return (
     <>
       {/* The floating pill group: wordmark left, menu right, over the content. */}
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-40">
+      <div className={cn("pointer-events-none fixed inset-x-0 top-0 z-40 transition-transform duration-300 ease-out", hidden && "-translate-y-[calc(100%+1rem)]")}>
         <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6">
           <Link
             href="/app"
@@ -92,7 +94,7 @@ export function AppNav({ name }: { name: string }) {
       </div>
 
       {/* Desktop: the five as a pill group, so a wide screen is not driven from a phone bar. */}
-      <nav aria-label="Primary" className="pointer-events-none fixed inset-x-0 top-0 z-30 hidden lg:block">
+      <nav aria-label="Primary" className={cn("pointer-events-none fixed inset-x-0 top-0 z-30 hidden transition-transform duration-300 ease-out lg:block", hidden && "-translate-y-[calc(100%+1rem)]")}>
         <div className="mx-auto flex w-full max-w-[1200px] justify-center pt-3">
           <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-rule bg-surface/90 p-1 backdrop-blur-sm">
             {PRIMARY.map((i) => {

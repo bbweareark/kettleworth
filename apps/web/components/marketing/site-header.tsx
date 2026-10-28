@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { Button, BrandMark, cn } from "@kettleworth/ui";
+import { useHideOnScroll } from "@/lib/use-hide-on-scroll";
 
 /**
  * The same floating pill group and full-screen menu the app uses.
@@ -29,6 +30,7 @@ export function SiteHeader({ signedIn }: { signedIn: boolean }) {
   const [open, setOpen] = useState(false);
   const path = usePathname();
   const reduce = useReducedMotion();
+  const hidden = useHideOnScroll();
   const cta = signedIn ? { href: "/app", label: "Open app" } : { href: "/sign-up", label: "Start free" };
 
   useEffect(() => {
@@ -42,7 +44,7 @@ export function SiteHeader({ signedIn }: { signedIn: boolean }) {
 
   return (
     <>
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-40">
+      <div className={cn("pointer-events-none fixed inset-x-0 top-0 z-40 transition-transform duration-300 ease-out", hidden && "-translate-y-[calc(100%+1rem)]")}>
         <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-3 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6">
           <Link
             href="/"

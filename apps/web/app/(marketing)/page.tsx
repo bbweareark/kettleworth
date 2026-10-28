@@ -3,6 +3,7 @@ import { Button, Figure, Readout } from "@kettleworth/ui";
 import { WeekTable } from "@/components/marketing/week-table";
 import { Conveyor } from "@/components/marketing/conveyor";
 import { Unmask } from "@/components/motion/unmask";
+import { artSrcSet } from "@/lib/art-srcset";
 import { getSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -114,15 +115,18 @@ export default async function Landing() {
               <Readout label="Set-by-set" value="every" note="load decision shown" />
             </div>
           </div>
-          <img
-            src="/art/grip.jpg"
-            alt="Chalked hands gripping a loaded barbell"
-            width={900}
-            height={900}
-            loading="lazy"
-            decoding="async"
-            className="aspect-square w-full rounded-lg object-cover"
-          />
+          <picture>
+            <source type="image/webp" srcSet={artSrcSet("/art/grip.jpg")} sizes="(min-width: 1024px) 26rem, 100vw" />
+            <img
+              src="/art/grip.jpg"
+              alt="Chalked hands gripping a loaded barbell"
+              width={900}
+              height={900}
+              loading="lazy"
+              decoding="async"
+              className="aspect-square w-full rounded-lg object-cover"
+            />
+          </picture>
         </div>
       </section>
 

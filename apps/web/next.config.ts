@@ -9,6 +9,12 @@ const config: NextConfig = {
   serverExternalPackages: ["postgres", "@anthropic-ai/sdk"],
   images: { remotePatterns: [{ protocol: "https", hostname: "raw.githubusercontent.com" }, { protocol: "https", hostname: "image.mux.com" }] },
   turbopack: {},
+  /*
+   * Barrel files: importing twenty icons from lucide-react's index pulls far more than twenty
+   * icons into the bundle unless the compiler is told to rewrite them into deep imports.
+   * Config only - nothing about what is rendered changes.
+   */
+  experimental: { optimizePackageImports: ["lucide-react", "recharts", "motion", "@kettleworth/ui"] },
   headers: async () => [{ source: "/(.*)", headers: [
     { key: "X-Frame-Options", value: "DENY" },
     { key: "X-Content-Type-Options", value: "nosniff" },

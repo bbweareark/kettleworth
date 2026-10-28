@@ -8,6 +8,7 @@ import { Button, Chip, ChipGroup, Field, Input, Textarea, Segmented, Slider, toa
 import { computeBaseline, kgToLb, lbToKg, cmToIn, inToCm, round, INTAKE_STEP_POINTS, INTAKE_COMPLETE_POINTS } from "@kettleworth/core";
 import { STEPS, JOURNEY, CHAPTERS, journeyArt, type StepId } from "./steps";
 import { LiveFigures } from "./live";
+import { artSrcSet } from "@/lib/art-srcset";
 
 type P = Partial<TrainingProfile>;
 type Turn = { role: "coach" | "user"; text: string; at: string };
@@ -122,7 +123,7 @@ export function Intake({ initial, step, name, ai }: { initial: TrainingProfile |
       */}
       <div className="relative h-[34vh] overflow-hidden lg:sticky lg:top-0 lg:h-dvh">
         <AnimatePresence initial={false}>
-          <motion.img key={art} src={art} alt="" aria-hidden initial={{ opacity: 0, scale: 1.04 }} animate={{ opacity: 1, scale: reduce ? 1 : 1.12 }} exit={{ opacity: 0 }} transition={{ opacity: { duration: 0.9 }, scale: { duration: 18, ease: "linear" } }} className="absolute inset-0 size-full object-cover object-top" />
+          <motion.img key={art} src={art} srcSet={artSrcSet(art)} sizes="(min-width: 1024px) 50vw, 100vw" alt="" aria-hidden initial={{ opacity: 0, scale: 1.04 }} animate={{ opacity: 1, scale: reduce ? 1 : 1.12 }} exit={{ opacity: 0 }} transition={{ opacity: { duration: 0.9 }, scale: { duration: 18, ease: "linear" } }} className="absolute inset-0 size-full object-cover object-top" />
         </AnimatePresence>
         <div aria-hidden className="scrim absolute inset-0" />
         <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-3 p-4 lg:p-8">
