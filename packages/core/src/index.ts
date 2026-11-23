@@ -12,6 +12,7 @@ export * from "./nutrition/mealplan";
 export * from "./readiness";
 export * from "./analytics";
 export * from "./physique";
+export * from "./movement-unit";
 export * from "./rest-content";
 export * from "./rituals";
 export * from "./programme/apply";

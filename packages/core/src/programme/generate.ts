@@ -83,7 +83,7 @@ export function generateProgramme(profile: TrainingProfile, library: ExerciseSum
         if (rotation === 1 && (slot.role === "secondary" || slot.role === "accessory")) p.repRange = undulate(p.repRange);
         p.restSeconds = restFor(ex, { role: slot.role, goal: profile.primaryGoal, topReps: p.repRange[1], experience: profile.experience }).seconds;
         const lower = LOWER_PATTERNS.has(ex.pattern) || ex.primaryMuscles.some((m) => ["quads", "hamstrings", "glutes"].includes(m));
-        let sets = buildSets(p, { e1rmKg: e1rm.get(ex.id), volumeScalar: 1, intensityScalar: 1, isDeload: false, lowerBody: lower, includeWarmup: slot.role === "primary" });
+        let sets = buildSets(p, { e1rmKg: e1rm.get(ex.id), volumeScalar: 1, intensityScalar: 1, isDeload: false, lowerBody: lower, includeWarmup: slot.role === "primary", movement: ex, role: slot.role });
         // Volume ceiling: trim this slot's working sets so no primary muscle exceeds MAX_SETS in the week; drop optional slots entirely.
         const working = sets.filter((x) => x.type === "working").length;
         const headroom = Math.min(...ex.primaryMuscles.map((m) => MAX_SETS - (weekSets[m] ?? 0)), working);
@@ -161,7 +161,7 @@ function scaleSessions(base: PlannedSession[], volumeScalar: number, intensitySc
       p.restSeconds = restFor(ex, { role: pe.role, goal: profile.primaryGoal, topReps: p.repRange[1], experience: profile.experience }).seconds;
       const lower = LOWER_PATTERNS.has(ex.pattern) || ex.primaryMuscles.some((m) => ["quads", "hamstrings", "glutes"].includes(m));
       const baseWorking = pe.sets.filter((x) => x.type === "working").length;
-      const sets = buildSets({ ...p, sets: baseWorking }, { e1rmKg: e1rm.get(ex.id), volumeScalar, intensityScalar, isDeload, lowerBody: lower, includeWarmup: pe.role === "primary" });
+      const sets = buildSets({ ...p, sets: baseWorking }, { e1rmKg: e1rm.get(ex.id), volumeScalar, intensityScalar, isDeload, lowerBody: lower, includeWarmup: pe.role === "primary", movement: ex, role: pe.role });
       return { ...pe, sets };
     }),
   }));

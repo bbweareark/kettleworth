@@ -21,7 +21,8 @@ export function WhenVisible({ children, placeholder, rootMargin = "400px" }: { c
     const el = ref.current;
     if (!el) return;
     // No observer (or a very old browser): show it rather than hide content behind a feature.
-    if (typeof IntersectionObserver === "undefined") { setShow(true); return; }
+    // Deferred a tick so it is not a state write during the effect itself.
+    if (typeof IntersectionObserver === "undefined") { queueMicrotask(() => setShow(true)); return; }
     const io = new IntersectionObserver((entries) => {
       if (entries.some((e) => e.isIntersecting)) { setShow(true); io.disconnect(); }
     }, { rootMargin });

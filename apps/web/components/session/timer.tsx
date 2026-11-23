@@ -7,18 +7,33 @@ import { Button } from "@kettleworth/ui";
 export function RestTimer({ seconds, onDone, onSkip, children, why }: { seconds: number; onDone: () => void; onSkip: () => void; children?: React.ReactNode; why?: string }) {
   const [left, setLeft] = useState(seconds);
   const [total, setTotal] = useState(seconds);
-  // Set when the interval starts, so nothing impure runs during render.
   const endAt = useRef(0);
   const done = useRef(false);
+
+  /*
+   * `onDone` is passed as an inline arrow, so it is a different function on every render of
+   * the player - and answering a question in the rest deck re-renders the player. While the
+   * deadline was set inside an effect that depended on it, every one of those renders pushed
+   * the deadline forward and the clock started again. Keeping the callback in a ref means the
+   * interval can stay put, and the deadline is only ever set when the rest period itself
+   * changes.
+   */
+  const fire = useRef(onDone);
+  useEffect(() => { fire.current = onDone; });
+
   useEffect(() => {
+    // No reset of `left` or `total` here: the player gives this component a fresh key for every
+    // rest period, so it is already a new mount with the right starting values. Writing them
+    // again would also undo a plus or minus the lifter had pressed.
     endAt.current = Date.now() + seconds * 1000;
+    done.current = false;
     const t = setInterval(() => {
       const l = Math.max(0, Math.round((endAt.current - Date.now()) / 1000));
       setLeft(l);
-      if (l === 0 && !done.current) { done.current = true; try { navigator.vibrate?.([120, 60, 120]); } catch {} beep(); onDone(); }
+      if (l === 0 && !done.current) { done.current = true; try { navigator.vibrate?.([120, 60, 120]); } catch {} beep(); fire.current(); }
     }, 250);
     return () => clearInterval(t);
-  }, [onDone, seconds]);
+  }, [seconds]);
   const adjust = (d: number) => { endAt.current += d * 1000; setTotal((t) => Math.max(5, t + d)); };
   const pct = total ? (left / total) * 100 : 0;
   const mm = Math.floor(left / 60), ss = String(left % 60).padStart(2, "0");

@@ -4,7 +4,7 @@ import { ArrowRight, ArrowUpRight, Play, Sparkles } from "lucide-react";
 import { Button, CoachPulse, Readout, ReadoutRow, type PulseItem } from "@kettleworth/ui";
 import { requireUser } from "@/lib/session";
 import { getProfile, getActiveProgramme, todayState, sessionSummary, upcomingSessions, getReadiness, getProgress, ensureNutritionPlan, connectedProviders, activitiesForDay, getSessionDetail, hasUnreadLetter, listPhotos, runWeeklyAdaptation, currentWeekState, questBoard, diversifyProgramme } from "@kettleworth/api";
-import { kgToLb, ritualNudges, pastDayLabel } from "@kettleworth/core";
+import { kgToLb, ritualNudges, pastDayLabel, describeTarget } from "@kettleworth/core";
 import { ActivityLog } from "@/components/today/activity-log";
 import { sessionArt, ART, genderedArt } from "@/lib/art";
 import { OfflineWarmup } from "@/components/app/offline-warmup";
@@ -135,8 +135,8 @@ export default async function Today() {
               return {
                 id: i.id,
                 name: i.exercise.name,
-                detail: f?.repRange ? `${f.repRange[0]}–${f.repRange[1]} reps @ RPE ${f.targetRpe ?? "–"}` : f?.reps != null ? `${f.reps} reps` : "—",
-                work: `${work.length} × ${f?.repRange ? `${f.repRange[0]}–${f.repRange[1]}` : f?.reps ?? "–"}`,
+                detail: f ? `${describeTarget(f)}${f.targetRpe ? ` @ RPE ${f.targetRpe}` : ""}` : "—",
+                work: `${work.length} × ${f ? describeTarget(f).replace(" reps", "") : "–"}`,
                 load: f?.weightKg != null ? String(w(f.weightKg)) : "—",
                 done: i.loggedSets.filter((l) => l.completed && work.some((x) => x.setNumber === l.setNumber)).length,
                 total: work.length,

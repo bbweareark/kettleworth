@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight, Check, ChevronRight, ChevronDown, ChevronUp, Inf
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { LoggedSet, PlannedSet, ExerciseSummary } from "@kettleworth/types";
 import { Badge, Button, Card, CardContent, Progress, Sheet, SheetContent, Segmented, Textarea, CoachPulse, Dialog, DialogContent, cn, toast, type PulseItem } from "@kettleworth/ui";
-import { kgToLb, lbToKg, round, restFor, autoregulate, loadStep, loadModel, loadLadder, platesPerSide, describePlates, DEFAULT_BARS_KG, BAR_CHOICES_KG, BAR_CHOICES_LB, BAR_NAMES, type BarKind } from "@kettleworth/core";
+import { kgToLb, lbToKg, round, restFor, autoregulate, loadStep, loadModel, loadLadder, platesPerSide, describePlates, repUnitFor, DEFAULT_BARS_KG, BAR_CHOICES_KG, BAR_CHOICES_LB, BAR_NAMES, type BarKind } from "@kettleworth/core";
 import { ExerciseMedia } from "@/components/library/media";
 import { RestTimer, ElapsedClock } from "./timer";
 import { FormCheck, type CheckCard } from "./form-check";
@@ -69,18 +69,25 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
     setStarting(false);
   }
 
-  const logSet = useCallback(async (inst: Instance, set: PlannedSet, values: { weightKg: number | null; reps: number | null; rpe: number | null; barKg?: number | null }, confirmed = false): Promise<{ ok: true } | { ok: false; reason: string }> => {
+  const logSet = useCallback(async (inst: Instance, set: PlannedSet, values: { weightKg: number | null; reps: number | null; durationSeconds?: number | null; rpe: number | null; barKg?: number | null }, confirmed = false): Promise<{ ok: true } | { ok: false; reason: string }> => {
     if (session.status === "planned") await start();
-    const logged: LoggedSet = { setNumber: set.setNumber, reps: values.reps, weightKg: values.weightKg, rpe: values.rpe, durationSeconds: null, completed: true, loggedAt: new Date().toISOString(), ...(values.barKg != null ? { barKg: values.barKg } : {}), ...(confirmed ? { confirmed: true } : {}) };
+    const logged: LoggedSet = { setNumber: set.setNumber, reps: values.reps, weightKg: values.weightKg, rpe: values.rpe, durationSeconds: values.durationSeconds ?? null, completed: true, loggedAt: new Date().toISOString(), ...(values.barKg != null ? { barKg: values.barKg } : {}), ...(confirmed ? { confirmed: true } : {}) };
     const r = await postResilient<{ pr: { headline: string; detail: string; value: number } | null }>(`/api/instance/${inst.id}/log`, logged);
     if (!r.ok && "needsConfirmation" in r) return { ok: false, reason: r.reason };
     setInstances((prev) => prev.map((i) => (i.id === inst.id ? { ...i, loggedSets: [...i.loggedSets.filter((l) => l.setNumber !== set.setNumber), logged].sort((a, b) => a.setNumber - b.setNumber) } : i)));
     if (!r.ok) { setQueued((q) => q + 1); toast.message("Saved on this device", { description: "We'll sync when you're back online.", icon: <WifiOff className="size-4" /> }); }
     else if (r.data.pr) setPr({ name: inst.exercise.name, headline: r.data.pr.headline, detail: r.data.pr.detail });
     // Coach reads the set back: on target, above, or below, from the actual numbers.
-    const target = set.repRange ?? (set.reps != null ? [set.reps, set.reps] : null);
+    const heldTarget = set.durationSeconds;
+    const target = heldTarget != null ? null : set.repRange ?? (set.reps != null ? [set.reps, set.reps] : null);
     const rpeGap = values.rpe != null && set.targetRpe != null ? values.rpe - set.targetRpe : null;
     let read = `Set ${set.setNumber} logged.`;
+    if (heldTarget != null && values.durationSeconds != null) {
+      const d = values.durationSeconds - heldTarget;
+      read = d >= 5 ? `${values.durationSeconds}s held, ${d}s past the ${heldTarget}s target. Add load or time next set.`
+        : d <= -5 ? `${values.durationSeconds}s against a ${heldTarget}s target. Hold the position rather than the clock: shorten it next time and keep the brace.`
+        : `${values.durationSeconds}s, on the ${heldTarget}s target.`;
+    }
     if (target && values.reps != null) read = values.reps > target[1] ? `${values.reps} reps beats the ${target[0]} to ${target[1]} target. Add load next set if RPE allows.` : values.reps < target[0] ? `${values.reps} reps is under the ${target[0]} to ${target[1]} range. Drop 5 to 7% for the next set.` : `${values.reps} reps, inside the ${target[0]} to ${target[1]} range.${rpeGap != null ? (rpeGap <= -1 ? " RPE says you had more: nudge the load up." : rpeGap >= 1.5 ? " RPE ran hot: hold or ease the load." : " Effort on target.") : ""}`;
     if (confirmed) read += " Logged as unusual: it will not count as a record until you repeat it.";
     if (prediction != null && values.reps != null) { const hit = Math.abs(prediction - values.reps) <= 1; read += hit ? ` You called ${prediction} and got ${values.reps}: good self-knowledge, +10 Growth.` : ` You called ${prediction}, got ${values.reps}. Calibration improves with every honest set.`; fetch("/api/rest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: session.id, kind: "predict", itemId: `predict-hit-${inst.id}-${set.setNumber}`, correct: hit, detail: { predicted: prediction, actual: values.reps } }) }).catch(() => {}); setPrediction(null); }
@@ -126,7 +133,20 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
     const r = await fetch(`/api/instance/${cur!.id}/swap`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ toExerciseId: to.id, reason: "user swap", permanent }) });
     if (!r.ok) return toast.error("Couldn't swap");
     const ex = await r.json();
-    setInstances((prev) => prev.map((i) => (i.id === cur!.id ? { ...i, exerciseId: ex.id, exercise: ex, plannedSets: i.plannedSets.map((s) => ({ ...s, weightKg: null })), loggedSets: [], swappedReason: "user swap" } : i)));
+    setInstances((prev) => prev.map((i) => (i.id === cur!.id ? {
+      ...i,
+      exerciseId: ex.id,
+      exercise: ex,
+      plannedSets: i.plannedSets.map((s) => ({ ...s, weightKg: null })),
+      loggedSets: [],
+      swappedReason: "user swap",
+      // Everything below was computed for the movement that is no longer here.
+      cautions: ex.cautions ?? [],
+      rationale: ex.rationale ?? `Swapped in for ${i.exercise.name}.`,
+      video: ex.video ?? null,
+      benchmark: ex.benchmark ?? null,
+      lastTime: ex.lastTime ?? null,
+    } : i)));
     setSwapOpen(false);
     toast.success(`Swapped to ${ex.name}${permanent ? " for the rest of the programme" : ""}`);
   }
@@ -176,11 +196,11 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
         {showInfo && (<div className="border-t border-rule bg-bg p-4 text-sm"><div className="grid gap-4 sm:grid-cols-2"><div><div className="eyebrow mb-1">Cues</div><ul className="space-y-1 text-fg-muted">{(cur.exercise.cues.length ? cur.exercise.cues : cur.exercise.instructions.slice(0, 4)).map((c) => <li key={c}>{c}</li>)}</ul></div><div><div className="eyebrow mb-1">Watch for</div><ul className="space-y-1 text-fg-muted">{cur.exercise.commonMistakes.length ? cur.exercise.commonMistakes.map((c) => <li key={c}>{c}</li>) : <li>Control the eccentric; stop 1 to 2 reps shy of failure unless told otherwise.</li>}</ul>{cur.cautions.filter((c) => c.level === "info").length ? <><div className="eyebrow mb-1 mt-3">Safety</div><ul className="space-y-1 text-fg-muted">{cur.cautions.filter((c) => c.level === "info").map((c, k) => <li key={k}>{c.text}</li>)}</ul></> : null}<p className="mt-2 text-xs text-fg-subtle">{cur.rationale}</p><Link href={`/library/${cur.exercise.slug}`} className="mt-2 inline-block text-volt hover:underline">Full exercise page</Link></div></div></div>)}
       </Card>
 
-      {!curDone && <FormCheck key={`check-${cur.id}`} exerciseId={cur.exerciseId} name={cur.exercise.name} cards={cards} />}
+      {!curDone && <FormCheck key={`check-${cur.exerciseId}`} exerciseId={cur.exerciseId} name={cur.exercise.name} cards={cards} />}
 
       {rest != null ? <RestTimer key={rest + "-" + doneSets} seconds={rest} why={restWhy} onDone={() => setRest(null)} onSkip={() => setRest(null)}><RestDeck units={units} sessionId={session.id} seedKey={`${session.id}:${cur.id}:${doneSets}`} restSeconds={rest} seen={seenRest} onSeen={(id) => setSeenRest((s) => [...s, id])} tips={restCards} nextSet={(() => { const n = cur.plannedSets.find((ps) => !cur.loggedSets.some((l) => l.setNumber === ps.setNumber && l.completed)); return n ? { repRange: n.repRange, reps: n.reps } : null; })()} onPrediction={setPrediction} /></RestTimer> : null}
 
-      <SetConsole key={`console-${cur.id}`} inst={cur} units={units} barWeights={barWeights} onBarChange={saveBar} onLog={(set, v, confirmed) => logSet(cur, set, v, confirmed)} onReset={resetExercise} />
+      <SetConsole key={`console-${cur.exerciseId}`} inst={cur} units={units} barWeights={barWeights} onBarChange={saveBar} onLog={(set, v, confirmed) => logSet(cur, set, v, confirmed)} onReset={resetExercise} />
 
       <div className="flex items-center justify-between gap-3 pb-6">
         <Button variant="ghost" disabled={idx === 0} onClick={() => { setIdx((i) => i - 1); setRest(null); }}><ArrowLeft /> Previous</Button>
@@ -199,7 +219,9 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
 function PrescriptionNumerals({ sets }: { sets: PlannedSet[] }) {
   const w = sets.filter((s) => s.type === "working"); const f = w[0];
   if (!f) return null;
-  const cells: [string, string][] = [[String(w.length), "sets"], [f.repRange ? `${f.repRange[0]}-${f.repRange[1]}` : String(f.reps ?? ""), "reps"]];
+  const cells: [string, string][] = f.durationSeconds != null
+    ? [[String(w.length), "sets"], [String(f.durationSeconds), "seconds"]]
+    : [[String(w.length), "sets"], [f.repRange ? `${f.repRange[0]}-${f.repRange[1]}` : String(f.reps ?? ""), "reps"]];
   if (f.targetRpe) cells.push([String(f.targetRpe), "rpe"]);
   cells.push([`${Math.round(f.restSeconds / 60 * 10) / 10}`, "min rest"]);
   if (f.tempo) cells.push([f.tempo, "tempo"]);
@@ -251,7 +273,7 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
     setW(next === "side" ? String(Math.max(0, round((totalDisp - barDisp) / 2, 2))) : String(round(totalDisp, 2)));
     setTyped((t) => ({ ...t, w: true }));
   }
-  const [r, setR] = useState(logged?.reps != null ? String(logged.reps) : set.reps != null ? String(set.reps) : set.repRange ? String(set.repRange[1]) : "");
+  const [r, setR] = useState(seedCount(logged, set));
   const [rpe, setRpe] = useState<number | null>(logged?.rpe ?? set.targetRpe ?? null);
   const [busy, setBusy] = useState(false);
   const [challenge, setChallenge] = useState<string | null>(null);
@@ -261,7 +283,16 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
    * remounting it would restart the keypad and the exit animation mid-session.
    */
   // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
-  useEffect(() => { const l = doneOf(set.setNumber); setW(toField(l?.weightKg ?? set.weightKg)); setR(l?.reps != null ? String(l.reps) : set.reps != null ? String(set.reps) : set.repRange ? String(set.repRange[1]) : ""); setRpe(l?.rpe ?? set.targetRpe ?? null); setChallenge(null); setTyped({ w: false, r: false }); }, [set.setNumber]);
+  useEffect(() => { const l = doneOf(set.setNumber); setW(toField(l?.weightKg ?? set.weightKg)); setR(seedCount(l, set)); setRpe(l?.rpe ?? set.targetRpe ?? null); setChallenge(null); setTyped({ w: false, r: false }); }, [set.setNumber]);
+  /*
+   * A plank is held, not repeated. The console used to ask for reps whatever the movement was,
+   * because nothing told it otherwise; `repUnitFor` reads the exercise and this drives the
+   * second figure, the keypad, the target line and the field that gets written.
+   */
+  const timed = repUnitFor(inst.exercise) === "seconds";
+  const countLabel = timed ? "Seconds" : "Reps";
+  const countUnit = timed ? "s" : "reps";
+
   // Which figure the key row drives. One pad, two targets (21st.dev Number Pad).
   const [pad, setPad] = useState<"w" | "r">("w");
   // The keypad is tall enough to push the figure off the top of a phone, and typing a number
@@ -272,9 +303,19 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
     const id = requestAnimationFrame(() => padRow.current?.scrollIntoView({ block: "start", behavior: "smooth" }));
     return () => cancelAnimationFrame(id);
   }, [pad]);
-  const values = () => { const t = fieldToTotalDisp(w); return { weightKg: t == null ? null : metric ? t : lbToKg(t), reps: r === "" ? null : Number(r), rpe, barKg: model.kind === "bar" ? barKg : null }; };
+  const values = () => {
+    const t = fieldToTotalDisp(w);
+    const n = r === "" ? null : Number(r);
+    return {
+      weightKg: t == null ? null : metric ? t : lbToKg(t),
+      reps: timed ? null : n,
+      durationSeconds: timed ? n : null,
+      rpe,
+      barKg: model.kind === "bar" ? barKg : null,
+    };
+  };
   const submit = async (confirmed = false) => { setBusy(true); const res = await onLog(set, values(), confirmed); setBusy(false); if (!res.ok) setChallenge(res.reason); else setChallenge(null); };
-  const target = set.repRange ? `${set.repRange[0]} to ${set.repRange[1]}` : set.reps != null ? String(set.reps) : "";
+  const target = set.durationSeconds != null ? `${set.durationSeconds}` : set.repRange ? `${set.repRange[0]} to ${set.repRange[1]}` : set.reps != null ? String(set.reps) : "";
   const unit = metric ? "kg" : "lb";
   const done = !!logged;
   const totalNow = fieldToTotalDisp(w);
@@ -338,8 +379,8 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
               </span>
             </button>
             <button type="button" onClick={() => setPad("r")} aria-pressed={pad === "r"} className="shrink-0 text-right"
-              aria-label={`Edit the reps, currently ${r || 0}`}>
-              <span className="meta block">Reps</span>
+              aria-label={`Edit the ${countLabel.toLowerCase()}, currently ${r || 0}`}>
+              <span className="meta block">{countLabel}</span>
               <span className={cn("font-display mt-1 block leading-none transition-colors", pad === "r" ? "text-figure text-volt" : "text-4xl text-fg")}>
                 <span className="tabular">{r || "0"}</span>
               </span>
@@ -349,9 +390,9 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
           <div className="mt-4">
             <Keypad
               key={pad}
-              label={pad === "w" ? model.label.toLowerCase() : "reps"}
+              label={pad === "w" ? model.label.toLowerCase() : countLabel.toLowerCase()}
               value={pad === "w" ? w : r}
-              unit={pad === "w" ? unit : "reps"}
+              unit={pad === "w" ? unit : countUnit}
               decimal={pad === "w"}
               pristine={pad === "w" ? !typed.w : !typed.r}
               quick={pad === "w" && !sideMode ? ladder.values : undefined}
@@ -552,6 +593,19 @@ function Benchmark({ inst, units, onUse }: { inst: Instance; units: "metric" | "
 
 /** Plain words for effort, and the RPE each maps to. The numbers stay in the data and in the
  *  accessible name; the face of the app never shows them, because "RPE 9" is jargon. */
+/**
+ * What the count field starts at: what was logged if the set is done, otherwise what the plan
+ * asks for - seconds for a held movement, the top of the rep range for a counted one.
+ */
+function seedCount(logged: LoggedSet | null | undefined, set: PlannedSet): string {
+  if (logged?.durationSeconds != null) return String(logged.durationSeconds);
+  if (logged?.reps != null) return String(logged.reps);
+  if (set.durationSeconds != null) return String(set.durationSeconds);
+  if (set.reps != null) return String(set.reps);
+  if (set.repRange) return String(set.repRange[1]);
+  return "";
+}
+
 const EFFORT = [["Easy", 6], ["Light", 7], ["Right", 8], ["Hard", 9], ["Max", 10]] as const;
 
 /** Nearest plain word for a target RPE, so a planned 8.5 reads as a word and not a decimal. */

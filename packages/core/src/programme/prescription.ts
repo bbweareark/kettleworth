@@ -1,6 +1,7 @@
 import type { TrainingProfile, PlannedSet, Goal, Experience } from "@kettleworth/types";
 import { loadForReps, pctOf1RM } from "../metrics";
 import { roundToPlate } from "../units";
+import { defaultHoldSeconds, repUnitFor, type MovementFacts } from "../movement-unit";
 
 export type Role = "primary" | "secondary" | "accessory" | "finisher" | "mobility" | "warmup";
 
@@ -37,7 +38,12 @@ export function prescribe(goal: Goal, role: Role, experience: Experience, isComp
   }
 }
 
-export function buildSets(p: Prescription, opts: { e1rmKg?: number; volumeScalar: number; intensityScalar: number; isDeload: boolean; lowerBody: boolean; includeWarmup: boolean }): PlannedSet[] {
+/**
+ * `movement` and `role` are optional only so existing callers keep compiling; pass them and a
+ * held exercise is prescribed in seconds instead of coming out as "8 to 12 reps", which is
+ * what a plank used to do.
+ */
+export function buildSets(p: Prescription, opts: { e1rmKg?: number; volumeScalar: number; intensityScalar: number; isDeload: boolean; lowerBody: boolean; includeWarmup: boolean; movement?: MovementFacts; role?: string }): PlannedSet[] {
   const sets: PlannedSet[] = [];
   const workingCount = Math.max(1, Math.round(p.sets * opts.volumeScalar));
   const topReps = p.repRange[1];
@@ -48,6 +54,10 @@ export function buildSets(p: Prescription, opts: { e1rmKg?: number; volumeScalar
     const pct = pctOf1RM(topReps, targetRpe) * opts.intensityScalar;
     workKg = roundToPlate(opts.e1rmKg * pct, opts.lowerBody ? 2.5 : 1.25);
   }
+  // Held movements are counted in time. A deload shortens the hold rather than the rep range.
+  const held = opts.movement ? repUnitFor(opts.movement) === "seconds" : false;
+  const holdSeconds = held ? Math.round(defaultHoldSeconds(opts.role ?? "accessory") * (opts.isDeload ? 0.7 : 1)) : null;
+
   let n = 1;
   if (opts.includeWarmup && workKg) {
     for (const f of [0.5, 0.75]) {
@@ -55,6 +65,10 @@ export function buildSets(p: Prescription, opts: { e1rmKg?: number; volumeScalar
     }
   }
   for (let i = 0; i < workingCount; i++) {
+    if (holdSeconds != null) {
+      sets.push({ setNumber: n++, type: "working", reps: null, repRange: null, targetRpe, targetRir: rir, weightKg: workKg, restSeconds: p.restSeconds, tempo: null, durationSeconds: holdSeconds });
+      continue;
+    }
     sets.push({ setNumber: n++, type: "working", reps: null, repRange: [p.repRange[0], p.repRange[1]], targetRpe, targetRir: rir, weightKg: workKg, restSeconds: p.restSeconds, tempo: p.tempo, durationSeconds: null });
   }
   return sets;

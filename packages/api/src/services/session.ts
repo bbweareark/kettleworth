@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { db, trainingSession, exerciseInstance, exercise, exerciseVideo, personalRecord, estimatedMax, substitution, week, restActivity, auditLog } from "@kettleworth/db";
-import { restFor, planDay, isUntouched, type DayPlan } from "@kettleworth/core";
+import { restFor, planDay, isUntouched, type DayPlan, describeTarget } from "@kettleworth/core";
 import { LoggedSet, type PlannedSet } from "@kettleworth/types";
 import { decideProgression, estimate1RM, substitutesFor, detectPR, loadMultiplier, type SetRecord, type PRKind } from "@kettleworth/core";
 import { getProfile } from "./profile";
@@ -189,7 +189,30 @@ export async function swapExercise(userId: string, instanceId: string, toExercis
     const future = await db().select({ id: exerciseInstance.id, plannedSets: exerciseInstance.plannedSets }).from(exerciseInstance).innerJoin(trainingSession, eq(exerciseInstance.sessionId, trainingSession.id)).where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "planned"), eq(exerciseInstance.exerciseId, inst.inst.exerciseId)));
     for (const f of future) await db().update(exerciseInstance).set({ originalExerciseId: inst.inst.exerciseId, exerciseId: toExerciseId, plannedSets: f.plannedSets.map((s) => ({ ...s, weightKg: null })), swappedReason: reason }).where(eq(exerciseInstance.id, f.id));
   }
-  return target;
+  /*
+   * Everything the player shows beside the exercise - the safety notes written against this
+   * person's injuries, the demo video, what they lifted last time - is derived server-side.
+   * Returning only the exercise row left the client holding the previous movement's cautions
+   * and benchmark, which is how a swapped exercise kept showing the wrong tutorial.
+   */
+  const rec = await getProfile(userId);
+  const [vid] = await db().select().from(exerciseVideo).where(eq(exerciseVideo.exerciseId, toExerciseId)).limit(1);
+  const benchmarks = await benchmarksFor(userId, [toExerciseId], inst.inst.sessionId);
+  const [lastRow] = await db()
+    .select({ loggedSets: exerciseInstance.loggedSets })
+    .from(exerciseInstance)
+    .innerJoin(trainingSession, eq(exerciseInstance.sessionId, trainingSession.id))
+    .where(and(eq(trainingSession.userId, userId), eq(trainingSession.status, "completed"), eq(exerciseInstance.exerciseId, toExerciseId)))
+    .orderBy(desc(exerciseInstance.completedAt))
+    .limit(1);
+  return {
+    ...target,
+    cautions: cautionsFor(target, rec?.profile.injuries ?? [], rec?.profile.medicalFlags ?? []),
+    rationale: `Swapped in by you. Same pattern and equipment as the exercise it replaced.`,
+    video: vid ? { provider: vid.provider, playbackId: vid.playbackId, isPlaceholder: vid.isPlaceholder, status: vid.status } : null,
+    benchmark: benchmarks[toExerciseId] ?? null,
+    lastTime: lastRow?.loggedSets?.length ? lastRow.loggedSets : null,
+  };
 }
 
 export async function substitutesForInstance(userId: string, instanceId: string) {
@@ -425,6 +448,6 @@ export async function sessionsWithExercises(userId: string, fromIso: string, toI
   const inst = await db().select({ sessionId: exerciseInstance.sessionId, order: exerciseInstance.order, name: exercise.name, planned: exerciseInstance.plannedSets }).from(exerciseInstance).innerJoin(exercise, eq(exercise.id, exerciseInstance.exerciseId)).where(inArray(exerciseInstance.sessionId, rows.map((r) => r.id))).orderBy(asc(exerciseInstance.order));
   return rows.map((r) => ({
     id: r.id, name: r.name, scheduledOn: r.scheduledOn, status: r.status, estimatedMinutes: r.estimatedMinutes,
-    exercises: inst.filter((i) => i.sessionId === r.id).map((i) => { const w = i.planned.filter((p) => p.type === "working"); const f = w[0]; return { name: i.name, sets: w.length, reps: f?.repRange ? `${f.repRange[0]}-${f.repRange[1]}` : f?.reps != null ? String(f.reps) : f?.durationSeconds ? `${f.durationSeconds}s` : "" }; }),
+    exercises: inst.filter((i) => i.sessionId === r.id).map((i) => { const w = i.planned.filter((p) => p.type === "working"); const f = w[0]; return { name: i.name, sets: w.length, reps: f ? describeTarget(f).replace(" reps", "").replace("–", "-") : "" }; }),
   }));
 }
