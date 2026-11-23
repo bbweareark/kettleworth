@@ -78,14 +78,20 @@ export const stateSrc = (cast: ReturnType<typeof castFor>, state: ArcState) => `
  *
  * 480p, four seconds, no audio track, and fetched only on the session screen in Arc.
  */
-const CLIPS: Partial<Record<ArcState, string>> = {
-  ready: "/art/arc/clip-charge.mp4",
-  strain: "/art/arc/clip-strain.mp4",
-  win: "/art/arc/clip-win.mp4",
+/**
+ * Both casts have clips now: a looping charge while they wait, the strain at the hardest point
+ * of a rep, and the fist going up when the set lands. The bench frame is still a still, which
+ * is right: resting is the one state where nothing should be moving much.
+ *
+ * 480p, four seconds, no audio track, fetched only on the session screen in Arc, and the state
+ * still underneath is always the poster, so a refusal or a slow connection shows the frame the
+ * screen would have shown anyway.
+ */
+const CLIPS: Record<"a" | "b", Partial<Record<ArcState, string>>> = {
+  a: { ready: "/art/arc/clip-charge.mp4", strain: "/art/arc/clip-strain.mp4", win: "/art/arc/clip-win.mp4" },
+  b: { ready: "/art/arc/clip-f-charge.mp4", strain: "/art/arc/clip-f-strain.mp4", win: "/art/arc/clip-f-win.mp4" },
 };
 
 export function clipFor(cast: ReturnType<typeof castFor>, state: ArcState): string | null {
-  // The clips are drawn from the first cast's own frames, so they are only right for that one.
-  if (cast !== CAST.a) return null;
-  return CLIPS[state] ?? null;
+  return CLIPS[cast === CAST.b ? "b" : "a"][state] ?? null;
 }

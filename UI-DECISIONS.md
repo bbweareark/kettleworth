@@ -762,3 +762,23 @@ frame on a spring instead of cross fading, and burns while he waits.
 
 **Measured:** no contrast failure and no horizontal overflow on Today or Programme in any of
 Arc night, Arc daylight, Carbon night or Sanctuary daylight. Arc's font payload is 57KB.
+
+
+## Carbon and Sanctuary re-founded, 23 Nov 2026
+
+| Pillar | Theme | Choice | Reference (opened this session) | What was taken |
+|---|---|---|---|---|
+| **DNA** | Carbon | **Apple iPhone 18 Pro**, "midnight hardware gallery" | [styles.refero.design/style/40be36d7](https://styles.refero.design/style/40be36d7-7fe6-4451-9f2d-7ceccfd43be8), live at apple.com/iphone-18-pro (`design/refs/dna-apple-hardware`) | Obsidian stages with graphite chrome, the figure as one lit object per plinth, Ash metadata, and the reference's own compression at display size (-1.44px at 96px). **Not** its blue: the accent stays this product's volt |
+| **Typeface** | Carbon | **Sora** 400–800, 25KB, OFL | the reference's SF Pro Display is Apple's own | A sculptural 600 that can hold a 96px figure without reading as a scoreboard. Antonio is deleted |
+| **DNA** | Sanctuary | **Brex**, "white concrete, single ember" | [styles.refero.design/style/b58d92f6](https://styles.refero.design/style/b58d92f6-68a8-4358-8fc9-6ea58e6d483b), live at brex.com (`design/refs/dna-brex-concrete`) | A near-pure white canvas, the single-accent rule, aggressive negative tracking at every size, hairline borders with a small radius, and dark bookends that make the bright body feel taller. **Not** its Inter, which is banned here, and not its `#ff5900`, which fails AA as a label |
+| **Typeface** | Sanctuary | **Familjen Grotesk** 400–700, 18KB, OFL | Brex's Flecha is commercial | A grotesque with character for a world that moved from a gallery wall to poured concrete. Young Serif is deleted |
+| **Imagery** | Arc | **Six cel clips**, two casts × three states | Higgsfield (`seedance_2_5`, image-to-video from the cast's own frames) | The characters actually animate: breathing and gathering an aura, shaking at the hardest point of a rep, the fist going up. 548KB in total, Arc only |
+
+**A stated deviation from this skill.** It allows at most two DNA sources per project; this app
+has three, one per theme. That is the product: three themes, each a complete world, chosen and
+locked by the member. The registry row stays Arc's, because Arc is the lead and the registry
+holds one identity per project.
+
+**Responsive, measured.** 99 combinations of eleven screens by three themes by three widths
+(360, 768, 1440): no horizontal overflow anywhere. 54 screen-and-theme combinations for
+contrast after both palettes changed: no failure.

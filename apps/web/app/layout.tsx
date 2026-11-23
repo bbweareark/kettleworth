@@ -7,24 +7,22 @@ import { TooltipProvider } from "@kettleworth/ui";
 import "./globals.css";
 
 /*
- * Antonio + Geist + Geist Mono, all OFL, self-hosted as latin-subset variable woff2
- * (26.5KB + 29.3KB + 23.1KB = 79KB, inside the 120KB budget).
+ * Sora + Geist + Geist Mono, all OFL, self-hosted as latin-subset variable woff2
+ * (25KB + 29.3KB + 23.1KB = 77KB, inside the 120KB budget).
  *
- * Antonio carries every figure. The signature idea of this design is that the load is the
- * largest thing on the screen, and a condensed face keeps a five-character load legible at
- * 96px on a 390px phone, which the previous expanded face could not. Geist carries language;
- * Geist Mono carries counters, timers and set markers, the role the DNA reference gives mono.
- *
- * Archivo is gone with the teenage engineering system it belonged to.
+ * Sora carries every figure in Carbon, at 600 with the hardware gallery's own compression.
+ * Antonio is gone with it: a condensed face reads as a scoreboard, and Carbon is now a lit
+ * object on a dark plinth rather than a readout. Geist carries language; Geist Mono carries
+ * counters, timers and set markers, the role the DNA reference gives mono.
  *
  * adjustFontFallback matches the fallback's metrics so swapping in the real face causes no
  * layout shift.
  */
-const antonio = localFont({
-  src: "./fonts/antonio-variable.woff2",
-  variable: "--font-antonio",
+const sora = localFont({
+  src: "./fonts/sora.woff2",
+  variable: "--font-sora",
   display: "swap",
-  weight: "100 700",
+  weight: "400 800",
 });
 const geist = localFont({
   src: "./fonts/geist-variable.woff2",
@@ -45,7 +43,9 @@ const geistMono = localFont({
  * Sanctuary's, which is why DESIGN.md budgets each style on its own.
  *
  * Anton and Schibsted Grotesk are Arc (an ultra-black display that can carry a title card,
- * and a grotesk for language); Young Serif and Schibsted are Sanctuary. All OFL, latin subsets.
+ * and a grotesk for language); Familjen Grotesk and Schibsted are Sanctuary, which traded
+ * Young Serif for a grotesque when it moved from a gallery wall to poured concrete. All OFL,
+ * all latin subsets.
  */
 const anton = localFont({
   src: "./fonts/anton.woff2",
@@ -59,11 +59,11 @@ const schibsted = localFont({
   display: "swap",
   weight: "400 900",
 });
-const youngSerif = localFont({
-  src: "./fonts/young-serif.woff2",
-  variable: "--font-young-serif",
+const familjen = localFont({
+  src: "./fonts/familjen-grotesk.woff2",
+  variable: "--font-familjen",
   display: "swap",
-  weight: "400",
+  weight: "400 700",
 });
 
 export const metadata: Metadata = {
@@ -89,7 +89,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
    */
   const style = STYLES.includes(jar.get("kw-style")?.value as Style) ? (jar.get("kw-style")!.value as Style) : "carbon";
   return (
-    <html lang="en" data-theme={theme} data-style={style} suppressHydrationWarning className={`${antonio.variable} ${geist.variable} ${geistMono.variable} ${anton.variable} ${schibsted.variable} ${youngSerif.variable}`}>
+    <html lang="en" data-theme={theme} data-style={style} suppressHydrationWarning className={`${sora.variable} ${geist.variable} ${geistMono.variable} ${anton.variable} ${schibsted.variable} ${familjen.variable}`}>
       <body className="min-h-dvh bg-bg text-fg">
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster position="top-center" toastOptions={{ className: "!bg-bg-elevated !border-rule !text-fg !shadow-pop !" }} />

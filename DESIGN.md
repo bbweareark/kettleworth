@@ -215,3 +215,72 @@ and of Arc's hard ink.
 **Chosen against walkwithme**, which is the owner's actual faith app: that one is dusk indigo,
 Bricolage Grotesque and Literata, an illustrative footer and a lamp on a path. Sanctuary is
 daylight stone, Young Serif, and an arch. Nothing is shared.
+
+
+# Carbon and Sanctuary, re-founded (23 Nov 2026)
+
+Arc was re-founded first and the gap showed: the other two were still carrying the DNAs they
+were built on while Arc had been rebuilt from its foundation. Both are now ported from a new
+reference, and both dropped their display face with it, because a redesign that keeps the same
+font has barely happened.
+
+## Carbon: Apple's iPhone 18 Pro page
+
+DNA: [styles.refero.design/style/40be36d7](https://styles.refero.design/style/40be36d7-7fe6-4451-9f2d-7ceccfd43be8),
+live at apple.com/iphone-18-pro, captured in `design/refs/dna-apple-hardware`. "Midnight
+hardware gallery: each section a dark, museum-like plinth for one precisely lit detail, with
+typography operating as restrained labels around it."
+
+That is what this world always wanted to be. Integrated Biosciences gave it hierarchy by size,
+which stays; what changes is that the figure is now a lit object on a stage rather than a
+readout in a laboratory.
+
+| Token | Was | Now | From |
+|---|---|---|---|
+| `--kw-bg` (night) | `#16191a` | `#000000` | Obsidian, the hero canvas |
+| `--kw-surface` | `#1e2223` | `#0e0e0e` | Graphite, raised chrome |
+| `--kw-rule` | `#2c3133` | `#333336` | Steel hairlines |
+| `--kw-fg-subtle` | `#8b9391` | `#86868b` | Ash, muted metadata |
+| `--kw-bg` (day) | `#f4f5f2` | `#f5f5f7` | Porcelain, the comparison surface |
+| `--tracking-figure` | `-0.03em` | `-0.015em` | -1.44px at 96px, as an em value |
+| Display | Antonio, condensed | **Sora**, 25KB, OFL | The reference's sculptural 600 weight |
+
+**Deviations.** The reference's accent is Apple Blue; Carbon keeps volt `#ccff1a`, because the
+accent is this product's and borrowing theirs would make the app look like a phone listing.
+And a condensed face was dropped on purpose: it reads as a scoreboard, and this is a gallery.
+
+## Sanctuary: Brex
+
+DNA: [styles.refero.design/style/b58d92f6](https://styles.refero.design/style/b58d92f6-68a8-4358-8fc9-6ea58e6d483b),
+live at brex.com, captured in `design/refs/dna-brex-concrete`. "White concrete, single ember:
+a clinical instrument where one orange spark does all the talking."
+
+Structured gave this world putty paper and a gallery wall, which was gentle and slightly soft:
+somewhere to hang things rather than a building to stand in. It is a concrete chapel now.
+Stewardship, harder: light is the ground, the ember is the only colour, and the arch stays,
+drawn in it.
+
+| Token | Was | Now |
+|---|---|---|
+| `--kw-bg` (day) | `#c4c3b6` putty | `#ffffff` paper |
+| `--kw-surface-2` | `#dfdcd5` vellum | `#f3f3f7` fog |
+| `--kw-rule` | `#a9a79a` | `#d9dae2` |
+| `--kw-accent` (day) | `#64491f` aged gold | `#a33800` struck bronze |
+| `--kw-bg` (night) | `#1a1a18` | `#000710` abyss, the reference's own bookend |
+| `--kw-accent` (night) | `#c9a35c` | `#ff7a33` |
+| Display | Young Serif | **Familjen Grotesk**, 18KB, OFL |
+| Radius | 3 / 5 / 8 / 12px | 2 / 4 / 6 / 10px, poured rather than moulded |
+
+**Deviations.** Brex's body face is Inter, which this skill bans, so Schibsted Grotesk keeps
+language. And its ember is `#ff5900`, which is 2.9:1 on white and cannot carry a label; struck
+bronze `#a33800` is the same heat at 7.4:1.
+
+## Font payload, after
+
+| Theme | Display | Text | Total |
+|---|---|---|---|
+| Carbon | Sora 25KB | Geist 29.3 + Geist Mono 23.1 | **77KB** |
+| Arc | Anton 12KB | Schibsted 45KB | **57KB** |
+| Sanctuary | Familjen Grotesk 18KB | Schibsted 45KB | **63KB** |
+
+Antonio and Young Serif are deleted, not left in the tree.

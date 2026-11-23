@@ -1,0 +1,775 @@
+{
+  "title": "iPhone 18 Pro and iPhone 18 Pro Max - Apple",
+  "url": "https://www.apple.com/iphone-18-pro/",
+  "fonts": [
+    [
+      "SF Pro Text",
+      2241
+    ],
+    [
+      "SF Pro Display",
+      238
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "iPhone 18 Pro",
+      "family": "SF Pro Display",
+      "size": "32px",
+      "weight": "600",
+      "lineHeight": "36px",
+      "letterSpacing": "0.128px",
+      "color": "rgb(245, 245, 247)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "iPhone 18 Pro",
+      "family": "SF Pro Display",
+      "size": "19px",
+      "weight": "600",
+      "lineHeight": "23px",
+      "letterSpacing": "0.228px",
+      "color": "rgb(245, 245, 247)",
+      "transform": "none"
+    },
+    "h3": {
+      "text": "ƒ/1.48 Maximum light. F 1.48 Maximum light",
+      "family": "SF Pro Text",
+      "size": "17px",
+      "weight": "600",
+      "lineHeight": "21.0012px",
+      "letterSpacing": "-0.374px",
+      "color": "rgb(134, 134, 139)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "iPhone Duo New",
+      "family": "SF Pro Text",
+      "size": "14px",
+      "weight": "500",
+      "lineHeight": "20.0003px",
+      "letterSpacing": "-0.224px",
+      "color": "rgb(245, 245, 247)",
+      "transform": "none"
+    },
+    "small": {
+      "text": "Explore",
+      "family": "SF Pro Text",
+      "size": "12px",
+      "weight": "400",
+      "lineHeight": "16.0005px",
+      "letterSpacing": "-0.12px",
+      "color": "rgb(245, 245, 247)",
+      "transform": "none"
+    },
+    "link": {
+      "text": "Apple",
+      "family": "SF Pro Text",
+      "size": "17px",
+      "weight": "600",
+      "lineHeight": "21.0012px",
+      "letterSpacing": "-0.374px",
+      "color": "rgba(255, 255, 255, 0.8)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "fg rgb(245, 245, 247)",
+      731
+    ],
+    [
+      "border rgb(245, 245, 247)",
+      718
+    ],
+    [
+      "fg rgb(29, 29, 31)",
+      598
+    ],
+    [
+      "border rgb(29, 29, 31)",
+      598
+    ],
+    [
+      "fg rgb(134, 134, 139)",
+      348
+    ],
+    [
+      "border rgb(134, 134, 139)",
+      346
+    ],
+    [
+      "fg rgba(0, 0, 0, 0.56)",
+      214
+    ],
+    [
+      "border rgba(0, 0, 0, 0.56)",
+      214
+    ],
+    [
+      "fg rgba(255, 255, 255, 0.8)",
+      158
+    ],
+    [
+      "border rgba(255, 255, 255, 0.8)",
+      158
+    ],
+    [
+      "border rgb(110, 110, 115)",
+      119
+    ],
+    [
+      "fg rgb(110, 110, 115)",
+      116
+    ],
+    [
+      "fg rgba(0, 0, 0, 0.72)",
+      98
+    ],
+    [
+      "border rgba(0, 0, 0, 0.72)",
+      98
+    ],
+    [
+      "border rgb(51, 51, 54)",
+      59
+    ],
+    [
+      "fg rgb(51, 51, 54)",
+      54
+    ],
+    [
+      "bg rgb(0, 0, 0)",
+      35
+    ],
+    [
+      "fg rgb(0, 102, 204)",
+      35
+    ],
+    [
+      "border rgb(0, 102, 204)",
+      35
+    ],
+    [
+      "fg rgb(255, 255, 255)",
+      34
+    ]
+  ],
+  "bodyBg": "rgb(0, 0, 0)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 114,
+      "height": 832,
+      "paddingTop": "0px",
+      "paddingBottom": "52px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "iPhone 18 Pro",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 4
+    },
+    {
+      "top": 166,
+      "height": 780,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "iPhone 18 Pro",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 4
+    },
+    {
+      "top": 166,
+      "height": 780,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "iPhone 18 Pro",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 0
+    },
+    {
+      "top": 946,
+      "height": 1080,
+      "paddingTop": "144px",
+      "paddingBottom": "224px",
+      "bg": "rgb(29, 29, 31)",
+      "maxWidth": "none",
+      "heading": "Get the highlights.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "20px 80px",
+        "children": 2
+      },
+      "imageCount": 20
+    },
+    {
+      "top": 2026,
+      "height": 1407,
+      "paddingTop": "144px",
+      "paddingBottom": "0px",
+      "bg": "rgb(0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "The ultimate upgrade",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 3
+      },
+      "imageCount": 1
+    },
+    {
+      "top": 3433,
+      "height": 1361,
+      "paddingTop": "144px",
+      "paddingBottom": "144px",
+      "bg": "rgb(29, 29, 31)",
+      "maxWidth": "none",
+      "heading": "Design",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 43
+    },
+    {
+      "top": 4794,
+      "height": 4722,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Pro camera system",
+      "layout": {
+        "display": "grid",
+        "columns": "1440px",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 22
+    },
+    {
+      "top": 4794,
+      "height": 2461,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Pro camera system",
+      "layout": {
+        "display": "grid",
+        "columns": "1440px",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 3
+    },
+    {
+      "top": 7255,
+      "height": 1246,
+      "paddingTop": "144px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Variable aperture. If you know, you pro.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 6
+    },
+    {
+      "top": 8501,
+      "height": 1015,
+      "paddingTop": "144px",
+      "paddingBottom": "144px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Such a control freak.",
+      "layout": {
+        "display": "grid",
+        "columns": "696px 696px 696px 372px 696px 372px 372px 372px",
+        "gap": "24px 20px",
+        "children": 8
+      },
+      "imageCount": 13
+    },
+    {
+      "top": 9516,
+      "height": 2091,
+      "paddingTop": "144px",
+      "paddingBottom": "0px",
+      "bg": "rgb(0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Pro video",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 14
+    },
+    {
+      "top": 11607,
+      "height": 2135,
+      "paddingTop": "144px",
+      "paddingBottom": "144px",
+      "bg": "rgb(0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Battery life",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 4
+    },
+    {
+      "top": 13742,
+      "height": 2685,
+      "paddingTop": "0px",
+      "paddingBottom": "144px",
+      "bg": "rgb(0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Performance",
+      "layout": {
+        "display": "grid",
+        "columns": "1440px",
+        "gap": "normal",
+        "children": 5
+      },
+      "imageCount": 7
+    },
+    {
+      "top": 16426,
+      "height": 1526,
+      "paddingTop": "144px",
+      "paddingBottom": "144px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Worth the upgrade? You bet.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 73
+    }
+  ],
+  "nav": {
+    "position": "absolute",
+    "top": 70,
+    "height": 44,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "borderBottom": "0px none rgb(29, 29, 31)",
+    "boxShadow": "none",
+    "linkCount": 25,
+    "links": [
+      "Apple",
+      "Store",
+      "",
+      "Mac",
+      "",
+      "iPad",
+      "",
+      "iPhone",
+      "",
+      "Watch"
+    ],
+    "ctaCount": 0,
+    "ctaSamples": [],
+    "logoLeft": 0,
+    "maxWidth": "none",
+    "padding": "0px",
+    "linkStyle": {
+      "text": "Apple",
+      "family": "SF Pro Text",
+      "size": "17px",
+      "weight": "600",
+      "lineHeight": "21.0012px",
+      "letterSpacing": "-0.374px",
+      "color": "rgba(255, 255, 255, 0.8)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "Store",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgba(255, 255, 255, 0.8)",
+      "border": "0px none rgba(255, 255, 255, 0.8)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 44,
+      "padding": "0px 8px",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "family": "SF Pro Text",
+      "letterSpacing": "-0.12px",
+      "transform": "none",
+      "count": 10
+    },
+    {
+      "text": "Explore All iPhone",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(51, 51, 54)",
+      "border": "0px none rgb(51, 51, 54)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 34,
+      "padding": "0px",
+      "fontSize": "28px",
+      "fontWeight": "600",
+      "family": "SF Pro Display",
+      "letterSpacing": "0.196px",
+      "transform": "none",
+      "count": 7
+    },
+    {
+      "text": "Highlights",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(245, 245, 247)",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "radius": "170px",
+      "shadow": "none",
+      "height": 41,
+      "padding": "7px 14px",
+      "fontSize": "17px",
+      "fontWeight": "500",
+      "family": "SF Pro Text",
+      "letterSpacing": "-0.374px",
+      "transform": "none",
+      "count": 6
+    },
+    {
+      "text": "ƒ/1.8",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(255, 255, 255)",
+      "border": "0px none rgb(255, 255, 255)",
+      "radius": "999px",
+      "shadow": "none",
+      "height": 36,
+      "padding": "0px 16px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "SF Pro Text",
+      "letterSpacing": "-0.224px",
+      "transform": "none",
+      "count": 3
+    },
+    {
+      "text": "Tech Specs",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(41, 151, 255)",
+      "border": "0px none rgb(41, 151, 255)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 37,
+      "padding": "7px 0px",
+      "fontSize": "19px",
+      "fontWeight": "500",
+      "family": "SF Pro Display",
+      "letterSpacing": "0.228px",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "Buy",
+      "bg": "rgb(0, 113, 227)",
+      "color": "rgb(255, 255, 255)",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "radius": "980px",
+      "shadow": "none",
+      "height": 44,
+      "padding": "11px 21px",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "family": "SF Pro Text",
+      "letterSpacing": "-0.374px",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "United Kingdom",
+      "bg": "rgb(22, 22, 23)",
+      "color": "rgba(255, 255, 255, 0.92)",
+      "border": "3px solid rgba(255, 255, 255, 0.08)",
+      "radius": "11px",
+      "shadow": "none",
+      "height": 42,
+      "padding": "0px 14px",
+      "fontSize": "17px",
+      "fontWeight": "400",
+      "family": "SF Pro Text",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Continue",
+      "bg": "rgb(245, 245, 247)",
+      "color": "rgb(0, 0, 0)",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "radius": "8px",
+      "shadow": "none",
+      "height": 36,
+      "padding": "8px 15px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "SF Pro Text",
+      "letterSpacing": "-0.224px",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": {
+    "height": 44,
+    "bg": "rgba(255, 255, 255, 0.04)",
+    "border": "1px solid rgb(110, 110, 115)",
+    "radius": "980px",
+    "padding": "0px 45px 0px 24px",
+    "fontSize": "17px",
+    "shadow": "none"
+  },
+  "imagery": {
+    "count": 114,
+    "samples": [
+      {
+        "tag": "video",
+        "w": 1440,
+        "h": 780,
+        "ratio": "1.85",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "picture",
+        "w": 1440,
+        "h": 780,
+        "ratio": "1.85",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 1440,
+        "h": 780,
+        "ratio": "1.85",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 1260,
+        "h": 612,
+        "ratio": "2.06",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "picture",
+        "w": 1260,
+        "h": 612,
+        "ratio": "2.06",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 1260,
+        "h": 612,
+        "ratio": "2.06",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 1260,
+        "h": 612,
+        "ratio": "2.06",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "picture",
+        "w": 1260,
+        "h": 612,
+        "ratio": "2.06",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 0,
+    "gradients": 2,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 14,
+    "sample": {
+      "bg": "rgb(255, 255, 255)",
+      "border": "0px none rgb(29, 29, 31)",
+      "radius": "28px",
+      "shadow": "none",
+      "padding": "0px"
+    }
+  },
+  "footer": {
+    "height": 5059,
+    "bg": "rgb(245, 245, 247)",
+    "paddingTop": "0px",
+    "paddingBottom": "0px",
+    "columns": 5,
+    "columnsTemplate": "none",
+    "linkCount": 89,
+    "largestText": {
+      "text": "Apple Footer * Financing available to qu",
+      "size": "12px",
+      "weight": "400",
+      "family": "SF Pro Text",
+      "color": "rgba(0, 0, 0, 0.56)"
+    },
+    "borderTop": "0px none rgba(0, 0, 0, 0.56)"
+  },
+  "motion": {
+    "libs": [
+      "motion",
+      "spline"
+    ],
+    "elementsWithTransition": 174,
+    "elementsWithAnimation": 0,
+    "transforms": 241,
+    "stickyElements": 4,
+    "videoCount": 14,
+    "canvasCount": 1,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 34091,
+    "containerMaxWidths": [
+      [
+        "240px",
+        36
+      ],
+      [
+        "1260px",
+        32
+      ],
+      [
+        "360px",
+        6
+      ],
+      [
+        "48px",
+        5
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "28px",
+        102
+      ],
+      [
+        "20px",
+        20
+      ],
+      [
+        "36px",
+        12
+      ],
+      [
+        "170px",
+        7
+      ],
+      [
+        "980px",
+        6
+      ],
+      [
+        "999px",
+        6
+      ]
+    ],
+    "shadows": [
+      "rgb(40, 40, 40) 0px 0px 0px 1px",
+      "rgb(110, 110, 115) 0px 0px 0px 1px",
+      "rgba(0, 0, 0, 0.11) 0px 0px 0.5px 0px inset"
+    ],
+    "baseFontSize": "17px"
+  },
+  "scrolledNav": {
+    "height": 44,
+    "top": -830,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "absolute"
+  },
+  "mobileNav": {
+    "height": 48,
+    "visibleControls": [
+      "Main menu",
+      "Apple",
+      "Store menu",
+      "Mac menu",
+      "iPad menu",
+      "iPhone menu",
+      "Watch menu",
+      "Vision menu"
+    ],
+    "hasMenuButton": true
+  },
+  "label": "dna / apple midnight hardware gallery",
+  "capturedAt": "2026-11-23T20:26:38.232Z"
+}

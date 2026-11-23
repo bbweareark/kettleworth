@@ -342,3 +342,28 @@ when the set lands.
 
 **Measured:** 54 combinations of nine screens by six theme-and-light pairs, no contrast failure
 and no horizontal overflow anywhere.
+
+
+## All three re-founded, and a responsive pass (23 Nov 2026)
+
+Arc was rebuilt from its DNA and the gap showed: the other two were still carrying the systems
+they were built on. Both are ported from a new reference now, and both dropped their display
+face with it, because a redesign that keeps the same font has barely happened.
+
+| | Carbon | Sanctuary |
+|---|---|---|
+| Was | Integrated Biosciences, bioluminescent laboratory | Structured, Renaissance gallery on putty |
+| Now | **Apple iPhone 18 Pro**, midnight hardware gallery | **Brex**, white concrete with a single ember |
+| Ground | `#16191a` to **`#000000`** | putty `#c4c3b6` to **`#ffffff`** |
+| Display | Antonio condensed to **Sora** | Young Serif to **Familjen Grotesk** |
+| Idea | the figure is a lit object on a plinth, not a readout | a concrete chapel, not a wall to hang things on |
+
+**Her clips.** Both casts animate now: a looping charge, the strain at the hardest point of a
+rep, the fist going up. Six clips, 548KB in total, Arc only, each with its state still as the
+poster and the fallback.
+
+**Responsive, properly measured.** Eleven screens by three themes by three widths, 360, 768 and
+1440: **99 combinations, no horizontal overflow in any of them**, and the wide layouts are not
+stretched phones (the gallery hero runs full bleed, the arch holds its axis, the nav becomes a
+pill group). Contrast re-run after both palettes changed: 54 screen-and-theme combinations,
+no failure.

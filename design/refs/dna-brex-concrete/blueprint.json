@@ -1,0 +1,753 @@
+{
+  "title": "Brex: The Modern Finance Software Platform | Spend Smarter",
+  "url": "https://www.brex.com/",
+  "fonts": [
+    [
+      "inter",
+      901
+    ],
+    [
+      "flecha",
+      1
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "Finance built for speed and control.",
+      "family": "inter",
+      "size": "72px",
+      "weight": "600",
+      "lineHeight": "72px",
+      "letterSpacing": "-1.44px",
+      "color": "rgb(21, 25, 30)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "Modern cards, banking, expenses, accounting, and more — in 120+ countr",
+      "family": "inter",
+      "size": "20px",
+      "weight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "-0.4px",
+      "color": "rgb(96, 100, 108)",
+      "transform": "none"
+    },
+    "h3": {
+      "text": "Everything you need to boost spending power and control — and eliminat",
+      "family": "inter",
+      "size": "20px",
+      "weight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "-0.4px",
+      "color": "rgb(96, 100, 108)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "Full command. Zero friction. Check out 30+ features from this Fall Rel",
+      "family": "inter",
+      "size": "12px",
+      "weight": "400",
+      "lineHeight": "18px",
+      "letterSpacing": "-0.24px",
+      "color": "rgb(252, 252, 253)",
+      "transform": "none"
+    },
+    "small": null,
+    "link": {
+      "text": "",
+      "family": "inter",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "color": "rgb(21, 25, 30)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "fg rgb(0, 0, 0)",
+      599
+    ],
+    [
+      "border rgb(0, 0, 0)",
+      596
+    ],
+    [
+      "fg rgb(21, 25, 30)",
+      77
+    ],
+    [
+      "border rgb(21, 25, 30)",
+      73
+    ],
+    [
+      "border rgb(255, 61, 0)",
+      63
+    ],
+    [
+      "fg rgb(255, 61, 0)",
+      61
+    ],
+    [
+      "fg rgb(139, 141, 152)",
+      41
+    ],
+    [
+      "border rgb(139, 141, 152)",
+      41
+    ],
+    [
+      "bg rgb(255, 255, 255)",
+      32
+    ],
+    [
+      "fg rgb(185, 187, 198)",
+      27
+    ],
+    [
+      "border rgb(185, 187, 198)",
+      27
+    ],
+    [
+      "fg rgb(252, 252, 253)",
+      22
+    ],
+    [
+      "fg rgb(96, 100, 108)",
+      22
+    ],
+    [
+      "border rgb(96, 100, 108)",
+      22
+    ],
+    [
+      "border rgb(252, 252, 253)",
+      20
+    ],
+    [
+      "fg rgb(111, 115, 123)",
+      8
+    ],
+    [
+      "border rgb(111, 115, 123)",
+      7
+    ],
+    [
+      "bg rgb(243, 243, 247)",
+      6
+    ],
+    [
+      "bg rgb(0, 7, 16)",
+      3
+    ],
+    [
+      "bg rgb(255, 61, 0)",
+      3
+    ]
+  ],
+  "bodyBg": "rgba(0, 0, 0, 0)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 110,
+      "height": 7440,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Finance built for speed and control.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "0px",
+        "children": 3
+      },
+      "imageCount": 69
+    },
+    {
+      "top": 110,
+      "height": 840,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": "Finance built for speed and control.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "0px",
+        "children": 3
+      },
+      "imageCount": 3
+    },
+    {
+      "top": 1078,
+      "height": 208,
+      "paddingTop": "32px",
+      "paddingBottom": "80px",
+      "bg": "rgb(243, 243, 247)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "grid",
+        "columns": "166.656px 166.672px 166.672px 166.656px 166.672px 166.672px",
+        "gap": "16px",
+        "children": 12
+      },
+      "imageCount": 12
+    },
+    {
+      "top": 1286,
+      "height": 176,
+      "paddingTop": "48px",
+      "paddingBottom": "16px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": "The card is just the start.",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "0px",
+        "children": 2
+      },
+      "imageCount": 0
+    },
+    {
+      "top": 1462,
+      "height": 452,
+      "paddingTop": "48px",
+      "paddingBottom": "80px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": "Corporate cards",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "16px",
+        "children": 5
+      },
+      "imageCount": 10
+    },
+    {
+      "top": 2042,
+      "height": 545,
+      "paddingTop": "48px",
+      "paddingBottom": "80px",
+      "bg": "rgb(243, 243, 247)",
+      "maxWidth": "none",
+      "heading": "Startups",
+      "layout": {
+        "display": "grid",
+        "columns": "416px 416px 416px",
+        "gap": "24px",
+        "children": 3
+      },
+      "imageCount": 6
+    },
+    {
+      "top": 2739,
+      "height": 486,
+      "paddingTop": "80px",
+      "paddingBottom": "48px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": "Control spend before it happens.",
+      "layout": {
+        "display": "grid",
+        "columns": "54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 3225,
+      "height": 486,
+      "paddingTop": "80px",
+      "paddingBottom": "48px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": "Make doing your expenses easy.",
+      "layout": {
+        "display": "grid",
+        "columns": "54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 3710,
+      "height": 430,
+      "paddingTop": "24px",
+      "paddingBottom": "48px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": "Maximize your spending power.",
+      "layout": {
+        "display": "grid",
+        "columns": "54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 4140,
+      "height": 470,
+      "paddingTop": "48px",
+      "paddingBottom": "48px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": "Pay vendors faster and easier.",
+      "layout": {
+        "display": "grid",
+        "columns": "54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 4610,
+      "height": 422,
+      "paddingTop": "32px",
+      "paddingBottom": "32px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": "Accelerate accounting with AI.",
+      "layout": {
+        "display": "grid",
+        "columns": "54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px 54px",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 5031,
+      "height": 176,
+      "paddingTop": "80px",
+      "paddingBottom": "48px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": "Save and earn more, only with Brex.",
+      "layout": null,
+      "imageCount": 0
+    },
+    {
+      "top": 5207,
+      "height": 213,
+      "paddingTop": "0px",
+      "paddingBottom": "48px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": "AI-powered automation",
+      "layout": {
+        "display": "grid",
+        "columns": "353.328px 353.328px 353.344px",
+        "gap": "48px",
+        "children": 3
+      },
+      "imageCount": 0
+    },
+    {
+      "top": 5531,
+      "height": 700,
+      "paddingTop": "80px",
+      "paddingBottom": "48px",
+      "bg": "rgb(243, 243, 247)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "grid",
+        "columns": "80.4375px 78.625px 84.0469px",
+        "gap": "normal 12px",
+        "children": 3
+      },
+      "imageCount": 3
+    }
+  ],
+  "nav": {
+    "position": "static",
+    "top": 50,
+    "height": 60,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "borderBottom": "0px none rgb(0, 0, 0)",
+    "boxShadow": "none",
+    "linkCount": 9,
+    "links": [
+      "",
+      "Products",
+      "Solutions",
+      "Resources",
+      "Customers",
+      "Pricing",
+      "Sign in",
+      "See a demo",
+      "Get started"
+    ],
+    "ctaCount": 1,
+    "ctaSamples": [
+      {
+        "text": "Get started",
+        "bg": "rgb(255, 61, 0)",
+        "color": "rgb(252, 252, 253)",
+        "radius": "10px",
+        "height": 36
+      }
+    ],
+    "logoLeft": 24,
+    "maxWidth": "none",
+    "padding": "0px",
+    "linkStyle": {
+      "text": "",
+      "family": "inter",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "color": "rgb(21, 25, 30)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "Customers",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(21, 25, 30)",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "radius": "10px",
+      "shadow": "none",
+      "height": 30,
+      "padding": "4px 8px",
+      "fontSize": "14px",
+      "fontWeight": "600",
+      "family": "inter",
+      "letterSpacing": "-0.14px",
+      "transform": "none",
+      "count": 4
+    },
+    {
+      "text": "Products",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 0)",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "radius": "6px",
+      "shadow": "none",
+      "height": 31,
+      "padding": "4px 8px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 3
+    },
+    {
+      "text": "Get started",
+      "bg": "rgb(255, 61, 0)",
+      "color": "rgb(252, 252, 253)",
+      "border": "1px solid rgb(255, 61, 0)",
+      "radius": "10px",
+      "shadow": "none",
+      "height": 36,
+      "padding": "0px 12px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "SeatGeek",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(111, 115, 123)",
+      "border": "0px none rgb(111, 115, 123)",
+      "radius": "10px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "0px 8px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "Get started",
+      "bg": "rgb(255, 61, 0)",
+      "color": "rgb(255, 255, 255)",
+      "border": "1px solid rgba(66, 87, 138, 0.15)",
+      "radius": "8px",
+      "shadow": "none",
+      "height": 40,
+      "padding": "0px 16px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "See Brex in action",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 0)",
+      "border": "0px none rgb(0, 0, 0)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 76,
+      "padding": "0px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "DoorDash",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(21, 25, 30)",
+      "border": "0px none rgb(21, 25, 30)",
+      "radius": "10px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "0px 8px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "<-",
+      "bg": "rgb(249, 249, 251)",
+      "color": "rgb(21, 25, 30)",
+      "border": "0px none rgb(21, 25, 30)",
+      "radius": "50%",
+      "shadow": "none",
+      "height": 50,
+      "padding": "1px 6px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": {
+    "height": 36,
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "0px none rgb(21, 25, 30)",
+    "radius": "0px",
+    "padding": "8px 2px",
+    "fontSize": "14px",
+    "shadow": "none"
+  },
+  "imagery": {
+    "count": 37,
+    "samples": [
+      {
+        "tag": "img",
+        "w": 1440,
+        "h": 840,
+        "ratio": "1.71",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "HP Hero Desktop",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 150,
+        "h": 37,
+        "ratio": "4.05",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "Trustpilot_grey",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 167,
+        "h": 30,
+        "ratio": "5.54",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "HP-ServiceTitan-grey",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 140,
+        "h": 38,
+        "ratio": "3.68",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "OpenAI",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 167,
+        "h": 19,
+        "ratio": "8.57",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "HP-dispatchhealth-grey",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 167,
+        "h": 36,
+        "ratio": "4.68",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "HP-Doordash-grey",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 140,
+        "h": 29,
+        "ratio": "4.80",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "HP-Cursor-grey",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 160,
+        "h": 18,
+        "ratio": "8.89",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "HP-Anthropic-grey",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 1,
+    "gradients": 0,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 5,
+    "sample": {
+      "bg": "rgb(255, 255, 255)",
+      "border": "0px none rgb(0, 0, 0)",
+      "radius": "12px",
+      "shadow": "none",
+      "padding": "32px"
+    }
+  },
+  "footer": {
+    "height": 1561,
+    "bg": "rgb(0, 7, 16)",
+    "paddingTop": "160px",
+    "paddingBottom": "160px",
+    "columns": 5,
+    "columnsTemplate": "none",
+    "linkCount": 49,
+    "largestText": {
+      "text": "Product Corporate card Business banking ",
+      "size": "16px",
+      "weight": "400",
+      "family": "inter",
+      "color": "rgb(0, 0, 0)"
+    },
+    "borderTop": "0px none rgb(0, 0, 0)"
+  },
+  "motion": {
+    "libs": [
+      "motion"
+    ],
+    "elementsWithTransition": 20,
+    "elementsWithAnimation": 0,
+    "transforms": 13,
+    "stickyElements": 1,
+    "videoCount": 0,
+    "canvasCount": 0,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 9111,
+    "containerMaxWidths": [
+      [
+        "2500px",
+        20
+      ],
+      [
+        "576px",
+        6
+      ],
+      [
+        "400px",
+        5
+      ],
+      [
+        "1680px",
+        2
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "12px",
+        18
+      ],
+      [
+        "6px",
+        12
+      ],
+      [
+        "10px",
+        9
+      ],
+      [
+        "8px",
+        1
+      ],
+      [
+        "4px",
+        1
+      ]
+    ],
+    "shadows": [
+      "rgba(66, 87, 138, 0.15) 0px 1px 0px 0px",
+      "rgba(0, 0, 0, 0.04) 0px 1px 1px 0px"
+    ],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": {
+    "height": 60,
+    "top": 0,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "static"
+  },
+  "mobileNav": {
+    "height": 0,
+    "visibleControls": [],
+    "hasMenuButton": true
+  },
+  "label": "dna / brex white concrete",
+  "capturedAt": "2026-11-23T20:26:46.429Z"
+}
