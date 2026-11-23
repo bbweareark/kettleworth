@@ -640,3 +640,24 @@
 [data-style="sanctuary"] :where(.rounded-full) {
   border-radius: 12px;
 }
+
+/*
+ * Screen tone: a mono halftone field, the dot screen a manga page is printed with.
+ *
+ * Referenced from scrolltide's Halftone Mono shader (design/refs/motion-scrolltide-halftone).
+ * The shader itself is behind their paywall, so this is the same idea done honestly in CSS:
+ * one dot grid in the current text colour, faded out by a mask so it reads as tone rather
+ * than as wallpaper. Only Arc uses it, and only on its two full-screen cards.
+ */
+@utility screentone {
+  background-image: radial-gradient(circle at center, currentColor 1.1px, transparent 1.2px);
+  background-size: 7px 7px;
+  mask-image: radial-gradient(ellipse 85% 65% at 50% 45%, #000 20%, transparent 78%);
+}
+
+/* The same grid, tighter and harder, for the band behind a title. */
+@utility screentone-dense {
+  background-image: radial-gradient(circle at center, currentColor 1.4px, transparent 1.5px);
+  background-size: 5px 5px;
+  mask-image: linear-gradient(90deg, #000 0%, #000 55%, transparent 100%);
+}

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, ChevronRight, ChevronDown, ChevronUp, Info, Repeat, WifiOff, RotateCcw, AlertTriangle } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import type { LoggedSet, PlannedSet, ExerciseSummary } from "@kettleworth/types";
+import type { LoggedSet, PlannedSet, ExerciseSummary, Style } from "@kettleworth/types";
 import { Badge, Button, Card, CardContent, Sheet, SheetContent, Segmented, Textarea, CoachPulse, Dialog, DialogContent, cn, toast, type PulseItem } from "@kettleworth/ui";
 import { kgToLb, lbToKg, round, restFor, autoregulate, loadStep, loadModel, loadLadder, platesPerSide, describePlates, repUnitFor, DEFAULT_BARS_KG, BAR_CHOICES_KG, BAR_CHOICES_LB, BAR_NAMES, type BarKind } from "@kettleworth/core";
 import { ExerciseMedia } from "@/components/library/media";
@@ -13,7 +13,8 @@ import { FormCheck, type CheckCard } from "./form-check";
 import { EFFORT, effortWord } from "./effort";
 import { ImpactFrame, Struck } from "@/components/style/impact";
 import { SessionProgress } from "@/components/style/arch";
-import { useStyle } from "@/lib/style";
+import { ArcTitleCard, ArcClear } from "@/components/style/arc-cards";
+import { ArcCharacter } from "@/components/style/arc-character";
 import { voiceFor } from "@/lib/voice";
 import { Rest } from "./rest";
 import { Keypad, PlateDiagram } from "./weight-pad";
@@ -31,7 +32,7 @@ type Benchmark = { last: { date: string; sets: { weightKg: number | null; reps: 
 type Instance = { benchmark?: Benchmark | null; id: string; exerciseId: string; order: number; role: string; plannedSets: PlannedSet[]; loggedSets: LoggedSet[]; rationale: string; notes: string | null; exercise: Exercise; lastTime: LoggedSet[] | null; swappedReason: string | null; cautions: Caution[]; video: { provider: string; playbackId: string | null; isPlaceholder: boolean; status: string } | null };
 type Detail = { session: { id: string; name: string; status: string; scheduledOn: string; startedAt: string | null; warmup: string[]; estimatedMinutes: number; focus: string[]; readinessScore: number | null; intensityScalar: number }; week: { weekNumber: number; isDeload: boolean } | null; instances: Instance[] };
 
-export function SessionPlayer({ detail, units, sex, barWeights: initialBars, todayIso, autoStart = false }: { detail: Detail; units: "metric" | "imperial"; sex?: "male" | "female" | "other" | null; barWeights?: BarWeights; todayIso: string; autoStart?: boolean }) {
+export function SessionPlayer({ detail, units, sex, barWeights: initialBars, todayIso, autoStart = false, name, episode, serverStyle }: { detail: Detail; units: "metric" | "imperial"; sex?: "male" | "female" | "other" | null; barWeights?: BarWeights; todayIso: string; autoStart?: boolean; name: string; episode: number; serverStyle: Style }) {
   const [barWeights, setBarWeights] = useState<BarWeights>(initialBars ?? {});
   async function saveBar(kind: BarKind, kg: number) {
     const next = { ...barWeights, [kind]: kg }; setBarWeights(next);
@@ -57,9 +58,16 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
    * here; this is for the three things that are composition rather than colour: how a landed
    * set is marked, how progress is drawn, and what the coach calls it.
    */
-  const style = useStyle();
+  const style = serverStyle;
   const voice = voiceFor(style);
   const totalSets = instances.reduce((a, i) => a + i.plannedSets.length, 0);
+  /*
+   * What Arc's title card and clear are made of. The episode is the member's completed-session
+   * count plus this one, passed in by the page, and the tonnage is this session's own, so the
+   * card closes on a number they just produced rather than on a slogan.
+   */
+  const firstName = name.split(" ")[0] || "You";
+  const tonnage = instances.reduce((a, i) => a + i.loggedSets.filter((l) => l.completed).reduce((b, l) => b + (l.weightKg ?? 0) * (l.reps ?? 1), 0), 0);
   const doneSets = instances.reduce((a, i) => a + i.loggedSets.filter((l) => l.completed).length, 0);
 
   useEffect(() => { pending().then(setQueued); const on = () => flush().then(() => pending().then(setQueued)); window.addEventListener("online", on); return () => window.removeEventListener("online", on); }, []);
@@ -199,8 +207,11 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
   return (
     <div className="mx-auto max-w-2xl space-y-4 px-4 pt-20 sm:px-6">
       <PRCelebration pr={pr} onClose={() => setPr(null)} />
-      {/* Arc only: the screen takes the blow when a set lands. */}
+      {/* Arc only: the screen takes the blow when a set lands, the episode is announced when
+          the session opens, and the clear waits at the end of it. */}
       <ImpactFrame count={doneSets} />
+      <ArcTitleCard enabled={style === "arc"} name={firstName} episode={episode} title={session.name} rounds={totalSets} />
+      <ArcClear done={doneSets} total={totalSets} episode={episode} tonnage={tonnage} unit={units === "metric" ? "kg" : "lb"} />
       <div className="flex items-center justify-between gap-3">
         <Link href="/app" className="inline-flex items-center gap-1 text-sm text-fg-muted hover:text-fg"><ArrowLeft className="size-4" /> Today</Link>
         <div className="flex items-center gap-3 text-xs">{queued > 0 && <Badge tone="amber"><WifiOff className="size-3" /> {queued} queued</Badge>}<ElapsedClock since={session.startedAt} /><button type="button" onClick={() => setResetOpen(true)} className="inline-flex items-center gap-1 text-fg-subtle hover:text-fg" aria-label="Restart session"><RotateCcw className="size-3.5" /> Restart</button></div>
@@ -239,6 +250,9 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
         period is a new mount with its own clock; see rest.tsx on why that matters.
       */}
       {rest != null ? <Rest key={rest + "-" + doneSets} label={voice.rest} seconds={rest} why={restWhy} next={nextSet} setsInExercise={cur.plannedSets.length} nextWeight={nextLoad.weight} bar={nextLoad.bar} units={units} onDone={() => setRest(null)} onSkip={() => setRest(null)} /> : null}
+
+      {/* Arc only: the character having this session, reacting to the set that just landed. */}
+      <ArcCharacter done={doneSets} total={totalSets} exerciseDone={curDone} />
 
       <SetConsole key={`console-${cur.exerciseId}`} inst={cur} units={units} barWeights={barWeights} onBarChange={saveBar} onLog={(set, v, confirmed) => logSet(cur, set, v, confirmed)} onReset={resetExercise} />
 

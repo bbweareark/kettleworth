@@ -1,0 +1,559 @@
+{
+  "title": "Animated shader backgrounds · Scrolltide",
+  "url": "https://www.scrolltide.co/shaders",
+  "fonts": [
+    [
+      "Inter",
+      923
+    ],
+    [
+      "Space Mono",
+      10
+    ],
+    [
+      "Bricolage Grotesque",
+      9
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "Motion behind everything",
+      "family": "Bricolage Grotesque",
+      "size": "48px",
+      "weight": "800",
+      "lineHeight": "48.96px",
+      "letterSpacing": "-1.44px",
+      "color": "rgb(243, 245, 248)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "Ride the tide.",
+      "family": "Bricolage Grotesque",
+      "size": "72px",
+      "weight": "800",
+      "lineHeight": "68.4px",
+      "letterSpacing": "-2.16px",
+      "color": "rgb(243, 245, 248)",
+      "transform": "none"
+    },
+    "h3": {
+      "text": "Tide Swirl",
+      "family": "Inter",
+      "size": "15px",
+      "weight": "600",
+      "lineHeight": "22.5px",
+      "letterSpacing": "-0.375px",
+      "color": "rgb(243, 245, 248)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "SHADERS",
+      "family": "Space Mono",
+      "size": "11px",
+      "weight": "400",
+      "lineHeight": "16.5px",
+      "letterSpacing": "0.55px",
+      "color": "rgb(139, 243, 230)",
+      "transform": "uppercase"
+    },
+    "small": null,
+    "link": {
+      "text": "scrolltide",
+      "family": "Inter",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "rgb(243, 245, 248)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "fg rgb(243, 245, 248)",
+      725
+    ],
+    [
+      "border rgb(243, 245, 248)",
+      663
+    ],
+    [
+      "fg rgb(154, 162, 173)",
+      117
+    ],
+    [
+      "border rgb(154, 162, 173)",
+      106
+    ],
+    [
+      "border rgba(255, 255, 255, 0.08)",
+      70
+    ],
+    [
+      "fg rgb(91, 99, 110)",
+      68
+    ],
+    [
+      "border rgb(91, 99, 110)",
+      68
+    ],
+    [
+      "bg rgb(0, 0, 0)",
+      57
+    ],
+    [
+      "bg rgb(11, 13, 16)",
+      56
+    ],
+    [
+      "bg oklab(0.134026 -0.000681959 -0.00509647 / 0.7)",
+      56
+    ],
+    [
+      "fg rgb(139, 243, 230)",
+      11
+    ],
+    [
+      "border rgb(139, 243, 230)",
+      10
+    ],
+    [
+      "fg rgb(4, 18, 31)",
+      8
+    ],
+    [
+      "border rgb(4, 18, 31)",
+      8
+    ],
+    [
+      "fg rgb(7, 8, 10)",
+      8
+    ],
+    [
+      "border rgb(7, 8, 10)",
+      7
+    ],
+    [
+      "bg rgb(243, 245, 248)",
+      4
+    ],
+    [
+      "bg rgb(4, 18, 31)",
+      2
+    ],
+    [
+      "bg oklab(0.134026 -0.000681959 -0.00509647 / 0.4)",
+      1
+    ],
+    [
+      "fg lab(80.8059 21.7313 50.4455)",
+      1
+    ]
+  ],
+  "bodyBg": "rgb(7, 8, 10)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 563,
+      "height": 6991,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Tide Swirl",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "8px",
+        "children": 8
+      },
+      "imageCount": 55
+    }
+  ],
+  "nav": {
+    "position": "sticky",
+    "top": 40,
+    "height": 65,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "borderBottom": "0px solid rgb(243, 245, 248)",
+    "boxShadow": "none",
+    "linkCount": 13,
+    "links": [
+      "scrolltide",
+      "Library",
+      "Components",
+      "Shaders",
+      "Sections",
+      "UI",
+      "MCPNEW",
+      "eBook",
+      "Pricing",
+      "FAQ"
+    ],
+    "ctaCount": 1,
+    "ctaSamples": [
+      {
+        "text": "Go Unlimited",
+        "bg": "rgb(243, 245, 248)",
+        "color": "rgb(7, 8, 10)",
+        "radius": "3.35544e+07px",
+        "height": 36
+      }
+    ],
+    "logoLeft": 104,
+    "maxWidth": "none",
+    "padding": "0px",
+    "linkStyle": {
+      "text": "scrolltide",
+      "family": "Inter",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "rgb(243, 245, 248)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "Library",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(154, 162, 173)",
+      "border": "0px solid rgb(154, 162, 173)",
+      "radius": "3.35544e+07px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "6px 14px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 11
+    },
+    {
+      "text": "Gradient",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(154, 162, 173)",
+      "border": "1px solid rgba(255, 255, 255, 0.08)",
+      "radius": "3.35544e+07px",
+      "shadow": "none",
+      "height": 34,
+      "padding": "6px 14px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 11
+    },
+    {
+      "text": "scrolltide",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(243, 245, 248)",
+      "border": "0px solid rgb(243, 245, 248)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "0px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "Subscribe newsletter",
+      "bg": "rgb(243, 245, 248)",
+      "color": "rgb(7, 8, 10)",
+      "border": "0px solid rgb(7, 8, 10)",
+      "radius": "3.35544e+07px",
+      "shadow": "none",
+      "height": 46,
+      "padding": "12px 24px",
+      "fontSize": "14px",
+      "fontWeight": "600",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "Go Unlimited",
+      "bg": "rgb(243, 245, 248)",
+      "color": "rgb(7, 8, 10)",
+      "border": "0px solid rgb(7, 8, 10)",
+      "radius": "3.35544e+07px",
+      "shadow": "none",
+      "height": 36,
+      "padding": "8px 16px",
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Why Scrolltide? 3 min 35 sec",
+      "bg": "oklab(0.746639 -0.0703368 -0.1263 / 0.07)",
+      "color": "rgb(243, 245, 248)",
+      "border": "1px solid oklab(0.746639 -0.0703368 -0.1263 / 0.35)",
+      "radius": "3.35544e+07px",
+      "shadow": "none",
+      "height": 66,
+      "padding": "14px 24px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "All",
+      "bg": "rgb(243, 245, 248)",
+      "color": "rgb(7, 8, 10)",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "radius": "3.35544e+07px",
+      "shadow": "none",
+      "height": 34,
+      "padding": "6px 14px",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Not now",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(91, 99, 110)",
+      "border": "0px solid rgb(91, 99, 110)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 28,
+      "padding": "6px 0px",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "family": "Inter",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": {
+    "height": 46,
+    "bg": "oklab(0.185831 -0.00182673 -0.0111374 / 0.6)",
+    "border": "1px solid rgba(255, 255, 255, 0.08)",
+    "radius": "3.35544e+07px",
+    "padding": "12px 20px",
+    "fontSize": "14px",
+    "shadow": "none"
+  },
+  "imagery": {
+    "count": 55,
+    "samples": [
+      {
+        "tag": "video",
+        "w": 395,
+        "h": 222,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgb(0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 395,
+        "h": 222,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgb(0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 395,
+        "h": 222,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgb(0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 395,
+        "h": 222,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgb(0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 395,
+        "h": 222,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgb(0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 395,
+        "h": 222,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgb(0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 395,
+        "h": 222,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgb(0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "video",
+        "w": 395,
+        "h": 222,
+        "ratio": "1.78",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgb(0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 1,
+    "gradients": 61,
+    "blurBlobs": 1
+  },
+  "cards": {
+    "count": 1,
+    "sample": {
+      "bg": "rgb(11, 13, 16)",
+      "border": "1px solid rgba(255, 255, 255, 0.14)",
+      "radius": "24px",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.8) 0px 30px 80px -20px",
+      "padding": "32px"
+    }
+  },
+  "footer": {
+    "height": 1181,
+    "bg": "rgba(0, 0, 0, 0)",
+    "paddingTop": "0px",
+    "paddingBottom": "0px",
+    "columns": 4,
+    "columnsTemplate": "370.656px 247.109px 247.109px 247.125px",
+    "linkCount": 17,
+    "largestText": {
+      "text": "scrolltide",
+      "size": "316.8px",
+      "weight": "800",
+      "family": "Bricolage Grotesque",
+      "color": "rgba(0, 0, 0, 0)"
+    },
+    "borderTop": "1px solid rgba(255, 255, 255, 0.08)"
+  },
+  "motion": {
+    "libs": [
+      "motion",
+      "three"
+    ],
+    "elementsWithTransition": 268,
+    "elementsWithAnimation": 2,
+    "transforms": 1,
+    "stickyElements": 1,
+    "videoCount": 55,
+    "canvasCount": 0,
+    "smoothScroll": "smooth"
+  },
+  "layout": {
+    "pageHeight": 8831,
+    "containerMaxWidths": [
+      [
+        "1280px",
+        7
+      ],
+      [
+        "448px",
+        3
+      ],
+      [
+        "768px",
+        2
+      ],
+      [
+        "320px",
+        1
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "16px",
+        110
+      ],
+      [
+        "3.35544e+07px",
+        89
+      ],
+      [
+        "9px",
+        2
+      ],
+      [
+        "4px",
+        1
+      ],
+      [
+        "24px",
+        1
+      ]
+    ],
+    "shadows": [
+      "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.14) 0px 0px 0px 1px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.8) 0px 30px 80px -20px"
+    ],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": {
+    "height": 65,
+    "top": 0,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "sticky"
+  },
+  "mobileNav": {
+    "height": 65,
+    "visibleControls": [
+      "scrolltide",
+      "Menu"
+    ],
+    "hasMenuButton": true
+  },
+  "label": "motion / scrolltide halftone mono",
+  "capturedAt": "2026-11-23T14:06:13.505Z"
+}

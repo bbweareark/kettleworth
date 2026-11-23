@@ -17,6 +17,7 @@ import { Screen } from "@/components/app/screen";
 import { ScreenHero } from "@/components/app/hero";
 import { StickyAction } from "@/components/app/sticky-action";
 import { EpisodeWeek, type Episode } from "@/components/today/episode-week";
+import { PickWorld } from "@/components/today/pick-world";
 import { currentStyle } from "@/lib/style-server";
 
 export const dynamic = "force-dynamic";
@@ -118,6 +119,9 @@ export default async function Today() {
         </ReadoutRow>
 
         <CoachPulse avatar="/art/seal.png" items={pulse} />
+
+        {/* Asked once, in the place everybody lands, and never again once a world is chosen. */}
+        {!rec.profile.styleLockedAt ? <PickWorld /> : null}
 
         {weekState && weekState.hasPrevious && !weekState.week.checkin && !weekState.week.isDeload ? <WeeklyCheckIn weekNumber={weekState.week.weekNumber} applied={weekState.week.adaptations} /> : null}
 

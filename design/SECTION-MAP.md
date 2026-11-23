@@ -188,3 +188,39 @@ current episode's red mark scales in last. None of it moves again once it has la
 
 **Still not built:** Sanctuary's own head, where the figure sits inside a drawn arch. Carbon
 and Sanctuary share the photograph head until then.
+
+
+## Arc, made transformative (23 Nov 2026)
+
+The owner's verdict on the first cut was "the anime version of the app looks same, no ui
+change is there". Two things were true at once.
+
+**The first was a product failure, not a design one.** Every account starts in Carbon, the
+world is locked, and the only way to change it was a panel in Settings nobody had a reason to
+open. He had almost certainly never been in Arc. Today now asks once, in the place everybody
+lands, showing the three grounds in their own tokens rather than describing them, and the ask
+disappears for good once a world is chosen.
+
+**The second was fair.** Arc had a head and a palette, so the forty minutes you actually spend
+in the app, the session, was still Carbon with square corners. Three things fix that, and all
+three are about casting the member as the protagonist rather than about decoration.
+
+| Moment | What it is | Why it earns the screen |
+|---|---|---|
+| **The title card** | Opening a session opens on a full-screen card: EPISODE NN, the session name at `--text-figure` in caps, a line naming them, the round count, the character standing ready on a halftone field. Leaves on its own in 2.2s and on any tap | An episode is announced. This is the single moment that turns a workout into a chapter, and it costs 2 seconds |
+| **The character band** | A band above the console carrying the same character in three states, waiting, straining, fist up. A landed set throws him into the strain frame for a beat; the last set of an exercise puts the fist up | The session screen was the world's blind spot. Someone is doing this, and now the screen knows |
+| **The clear** | The last set of the session takes the screen: EPISODE NN COMPLETE, the line, the sets and the tonnage they just moved, and the fist | A chapter that just stops is not a chapter |
+
+Measurements: title card and clear use `bg-bg`/`text-fg`, never the band colour, because in a
+dark session a full-screen inverted card is a flashbang in a gym. The screen tone is a 7px dot
+grid in the current colour under a radial mask, referenced from scrolltide's Halftone Mono
+(`design/refs/motion-scrolltide-halftone`); their shader is premium, so the dots are written
+here rather than copied. The character band is 112px on a phone, 128px from `sm`.
+
+Motion, all gated by `useReducedMotion`: the title wipes in from the left, the character cuts
+in from the right, the clear scales its figure down into place, and the character band cross
+fades between states in 280ms. Nothing loops, and nothing animates twice.
+
+The title card's `enabled` comes from the server rather than from the client style hook: it
+covers the whole screen, so deciding it after hydration would show a frame of the session
+first, which is the one thing a title card exists to prevent.
