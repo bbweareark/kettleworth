@@ -635,8 +635,8 @@ function Benchmark({ inst, units, onUse }: { inst: Instance; units: "metric" | "
           </div>
           {b.bestWeight || b.bestE1rm ? (
             <div className="mt-2.5 grid grid-cols-2 gap-2 border-t border-rule pt-2.5">
-              <div className="min-w-0"><div className="text-[10px] uppercase tracking-label text-fg-subtle">Heaviest</div><div className="truncate text-sm font-medium tabular">{b.bestWeight ? `${fmtKg(b.bestWeight.weightKg, units)} ${unit} × ${b.bestWeight.reps}` : "-"}</div></div>
-              <div className="min-w-0"><div className="text-[10px] uppercase tracking-label text-fg-subtle">Best max</div><div className="truncate text-sm font-medium tabular">{b.bestE1rm ? `${fmtKg(b.bestE1rm.e1rm, units)} ${unit}` : "-"}</div></div>
+              <div className="min-w-0"><div className="meta text-fg-muted">Heaviest</div><div className="truncate text-sm font-medium tabular">{b.bestWeight ? `${fmtKg(b.bestWeight.weightKg, units)} ${unit} × ${b.bestWeight.reps}` : "-"}</div></div>
+              <div className="min-w-0"><div className="meta text-fg-muted">Best max</div><div className="truncate text-sm font-medium tabular">{b.bestE1rm ? `${fmtKg(b.bestE1rm.e1rm, units)} ${unit}` : "-"}</div></div>
             </div>
           ) : null}
         </>

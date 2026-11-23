@@ -81,7 +81,7 @@ export function LiftHistory({ data, units }: { data: LiftHistoryData; units: "me
 function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub: string }) {
   return (
     <div className="min-w-0 px-2.5 py-2.5 border border-rule">
-      <div className="flex items-center gap-1 text-[10px] uppercase tracking-label text-fg-subtle">{icon}<span className="truncate">{label}</span></div>
+      <div className="flex items-center gap-1 meta text-fg-muted">{icon}<span className="truncate">{label}</span></div>
       <div className="mt-1 truncate font-display text-base tabular tracking-tight sm:text-lg">{value}</div>
       <div className="truncate text-2xs text-fg-subtle">{sub || " "}</div>
     </div>

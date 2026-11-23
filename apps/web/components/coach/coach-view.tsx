@@ -3,7 +3,7 @@ import { dayMonth } from "@/lib/format";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Mail, Send, Sparkles, Check, X } from "lucide-react";
+import { ArrowUpRight, Mail, Send, Sparkles, Check, X } from "lucide-react";
 import { Button, Textarea, Badge, CoachPulse, cn, toast } from "@kettleworth/ui";
 
 type Letter = { id: string; weekStartsOn: string; headline: string; body: string; adaptations: { kind: string; reason: string }[]; readAt: string | null; generatedBy: string };
@@ -61,20 +61,20 @@ export function CoachView({ letters, history, ai, name }: { letters: Letter[]; h
         {letters.length === 0 ? (
           <p className="measure mt-4 text-sm text-fg-muted">Every Sunday evening the coach writes you a short letter: what moved, what stalled, what changes next week and why. Complete a session and write the first one now.</p>
         ) : (
-          <div className="mt-4 space-y-2">
+          <div className="mt-4 border-t border-rule">
             {letters.map((l) => (
-              <article key={l.id} className={cn("overflow-hidden rounded-lg border transition-colors", open === l.id ? "border-rule-strong bg-surface" : "border-rule bg-surface/60 hover:border-rule-strong")}>
-                <button type="button" onClick={() => setOpen(open === l.id ? null : l.id)} aria-expanded={open === l.id} className="flex w-full items-center justify-between gap-3 p-4 text-left">
+              <article key={l.id} className={cn("overflow-hidden border-b transition-colors", open === l.id ? "border-rule-strong" : "border-rule")}>
+                <button type="button" onClick={() => setOpen(open === l.id ? null : l.id)} aria-expanded={open === l.id} className="flex w-full items-center justify-between gap-3 py-4 text-left">
                   <div className="min-w-0">
                     <p className="meta">Week of {dayMonth(l.weekStartsOn, true)}</p>
-                    <h3 className="mt-0.5 font-display text-xl">{l.headline}</h3>
+                    <h3 className="mt-1 font-display text-2xl leading-none tracking-tightest">{l.headline}</h3>
                   </div>
                   {!l.readAt ? <Badge tone="volt">New</Badge> : null}
                 </button>
                 <AnimatePresence initial={false}>
                   {open === l.id ? (
                     <motion.div initial={reduce ? false : { height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }} className="overflow-hidden">
-                      <div className="prose-coach border-t border-rule px-4 py-4 text-[15px] leading-relaxed text-fg-muted">
+                      <div className="prose-coach border-t border-rule py-4 text-[15px] leading-relaxed text-fg-muted">
                         {l.body.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}
                         {l.adaptations.length ? (
                           <ul className="mt-4 space-y-2 border-t border-rule pt-4 text-sm">
@@ -92,19 +92,31 @@ export function CoachView({ letters, history, ai, name }: { letters: Letter[]; h
         )}
       </section>
 
-      <section className="flex min-h-[560px] flex-col overflow-hidden rounded-lg border border-rule bg-surface">
-        <div className="border-b border-rule p-4">
+      {/*
+        The conversation is not a card. It is the right-hand column of the screen, opened by a
+        rule like every other section, with the question set at display size so it reads as an
+        invitation rather than as a panel header.
+      */}
+      <section className="flex min-h-[560px] flex-col border-t border-rule pt-4">
+        <div>
           <p className="meta">Talk to your coach</p>
-          <h2 className="mt-0.5 font-display text-xl">Ask anything about your training, {name}.</h2>
-          <p className="measure mt-1 text-xs text-fg-subtle">Grounded in your profile, plan, logs and readiness. Changes go through the rules engine and are shown here.</p>
+          <h2 className="mt-1 font-display text-2xl leading-none tracking-tightest">Ask anything about your training, {name}.</h2>
+          <p className="measure mt-2 text-sm text-fg-muted">Grounded in your profile, plan, logs and readiness. Changes go through the rules engine and are shown here.</p>
         </div>
-        <div className="flex-1 space-y-3 overflow-y-auto p-4">
+        <div className="mt-4 flex-1 space-y-3 overflow-y-auto">
           {msgs.length === 0 ? (
-            <div className="flex flex-wrap gap-2">
+            /* Five questions as five lines, not five pills: they are sentences, and a
+               sentence in a pill is a chip pretending to be a thought. */
+            <ul className="border-t border-rule">
               {suggestions.map((s) => (
-                <button key={s} type="button" onClick={() => setText(s)} className="rounded-full border border-rule px-4 py-2 text-xs text-fg-muted transition-colors hover:border-rule-strong hover:text-fg">{s}</button>
+                <li key={s} className="border-b border-rule">
+                  <button type="button" onClick={() => setText(s)} className="group flex w-full items-center gap-3 py-3 text-left text-sm text-fg-muted transition-colors hover:text-fg">
+                    <ArrowUpRight className="size-4 shrink-0 text-fg-subtle transition-colors group-hover:text-volt" aria-hidden />
+                    {s}
+                  </button>
+                </li>
               ))}
-            </div>
+            </ul>
           ) : null}
           {msgs.map((m) => (
             <div key={m.id} className={cn("max-w-[88%] rounded-lg px-4 py-3 text-sm leading-relaxed", m.role === "user" ? "ml-auto border border-rule-strong text-fg" : "bg-bg text-fg")}>
@@ -119,7 +131,7 @@ export function CoachView({ letters, history, ai, name }: { letters: Letter[]; h
           {busy ? <CoachPulse avatar="/art/seal.png" label="Coach" items={[{ text: "Reading your last two weeks…", tone: "ember" }]} /> : null}
           <div ref={bottom} />
         </div>
-        <form onSubmit={send} className="flex items-end gap-2 border-t border-rule p-3">
+        <form onSubmit={send} className="mt-3 flex items-end gap-2 border-t border-rule pt-3">
           <Textarea value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }} placeholder={ai ? "Message your coach…" : "Ask about readiness, upcoming sessions or recent performance."} className="min-h-12 flex-1 resize-none py-3" rows={1} />
           <Button type="submit" size="icon" aria-label="Send" loading={busy} disabled={!text.trim()}><Send /></Button>
         </form>

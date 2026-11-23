@@ -114,7 +114,7 @@ export function ProductCard({ product, busy, onLog, onCancel }: { product: Produ
           <label className="flex items-center gap-2 text-sm"><Input inputMode="decimal" value={String(amount)} onChange={(e) => setAmount(Math.max(0, Number(e.target.value.replace(/[^0-9.]/g, "")) || 0))} className="h-9 w-24" aria-label={`Amount in ${product.unit}`} />{product.unit}</label>
         )}
       </div>
-      <div className="grid grid-cols-4 gap-2 text-center">{[["kcal", m.calories], ["protein", m.proteinG], ["carbs", m.carbsG], ["fat", m.fatG]].map(([l, v]) => <div key={l as string} className="bg-rule py-2"><div className="font-display text-lg tabular">{v}</div><div className="text-[10px] uppercase tracking-wider text-fg-subtle">{l}</div></div>)}</div>
+      <div className="grid grid-cols-4 gap-2 text-center">{[["kcal", m.calories], ["protein", m.proteinG], ["carbs", m.carbsG], ["fat", m.fatG]].map(([l, v]) => <div key={l as string} className="bg-rule py-2"><div className="font-display text-lg tabular">{v}</div><div className="meta text-fg-muted">{l}</div></div>)}</div>
       {product.per100.sugarG != null && product.per100.sugarG * k >= 1 ? <p className="text-xs text-fg-subtle">Includes {Math.round(product.per100.sugarG * k)} g sugar.</p> : null}
       <div className="flex justify-between gap-2"><Button variant="ghost" onClick={onCancel}>Scan another</Button><Button loading={busy} disabled={qty <= 0} onClick={() => onLog(qty, m, `${label}, ${Math.round(qty)} ${product.unit}`)}>Log {m.calories} kcal</Button></div>
     </div>

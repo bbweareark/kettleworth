@@ -255,3 +255,50 @@ reduced-motion rule.
 **What stayed.** The information architecture, every number, every coaching line and the
 accessibility floor: no contrast failure and no horizontal overflow in Arc night, Arc
 daylight, Carbon night or Sanctuary daylight, on Today or Programme.
+
+
+## The box sweep (23 Nov 2026)
+
+Arc's re-founding set a bar that the rest of the app had not been held to, so every screen was
+audited from the DOM rather than from memory: boxes counted (an element over 90x56 carrying
+both a border and a fill), grids counted, centred headings counted, and the largest type on
+the screen recorded, in Arc at phone width.
+
+| Screen | Boxes before | Boxes after | Page height before | After |
+|---|---|---|---|---|
+| Library | 40 | **0** | 17,422px | **4,368px** |
+| Connected | 7 | **0** | 6,318px | 1,771px |
+| Coach | 1 | **0** | 1,342px | 1,342px |
+| Progress | 9 | **3** | 4,313px | 4,188px |
+| Settings | 7 | **1** | 3,995px | 3,859px |
+| Programme | 6 | **3** | 4,007px | 3,944px |
+
+**What changed, by composition rather than by token.**
+
+- **Panel**, the one container five screens stack four deep, stopped being a raised rounded
+  box and became an editorial section: a hairline, the title at `--text-2xl` on the page's own
+  ground, the content below it. That one change lifted Progress, Connected, Programme,
+  Settings and the activity log at once.
+- **The library** was the worst surface in the app: thirty-two filter chips stacked four rows
+  deep before any content, then the results as bordered cards each carrying a thumbnail square
+  and four badge chips. It is now one scrolling row of muscles with everything else behind a
+  sheet, and a numbered index: hairline rows, the name at display size, the facts on one small
+  line, and the image as a tall crop bleeding to the right edge. The page is a quarter of its
+  old length.
+- **Connected** was six cards, each with a status badge and, for every provider whose keys are
+  not on this server, a red block reading "Add WHOOP_CLIENT_ID and secret". Six red blocks
+  shouting a deployment detail at someone who wanted to connect a watch, and in Arc, where red
+  means impact, it read as six failures. It is now one hairline row per provider with the
+  brand colour as a bar, and the server's missing keys are said once, quietly, at the bottom.
+- **The coach** stopped being a chat card and became the right-hand column of the screen, and
+  its five starter questions stopped being five pills: they are sentences, and a sentence in a
+  pill is a chip pretending to be a thought.
+
+**Five hard-coded `text-[10px]` labels** were found on the way through, all below the token
+scale's smallest step and all failing AA on the ground they sat on. They are `meta` now.
+
+**Measured after:** 42 combinations of seven screens by six style-and-light pairs, no contrast
+failure and no horizontal overflow anywhere, and no overflow at 360px either.
+
+**Not touched on purpose:** Today's composition, which the owner signed off, and the session
+player, which was rebuilt three times this week already.

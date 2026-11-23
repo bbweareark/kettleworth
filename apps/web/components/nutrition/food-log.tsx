@@ -113,7 +113,7 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
         <div className="space-y-3">
           {SLOTS.map(({ v, l }) => { const rows = entries.filter((e) => e.slot === v); if (!rows.length) return null; return (
             <div key={v}>
-              <div className="mb-1 flex justify-between text-2xs uppercase tracking-label text-fg-subtle"><span>{l}</span><span className="tabular">{Math.round(rows.reduce((a, r) => a + r.macros.calories, 0))} kcal</span></div>
+              <div className="mb-1 flex justify-between meta text-fg-muted"><span>{l}</span><span className="tabular">{Math.round(rows.reduce((a, r) => a + r.macros.calories, 0))} kcal</span></div>
               <ul className="space-y-1">
                 <AnimatePresence initial={false}>
                   {rows.map((e) => { const Icon = SOURCE_ICON[e.source ?? "manual"]; return (
@@ -157,7 +157,7 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
                     <div className="text-xs text-fg-muted">Exact values from the label, for anything packaged</div>
                   </button>
                   <PhotoButton busy={busy === "photo"} onPhoto={async (f) => { try { const img = await preparePhoto(f); await runEstimate({ image: img }, "photo"); } catch { toast.error("Couldn't read that photo"); setBusy(null); } }} />
-                  <p className="text-2xs text-fg-subtle sm:col-span-2">Photos are read once to estimate portions and are not stored. Barcode data comes from Open Food Facts.</p>
+                  <p className="text-xs text-fg-muted sm:col-span-2">Photos are read once to estimate portions and are not stored. Barcode data comes from Open Food Facts.</p>
                 </div>
               )
             ) : null}
@@ -178,8 +178,8 @@ export function FoodLogView({ date, initial, targets, recipes }: { date: string;
                 <div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" /><Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search your meal plan recipes" aria-label="Search recipes" className="pl-9" /></div>
                 {matches.length ? <ul className="space-y-1">{matches.map((m) => <li key={m.id}><button type="button" onClick={async () => { setBusy(m.id); await log(m.name, m.macros, "recipe", undefined, m.id); setBusy(null); setQ(""); router.refresh(); }} className="flex w-full items-center justify-between bg-rule px-3 py-2 text-left text-sm hover:bg-rule"><span className="truncate">{m.name}</span><span className="flex shrink-0 items-center gap-2 tabular text-fg-muted">{m.macros.calories} kcal<Plus className="size-4" /></span></button></li>)}</ul> : null}
                 <div className="flex items-end gap-2 border-t border-rule pt-3">
-                  <label className="flex-1 text-2xs uppercase tracking-label text-fg-subtle">Quick add<Input value={custom.label} onChange={(e) => setCustom({ ...custom, label: e.target.value })} className="mt-1" placeholder="Name" /></label>
-                  <label className="w-24 text-2xs uppercase tracking-label text-fg-subtle">kcal<Input inputMode="numeric" value={custom.calories} onChange={(e) => setCustom({ ...custom, calories: e.target.value.replace(/[^0-9]/g, "") })} className="mt-1" placeholder="0" /></label>
+                  <label className="flex-1 meta text-fg-muted">Quick add<Input value={custom.label} onChange={(e) => setCustom({ ...custom, label: e.target.value })} className="mt-1" placeholder="Name" /></label>
+                  <label className="w-24 meta text-fg-muted">kcal<Input inputMode="numeric" value={custom.calories} onChange={(e) => setCustom({ ...custom, calories: e.target.value.replace(/[^0-9]/g, "") })} className="mt-1" placeholder="0" /></label>
                   <Button disabled={!custom.label || !custom.calories} loading={busy === "custom"} onClick={async () => { setBusy("custom"); await log(custom.label, { calories: Number(custom.calories), proteinG: 0, carbsG: 0, fatG: 0, fibreG: 0 }, "manual"); setBusy(null); setCustom({ label: "", calories: "" }); router.refresh(); }} aria-label="Quick add">Add</Button>
                 </div>
               </div>

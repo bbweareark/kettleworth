@@ -62,11 +62,11 @@ export function DrinkBuilder({ initial, dailyTarget, busy, onLog }: { initial?: 
         {/* The meter */}
         <div className="hidden min-w-[13rem] flex-col justify-between rounded-lg border border-rule bg-surface p-4 md:flex">
           <div>
-            <div className="text-2xs uppercase tracking-label text-fg-subtle">Calories</div>
+            <div className="meta text-fg-muted">Calories</div>
             <div className="flex items-baseline gap-1"><CountUp key={result.calories} value={result.calories} duration={reduce ? 0 : 450} className="font-display text-5xl tracking-tightest" /><span className="text-sm text-fg-subtle">kcal</span></div>
             <div className="mt-2 h-1.5 overflow-hidden bg-rule"><motion.div className="h-full bg-volt" animate={{ width: `${share * 100}%` }} transition={{ duration: reduce ? 0 : 0.35 }} /></div>
-            <div className="mt-1 text-2xs text-fg-subtle">{Math.round(share * 100)}% of today&apos;s {dailyTarget} kcal</div>
-            <div className="mt-3 grid grid-cols-3 gap-2 text-center">{[["P", result.proteinG], ["C", result.carbsG], ["F", result.fatG]].map(([k, v]) => <div key={k as string} className="bg-rule py-1.5"><div className="font-display text-sm tabular">{v}</div><div className="text-[10px] uppercase tracking-wider text-fg-subtle">{k === "P" ? "protein" : k === "C" ? "carbs" : "fat"}</div></div>)}</div>
+            <div className="mt-1 text-xs text-fg-muted">{Math.round(share * 100)}% of today&apos;s {dailyTarget} kcal</div>
+            <div className="mt-3 grid grid-cols-3 gap-2 text-center">{[["P", result.proteinG], ["C", result.carbsG], ["F", result.fatG]].map(([k, v]) => <div key={k as string} className="bg-rule py-1.5"><div className="font-display text-sm tabular">{v}</div><div className="meta text-fg-muted">{k === "P" ? "protein" : k === "C" ? "carbs" : "fat"}</div></div>)}</div>
             {result.breakdown.length ? <ul className="mt-3 space-y-1 text-xs text-fg-muted">{result.breakdown.map((b) => <li key={b.label} className="flex justify-between gap-3"><span className="truncate">{b.label}</span><span className="tabular">{b.calories}</span></li>)}</ul> : <p className="mt-3 text-xs text-fg-subtle">Next to nothing. Hydration counts.</p>}
           </div>
           <Button className="mt-4 w-full" loading={busy} onClick={() => onLog(order)}>Log {result.calories} kcal</Button>
@@ -78,7 +78,7 @@ export function DrinkBuilder({ initial, dailyTarget, busy, onLog }: { initial?: 
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
             <div className="flex items-baseline gap-1.5"><CountUp key={result.calories} value={result.calories} duration={reduce ? 0 : 350} className="font-display text-3xl tracking-tightest" /><span className="text-xs text-fg-subtle">kcal · {Math.round(share * 100)}% of today</span></div>
-            <div className="truncate text-2xs text-fg-subtle">{result.breakdown.length ? result.breakdown.map((b) => `${b.label.split(",")[0]} ${b.calories}`).join(" · ") : "Next to nothing"}</div>
+            <div className="truncate text-xs text-fg-muted">{result.breakdown.length ? result.breakdown.map((b) => `${b.label.split(",")[0]} ${b.calories}`).join(" · ") : "Next to nothing"}</div>
           </div>
           <Button loading={busy} onClick={() => onLog(order)}>Log</Button>
         </div>
@@ -89,7 +89,7 @@ export function DrinkBuilder({ initial, dailyTarget, busy, onLog }: { initial?: 
 }
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><div className="mb-1.5 text-2xs uppercase tracking-label text-fg-subtle">{label}</div><div className="flex flex-wrap gap-1.5">{children}</div></div>;
+  return <div><div className="mb-1.5 meta text-fg-muted">{label}</div><div className="flex flex-wrap gap-1.5">{children}</div></div>;
 }
 function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; children: React.ReactNode }) {
   return <button type="button" aria-pressed={on} onClick={onClick} className={cn("inline-flex h-9 items-center  px-3 text-sm border transition-colors", on ? "bg-volt text-volt-fg ring-volt" : "bg-rule text-fg-muted border-rule hover:text-fg")}>{children}</button>;
@@ -97,7 +97,7 @@ function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; chi
 function Stepper({ label, unit, value, min, max, onChange }: { label: string; unit: string; value: number; min: number; max: number; onChange: (v: number) => void }) {
   return (
     <div>
-      <div className="mb-1.5 text-2xs uppercase tracking-label text-fg-subtle">{label}</div>
+      <div className="mb-1.5 meta text-fg-muted">{label}</div>
       <div className="inline-flex items-center gap-1 rounded-full border border-rule bg-surface p-1">
         <button type="button" aria-label={`Less ${label.toLowerCase()}`} disabled={value <= min} onClick={() => onChange(Math.max(min, value - 1))} className="grid size-8 place-items-center text-fg-muted hover:bg-rule disabled:opacity-30"><Minus className="size-3.5" /></button>
         <span className="min-w-[3.5rem] text-center font-display text-sm tabular">{value}{unit ? <span className="ml-1 text-2xs font-normal text-fg-subtle">{unit}</span> : null}</span>

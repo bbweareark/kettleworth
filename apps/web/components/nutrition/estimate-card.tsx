@@ -14,7 +14,7 @@ export function EstimateCard({ items: initial, note, source, busy, onLog, onCanc
   return (
     <div className="space-y-3 rounded-lg border border-rule bg-surface p-4">
       <div className="flex items-baseline justify-between gap-3">
-        <div className="text-2xs uppercase tracking-label text-fg-subtle">{source === "photo" ? "Read from your photo" : source === "drink" ? "Calculated" : "Smart estimate"}</div>
+        <div className="meta text-fg-muted">{source === "photo" ? "Read from your photo" : source === "drink" ? "Calculated" : "Smart estimate"}</div>
         <div className="font-display text-2xl tabular">{Math.round(total.calories)}<span className="ml-1 text-sm font-normal text-fg-subtle">kcal</span></div>
       </div>
       {portionsVisible > 1 ? <p className="px-3 py-2 text-sm text-fg">{portionsVisible} identical portions in the photo. These numbers are for one of them.</p> : null}
