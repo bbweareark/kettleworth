@@ -782,3 +782,28 @@ holds one identity per project.
 **Responsive, measured.** 99 combinations of eleven screens by three themes by three widths
 (360, 768, 1440): no horizontal overflow anywhere. 54 screen-and-theme combinations for
 contrast after both palettes changed: no failure.
+
+
+## The session HUD, 23 Nov 2026
+
+Four owner notes, one through-line: *"the user should feel like he is the hero in this game no
+matter what theme he chooses."* So none of this is Arc-only.
+
+| Pillar | Choice | Reference (opened this session) | What was taken | What was not |
+|---|---|---|---|---|
+| **Components** | **8bitcn health bar**, retro variant, as the charge rail | [21st.dev/@theorcdev/components/8bit-health-bar](https://21st.dev/@theorcdev/components/8bit-health-bar) → live at 8bitcn.com/docs/components/health-bar (`design/refs/components-21st-healthbar`) | The anatomy: a one-pixel frame, **radius ramp: none** measured on the live page, discrete cells with two-pixel gaps, and the label left / percentage right set at the same size above the rail | Its red, its Press Start 2P, its MIT source. Retyped against this project's tokens; Carbon and Sanctuary get rails of their own rather than an arcade bar in a gallery |
+| **Motion** | **Scrolltide "Fuse"** loader, inverted | [scrolltide.co/#c-fuse](https://www.scrolltide.co/#c-fuse) (`design/refs/motion-scrolltide-fuse`) | Its front-edge behaviour: a jagged glowing burn line with flakes coming off it and a count rolling to zero. Fuse burns **inward** and destroys; the charge rail drives the same front **outward** and restores | Its flame art, its char texture, its copy |
+| **CTA** | **Get Ripe** sticky band, reused for the rest dock | cta.gallery → `design/refs/cta-get-ripe/mobile.png` | The pattern already in this app for the one thing a screen is about: pinned above the tab strip, full bleed, 56px touch targets | Nothing new taken; this is the existing port applied to a second case |
+| **Imagery** | **The mentor, animated** | Higgsfield `seedance_2_5`, image-to-video from his own frame | Four seconds: he unfolds his arms, gives one nod, folds them again. 38KB, Arc only, played once and holding the last frame | — |
+
+**The band was rebuilt, not restyled.** The owner's words were "the image in a square in the
+right is bad UI, it feels like a image pasted there and no value add". Both faults were the
+same fault: a square inset in a bordered box is the shape of a stock-illustration slot, and the
+text beside it carried a slogan rather than information. It is now a page rather than a widget:
+full bleed to both phone edges, the cel panel cut into the ink on a twelve degree slant with a
+charge stroke along the cut, the clip cropped by the panel on all four sides, and the round
+count as the largest thing in the band so it earns its height.
+
+**Measured:** no contrast failure and no horizontal overflow on the session screen at 360, 390
+and 1440 in all three worlds, open dock and collapsed. The rest clock survives Next exercise,
+asserted in `e2e/core-flow.spec.ts`.

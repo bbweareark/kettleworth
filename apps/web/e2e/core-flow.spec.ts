@@ -100,6 +100,10 @@ test("sign up → intake → programme → session logging", async ({ page }) =>
   await expect(timer.getByText("Next up")).toBeVisible();
   await expect(timer.getByRole("tab")).toHaveCount(0);
 
+  // The coach turns up in the corner for the set that just landed, and leaves on his own.
+  await expect(page.getByText("Set logged")).toBeVisible();
+  await expect(page.getByText("Set logged")).toBeHidden({ timeout: 10_000 });
+
   /*
    * And the clock must keep counting down while the rest of the screen is used. This is the
    * regression the owner reported: `onDone` was an inline arrow, so every render of the player
@@ -114,4 +118,16 @@ test("sign up → intake → programme → session logging", async ({ page }) =>
   await console_.getByRole("group", { name: /Enter the reps/ }).getByRole("button", { name: "9", exact: true }).click();
   await page.waitForTimeout(2_500);
   expect(await clock()).toBeLessThan(started);
+
+  /*
+   * And it survives the exercise change. This was the owner's second report - "when we hit
+   * next exercise the timer's gone" - and it was literal: moving on cleared the rest state.
+   * Rest belongs to the body, not to the exercise being left behind.
+   */
+  const beforeMove = await clock();
+  await page.getByRole("button", { name: /Next exercise/ }).click();
+  await expect(timer).toBeVisible();
+  expect(await clock()).toBeLessThanOrEqual(beforeMove);
+  // And it is still the dock, naming the first set of the movement now on screen.
+  await expect(timer.getByText(/Next up . set 1 of/)).toBeVisible();
 });

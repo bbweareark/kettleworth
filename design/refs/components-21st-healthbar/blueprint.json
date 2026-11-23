@@ -1,0 +1,410 @@
+{
+  "title": "Health Bar - 8bitcn/ui",
+  "url": "https://www.8bitcn.com/docs/components/health-bar",
+  "fonts": [
+    [
+      "ui-sans-serif",
+      381
+    ],
+    [
+      "Press Start 2P",
+      89
+    ],
+    [
+      "ui-monospace",
+      39
+    ],
+    [
+      "GeistMono",
+      5
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "Health Bar",
+      "family": "ui-sans-serif",
+      "size": "36px",
+      "weight": "600",
+      "lineHeight": "40px",
+      "letterSpacing": "-0.9px",
+      "color": "lab(15.204 0 -0.00000596046)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "8bitcn/ui",
+      "family": "ui-sans-serif",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "lab(2.75381 0 0)",
+      "transform": "none"
+    },
+    "h3": {
+      "text": "Shadcn Blocks",
+      "family": "ui-sans-serif",
+      "size": "14px",
+      "weight": "700",
+      "lineHeight": "20px",
+      "letterSpacing": "normal",
+      "color": "lab(2.75381 0 0)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "Displays an 8-bit health bar component.",
+      "family": "ui-sans-serif",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "lab(48.496 0 0)",
+      "transform": "none"
+    },
+    "small": null,
+    "link": {
+      "text": "8bitcn/ui",
+      "family": "ui-sans-serif",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "lab(2.75381 0 0)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "border lab(90.952 0 -0.0000119209)",
+      445
+    ],
+    [
+      "fg lab(2.75381 0 0)",
+      286
+    ],
+    [
+      "fg lab(48.496 0 0)",
+      98
+    ],
+    [
+      "fg lab(15.204 0 -0.00000596046)",
+      85
+    ],
+    [
+      "fg lab(7.78201 -0.0000149012 0)",
+      32
+    ],
+    [
+      "bg lab(55.4814 75.0732 48.8528)",
+      10
+    ],
+    [
+      "bg lab(96.52 -0.0000298023 0.0000119209)",
+      9
+    ],
+    [
+      "fg lab(98.26 0 0)",
+      6
+    ],
+    [
+      "bg lab(100 0 0)",
+      6
+    ],
+    [
+      "border lab(2.75381 0 0)",
+      4
+    ],
+    [
+      "bg lab(7.78201 -0.0000149012 0)",
+      2
+    ],
+    [
+      "border lab(96.52 -0.0000298023 0.0000119209)",
+      2
+    ],
+    [
+      "bg oklab(0.205 -0.00000207871 0.00000478327 / 0.2)",
+      2
+    ],
+    [
+      "fg rgb(36, 41, 46)",
+      2
+    ],
+    [
+      "bg oklab(0.999998 -0.00000980496 0.0000234246 / 0.95)",
+      1
+    ],
+    [
+      "bg oklab(0.969998 -0.00000959635 0.0000227094 / 0.1)",
+      1
+    ],
+    [
+      "border oklab(0.921998 -0.00000908971 0.0000215769 / 0.5)",
+      1
+    ],
+    [
+      "bg oklab(0.145 -0.00000143796 0.00000340492 / 0.1)",
+      1
+    ],
+    [
+      "fg lab(76.8 -0.0000298023 0)",
+      1
+    ]
+  ],
+  "bodyBg": "lab(100 0 0)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [],
+  "nav": {
+    "position": "sticky",
+    "top": 0,
+    "height": 56,
+    "bg": "oklab(0.999998 -0.00000980496 0.0000234246 / 0.95)",
+    "backdrop": "none",
+    "borderBottom": "1px dashed lab(90.952 0 -0.0000119209)",
+    "boxShadow": "none",
+    "linkCount": 9,
+    "links": [
+      "8bitcn/ui",
+      "Docs",
+      "Components",
+      "Blocks",
+      "Themes",
+      "Sponsors",
+      "Search documentation... ",
+      "2.1k",
+      "Toggle theme"
+    ],
+    "ctaCount": 1,
+    "ctaSamples": [
+      {
+        "text": "Search documentation... ",
+        "bg": "oklab(0.969998 -0.00000959635 0.0000227094 / 0.1)",
+        "color": "lab(48.496 0 0)",
+        "radius": "0px",
+        "height": 32
+      }
+    ],
+    "logoLeft": 45,
+    "maxWidth": "none",
+    "padding": "0px",
+    "linkStyle": {
+      "text": "8bitcn/ui",
+      "family": "ui-sans-serif",
+      "size": "16px",
+      "weight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "lab(2.75381 0 0)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "Get Started",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "lab(2.75381 0 0)",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 30,
+      "padding": "8px",
+      "fontSize": "12.8px",
+      "fontWeight": "500",
+      "family": "ui-sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 61
+    },
+    {
+      "text": "Copy Page",
+      "bg": "lab(96.52 -0.0000298023 0.0000119209)",
+      "color": "lab(7.78201 -0.0000149012 0)",
+      "border": "0px solid lab(90.952 0 -0.0000119209)",
+      "radius": "0px",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "height": 28,
+      "padding": "0px 10px",
+      "fontSize": "12.8002px",
+      "fontWeight": "500",
+      "family": "ui-sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 3
+    },
+    {
+      "text": "Components",
+      "bg": "lab(96.52 -0.0000298023 0.0000119209)",
+      "color": "lab(7.78201 -0.0000149012 0)",
+      "border": "1px solid lab(96.52 -0.0000298023 0.0000119209)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 30,
+      "padding": "8px",
+      "fontSize": "12.8px",
+      "fontWeight": "500",
+      "family": "ui-sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "Search documentation... cmd+",
+      "bg": "oklab(0.969998 -0.00000959635 0.0000227094 / 0.1)",
+      "color": "lab(48.496 0 0)",
+      "border": "1px solid lab(90.952 0 -0.0000119209)",
+      "radius": "0px",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "height": 32,
+      "padding": "8px 47.994px 8px 16px",
+      "fontSize": "7.5px",
+      "fontWeight": "400",
+      "family": "Press Start 2P",
+      "letterSpacing": "0.5px",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "2.1k",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "lab(2.75381 0 0)",
+      "border": "0px solid lab(90.952 0 -0.0000119209)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 32,
+      "padding": "0px 10px",
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "family": "ui-sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Open in",
+      "bg": "lab(7.78201 -0.0000149012 0)",
+      "color": "lab(98.26 0 0)",
+      "border": "0px solid lab(90.952 0 -0.0000119209)",
+      "radius": "0px",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "height": 36,
+      "padding": "8px 12px",
+      "fontSize": "12px",
+      "fontWeight": "500",
+      "family": "ui-sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "pnpm",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "lab(2.75381 0 0)",
+      "border": "",
+      "radius": "0px",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "height": 31,
+      "padding": "4px 8px",
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "family": "ui-sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    },
+    {
+      "text": "Shadcn Blocks The ultimate b",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "lab(2.75381 0 0)",
+      "border": "1px dashed lab(90.952 0 -0.0000119209)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 74,
+      "padding": "8px",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "family": "ui-sans-serif",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": null,
+  "imagery": {
+    "count": 0,
+    "samples": [],
+    "svgIllustrations": 0,
+    "gradients": 2,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 0,
+    "sample": null
+  },
+  "footer": {
+    "height": 56,
+    "bg": "rgba(0, 0, 0, 0)",
+    "paddingTop": "0px",
+    "paddingBottom": "0px",
+    "columns": null,
+    "columnsTemplate": null,
+    "linkCount": 3,
+    "largestText": {
+      "text": "Built by OrcDev and Contributors. The so",
+      "size": "9px",
+      "weight": "400",
+      "family": "Press Start 2P",
+      "color": "lab(2.75381 0 0)"
+    },
+    "borderTop": "1px dashed lab(90.952 0 -0.0000119209)"
+  },
+  "motion": {
+    "libs": [
+      "motion"
+    ],
+    "elementsWithTransition": 94,
+    "elementsWithAnimation": 0,
+    "transforms": 1,
+    "stickyElements": 5,
+    "videoCount": 0,
+    "canvasCount": 0,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 1479,
+    "containerMaxWidths": [
+      [
+        "1400px",
+        3
+      ],
+      [
+        "672px",
+        2
+      ]
+    ],
+    "radiusRamp": [],
+    "shadows": [
+      "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px"
+    ],
+    "baseFontSize": "16px"
+  },
+  "scrolledNav": {
+    "height": 56,
+    "top": 0,
+    "bg": "oklab(0.999998 -0.00000980496 0.0000234246 / 0.95)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "sticky"
+  },
+  "mobileNav": {
+    "height": 56,
+    "visibleControls": [
+      "☰",
+      "Search...",
+      "2.1k",
+      "Toggle theme"
+    ],
+    "hasMenuButton": true
+  },
+  "label": "components / 8bitcn health bar (via 21st.dev)",
+  "capturedAt": "2026-11-23T22:16:55.858Z"
+}

@@ -95,3 +95,34 @@ export const arcDuring = (setsDone: number) => pick(DURING, setsDone);
 
 /** The line on the card when the last set of a session lands. */
 export const arcCleared = (episode: number) => pick(CLEARED, episode);
+
+/*
+ * What the coach says in the corner when a set lands.
+ *
+ * The owner asked for a coach who turns up after a set, says well done and goes away again.
+ * Two rules keep it from being noise. It is short - a heading of one or two words and a line
+ * of fact - because anything longer is read as an advert while somebody is breathing hard.
+ * And it is never the same sentence as the coaching read-back in the pulse: that one carries
+ * the numbers and the correction, this one carries the acknowledgement. Saying both twice is
+ * how an app gets muted.
+ *
+ * The line is a fact about the set that just happened, not praise invented about the person.
+ */
+export type Praise = { head: string; line: string };
+
+export function praiseFor(
+  style: Style,
+  at: { setNumber: number; setsInExercise: number; exerciseDone: boolean; sessionDone: number; sessionTotal: number },
+): Praise {
+  const left = at.sessionTotal - at.sessionDone;
+  if (style === "arc") {
+    if (at.exerciseDone) return { head: "Chapter closed", line: left > 0 ? `${left} round${left === 1 ? "" : "s"} left in the episode.` : "That is the whole episode." };
+    return { head: "That landed", line: `Round ${at.setNumber} of ${at.setsInExercise} down. Charge back up.` };
+  }
+  if (style === "sanctuary") {
+    if (at.exerciseDone) return { head: "One more stone set", line: left > 0 ? `${left} to keep before the day is whole.` : "The day is whole." };
+    return { head: "Kept", line: `Set ${at.setNumber} of ${at.setsInExercise}. Breathe, then the next.` };
+  }
+  if (at.exerciseDone) return { head: "Exercise complete", line: left > 0 ? `${left} set${left === 1 ? "" : "s"} remaining in this session.` : "Every set logged." };
+  return { head: "Set logged", line: `${at.setNumber} of ${at.setsInExercise} on this movement.` };
+}

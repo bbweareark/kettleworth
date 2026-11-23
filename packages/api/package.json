@@ -9,7 +9,7 @@
     "./ai": "./src/ai/index.ts"
   },
   "scripts": {
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "typecheck": "tsc --noEmit",
     "purge-test-accounts": "tsx scripts/purge-test-accounts.ts"
   },

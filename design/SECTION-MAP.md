@@ -367,3 +367,18 @@ poster and the fallback.
 stretched phones (the gallery hero runs full bleed, the arch holds its axis, the nav becomes a
 pill group). Contrast re-run after both palettes changed: 54 screen-and-theme combinations,
 no failure.
+
+## Session HUD, 23 Nov 2026
+
+Four rows added after the owner's note: the rest clock disappeared when the next exercise was
+opened, rest should read like a life bar charging in a game, the square character inset on the
+right of the session band was a pasted image with no value, and a coach should appear in a
+bottom corner after a set and then leave. The through-line he gave is the one that decides all
+four: **the member is the hero in every world, not only in Arc.**
+
+| Surface | Replicates | Measured target |
+|---|---|---|
+| **Rest dock** (all worlds) | Get Ripe's sticky bottom band (`cta-get-ripe/mobile.png`), carrying 8bitcn's health bar as its top edge (`components-21st-healthbar`) | Fixed above the tab strip at `4rem + safe-area`, full bleed, `border-t`. The charge rail **is** the dock's top edge, 10px. Clock at `--text-4xl` tabular on the right, label and state on the left. Collapsible to a 64px strip. Survives an exercise change: only skip, zero and restart clear it |
+| **Charge rail** | 8bitcn health bar, retro variant (`components-21st-healthbar/desktop.png`): 1px frame, no radius anywhere, discrete cells with 2px gaps, label left and percentage right above it. Front-edge behaviour from Scrolltide's **Fuse** loader (`motion-scrolltide-fuse`), inverted: Fuse burns a jagged glowing front inward, this one drives it outward | Arc: 16 cells, `bg-charge`, leading cell flickers, embers off the front, white flash at full. Carbon: one 2px hairline with four ticks and a mono percentage, no glow. Sanctuary: 6px rail, bronze fill, leading edge breathing at 4s |
+| **Session band** (Arc) | Manga page grammar, not a UI card: ink page, one white cel panel cut on a slant. Replaces the `aspect-square` inset the owner rejected | Full bleed `-mx-4`, `aspect-[21/9]`, panel on the right at 58% cut by a 12° `clip-path`, clip at `object-cover` bleeding all four panel edges, 2px charge stroke on the cut. Round count as the figure on the ink, speed lines behind it |
+| **Coach callout** (all worlds) | Scrolltide **Live Patch** card's corner-dock behaviour (`motion-scrolltide-fuse` pack, library index), one-shot | Bottom-left, above the dock, auto-leaves at 4.5s, tap to dismiss, `aria-live="polite"`. Arc: the mentor rising out of the corner with a hard-edged speech panel. Carbon: a hairline instrument strip, volt caret, mono label. Sanctuary: a bronze-ruled line, no box |

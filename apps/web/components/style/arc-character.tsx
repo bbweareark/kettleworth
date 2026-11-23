@@ -8,22 +8,41 @@ import { castFor, type ArcState } from "@/lib/arc-art";
 import { ArcClip } from "@/components/style/arc-clip";
 
 /**
- * The character who is having the session.
+ * The band: a page, not a card with a picture in it.
  *
- * Four frames of the same person, and the person is the member's own: two protagonists are
- * drawn across every state, picked from the profile the way the photography already is.
- * Waiting, straining, sitting on the bench with a towel while the clock runs, and the fist in
- * the air.
+ * The owner's verdict on the first version was exact and worth quoting: "the image in a square
+ * in the right is bad UI, it feels like a image pasted there and no value add". He was right
+ * on both counts and they are the same fault. A square inset, inside a bordered box, beside
+ * some text, is the shape of a stock illustration slot - and because the text beside it only
+ * said a slogan, the square was carrying nothing a member needed.
  *
- * And the frames themselves move: each state is a short hand-drawn-look cel clip of the same
- * character, so he breathes while he waits, shakes at the hardest point of a rep and punches
- * the air when the set lands. The clip is a panel with its own white ground, inset into the
- * ink page the way a cel panel is, and it is thrown into frame on a spring with two
- * afterimages trailing it. An energy field burns behind it the whole time: idling between
- * sets, charging through the rest clock, white hot on the set itself.
+ * So the band is built as a page of the thing this world is imitating instead of as a widget:
  *
- * Arc only, and the band is not rendered at all in the other two worlds.
+ *   **The ink is the ground and the panel is cut into it.** Full bleed to both edges of the
+ *   phone, no border box, no radius, and the character's panel is cut on a twelve degree
+ *   slant with a charge-coloured stroke along the cut. A cel panel on a slant is page
+ *   grammar; a square with a border is a card.
+ *
+ *   **The clip bleeds every edge of that panel.** `object-cover`, so the figure is cropped by
+ *   the page the way a panel crops a drawing, rather than floating inside a frame with air
+ *   around it.
+ *
+ *   **It carries the count.** The round number is the largest thing in the band, which is this
+ *   app's one rule for every screen, so the band is now where you look to see where you are.
+ *   It earns its height.
+ *
+ * The figure is still the member's own - two protagonists across every state, picked from the
+ * profile the way the photography is - and every state is a short cel clip rather than a
+ * still, so he breathes while waiting, shakes at the hardest point of a rep and puts a fist up
+ * when the set lands. The energy field burns on the ink side, under the type, and charges
+ * through the rest clock.
+ *
+ * Arc only. The band does not render at all in the other two worlds.
  */
+
+/** The cut: the panel starts twelve percent in at the top and runs to the edge at the bottom. */
+const SLANT = "polygon(12% 0%, 100% 0%, 100% 100%, 0% 100%)";
+
 export function ArcCharacter({ done, total, exerciseDone, resting, sex }: { done: number; total: number; exerciseDone: boolean; resting: boolean; sex?: "male" | "female" | "other" | null }) {
   const style = useStyle();
   const reduce = useReducedMotion();
@@ -51,75 +70,46 @@ export function ArcCharacter({ done, total, exerciseDone, resting, sex }: { done
    * runs, which is the one piece of this world where waiting is the point.
    */
   const level: Charge = straining ? "peak" : resting ? "charging" : "idle";
+  const line = state === "win" ? "That is the exercise." : resting ? "Charging back up." : done === 0 ? "Round one. Go." : arcDuring(done);
 
   if (style !== "arc") return null;
 
   return (
-    <section aria-hidden className="relative h-32 overflow-hidden border-y border-rule sm:h-36">
-      {/* Tone behind the figure, fading out to the right so the line stays readable. */}
+    <section aria-hidden className="relative -mx-4 h-40 overflow-hidden border-y border-rule bg-bg sm:-mx-6 sm:h-48">
+      {/* Tone across the whole page, and the field burning under the type. */}
       <div aria-hidden className="screentone-dense pointer-events-none absolute inset-0 text-fg-subtle opacity-20" />
+      <Aura level={level} className="left-[-14%] right-[42%] top-[-24%] bottom-[-24%]" />
 
-      <div className="relative flex h-full items-center gap-4 pl-3 pr-0">
-        <p className="font-display max-w-[54%] text-xl uppercase leading-none">
-          {state === "win" ? "That is the exercise." : resting ? "Charging." : done === 0 ? "Round one. Go." : arcDuring(done)}
-        </p>
+      {/* The stroke along the cut: the same shape, three pixels further left, in charge. */}
+      <div aria-hidden className="absolute inset-y-0 right-0 w-[64%] -translate-x-[3px] bg-charge" style={{ clipPath: SLANT }} />
 
-        <div className="relative ml-auto h-full w-[46%] shrink-0">
-          <Aura level={level} className="bottom-[-18%] left-[-12%] right-[-12%] top-[-10%]" />
-
-          <AnimatePresence mode="popLayout" initial={false}>
-            <motion.div
-              key={state}
-              initial={reduce ? undefined : { opacity: 0, y: 30, scale: 1.1 }}
-              animate={reduce ? undefined : { opacity: 1, y: 0, scale: 1 }}
-              exit={reduce ? undefined : { opacity: 0, y: -16, scale: 0.97 }}
-              transition={{ type: "spring", stiffness: 420, damping: 26, mass: 0.7 }}
-              className="absolute inset-0"
-            >
-              {/*
-                Two afterimages behind the figure, offset and faded, which is how a cel sheet
-                shows speed: the frames that have not caught up yet. They only exist during the
-                spring, so they cost two paints and then stop.
-              */}
-              {/*
-                The clip, framed. Two afterimages of its poster trail it into place, which is
-                how a cel sheet shows speed: the frames that have not caught up yet.
-              */}
-              {!reduce && state !== "rest" ? (
-                <>
-                  <motion.img
-                    src={`/art/arc/${cast[state]}-560.webp`}
-                    alt=""
-                    initial={{ opacity: 0.4, x: 26, y: 10 }}
-                    animate={{ opacity: 0, x: 0, y: 0 }}
-                    transition={{ duration: 0.34, ease: "easeOut" }}
-                    className="absolute bottom-0 right-0 h-[122%] w-auto select-none object-contain object-bottom"
-                  />
-                  <motion.img
-                    src={`/art/arc/${cast[state]}-560.webp`}
-                    alt=""
-                    initial={{ opacity: 0.22, x: 48, y: 18 }}
-                    animate={{ opacity: 0, x: 0, y: 0 }}
-                    transition={{ duration: 0.44, ease: "easeOut" }}
-                    className="absolute bottom-0 right-0 h-[122%] w-auto select-none object-contain object-bottom"
-                  />
-                </>
-              ) : null}
-
-              <motion.div
-                animate={reduce || state !== "ready" ? {} : { y: [0, -3, 0] }}
-                transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute inset-y-1 right-2 aspect-square border border-rule-strong bg-bg"
-              >
-                <ArcClip cast={cast} state={state} className="size-full object-cover" />
-              </motion.div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
+      {/* The panel itself. The clip crops to it; nothing floats inside a frame. */}
+      <div className="absolute inset-y-0 right-0 w-[64%] overflow-hidden bg-bg" style={{ clipPath: SLANT }}>
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.div
+            key={state}
+            initial={reduce ? undefined : { opacity: 0, x: 34, scale: 1.08 }}
+            animate={reduce ? undefined : { opacity: 1, x: 0, scale: 1 }}
+            exit={reduce ? undefined : { opacity: 0, x: -18, scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 420, damping: 26, mass: 0.7 }}
+            className="absolute inset-0"
+          >
+            <ArcClip cast={cast} state={state} className="size-full object-cover object-top" />
+          </motion.div>
+        </AnimatePresence>
       </div>
 
-      {/* The count, set small in the corner the way a panel is numbered. */}
-      <p className="meta absolute left-3 top-2.5">{done} / {total}</p>
+      {/* The ink side: the count first, because every screen in this app answers with a number. */}
+      <div className="relative flex h-full w-[46%] flex-col justify-between py-3 pl-4 pr-2 sm:py-4 sm:pl-6">
+        <p className="meta">Round</p>
+        <div>
+          <p className="font-display text-4xl leading-none">
+            {done}
+            <span className="text-lg text-fg-subtle"> / {total}</span>
+          </p>
+          <p className="mt-2 font-display text-sm uppercase leading-tight text-fg-muted">{line}</p>
+        </div>
+      </div>
     </section>
   );
 }

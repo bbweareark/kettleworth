@@ -62,8 +62,15 @@ export function castFor(sex?: "male" | "female" | "other" | null) {
   return sex === "female" ? CAST.b : CAST.a;
 }
 
-/** The one figure who is not the member: the coach, who is older than everybody and says so. */
+/**
+ * The one figure who is not the member: the coach, who is older than everybody and says so.
+ *
+ * He has a clip of his own now, for the corner callout after a set: he unfolds his arms, gives
+ * one nod, and folds them again. Four seconds, played once, holding its last frame, with the
+ * still as its poster so the corner is never empty while it loads.
+ */
 export const MENTOR = "/art/arc/mentor-560.webp";
+export const MENTOR_CLIP = "/art/arc/clip-mentor.mp4";
 
 export const stateSrc = (cast: ReturnType<typeof castFor>, state: ArcState) => `/art/arc/${cast[state]}-560.webp`;
 

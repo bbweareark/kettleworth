@@ -15,8 +15,9 @@ import { ImpactFrame, Struck } from "@/components/style/impact";
 import { SessionProgress } from "@/components/style/arch";
 import { ArcTitleCard, ArcClear } from "@/components/style/arc-cards";
 import { ArcCharacter } from "@/components/style/arc-character";
+import { CoachCallout } from "@/components/style/coach";
 import { Shake } from "@/components/style/arc-fx";
-import { voiceFor } from "@/lib/voice";
+import { voiceFor, praiseFor } from "@/lib/voice";
 import { Rest } from "./rest";
 import { Keypad, PlateDiagram } from "./weight-pad";
 import { PRCelebration } from "./celebrate";
@@ -53,6 +54,11 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
   const [starting, setStarting] = useState(false);
   const [live, setLive] = useState<PulseItem[]>([]);
   const [resetOpen, setResetOpen] = useState(false);
+  /*
+   * The set the coach is acknowledging in the corner. Held as the facts rather than as a
+   * sentence, so the words can be this world's words and change when the world does.
+   */
+  const [landed, setLanded] = useState<{ setNumber: number; setsInExercise: number; exerciseDone: boolean } | null>(null);
   const cur = instances[idx];
   /*
    * The world this member trains in. The surface itself is tokens and needs nothing from
@@ -141,6 +147,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
     const isLast = set.setNumber === inst.plannedSets[inst.plannedSets.length - 1]!.setNumber;
     const said = `${voice.setLanded}${read ? ` ${read}` : ""}${isLast ? ` ${voice.exerciseDone}` : ""}`;
     setLive([{ text: said, tone: target && values.reps != null && values.reps < target[0] ? "amber" : "signal" }]);
+    setLanded({ setNumber: set.setNumber, setsInExercise: inst.plannedSets.length, exerciseDone: isLast });
     if (!isLast) setRest(set.restSeconds);
     else if (idx < instances.length - 1) { setRest(Math.min(set.restSeconds, 90)); }
     return { ok: true };
@@ -247,23 +254,30 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
 
       {!curDone && <FormCheck key={`check-${cur.exerciseId}`} exerciseId={cur.exerciseId} name={cur.exercise.name} cards={cards} />}
 
-      {/*
-        Rest, when there is any. The key is the rest length and the sets done, so each rest
-        period is a new mount with its own clock; see rest.tsx on why that matters.
-      */}
-      {rest != null ? <Rest key={rest + "-" + doneSets} label={voice.rest} seconds={rest} why={restWhy} next={nextSet} setsInExercise={cur.plannedSets.length} nextWeight={nextLoad.weight} bar={nextLoad.bar} units={units} onDone={() => setRest(null)} onSkip={() => setRest(null)} /> : null}
-
       {/* Arc only: the character having this session, reacting to the set that just landed. */}
       <ArcCharacter done={doneSets} total={totalSets} exerciseDone={curDone} resting={rest != null} sex={sex} />
 
       <SetConsole key={`console-${cur.exerciseId}`} inst={cur} units={units} barWeights={barWeights} onBarChange={saveBar} onLog={(set, v, confirmed) => logSet(cur, set, v, confirmed)} onReset={resetExercise} />
 
       <div className="flex items-center justify-between gap-3 pb-6">
-        <Button variant="ghost" disabled={idx === 0} onClick={() => { setIdx((i) => i - 1); setRest(null); }}><ArrowLeft /> Previous</Button>
-        {idx < instances.length - 1 ? <Button variant={curDone ? "primary" : "secondary"} onClick={() => { setIdx((i) => i + 1); setRest(null); setShowInfo(false); }}>Next exercise <ArrowRight /></Button> : <Button onClick={() => setFinishOpen(true)} loading={starting}>Finish session <Check /></Button>}
+        <Button variant="ghost" disabled={idx === 0} onClick={() => setIdx((i) => i - 1)}><ArrowLeft /> Previous</Button>
+        {idx < instances.length - 1 ? <Button variant={curDone ? "primary" : "secondary"} onClick={() => { setIdx((i) => i + 1); setShowInfo(false); }}>Next exercise <ArrowRight /></Button> : <Button onClick={() => setFinishOpen(true)} loading={starting}>Finish session <Check /></Button>}
       </div>
 
-      <div className="flex flex-wrap gap-1">{instances.map((i, k) => (<button key={i.id} type="button" onClick={() => { setIdx(k); setRest(null); }} aria-label={`${i.exercise.name}${k === idx ? " (current)" : ""}`} aria-current={k === idx} className={cn("h-2 flex-1 rounded-full transition-colors", i.loggedSets.filter((l) => l.completed).length >= i.plannedSets.length ? "bg-fg" : k === idx ? "bg-volt" : "bg-bg")} />))}</div>
+      <div className="flex flex-wrap gap-1">{instances.map((i, k) => (<button key={i.id} type="button" onClick={() => setIdx(k)} aria-label={`${i.exercise.name}${k === idx ? " (current)" : ""}`} aria-current={k === idx} className={cn("h-2 flex-1 rounded-full transition-colors", i.loggedSets.filter((l) => l.completed).length >= i.plannedSets.length ? "bg-fg" : k === idx ? "bg-volt" : "bg-bg")} />))}</div>
+
+      {/*
+        Rest. A dock fixed above the tab strip rather than a card in the flow, so it cannot
+        scroll away and it is not thrown away when the next exercise is opened - which is what
+        the owner reported. It is rendered last because the only thing it leaves in the flow is
+        a spacer the height of itself, and that spacer belongs at the foot of the page.
+        The key is the rest length and the sets done, so each rest period is a new mount with
+        its own clock; see rest.tsx on why that matters.
+      */}
+      {rest != null ? <Rest key={rest + "-" + doneSets} label={voice.rest} seconds={rest} why={restWhy} next={nextSet} setsInExercise={cur.plannedSets.length} nextWeight={nextLoad.weight} bar={nextLoad.bar} units={units} onDone={() => setRest(null)} onSkip={() => setRest(null)} /> : null}
+
+      {/* The coach, in the corner, for one set. Every world, in that world's own voice. */}
+      <CoachCallout fire={doneSets} praise={landed ? praiseFor(style, { ...landed, sessionDone: doneSets, sessionTotal: totalSets }) : null} />
 
       <Dialog open={resetOpen} onOpenChange={setResetOpen}><DialogContent title="Restart this session?" description="Every logged set is cleared and the plan stays as prescribed for today. Records set in this session are removed."><div className="flex justify-end gap-2"><Button variant="ghost" onClick={() => setResetOpen(false)}>Keep going</Button><Button variant="danger" onClick={resetSessionAll}><RotateCcw /> Restart</Button></div></DialogContent></Dialog>
       <Sheet open={swapOpen} onOpenChange={setSwapOpen}><SheetContent title="Swap exercise" description="Like-for-like alternatives that fit your equipment and injuries."><SwapList instanceId={cur.id} onPick={doSwap} /></SheetContent></Sheet>

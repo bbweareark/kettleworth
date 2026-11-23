@@ -133,7 +133,12 @@ export function AppNav({ name }: { name: string }) {
                 <span className={cn("grid size-8 place-items-center rounded-full transition-colors", on && "bg-volt text-volt-fg")}>
                   <i.icon className="size-4" strokeWidth={1.75} aria-hidden />
                 </span>
-                <span className="meta">{i.label}</span>
+                {/* Arc tracks its labels at 0.14em, which ran Programme straight into Progress
+                    on a 360px phone. A tab label is the one place the label tracking has to
+                    give: nine characters in a 72px cell. The variable is set rather than the
+                    property, because `meta` reads `--tracking-label` and wins a tie with a
+                    `tracking-*` utility. Truncation stays as a backstop. */}
+                <span className="meta w-full truncate text-center [--tracking-label:0.02em]">{i.label}</span>
               </Link>
             );
           })}
