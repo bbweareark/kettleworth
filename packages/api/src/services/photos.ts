@@ -70,7 +70,7 @@ export async function applyAnalysis(userId: string, photoId: string, opts: { pri
   return upsertProfile(userId, patch);
 }
 
-import { physiqueTimeline, growthPoints, trend, GAME_MAX_RUNS } from "@kettleworth/core";
+import { physiqueTimeline, growthPoints, trend, REST_GAME_MAX_RUNS } from "@kettleworth/core";
 import { sideQuestDates } from "./quests";
 import { bodyMeasurement, trainingSession, personalRecord, exerciseInstance, healthSample, restActivity, profile as profileTable } from "@kettleworth/db";
 import { inArray } from "drizzle-orm";
@@ -94,7 +94,7 @@ export async function physiqueProgress(userId: string) {
   // The drill has its own line and its own cap, so it must not inflate the rest-deck count.
   const [rest] = await db().select({ n: sql<number>`count(*)::int` }).from(restActivity).where(and(eq(restActivity.userId, userId), sql`${restActivity.kind} <> 'drill'`, sql`(${restActivity.kind} <> 'quiz' or ${restActivity.correct} = true)`));
   // Capped per session in SQL: six solves is the most any one session can ever be worth.
-  const [drills] = await db().execute<{ n: number }>(sql`select coalesce(sum(least(c, ${GAME_MAX_RUNS})), 0)::int as n from (select ${restActivity.sessionId} as sid, count(*)::int as c from ${restActivity} where ${restActivity.userId} = ${userId} and ${restActivity.kind} = 'drill' group by 1) t`) as unknown as { n: number }[];
+  const [drills] = await db().execute<{ n: number }>(sql`select coalesce(sum(least(c, ${REST_GAME_MAX_RUNS})), 0)::int as n from (select ${restActivity.sessionId} as sid, count(*)::int as c from ${restActivity} where ${restActivity.userId} = ${userId} and ${restActivity.kind} = 'drill' group by 1) t`) as unknown as { n: number }[];
   const [prof] = await db().select({ step: profileTable.onboardingStep, done: profileTable.onboardingCompletedAt }).from(profileTable).where(eq(profileTable.userId, userId)).limit(1);
   const sideDates = (await sideQuestDates([userId]))[userId] ?? [];
   const growth = growthPoints({ sideQuests: sideDates.length, sessionsCompleted: sessions.length, prs: prs?.n ?? 0, weighIns: measurements.filter((m) => m.weightKg != null).length, photoSets, streakWeeks: weeklyStreak([...sessions.map((s) => s.d), ...sideDates]), setsLogged: sets?.n ?? 0, activitiesLogged: acts?.n ?? 0, restLearned: rest?.n ?? 0, plateDrills: drills?.n ?? 0, intakeSteps: prof?.step ?? 0, intakeComplete: !!prof?.done });
@@ -135,7 +135,7 @@ export async function growthForUsers(ids: string[]): Promise<Record<string, { to
     // Same per-session cap as the personal breakdown, so the leaderboard cannot be gamed.
     // The outer query must address the subquery's own columns: rest_activity is not joined
     // into it, and naming restActivity.userId out here makes Drizzle refuse the whole query.
-    db().select({ u: drillPerSession.u, n: sql<number>`coalesce(sum(least(${drillPerSession.c}, ${GAME_MAX_RUNS})), 0)::int` })
+    db().select({ u: drillPerSession.u, n: sql<number>`coalesce(sum(least(${drillPerSession.c}, ${REST_GAME_MAX_RUNS})), 0)::int` })
       .from(drillPerSession).groupBy(drillPerSession.u),
     db().select({ u: profileTable.userId, step: profileTable.onboardingStep, done: profileTable.onboardingCompletedAt }).from(profileTable).where(inArray(profileTable.userId, ids)),
   ]);

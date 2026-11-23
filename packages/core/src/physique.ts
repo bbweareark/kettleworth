@@ -38,7 +38,7 @@ export function physiqueTimeline(entries: PhysiqueEntry[]): PhysiquePoint[] {
  */
 export type GrowthInputs = { sessionsCompleted: number; prs: number; weighIns: number; photoSets: number; streakWeeks: number; setsLogged: number; activitiesLogged: number; restLearned?: number; plateDrills?: number; intakeSteps?: number; intakeComplete?: boolean; sideQuests?: number };
 import { SIDE_QUEST_POINTS } from "./quests";
-import { GAME_POINTS_PER_RUN } from "./word-rush";
+import { REST_GAME_POINTS_PER_RUN, REST_LEARNED_POINTS } from "./rest-history";
 export const INTAKE_STEP_POINTS = 15;
 export const INTAKE_COMPLETE_POINTS = 100;
 /** Growth points never decrease: every completed action adds. Weighted so consistency (sessions, streak) dominates. */
@@ -53,9 +53,12 @@ export function growthPoints(g: GrowthInputs): { total: number; breakdown: { lab
     { label: "Body checks", points: g.photoSets * 80 },
     { label: "Other activity", points: g.activitiesLogged * 30 },
     { label: "Streak bonus", points: Math.min(10, g.streakWeeks) * 50 },
-    { label: "Rest deck", points: (g.restLearned ?? 0) * 10 },
-    // Capped at the source: six solves a session is the most the drill can ever be worth.
-    { label: "Rest game", points: (g.plateDrills ?? 0) * GAME_POINTS_PER_RUN },
+    /*
+     * One row for everything the old rest arcade ever paid out. The arcade is gone, so this
+     * only ever credits history and reads 0 for anyone who never saw it, which the breakdown
+     * then hides. See rest-history.ts.
+     */
+    { label: "Rest breaks", points: (g.restLearned ?? 0) * REST_LEARNED_POINTS + (g.plateDrills ?? 0) * REST_GAME_POINTS_PER_RUN },
   ];
   const total = breakdown.reduce((a, b) => a + b.points, 0);
   /*

@@ -59,7 +59,7 @@ describe("what a movement is counted in", () => {
   });
 
   it("describes a target in the unit it is actually measured in", () => {
-    expect(describeTarget({ reps: null, repRange: [8, 12], durationSeconds: null })).toBe("8–12 reps");
+    expect(describeTarget({ reps: null, repRange: [8, 12], durationSeconds: null })).toBe("8 to 12 reps");
     expect(describeTarget({ reps: 5, repRange: null, durationSeconds: null })).toBe("5 reps");
     expect(describeTarget({ reps: null, repRange: null, durationSeconds: 45 })).toBe("45s");
     // A held set keeps its seconds even when a rep range came along for the ride.

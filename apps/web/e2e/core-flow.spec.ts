@@ -87,8 +87,31 @@ test("sign up → intake → programme → session logging", async ({ page }) =>
   await expect(console_.getByRole("button", { name: /^Edit the/ }).first()).toHaveAttribute("aria-label", /currently 0 /);
   await console_.getByRole("radio", { name: /^Right/ }).click();
   await console_.getByRole("button", { name: /^(Log set|Update set)$/ }).click();
-  await expect(page.getByRole("timer")).toBeVisible();
   // Logging advances the focus to the next set, so the commit button reads "Log set" again.
   // Assert the set track recorded the one just logged, which is the stronger check anyway.
   await expect(console_.getByRole("button", { name: /^set 1/i })).toContainText("×");
+
+  /*
+   * Rest: the clock and the next set, and nothing else. The deck that used to live here is
+   * gone, so there is no tab strip inside the timer.
+   */
+  const timer = page.getByRole("timer");
+  await expect(timer).toBeVisible();
+  await expect(timer.getByText("Next up")).toBeVisible();
+  await expect(timer.getByRole("tab")).toHaveCount(0);
+
+  /*
+   * And the clock must keep counting down while the rest of the screen is used. This is the
+   * regression the owner reported: `onDone` was an inline arrow, so every render of the player
+   * pushed the deadline forward and rest started again whenever anything was pressed.
+   */
+  const clock = async () => {
+    const [m, s] = (await timer.locator("[data-clock]").innerText()).trim().split(":").map(Number);
+    return m! * 60 + s!;
+  };
+  const started = await clock();
+  await console_.getByRole("button", { name: /^Edit the reps/ }).click();
+  await console_.getByRole("group", { name: /Enter the reps/ }).getByRole("button", { name: "9", exact: true }).click();
+  await page.waitForTimeout(2_500);
+  expect(await clock()).toBeLessThan(started);
 });

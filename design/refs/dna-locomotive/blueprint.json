@@ -1,0 +1,401 @@
+{
+  "title": "Locomotive | Montreal web agency",
+  "url": "https://locomotive.ca/en",
+  "fonts": [
+    [
+      "HelveticaNowDisplay",
+      200
+    ],
+    [
+      "LocomotiveNew",
+      44
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "🔶 Locomotive® Digital-first Design Agency🍺🔞",
+      "family": "LocomotiveNew",
+      "size": "70px",
+      "weight": "400",
+      "lineHeight": "77px",
+      "letterSpacing": "normal",
+      "color": "rgb(255, 255, 255)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "Featured work",
+      "family": "HelveticaNowDisplay",
+      "size": "26px",
+      "weight": "400",
+      "lineHeight": "31.2px",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 0)",
+      "transform": "none"
+    },
+    "h3": {
+      "text": "Lightship",
+      "family": "HelveticaNowDisplay",
+      "size": "15px",
+      "weight": "400",
+      "lineHeight": "19.5px",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 0)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "Seven Years Running 2018-2024",
+      "family": "HelveticaNowDisplay",
+      "size": "26px",
+      "weight": "400",
+      "lineHeight": "31.2px",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 0)",
+      "transform": "none"
+    },
+    "small": {
+      "text": "Always looking for top shelf talent",
+      "family": "HelveticaNowDisplay",
+      "size": "26px",
+      "weight": "400",
+      "lineHeight": "31.2px",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 0)",
+      "transform": "none"
+    },
+    "link": {
+      "text": "Locomotive®",
+      "family": "HelveticaNowDisplay",
+      "size": "26px",
+      "weight": "400",
+      "lineHeight": "31.2px",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 0)",
+      "transform": "none"
+    }
+  },
+  "palette": [
+    [
+      "fg rgb(0, 0, 0)",
+      235
+    ],
+    [
+      "border rgb(0, 0, 0)",
+      235
+    ],
+    [
+      "fg rgb(255, 255, 255)",
+      9
+    ],
+    [
+      "border rgb(255, 255, 255)",
+      9
+    ],
+    [
+      "bg rgb(255, 255, 255)",
+      4
+    ],
+    [
+      "bg rgb(0, 0, 0)",
+      1
+    ]
+  ],
+  "bodyBg": "rgba(0, 0, 0, 0)",
+  "htmlBg": "rgb(255, 255, 255)",
+  "sections": [
+    {
+      "top": 0,
+      "height": 900,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "🔶 Locomotive® Digital-first Design Agency🍺🔞",
+      "layout": null,
+      "imageCount": 1
+    },
+    {
+      "top": 900,
+      "height": 4875,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Featured work",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 9
+    },
+    {
+      "top": 1895,
+      "height": 914,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Lightship",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 3
+      },
+      "imageCount": 5
+    },
+    {
+      "top": 4043,
+      "height": 1731,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Extras (13)",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 2
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 4150,
+      "height": 377,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": "Articles",
+      "layout": null,
+      "imageCount": 0
+    },
+    {
+      "top": 4150,
+      "height": 377,
+      "paddingTop": "7px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Articles",
+      "layout": null,
+      "imageCount": 0
+    },
+    {
+      "top": 4527,
+      "height": 283,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgb(255, 255, 255)",
+      "maxWidth": "none",
+      "heading": "Culture",
+      "layout": null,
+      "imageCount": 0
+    },
+    {
+      "top": 4527,
+      "height": 283,
+      "paddingTop": "7px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "Culture",
+      "layout": null,
+      "imageCount": 0
+    }
+  ],
+  "nav": {
+    "position": "static",
+    "top": -5698,
+    "height": 0,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "borderBottom": "0px none rgb(0, 0, 0)",
+    "boxShadow": "none",
+    "linkCount": 6,
+    "links": [
+      "Locomotive®",
+      "Work",
+      "Agency",
+      "Careers",
+      "Store",
+      "Let's talk"
+    ],
+    "ctaCount": 0,
+    "ctaSamples": [],
+    "logoLeft": null,
+    "maxWidth": "none",
+    "padding": "0px",
+    "linkStyle": {
+      "text": "Locomotive®",
+      "family": "HelveticaNowDisplay",
+      "size": "26px",
+      "weight": "400",
+      "lineHeight": "31.2px",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 0, 0)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "Locomotive®",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 0)",
+      "border": "0px none rgb(0, 0, 0)",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 31,
+      "padding": "0px",
+      "fontSize": "26px",
+      "fontWeight": "400",
+      "family": "HelveticaNowDisplay",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 23
+    },
+    {
+      "text": "The dynasty",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 0)",
+      "border": "",
+      "radius": "0px",
+      "shadow": "none",
+      "height": 48,
+      "padding": "10px 0px",
+      "fontSize": "26px",
+      "fontWeight": "400",
+      "family": "HelveticaNowDisplay",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 3
+    }
+  ],
+  "input": null,
+  "imagery": {
+    "count": 5,
+    "samples": [
+      {
+        "tag": "video",
+        "w": 1440,
+        "h": 900,
+        "ratio": "1.60",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "canvas",
+        "w": 440,
+        "h": 616,
+        "ratio": "0.71",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "canvas",
+        "w": 440,
+        "h": 587,
+        "ratio": "0.75",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgb(0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 670,
+        "h": 763,
+        "ratio": "0.88",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "Pros de l'internet White T-Shirt",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 440,
+        "h": 501,
+        "ratio": "0.88",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "Pros de l'internet Sand Hat",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 0,
+    "gradients": 0,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 0,
+    "sample": null
+  },
+  "footer": {
+    "height": 663,
+    "bg": "rgba(0, 0, 0, 0)",
+    "paddingTop": "0px",
+    "paddingBottom": "20px",
+    "columns": 3,
+    "columnsTemplate": "95px 95px 95px 95px 95px 95px 95px 95px 95px 95px 95px 95px",
+    "linkCount": 18,
+    "largestText": {
+      "text": "🟤1211🔠 Jean-Talon Est🔚🔞 Montréal 🛑\ud83d",
+      "size": "70px",
+      "weight": "400",
+      "family": "LocomotiveNew",
+      "color": "rgb(0, 0, 0)"
+    },
+    "borderTop": "0px none rgb(0, 0, 0)"
+  },
+  "motion": {
+    "libs": [
+      "lenis",
+      "motion",
+      "three",
+      "locomotive"
+    ],
+    "elementsWithTransition": 2,
+    "elementsWithAnimation": 0,
+    "transforms": 12,
+    "stickyElements": 0,
+    "videoCount": 1,
+    "canvasCount": 2,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 6598,
+    "containerMaxWidths": [],
+    "radiusRamp": [],
+    "shadows": [],
+    "baseFontSize": "15px"
+  },
+  "scrolledNav": {
+    "height": 0,
+    "top": -900,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "static"
+  },
+  "mobileNav": {
+    "height": 0,
+    "visibleControls": [
+      "Locomotive®",
+      "Menu"
+    ],
+    "hasMenuButton": true
+  },
+  "label": "dna / locomotive",
+  "capturedAt": "2026-11-23T12:00:59.820Z"
+}

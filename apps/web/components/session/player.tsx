@@ -8,9 +8,10 @@ import type { LoggedSet, PlannedSet, ExerciseSummary } from "@kettleworth/types"
 import { Badge, Button, Card, CardContent, Progress, Sheet, SheetContent, Segmented, Textarea, CoachPulse, Dialog, DialogContent, cn, toast, type PulseItem } from "@kettleworth/ui";
 import { kgToLb, lbToKg, round, restFor, autoregulate, loadStep, loadModel, loadLadder, platesPerSide, describePlates, repUnitFor, DEFAULT_BARS_KG, BAR_CHOICES_KG, BAR_CHOICES_LB, BAR_NAMES, type BarKind } from "@kettleworth/core";
 import { ExerciseMedia } from "@/components/library/media";
-import { RestTimer, ElapsedClock } from "./timer";
+import { ElapsedClock } from "./timer";
 import { FormCheck, type CheckCard } from "./form-check";
-import { RestDeck } from "./rest-deck";
+import { EFFORT, effortWord } from "./effort";
+import { Rest } from "./rest";
 import { Keypad, PlateDiagram } from "./weight-pad";
 import { PRCelebration } from "./celebrate";
 import { LiftHistory, fmtKg, type LiftHistoryData } from "@/components/lifts/lift-history";
@@ -24,7 +25,7 @@ type Exercise = { id: string; slug: string; name: string; primaryMuscles: string
 type Caution = { level: "info" | "warn" | "stop"; text: string };
 type Benchmark = { last: { date: string; sets: { weightKg: number | null; reps: number | null; rpe: number | null }[] } | null; bestWeight: { weightKg: number; reps: number; date: string } | null; bestE1rm: { e1rm: number; weightKg: number; reps: number; date: string } | null; sessions: number };
 type Instance = { benchmark?: Benchmark | null; id: string; exerciseId: string; order: number; role: string; plannedSets: PlannedSet[]; loggedSets: LoggedSet[]; rationale: string; notes: string | null; exercise: Exercise; lastTime: LoggedSet[] | null; swappedReason: string | null; cautions: Caution[]; video: { provider: string; playbackId: string | null; isPlaceholder: boolean; status: string } | null };
-type Detail = { session: { id: string; name: string; status: string; scheduledOn: string; startedAt: string | null; warmup: string[]; estimatedMinutes: number; focus: string[]; readinessScore: number | null; intensityScalar: number }; week: { weekNumber: number; isDeload: boolean } | null; instances: Instance[]; seenRest?: string[] };
+type Detail = { session: { id: string; name: string; status: string; scheduledOn: string; startedAt: string | null; warmup: string[]; estimatedMinutes: number; focus: string[]; readinessScore: number | null; intensityScalar: number }; week: { weekNumber: number; isDeload: boolean } | null; instances: Instance[] };
 
 export function SessionPlayer({ detail, units, sex, barWeights: initialBars, todayIso, autoStart = false }: { detail: Detail; units: "metric" | "imperial"; sex?: "male" | "female" | "other" | null; barWeights?: BarWeights; todayIso: string; autoStart?: boolean }) {
   const [barWeights, setBarWeights] = useState<BarWeights>(initialBars ?? {});
@@ -45,8 +46,6 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
   const [queued, setQueued] = useState(0);
   const [starting, setStarting] = useState(false);
   const [live, setLive] = useState<PulseItem[]>([]);
-  const [seenRest, setSeenRest] = useState<string[]>(detail.seenRest ?? []);
-  const [prediction, setPrediction] = useState<number | null>(null);
   const [resetOpen, setResetOpen] = useState(false);
   const cur = instances[idx];
   const totalSets = instances.reduce((a, i) => a + i.plannedSets.length, 0);
@@ -90,7 +89,6 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
     }
     if (target && values.reps != null) read = values.reps > target[1] ? `${values.reps} reps beats the ${target[0]} to ${target[1]} target. Add load next set if RPE allows.` : values.reps < target[0] ? `${values.reps} reps is under the ${target[0]} to ${target[1]} range. Drop 5 to 7% for the next set.` : `${values.reps} reps, inside the ${target[0]} to ${target[1]} range.${rpeGap != null ? (rpeGap <= -1 ? " RPE says you had more: nudge the load up." : rpeGap >= 1.5 ? " RPE ran hot: hold or ease the load." : " Effort on target.") : ""}`;
     if (confirmed) read += " Logged as unusual: it will not count as a record until you repeat it.";
-    if (prediction != null && values.reps != null) { const hit = Math.abs(prediction - values.reps) <= 1; read += hit ? ` You called ${prediction} and got ${values.reps}: good self-knowledge, +10 Growth.` : ` You called ${prediction}, got ${values.reps}. Calibration improves with every honest set.`; fetch("/api/rest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: session.id, kind: "predict", itemId: `predict-hit-${inst.id}-${set.setNumber}`, correct: hit, detail: { predicted: prediction, actual: values.reps } }) }).catch(() => {}); setPrediction(null); }
     // Watch the set that was just lifted and move the weight for the sets that remain, with the reason and a way to keep the old weight.
     if (set.type === "working" && values.weightKg != null) {
       const lm = loadModel({ name: inst.exercise.name, equipment: inst.exercise.equipment as never, unilateral: !!inst.exercise.unilateral });
@@ -98,14 +96,26 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
       const doneNumbers = new Set([...inst.loggedSets.filter((l) => l.completed).map((l) => l.setNumber), set.setNumber]);
       const remaining = inst.plannedSets.filter((ps) => ps.type === "working" && ps.setNumber > set.setNumber && !doneNumbers.has(ps.setNumber));
       const adj = autoregulate({ weightKg: values.weightKg, reps: values.reps, rpe: values.rpe }, { repRange: set.repRange, reps: set.reps, targetRpe: set.targetRpe, weightKg: set.weightKg }, { step, units });
-      if (adj.action !== "hold" && adj.nextWeightKg != null && remaining.length) {
+      /*
+       * A set on target means the same weight next set, and the plan has to say so. The first
+       * session of a block prescribes no load at all - there is nothing to base one on yet -
+       * so while only a move up or down was written back, every set after the first asked for
+       * the weight again from zero, and the rest screen could not say what was coming. Holding
+       * carries the weight just lifted onto the sets that remain; it is not an adjustment, so
+       * it arrives without a toast.
+       */
+      const moved = adj.action !== "hold" && adj.nextWeightKg != null;
+      const carryKg = moved ? adj.nextWeightKg! : values.weightKg;
+      if (carryKg > 0 && remaining.length && remaining.some((r) => r.weightKg !== carryKg)) {
         const before = remaining[0]!.weightKg ?? values.weightKg;
         const apply = (kg: number) => setInstances((prev) => prev.map((i) => (i.id === inst.id ? { ...i, plannedSets: i.plannedSets.map((ps) => (remaining.some((r) => r.setNumber === ps.setNumber) ? { ...ps, weightKg: kg } : ps)) } : i)));
-        apply(adj.nextWeightKg);
-        fetch(`/api/instance/${inst.id}/adjust`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ afterSetNumber: set.setNumber, weightKg: adj.nextWeightKg, reason: adj.reason }) }).catch(() => {});
-        const shown = `${round(units === "metric" ? before : kgToLb(before), 1)} ${units === "metric" ? "kg" : "lb"}`;
-        toast.message(adj.action === "up" ? "Heavier next set" : "Lighter next set", { description: adj.reason, duration: 9000, action: { label: `Keep ${shown}`, onClick: () => { apply(before); fetch(`/api/instance/${inst.id}/adjust`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ afterSetNumber: set.setNumber, weightKg: before, reason: "Kept the planned weight" }) }).catch(() => {}); } } });
-        read = adj.reason.charAt(0).toUpperCase() + adj.reason.slice(1);
+        apply(carryKg);
+        fetch(`/api/instance/${inst.id}/adjust`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ afterSetNumber: set.setNumber, weightKg: carryKg, reason: moved ? adj.reason : "Same weight for the sets that remain." }) }).catch(() => {});
+        if (moved) {
+          const shown = `${round(units === "metric" ? before : kgToLb(before), 1)} ${units === "metric" ? "kg" : "lb"}`;
+          toast.message(adj.action === "up" ? "Heavier next set" : "Lighter next set", { description: adj.reason, duration: 9000, action: { label: `Keep ${shown}`, onClick: () => { apply(before); fetch(`/api/instance/${inst.id}/adjust`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ afterSetNumber: set.setNumber, weightKg: before, reason: "Kept the planned weight" }) }).catch(() => {}); } } });
+          read = adj.reason.charAt(0).toUpperCase() + adj.reason.slice(1);
+        }
       }
     }
     setLive([{ text: read, tone: target && values.reps != null && values.reps < target[0] ? "amber" : "signal" }]);
@@ -115,7 +125,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
     return { ok: true };
     // `start` is rebuilt every render; depending on it would rebuild logSet every render too.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idx, instances.length, units, prediction, session.id, session.status]);
+  }, [idx, instances.length, units, session.id, session.status]);
 
   async function resetExercise() {
     const r = await fetch(`/api/instance/${cur!.id}/reset`, { method: "POST" });
@@ -154,13 +164,25 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
   if (!cur) return <div className="p-6 text-fg-muted">This session has no exercises.</div>;
   const restWhy = cur.exercise.mechanics ? restFor({ mechanics: cur.exercise.mechanics, pattern: cur.exercise.pattern, category: cur.exercise.category, equipment: cur.exercise.equipment, primaryMuscles: cur.exercise.primaryMuscles, unilateral: cur.exercise.unilateral }, { role: cur.role as never, goal: "muscle", topReps: cur.plannedSets.find((p) => p.type === "working")?.repRange?.[1] ?? 10, experience: "intermediate" }).reason : undefined;
   const curDone = cur.loggedSets.filter((l) => l.completed).length >= cur.plannedSets.length;
+  /*
+   * The next set to be done, and what it weighs in the member's own units. The rest screen
+   * states it so nobody has to hold it in their head while the clock runs, and draws the
+   * plates for it, which is the one piece of arithmetic worth doing for someone.
+   */
+  const nextSet = cur.plannedSets.find((ps) => !cur.loggedSets.some((l) => l.setNumber === ps.setNumber && l.completed)) ?? null;
+  const nextLoad = (() => {
+    if (!nextSet) return { weight: null, bar: null };
+    const lm = loadModel({ name: cur.exercise.name, equipment: cur.exercise.equipment as never, unilateral: !!cur.exercise.unilateral });
+    const toDisp = (kg: number) => round(units === "metric" ? kg : kgToLb(kg), 1);
+    const barKg = lm.kind === "bar" ? (barWeights[lm.bar] ?? DEFAULT_BARS_KG[units][lm.bar]) : null;
+    return { weight: nextSet.weightKg != null ? toDisp(nextSet.weightKg) : null, bar: barKg != null ? toDisp(barKg) : null };
+  })();
   const cards: CheckCard[] = [
     ...cur.cautions.filter((c) => c.level !== "info").map((c) => ({ kind: "foryou" as const, text: c.text })),
     ...(cur.exercise.cues.length ? cur.exercise.cues : cur.exercise.instructions).slice(0, 2).map((t) => ({ kind: "cue" as const, text: t })),
     ...cur.exercise.commonMistakes.slice(0, 1).map((t) => ({ kind: "mistake" as const, text: t })),
     ...cur.cautions.filter((c) => c.level === "info").slice(0, 1).map((c) => ({ kind: "safety" as const, text: c.text })),
   ];
-  const restCards: CheckCard[] = [...cur.exercise.cues.map((t) => ({ kind: "cue" as const, text: t })), ...cur.exercise.commonMistakes.map((t) => ({ kind: "mistake" as const, text: t })), ...cur.cautions.map((c) => ({ kind: c.level === "info" ? ("safety" as const) : ("foryou" as const), text: c.text }))];
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
@@ -198,7 +220,11 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
 
       {!curDone && <FormCheck key={`check-${cur.exerciseId}`} exerciseId={cur.exerciseId} name={cur.exercise.name} cards={cards} />}
 
-      {rest != null ? <RestTimer key={rest + "-" + doneSets} seconds={rest} why={restWhy} onDone={() => setRest(null)} onSkip={() => setRest(null)}><RestDeck units={units} sessionId={session.id} seedKey={`${session.id}:${cur.id}:${doneSets}`} restSeconds={rest} seen={seenRest} onSeen={(id) => setSeenRest((s) => [...s, id])} tips={restCards} nextSet={(() => { const n = cur.plannedSets.find((ps) => !cur.loggedSets.some((l) => l.setNumber === ps.setNumber && l.completed)); return n ? { repRange: n.repRange, reps: n.reps } : null; })()} onPrediction={setPrediction} /></RestTimer> : null}
+      {/*
+        Rest, when there is any. The key is the rest length and the sets done, so each rest
+        period is a new mount with its own clock; see rest.tsx on why that matters.
+      */}
+      {rest != null ? <Rest key={rest + "-" + doneSets} seconds={rest} why={restWhy} next={nextSet} setsInExercise={cur.plannedSets.length} nextWeight={nextLoad.weight} bar={nextLoad.bar} units={units} onDone={() => setRest(null)} onSkip={() => setRest(null)} /> : null}
 
       <SetConsole key={`console-${cur.exerciseId}`} inst={cur} units={units} barWeights={barWeights} onBarChange={saveBar} onLog={(set, v, confirmed) => logSet(cur, set, v, confirmed)} onReset={resetExercise} />
 
@@ -591,8 +617,6 @@ function Benchmark({ inst, units, onUse }: { inst: Instance; units: "metric" | "
   );
 }
 
-/** Plain words for effort, and the RPE each maps to. The numbers stay in the data and in the
- *  accessible name; the face of the app never shows them, because "RPE 9" is jargon. */
 /**
  * What the count field starts at: what was logged if the set is done, otherwise what the plan
  * asks for - seconds for a held movement, the top of the rep range for a counted one.
@@ -606,11 +630,4 @@ function seedCount(logged: LoggedSet | null | undefined, set: PlannedSet): strin
   return "";
 }
 
-const EFFORT = [["Easy", 6], ["Light", 7], ["Right", 8], ["Hard", 9], ["Max", 10]] as const;
 
-/** Nearest plain word for a target RPE, so a planned 8.5 reads as a word and not a decimal. */
-function effortWord(rpe: number): string {
-  let best: readonly [string, number] = EFFORT[0];
-  for (const e of EFFORT) if (Math.abs(e[1] - rpe) < Math.abs(best[1] - rpe)) best = e;
-  return best[0];
-}

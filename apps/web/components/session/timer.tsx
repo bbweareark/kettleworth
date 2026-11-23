@@ -1,61 +1,6 @@
 "use client";
 import { useNow } from "@/lib/use-now";
-import { useEffect, useRef, useState } from "react";
-import { Minus, Plus, SkipForward } from "lucide-react";
-import { Button } from "@kettleworth/ui";
 
-export function RestTimer({ seconds, onDone, onSkip, children, why }: { seconds: number; onDone: () => void; onSkip: () => void; children?: React.ReactNode; why?: string }) {
-  const [left, setLeft] = useState(seconds);
-  const [total, setTotal] = useState(seconds);
-  const endAt = useRef(0);
-  const done = useRef(false);
-
-  /*
-   * `onDone` is passed as an inline arrow, so it is a different function on every render of
-   * the player - and answering a question in the rest deck re-renders the player. While the
-   * deadline was set inside an effect that depended on it, every one of those renders pushed
-   * the deadline forward and the clock started again. Keeping the callback in a ref means the
-   * interval can stay put, and the deadline is only ever set when the rest period itself
-   * changes.
-   */
-  const fire = useRef(onDone);
-  useEffect(() => { fire.current = onDone; });
-
-  useEffect(() => {
-    // No reset of `left` or `total` here: the player gives this component a fresh key for every
-    // rest period, so it is already a new mount with the right starting values. Writing them
-    // again would also undo a plus or minus the lifter had pressed.
-    endAt.current = Date.now() + seconds * 1000;
-    done.current = false;
-    const t = setInterval(() => {
-      const l = Math.max(0, Math.round((endAt.current - Date.now()) / 1000));
-      setLeft(l);
-      if (l === 0 && !done.current) { done.current = true; try { navigator.vibrate?.([120, 60, 120]); } catch {} beep(); fire.current(); }
-    }, 250);
-    return () => clearInterval(t);
-  }, [seconds]);
-  const adjust = (d: number) => { endAt.current += d * 1000; setTotal((t) => Math.max(5, t + d)); };
-  const pct = total ? (left / total) * 100 : 0;
-  const mm = Math.floor(left / 60), ss = String(left % 60).padStart(2, "0");
-  return (
-    <div className="rounded-lg border border-volt/40 bg-surface px-4 py-3.5" role="timer" aria-live="polite" aria-label={`Rest ${mm}:${ss} remaining`}>
-      {/* The clock sticks under the app header: whatever the rest deck scrolls to, the time left
-          is still on screen. Clock and controls share one row so the deck starts higher up. */}
-      <div className="sticky top-16 z-20 bg-surface pb-2">
-        <div className="mb-1.5 flex items-center justify-between gap-3 text-sm"><span className="font-medium text-volt">Rest</span><span className="truncate text-right text-fg-muted">{why ?? "Next set when it hits zero"}</span></div>
-        <div className="flex items-end justify-between gap-3">
-          <div className="font-display text-4xl leading-none tabular">{mm}:{ss}</div>
-          <div className="flex gap-2"><Button variant="secondary" size="sm" onClick={() => adjust(-15)} aria-label="Minus 15 seconds"><Minus /> 15s</Button><Button variant="secondary" size="sm" onClick={() => adjust(15)} aria-label="Plus 15 seconds"><Plus /> 15s</Button><Button variant="ghost" size="sm" onClick={onSkip}>Skip <SkipForward /></Button></div>
-        </div>
-        <div className="mt-2 h-1 overflow-hidden rounded-full bg-rule"><div className="h-full rounded-full bg-volt transition-[width] duration-200" style={{ width: `${pct}%` }} /></div>
-      </div>
-      {children}
-    </div>
-  );
-}
-function beep() {
-  try { const ctx = new AudioContext(); const o = ctx.createOscillator(); const g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.value = 880; g.gain.value = 0.05; o.start(); o.stop(ctx.currentTime + 0.18); } catch {}
-}
 export function ElapsedClock({ since }: { since: string | null }) {
   const now = useNow(1000);
   if (!since) return null;

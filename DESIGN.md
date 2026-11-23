@@ -1,17 +1,17 @@
-# Kettleworth — DESIGN.md
+# Kettleworth: DESIGN.md
 
 **Rewritten 27 Oct 2026.** Path B full revamp. The owner judged the previous direction wrong
 ("the direction is wrong, redesign it completely"), so this replaces the teenage engineering
 system entirely: new DNA, new typefaces, new ground, new composition. See `design/CONCEPT.md`
 for why the old one could not be fixed by changing screens.
 
-**DNA: Integrated Biosciences** — "bioluminescent laboratory at midnight", ported from
+**DNA: Integrated Biosciences**, "bioluminescent laboratory at midnight", ported from
 https://styles.refero.design/style/80099f79-72b7-4367-b2e9-6a3d4a3e9e6a and the live site
 https://integratedbiosciences.com (`design/refs/dna-integrated-biosciences`).
 
 What the reference actually does, measured and seen: a near-black canvas, restrained white
 type, and a single high-chroma accent that activates **only on small interactive elements**.
-The entire type system runs at one weight — hierarchy is carved by **size and tightening
+The entire type system runs at one weight, hierarchy is carved by **size and tightening
 negative tracking**, which is what makes 111px and 158px display lines read as architecture
 rather than decoration. Surfaces are flat, no shadows, no gradients, hairline borders do the
 delineation. The page sits as a rounded inset canvas, and the nav floats over the imagery as a
@@ -67,7 +67,7 @@ serif 4, clash display, syne, switzer, host grotesk, nippo, martian mono).
 display keeps a four- or five-character load legible at 96px on a 390px screen, which an
 expanded face cannot.
 
-### Scale — carved by size, tightened by tracking
+### Scale: carved by size, tightened by tracking
 
 Ported from the reference's own ramp (16 → 158px, tracking −0.001em → −0.03em), compressed at
 the top for a phone-first product.
@@ -87,7 +87,7 @@ the top for a phone-first product.
 
 ## Shape, spacing, elevation
 
-The reference uses **real radius** — this is the sharpest break from the old system, which was
+The reference uses **real radius**, this is the sharpest break from the old system, which was
 radius 0 everywhere.
 
 | Token | Value | From |
@@ -109,17 +109,94 @@ shadow or a blur.
 
 `motion/react` only, every entrance gated by `useReducedMotion()`.
 
-- **Signature 1 — the counting figure.** When a load or a total changes, the figure counts to
+- **Signature 1, the counting figure.** When a load or a total changes, the figure counts to
   it rather than snapping. The number is the subject of the design, so it is the thing that
   moves.
-- **Signature 2 — the edge-to-edge image reveal.** Photography enters by unmasking from the
+- **Signature 2, the edge-to-edge image reveal.** Photography enters by unmasking from the
   bottom edge, never by fading.
 
-Everything else is a 150ms colour transition. No scroll-reveal on everything — five apps in
+Everything else is a 150ms colour transition. No scroll-reveal on everything, five apps in
 this portfolio already do that.
 
 ## What is banned here
 
 No card grids of three. No gradient headlines. No glassmorphism. No drop shadows. No stock
 illustration and no 3D icon set: the product's own photography and its own figures are the art.
-Never the word "AI" in user-facing copy — the engine, the evidence base, or your coach.
+Never the word "AI" in user-facing copy, the engine, the evidence base, or your coach.
+
+
+---
+
+# The style system (23 Nov 2026)
+
+Three surfaces, one app. **Carbon is the default and is unchanged**, the owner signed it off
+and nothing above this line moves. A style is chosen once and locked; see
+`design/CONCEPT.md` for why.
+
+Fonts are declared per style and a browser never downloads an `@font-face` it does not render,
+so each style stays inside the 120KB budget on its own rather than the three of them together.
+
+| Style | Display | Text | Payload |
+|---|---|---|---|
+| Carbon | Antonio variable (26.5KB) | Geist + Geist Mono (52.4KB) | **79KB** |
+| Arc | Darker Grotesque variable 300–900 (23KB) | Schibsted Grotesk variable 400–900 (45KB) | **68KB** |
+| Sanctuary | Young Serif (18KB) | Schibsted Grotesk (45KB) | **63KB** |
+
+All OFL. None on the ban list. None used by another app in this portfolio, checked against
+archivo expanded, newsreader, bespoke slab, big shoulders display, bricolage grotesque, source
+serif 4, clash display, syne, switzer, host grotesk, nippo, martian mono, prata, caprasimo,
+cormorant garamond and literata.
+
+## Arc: ported from Locomotive
+
+DNA: **Locomotive** (https://styles.refero.design/style/131d07b0-f71b-4bd2-8046-f61485ed545c,
+live at https://locomotive.ca, captured in `design/refs/dna-locomotive/`), with the
+single chromatic moment taken from **Charlie**
+(https://styles.refero.design/style/34aa811f-6084-484c-b4c0-f587b514e970).
+
+Locomotive's own spec is uncompromising and is followed: **one weight, 400. Zero radius. No
+shadows. No UI accent at all.** Hierarchy comes from size and white space, and colour arrives
+only in photography, or, here, in the impact frame.
+
+| Token | Value | Role |
+|---|---|---|
+| `--arc-paper` | `#ffffff` | the ground. Arc is a light surface; Carbon is dark |
+| `--arc-ink` | `#000000` | all type, all hairlines, the inverted ground |
+| `--arc-ash` | `#838383` | secondary labels only *(Charlie's Ash Gray)* |
+| `--arc-impact` | `#ed1c24` | **the impact frame only**, a full-bleed slide, never a button, never a border *(Charlie's Alarm Red)* |
+| radius | `0` everywhere | Locomotive: "keep all corners square" |
+| base unit | `4px`, section gap `150px` desktop / `56px` phone | Locomotive, compressed for a phone |
+
+Type scale, golden ratio (1.618) from a 15px base, as measured on locomotive.ca:
+
+| Token | Size | Weight |
+|---|---|---|
+| `--arc-display` | 110px | 400 |
+| `--arc-heading` | 70px | 400 |
+| `--arc-sub` | 26px | 400 |
+| `--arc-body` | 15px | 400 |
+
+**Deliberate deviations.** Locomotive refuses any accent; Arc keeps one, used only as a
+full-bleed event, which is how Locomotive's own hero uses red and exactly how Charlie uses
+Alarm Red. And Darker Grotesque is carried at 500/700 for the figure rather than 400, because
+a load has to be readable at arm's length in bad light, the one place the reference's
+whisper-weight rule costs more than it gives.
+
+## Sanctuary: ported from Structured
+
+DNA: **Structured** (https://styles.refero.design/style/6c0b77d3-71f9-469d-98aa-4ce1d6d76ac8),
+"Renaissance gallery on putty paper". Warm daylight stone, the opposite of Carbon's midnight
+and of Arc's hard ink.
+
+| Token | Value | Role |
+|---|---|---|
+| `--sanct-putty` | `#c4c3b6` | the ground, the gallery wall |
+| `--sanct-bone` | `#e7e5e4` | raised surfaces |
+| `--sanct-vellum` | `#dfdcd5` | hairlines, read as a printed page edge |
+| `--sanct-graphite` | `#595855` | secondary text, warm, never pure black |
+| `--sanct-ink` | `#1a1a18` | primary text |
+| `--sanct-gold` | `#8a6d3b` | the single accent, hairline and small marks only |
+
+**Chosen against walkwithme**, which is the owner's actual faith app: that one is dusk indigo,
+Bricolage Grotesque and Literata, an illustrative footer and a lamp on a path. Sanctuary is
+daylight stone, Young Serif, and an arch. Nothing is shared.

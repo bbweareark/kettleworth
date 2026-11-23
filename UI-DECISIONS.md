@@ -1,4 +1,4 @@
-# UI-DECISIONS — Kettleworth
+# UI-DECISIONS: Kettleworth
 
 **Path B full revamp, 27 Oct 2026.** The owner judged the previous direction wrong: "the
 direction is wrong, redesign it completely." Everything below the horizontal rule is the
@@ -15,7 +15,7 @@ account of what was tried and why it failed.
 | **Motion** | Counting figure + edge-to-edge image reveal | scrolltide.co (`design/refs/motion-scrolltide-index`) | Two signature moments only. No scroll-reveal-on-everything: five apps in this portfolio already do that |
 | **Icons** | lucide line, one weight | 3dicons.co, rejected for this build | The product's own photography and figures are the art. A 3D icon set would fight a dark athletic surface |
 | **Components** | Number Pad (kept), Unit Field rows (kept) | 21st.dev (`design/refs/components-21st-numberpad`, `-unitfield`) | Rethemed, not replaced. They solved real problems and a revamp that discards working parts to look busy is its own failure |
-| **Intelligence** | uupm.cc baseline only | uupm.cc (`design/refs/intel-uupm`) | Loading, empty and z-index discipline. **None of its taste** — it recommends Inter and glassmorphism, both banned here |
+| **Intelligence** | uupm.cc baseline only | uupm.cc (`design/refs/intel-uupm`) | Loading, empty and z-index discipline. **None of its taste**, it recommends Inter and glassmorphism, both banned here |
 
 **Not taken from any reference:** brand marks, logos, wordmarks, copy, illustration or assets.
 Structure, rhythm and behaviour only.
@@ -24,8 +24,8 @@ Structure, rhythm and behaviour only.
 
 | | Before | After |
 |---|---|---|
-| Ground | Sheet `#f6f8f7`, light by default | Ink `#16191a`, **dark by default** — the app is used in a gym, in poor light |
-| Display face | Archivo Expanded | **Antonio** condensed — a five-character load stays legible at 96px on a 390px phone |
+| Ground | Sheet `#f6f8f7`, light by default | Ink `#16191a`, **dark by default**, the app is used in a gym, in poor light |
+| Display face | Archivo Expanded | **Antonio** condensed, a five-character load stays legible at 96px on a 390px phone |
 | Text / mono | Archivo (all three roles) | **Geist** + **Geist Mono** |
 | Radius | **0 everywhere** | 8 / 12 / 18 / 28px and pills |
 | Accent | Ember orange | **Volt** `#ccff1a`, rationed to the live set, the figure being changed, and the one action |
@@ -33,8 +33,8 @@ Structure, rhythm and behaviour only.
 | Font payload | 90KB | **79KB** (three faces, latin subsets) |
 
 Uniqueness checked the way the gate checks it, resolving the worktree to the project identity:
-**no collision against the other 11 apps.** The first attempt did collide — `footer_example:
-decimals` is already used by ascent — and my own `registry.py` run had missed it because it
+**no collision against the other 11 apps.** The first attempt did collide, `footer_example:
+decimals` is already used by ascent, and my own `registry.py` run had missed it because it
 read the original checkout's `choices.json` rather than the worktree's. The gate caught it.
 
 ## Accessibility, measured in both themes
@@ -51,7 +51,7 @@ chartreuse that clears 6.27:1 in both roles.
 
 ## Status: foundation shipped, screens in progress
 
-This commit lands the system — concept, references, tokens, typefaces, themes — which changes
+This commit lands the system, concept, references, tokens, typefaces, themes, which changes
 every screen at once. It is **not** the finished revamp: the screens still carry their previous
 compositions under new tokens, and a token swap is explicitly not a redesign. The signature
 composition work (the load as the largest thing on each screen, the full-bleed hero, the
@@ -60,7 +60,7 @@ full-screen nav, the sticky pill action) follows screen by screen against `desig
 ---
 
 
-Path: **B — full revamp.** The owner said he does not like the UI and UX and asked for it to
+Path: **B, full revamp.** The owner said he does not like the UI and UX and asked for it to
 be completely rewired. That settles it. The previous build was also, by the skill's own
 description, the portfolio's house style: oversized-type hero with the product as an artifact,
 pill buttons, and a giant clipped wordmark footer. Three of the banned default-kit items.
@@ -71,19 +71,19 @@ Concept written before any gallery was opened: `design/CONCEPT.md`.
 
 | Pillar | Choice | Reference (opened this session) | What was taken |
 |--------|--------|--------------------------------|----------------|
-| 7 · DNA | **teenage engineering** — industrial catalogue | [styles.refero.design/style/aecf9dda…](https://styles.refero.design/style/aecf9dda-5cba-4dc7-9e73-59b65d895cdf) then measured live at [teenage.engineering](https://teenage.engineering) | Zero radius, zero shadow, zero gradient, **zero cards**; five rationed neutrals plus one chromatic note; hairline rules as the structural element; 66px section gap, 15px element gap, 1200px max; images 1:1 unframed edge-to-edge; body left-aligned always. Not their products, photography or wordmark. |
+| 7 · DNA | **teenage engineering**, industrial catalogue | [styles.refero.design/style/aecf9dda…](https://styles.refero.design/style/aecf9dda-5cba-4dc7-9e73-59b65d895cdf) then measured live at [teenage.engineering](https://teenage.engineering) | Zero radius, zero shadow, zero gradient, **zero cards**; five rationed neutrals plus one chromatic note; hairline rules as the structural element; 66px section gap, 15px element gap, 1200px max; images 1:1 unframed edge-to-edge; body left-aligned always. Not their products, photography or wordmark. |
 | 7 · Typeface | **Archivo** variable (weight 100–900, width 62–125%) | [Google Fonts](https://fonts.google.com/specimen/Archivo), OFL | One family, two axes, 34KB. The reference's own face (te-20) is custom and unlicensable; its suggested fallback is Inter, which is banned. Archivo carries the same engineered, wire-like register at width 112% / weight 300. |
 | 1 · Navbar | **Mega menu**, permanent labelled row | [navbar.gallery](https://www.navbar.gallery/) taxonomy; structure replicated from teenage.engineering's own nav | Category headings with sub-links always visible, tiny thin type, **no CTA button in the nav**. Diverges from the five static/sidebar navs already in this portfolio. |
 | 2 · Hero | **Table hero** | teenage.engineering catalogue grid (`design/refs/dna-teenage-engineering/`) | The week's training *is* the hero: a ruled table, edge-to-edge cells, zero cell padding, column heads in 12px uppercase. No headline over a photograph, no product-as-artifact. |
 | 3 · CTA | **Square pair, uppercase label** | [cta.gallery](https://www.cta.gallery/) → [tines.com](https://www.tines.com) (`design/refs/cta-tines/`) | Measured: primary filled + secondary outlined at identical size, label uppercase 13px weight 700. Taken: the label treatment and the pairing. **Rejected:** its 990px pill radius, its purple, its warm paper, and the grey "trusted by" logo row under the hero. |
-| 4 · Footer | **Grid** | footer.design taxonomy; structure from teenage.engineering (7 columns, 96px, 7 tiny links) | A quiet multi-column grid of small links on the dark band. Explicitly not the large-type wordmark footer used by four other apps here. Harvest Hall was captured as a candidate and rejected (980px animated panel) — `design/refs/footer-harvest-hall/`. |
-| 6 · Motion | **Near-still + one conveyor** | [scrolltide.co](https://www.scrolltide.co/) (`design/refs/motion-scrolltide/`); conveyor from [figureandplot.com](https://www.figureandplot.com) (`design/refs/hero-figure-and-plot/`) | The DNA measures 0 animations, so the page is still. The one signature moment is Figure&Plot's horizontal conveyor, re-cast as the training block's weeks travelling under a fixed "now" marker. **No scroll-reveal spine** — five of six apps here already have one. |
-| 5 · Icons & imagery | **Flat line only** (Lucide 1.5px) | [3dicons.co](https://3dicons.co/) (`design/refs/icons-3dicons/`) — reviewed and declined | The DNA has no illustration whatsoever; a glossy 3D set would break the register. Recorded as a deliberate deviation. Imagery is the product's own photography, square and unframed. |
+| 4 · Footer | **Grid** | footer.design taxonomy; structure from teenage.engineering (7 columns, 96px, 7 tiny links) | A quiet multi-column grid of small links on the dark band. Explicitly not the large-type wordmark footer used by four other apps here. Harvest Hall was captured as a candidate and rejected (980px animated panel), `design/refs/footer-harvest-hall/`. |
+| 6 · Motion | **Near-still + one conveyor** | [scrolltide.co](https://www.scrolltide.co/) (`design/refs/motion-scrolltide/`); conveyor from [figureandplot.com](https://www.figureandplot.com) (`design/refs/hero-figure-and-plot/`) | The DNA measures 0 animations, so the page is still. The one signature moment is Figure&Plot's horizontal conveyor, re-cast as the training block's weeks travelling under a fixed "now" marker. **No scroll-reveal spine**, five of six apps here already have one. |
+| 5 · Icons & imagery | **Flat line only** (Lucide 1.5px) | [3dicons.co](https://3dicons.co/) (`design/refs/icons-3dicons/`), reviewed and declined | The DNA has no illustration whatsoever; a glossy 3D set would break the register. Recorded as a deliberate deviation. Imagery is the product's own photography, square and unframed. |
 
 | 8 · Components | **Number Pad** by Bankk roll | [21st.dev/@bankkroll/components/number-pad](https://21st.dev/@bankkroll/components/number-pad) | One dominant readout, a hard grid of equal keys, one commit action. Ported as composition only: its source is behind a paid account, and everything is rethemed to Kettleworth tokens. Nothing of its palette, radius or type. |
 | 9 · Design intelligence | **uupm.cc**, baseline only | [uupm.cc](https://uupm.cc) | Its UX-guideline baseline for loading, empty and z-index. **None of its taste**: its own examples name Inter, Space Grotesk and Playfair, and list Glassmorphism and Aurora UI. All banned here; the skill's precedence rule applies. |
 
-Picks made offline (source unreachable): **none** — all were opened and captured this session.
+Picks made offline (source unreachable): **none**, all were opened and captured this session.
 
 ## Divergence from the rest of the portfolio
 
@@ -92,7 +92,7 @@ passes. The portfolio had converged on warm-paper grounds (4 of 6), large-type f
 pill buttons (4 of 6) and a scroll-reveal spine (5 of 6). Kettleworth now uses a cool drafting
 ground, a grid footer, hard square buttons and a conveyor instead of a reveal.
 
-## Round 2 — the remaining app screens, and the rest game
+## Round 2: the remaining app screens, and the rest game
 
 **Screens.** The fills are gone app-wide: 46 background-fill and backdrop-blur classes removed
 across 22 files, so content now sits on the ground with hairline rules doing the structural
@@ -101,11 +101,11 @@ layer. Community's three stat boxes and its people and group cards became ruled 
 rest panel lost its tinted surface for a heavy rule, and the rest deck's tab strip now scrolls
 instead of clipping its fifth tab on a phone.
 
-**Word Rush** — the rest-period game, `packages/core/src/word-rush.ts` (10 tests). It replaces
+**Word Rush**, the rest-period game, `packages/core/src/word-rush.ts` (10 tests). It replaces
 Plate Drill, which the owner judged not addictive: "something like a flappy bird or temple run
 … but also good to the cognitive skill, or learn a new language".
 
-Plate Drill's design brief had explicitly ruled out tension — no timer, no streak, no failure.
+Plate Drill's design brief had explicitly ruled out tension, no timer, no streak, no failure.
 That is exactly what made it calm and forgettable. The replacement takes the opposite position
 on tension and keeps the training guard, so the mechanic changes and the protection does not.
 
@@ -137,7 +137,7 @@ Breathe, Call it and Tip had never been brought across from the old DNA and stil
 that breathes, and a hard number pad. Switching tab pulls the chosen card's foot to the
 viewport foot, because on a phone the card previously opened entirely below the fold.
 
-## Verification log — Plate Drill on production (predecessor)
+## Verification log: Plate Drill on production (predecessor)
 
 Kept because the two bugs it found were real, and both fixes live on in Word Rush: the scoring
 path, the SQL cap and the leaderboard exclusion are the same code, now keyed on `drill` rows
@@ -148,7 +148,7 @@ created and deleted for the purpose**, never the owner's own account: logging fa
 would have written into real training history, triggered autoregulation on future loads and
 could have recorded a false personal record.
 
-### Run 1 — does the breakdown read correctly?
+### Run 1: does the breakdown read correctly?
 
 Signed up, completed the intake, generated a programme, opened the day's session, logged a
 set at 40 kg x 8 to start the rest timer, then solved two rounds (50 kg = 15 a side,
@@ -160,7 +160,7 @@ set at 40 kg x 8 to start the rest timer, then solved two rounds (50 kg = 15 a s
 | Rest deck | absent | Correct. Drill rows did **not** leak into the rest-deck count, which was the main risk, since both write to `rest_activity` |
 | Sets logged | 2 | One set at two points |
 
-### Run 2 — does the cap hold?
+### Run 2: does the cap hold?
 
 Played **eight** rounds inside a single rest window, then forged four extra drill rows
 straight at `/api/rest` to simulate a tampered client.
@@ -177,14 +177,14 @@ Final state of that account: 332 points, with Plate drill at 30 beside Showing u
 Sets logged at 2. That ratio is the design intent: a whole session of the game is worth less
 than a third of finishing the session itself.
 
-### Run 3 — does each session get its own allowance?
+### Run 3: does each session get its own allowance?
 
 Verified on production after a deploy had settled: two sessions each at the cap returned
 **45**, not 30, so the allowance is per session as intended. The first attempt returned 30
 twice; that was a false negative from my own "deploy settled" check looking for text that was
 already on the page, not a product bug.
 
-## Verification log — Word Rush
+## Verification log: Word Rush
 
 Run 25 Oct 2026 against a local build on an iPhone 15 viewport, driving the real UI.
 
@@ -280,7 +280,7 @@ both Playwright projects pass.
 "Update set" after logging. Logging advances focus to the next set, so it reads "Log set"; the
 spec now asserts the set track recorded the set, which is the stronger check.
 
-## Set console, second pass — ported from 21st.dev Unit Field
+## Set console, second pass: ported from 21st.dev Unit Field
 
 The first pass fixed height (579px → 494px) but not comprehension, which is what the owner
 actually reported: "crowded and hard to understand". Measured on an iPhone 15 before touching
@@ -302,7 +302,7 @@ quantity, a quiet fixed label column, and the value right-aligned **with its uni
 | Taken | Not taken |
 |---|---|
 | One labelled row per quantity | Its drag-to-scrub: a horizontal drag fights a scrolling page on touch |
-| Unit inline in the value (`0 kg`, `15 reps`) | Its type — 21st.dev's own site runs on Inter, banned here |
+| Unit inline in the value (`0 kg`, `15 reps`) | Its type, 21st.dev's own site runs on Inter, banned here |
 | Hairline-ruled rows, zero fills | Its palette and its grey-on-white surfaces |
 
 **The one change that answers "hard to understand": the key row now sits directly beneath the
@@ -318,7 +318,7 @@ depends on noticing an opacity difference.
 | Duplicate "set N of M" (the track already says it) | 1 | **0** |
 | Uppercase micro-labels | 12 | **8** |
 | Enclosed or differently-filled boxes | ~11 (4-sided borders on every key and effort cell) | **6**, all hairline strips |
-| Touch targets under 44px | — | **0** |
+| Touch targets under 44px |, | **0** |
 | Pills / shadows | 0 / 0 | 0 / 0 |
 
 A first attempt measured *worse* on height (528px) and I kept it only after removing a tinted
@@ -329,7 +329,7 @@ it counted `bg-bg` cells, which are the same colour as the ground, as separate r
 **Behaviour proven, not assumed:** tapping Reps moves the keys to that row, `+2` takes reps
 15 → 17, and the weight row stays at 0. The e2e spec now drives and asserts exactly that.
 
-## Weight entry — the rack, ported from 21st.dev Iso Fader
+## Weight entry: the rack, ported from 21st.dev Iso Fader
 
 **The report:** the incrementer cannot set the right weight, "specially when dumbbell".
 
@@ -349,24 +349,24 @@ with **10 tests** asserting exactly these cases, including that every barbell ru
 
 **Reference: 21st.dev Iso Fader by Daiwiik Harihar**
 (`design/refs/components-21st-isofader`, https://21st.dev/@daiwiikharihar/components/iso-fader)
-— a mixing-desk fader: a ladder of discrete detents beside a digital readout. ISO is a
+, a mixing-desk fader: a ladder of discrete detents beside a digital readout. ISO is a
 non-linear ladder (100, 200, 400) and so is a dumbbell rack, which is why it transfers.
 
 | Taken | Not taken |
 |---|---|
 | The detented ladder of real values | Its dark chrome and LED colour ramp |
 | Tick height carrying the scale, so the strip has the shape of a rack | Its vertical travel: a thumb works across a phone, not up it |
-| The exact value read separately as a figure | Its inertial physics — a flick with momentum inside a scrolling page sets the wrong weight |
+| The exact value read separately as a figure | Its inertial physics, a flick with momentum inside a scrolling page sets the wrong weight |
 
 Per-side barbell entry keeps the plus/minus keys, because there the lifter is counting plates
-rather than picking a dumbbell. `PlateDiagram` now draws the sleeve — each plate a bar whose
-height is its weight — in place of the written "20 + 10 + 2.5".
+rather than picking a dumbbell. `PlateDiagram` now draws the sleeve, each plate a bar whose
+height is its weight, in place of the written "20 + 10 + 2.5".
 
 **Bug caught in review:** the rack first highlighted the *nearest* rung, so a console reading
 `0 kg` sat above a rack claiming 5 was selected. Scrolling to the nearest rung is helpful;
 marking it chosen is a lie. It now highlights only an exact match.
 
-### Set-up check — carousel cut
+### Set-up check: carousel cut
 
 It was one cue at a time in a bordered card with a 1-of-3 pager and a Next button: **193px to
 show a single sentence**, on a screen already running 1573px against a 659px viewport. Set-up

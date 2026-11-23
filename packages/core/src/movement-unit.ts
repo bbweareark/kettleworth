@@ -63,10 +63,11 @@ export function defaultHoldSeconds(role: string): number {
   return 35;
 }
 
-/** "45s" or "8-12 reps", for anywhere a target is shown to a lifter. */
+/** "45s" or "8 to 12 reps", for anywhere a target is shown to a lifter. The range is
+ *  spelled out because this app writes ranges in words, never with a dash. */
 export function describeTarget(set: { reps: number | null; repRange: [number, number] | null; durationSeconds: number | null }): string {
   if (set.durationSeconds != null) return `${set.durationSeconds}s`;
-  if (set.repRange) return `${set.repRange[0]}–${set.repRange[1]} reps`;
+  if (set.repRange) return `${set.repRange[0]} to ${set.repRange[1]} reps`;
   if (set.reps != null) return `${set.reps} reps`;
   return "—";
 }

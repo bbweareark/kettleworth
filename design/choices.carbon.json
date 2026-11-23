@@ -1,0 +1,18 @@
+{
+  "dna": "integrated biosciences",
+  "display_face": "antonio",
+  "text_face": "geist",
+  "ground": "abyssal ink lit from above",
+  "navbar_type": "full screen",
+  "navbar_example": "clonix",
+  "hero_archetype": "full-bleed athlete photograph with the figure carried beneath it",
+  "hero_example": "lando norris",
+  "cta_pattern": "floating pill in the nav plus a sticky bottom pill action",
+  "cta_example": "get ripe",
+  "footer_style": "bold",
+  "footer_example": "reality is__",
+  "motion_system": "edge-to-edge image reveal with a counting figure",
+  "icon_family": "lucide line, one weight",
+  "button_shape": "pill",
+  "signature_idea": "the load is the largest thing on every screen"
+}
