@@ -5,12 +5,16 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, ChevronRight, ChevronDown, ChevronUp, Info, Repeat, WifiOff, RotateCcw, AlertTriangle } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { LoggedSet, PlannedSet, ExerciseSummary } from "@kettleworth/types";
-import { Badge, Button, Card, CardContent, Progress, Sheet, SheetContent, Segmented, Textarea, CoachPulse, Dialog, DialogContent, cn, toast, type PulseItem } from "@kettleworth/ui";
+import { Badge, Button, Card, CardContent, Sheet, SheetContent, Segmented, Textarea, CoachPulse, Dialog, DialogContent, cn, toast, type PulseItem } from "@kettleworth/ui";
 import { kgToLb, lbToKg, round, restFor, autoregulate, loadStep, loadModel, loadLadder, platesPerSide, describePlates, repUnitFor, DEFAULT_BARS_KG, BAR_CHOICES_KG, BAR_CHOICES_LB, BAR_NAMES, type BarKind } from "@kettleworth/core";
 import { ExerciseMedia } from "@/components/library/media";
 import { ElapsedClock } from "./timer";
 import { FormCheck, type CheckCard } from "./form-check";
 import { EFFORT, effortWord } from "./effort";
+import { ImpactFrame, Struck } from "@/components/style/impact";
+import { SessionProgress } from "@/components/style/arch";
+import { useStyle } from "@/lib/style";
+import { voiceFor } from "@/lib/voice";
 import { Rest } from "./rest";
 import { Keypad, PlateDiagram } from "./weight-pad";
 import { PRCelebration } from "./celebrate";
@@ -48,6 +52,13 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
   const [live, setLive] = useState<PulseItem[]>([]);
   const [resetOpen, setResetOpen] = useState(false);
   const cur = instances[idx];
+  /*
+   * The world this member trains in. The surface itself is tokens and needs nothing from
+   * here; this is for the three things that are composition rather than colour: how a landed
+   * set is marked, how progress is drawn, and what the coach calls it.
+   */
+  const style = useStyle();
+  const voice = voiceFor(style);
   const totalSets = instances.reduce((a, i) => a + i.plannedSets.length, 0);
   const doneSets = instances.reduce((a, i) => a + i.loggedSets.filter((l) => l.completed).length, 0);
 
@@ -118,8 +129,9 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
         }
       }
     }
-    setLive([{ text: read, tone: target && values.reps != null && values.reps < target[0] ? "amber" : "signal" }]);
     const isLast = set.setNumber === inst.plannedSets[inst.plannedSets.length - 1]!.setNumber;
+    const said = `${voice.setLanded}${read ? ` ${read}` : ""}${isLast ? ` ${voice.exerciseDone}` : ""}`;
+    setLive([{ text: said, tone: target && values.reps != null && values.reps < target[0] ? "amber" : "signal" }]);
     if (!isLast) setRest(set.restSeconds);
     else if (idx < instances.length - 1) { setRest(Math.min(set.restSeconds, 90)); }
     return { ok: true };
@@ -185,8 +197,10 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
   ];
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4">
+    <div className="mx-auto max-w-2xl space-y-4 px-4 pt-20 sm:px-6">
       <PRCelebration pr={pr} onClose={() => setPr(null)} />
+      {/* Arc only: the screen takes the blow when a set lands. */}
+      <ImpactFrame count={doneSets} />
       <div className="flex items-center justify-between gap-3">
         <Link href="/app" className="inline-flex items-center gap-1 text-sm text-fg-muted hover:text-fg"><ArrowLeft className="size-4" /> Today</Link>
         <div className="flex items-center gap-3 text-xs">{queued > 0 && <Badge tone="amber"><WifiOff className="size-3" /> {queued} queued</Badge>}<ElapsedClock since={session.startedAt} /><button type="button" onClick={() => setResetOpen(true)} className="inline-flex items-center gap-1 text-fg-subtle hover:text-fg" aria-label="Restart session"><RotateCcw className="size-3.5" /> Restart</button></div>
@@ -197,8 +211,8 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
           <Button size="sm" variant="secondary" loading={starting} onClick={() => start()}>Train it today</Button>
         </div>
       ) : null}
-      <div><div className="flex items-center gap-2 text-xs text-fg-subtle"><span>{session.name}</span>{detail.week && <span>· Week {detail.week.weekNumber}</span>}{session.readinessScore != null && <Badge tone={session.intensityScalar < 1 ? "amber" : "signal"}>Readiness {session.readinessScore}</Badge>}</div><Progress value={(doneSets / Math.max(1, totalSets)) * 100} className="mt-2" label="Session progress" /></div>
-      <CoachPulse label="Live" items={live.length ? live : [{ text: session.intensityScalar < 1 ? `Loads eased ${Math.round((1 - session.intensityScalar) * 100)}% for today's readiness. ${doneSets}/${totalSets} sets.` : `Watching every set. ${doneSets}/${totalSets} done.`, tone: "ember" }]} />
+      <div><div className="flex items-center gap-2 text-xs text-fg-subtle"><span>{session.name}</span>{detail.week && <span>· Week {detail.week.weekNumber}</span>}{session.readinessScore != null && <Badge tone={session.intensityScalar < 1 ? "amber" : "signal"}>Readiness {session.readinessScore}</Badge>}</div><SessionProgress done={doneSets} total={totalSets} label="Session progress" /></div>
+      <CoachPulse label="Live" items={live.length ? live : [{ text: session.intensityScalar < 1 ? `Loads eased ${Math.round((1 - session.intensityScalar) * 100)}% for today's readiness. ${doneSets}/${totalSets} sets.` : voice.underway(doneSets, totalSets), tone: "ember" }]} />
 
       {idx === 0 && doneSets === 0 && session.warmup.length ? (
         <Card><CardContent className="p-4"><div className="eyebrow mb-2">Warm-up · 8 min</div><ul className="space-y-1 text-sm text-fg-muted">{session.warmup.map((w) => <li key={w} className="flex gap-2"><span className="mt-2 size-1 shrink-0 rounded-full bg-volt" />{w}</li>)}</ul></CardContent></Card>
@@ -224,7 +238,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
         Rest, when there is any. The key is the rest length and the sets done, so each rest
         period is a new mount with its own clock; see rest.tsx on why that matters.
       */}
-      {rest != null ? <Rest key={rest + "-" + doneSets} seconds={rest} why={restWhy} next={nextSet} setsInExercise={cur.plannedSets.length} nextWeight={nextLoad.weight} bar={nextLoad.bar} units={units} onDone={() => setRest(null)} onSkip={() => setRest(null)} /> : null}
+      {rest != null ? <Rest key={rest + "-" + doneSets} label={voice.rest} seconds={rest} why={restWhy} next={nextSet} setsInExercise={cur.plannedSets.length} nextWeight={nextLoad.weight} bar={nextLoad.bar} units={units} onDone={() => setRest(null)} onSkip={() => setRest(null)} /> : null}
 
       <SetConsole key={`console-${cur.exerciseId}`} inst={cur} units={units} barWeights={barWeights} onBarChange={saveBar} onLog={(set, v, confirmed) => logSet(cur, set, v, confirmed)} onReset={resetExercise} />
 
@@ -395,6 +409,9 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
             is why the active one is volt - the DNA reserves the accent for the figure being
             changed.
           */}
+          {/* In Arc the figure takes the blow with the screen; in the other worlds Struck
+              renders its children and nothing else. */}
+          <Struck count={inst.loggedSets.filter((l) => l.completed).length} className="origin-left">
           <div ref={padRow} className="mt-2 flex scroll-mt-20 items-end justify-between gap-5">
             <button type="button" onClick={() => setPad("w")} aria-pressed={pad === "w"} className="min-w-0 text-left"
               aria-label={`Edit the ${model.label.toLowerCase()}, currently ${w || 0} ${unit}`}>
@@ -412,6 +429,7 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
               </span>
             </button>
           </div>
+          </Struck>
 
           <div className="mt-4">
             <Keypad

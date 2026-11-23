@@ -125,3 +125,34 @@ had nothing to show: `repUnitFor` now decides whether a movement is counted in r
 seconds, and a set that lands on target carries its weight onto the sets that remain. The
 first session of a block prescribes no load at all, so until that carry existed every set
 asked for the weight again from zero.
+
+
+## The style system, as built (23 Nov 2026)
+
+What shipped, and what the per-style table above still describes rather than records.
+
+**Built.** `data-style` on `<html>`, read on the server from a cookie so the first paint is
+already in the member's world, with the profile as the record of record and a `styleLockedAt`
+stamp. Three complete token worlds (ground, surfaces, rules, text ramp, radius ramp, fonts)
+crossed with both lights, six combinations, all measured. Both signatures: Arc's impact frame
+and struck figure on a committed set, Sanctuary's arch of wedge stones replacing the session
+progress bar. A voice per world for the four places a member is addressed directly, so the
+reward language changes and the coaching facts do not. A picker at `/app/style` that renders
+each world in its own tokens and its own light rather than describing it, with the lock asking
+before it moves anyone.
+
+**Two things a token could not carry**, both written as one unlayered rule each: Arc's figure
+weight, because Locomotive's single 400 is unreadable at arm's length as a load, and
+Sanctuary's lining figures, because Young Serif defaults to old-style and a zero read as a
+letter o. A third, `rounded-full`, needed the same treatment: Tailwind compiles it to a literal
+`calc(infinity * 1px)` rather than to the radius ramp, so the pills could not take each
+world's shape from a variable.
+
+**Not built yet**, and still only described above: Arc's scattered-label screen head and
+episode week, and Sanctuary's figure-inside-an-arch head. Those are per-surface compositions on
+Today and Programme rather than token work, and they are the next piece.
+
+**One fix the styles turned up.** The session screen never had the page gutter or the top
+clearance every other screen gets from `Screen`: the console ran to the bezel on a phone and
+the floating nav pill sat on top of the restart control. Both are now the same spine as
+everywhere else.

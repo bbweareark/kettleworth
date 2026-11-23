@@ -45,6 +45,15 @@ export const Allergen = z.enum([
   "sesame",
 ]);
 export const BudgetTier = z.enum(["low", "medium", "high"]);
+
+/**
+ * The three worlds the app can be lived in. Not a palette preference: the surface, the type,
+ * the motion and the reward language all change with it, which is why it is chosen once and
+ * locked. design/CONCEPT.md carries the reasoning, DESIGN.md the ported values.
+ */
+export const Style = z.enum(["carbon", "arc", "sanctuary"]);
+export type Style = z.infer<typeof Style>;
+export const STYLES = Style.options;
 export const BodyRegion = z.enum([
   "neck",
   "shoulder",
@@ -126,6 +135,9 @@ export const TrainingProfile = z.object({
   }).default({}),
   /** Life mode: a temporary situation the plan flexes around. */
   lifeMode: z.object({ mode: z.enum(["normal", "travel", "ill", "injured", "busy", "newborn"]), since: z.string(), until: z.string().nullable(), note: z.string().max(200).optional() }).default({ mode: "normal", since: "2026-01-01", until: null }),
+  /** The chosen world, and when it was committed to. Absent means Carbon, never asked. */
+  style: Style.optional(),
+  styleLockedAt: z.string().optional(),
   /** Bar weights in kg, set once. Defaults: 20 kg barbell (45 lb imperial), 10 kg EZ bar, 25 kg trap bar, Smith machine not counted. */
   barWeights: z.object({ barbell: z.number().min(0).max(40).optional(), ez_bar: z.number().min(0).max(30).optional(), trap_bar: z.number().min(0).max(45).optional(), smith_machine: z.number().min(0).max(40).optional() }).optional(),
   injuries: z.array(Injury).default([]),

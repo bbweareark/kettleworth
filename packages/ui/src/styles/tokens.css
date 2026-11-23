@@ -105,6 +105,33 @@
     to { clip-path: inset(0 0 0 0); }
   }
 
+  /*
+   * Each style's own signature, declared here so the utilities exist, used only by the style
+   * that owns it. Both are neutralised by the reduced-motion rule in @layer base.
+   *
+   * Arc: a set lands. The screen takes a full-bleed blow of Alarm Red and the figure is struck.
+   * Sanctuary: the arch gains a segment, which rises into place rather than flashing.
+   */
+  --animate-impact-frame: impact-frame 280ms linear both;
+  --animate-impact-strike: impact-strike 280ms var(--ease-out-quart) both;
+  --animate-arch-fill: arch-fill 520ms var(--ease-out-quart) both;
+
+  @keyframes impact-frame {
+    0% { opacity: 0; }
+    12% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  @keyframes impact-strike {
+    0% { transform: scale(1); }
+    18% { transform: scale(1.06) translateY(-2px); }
+    100% { transform: scale(1); }
+  }
+  @keyframes arch-fill {
+    from { transform: translateY(8%); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+
   /* The reference states it outright: no shadows, no gradients. */
 
   /* Declared here so Tailwind generates the utilities, and re-declared on each theme selector
@@ -140,6 +167,9 @@
   --color-amber: var(--kw-accent);
   --color-rose: var(--kw-accent);
   --color-sky: var(--kw-fg-muted);
+  /* Owned by one style each, and defaulted to the accent so the utility always resolves. */
+  --color-impact: var(--kw-impact, var(--kw-accent));
+  --color-gold: var(--kw-gold, var(--kw-accent));
 
   --shadow-card: none;
   --shadow-pop: none;
@@ -245,6 +275,8 @@
   --color-amber: var(--kw-accent);
   --color-rose: var(--kw-accent);
   --color-sky: var(--kw-fg-muted);
+  --color-impact: var(--kw-impact, var(--kw-accent));
+  --color-gold: var(--kw-gold, var(--kw-accent));
 }
 
 @layer base {
@@ -368,4 +400,243 @@
 
 @utility glass {
   background: var(--color-surface);
+}
+
+/*
+ * ============================================================================
+ * The style system
+ * ============================================================================
+ *
+ * One app, three worlds. Carbon is everything above this line and is unchanged. A style is
+ * chosen once and locked; design/CONCEPT.md says why, DESIGN.md holds the ported values.
+ *
+ * A style is almost entirely tokens, which is deliberate: `--kw-*`, the radius ramp, the type
+ * ramp and the font stacks all cascade from <html>, so every component that already reads a
+ * token changes world without a line of branching. Composition that cannot come from a token,
+ * the impact frame and the arch, is the small part that does branch.
+ *
+ * Specificity: a style block carries two attribute selectors, so it beats the plain
+ * [data-theme] blocks above while sitting on the same element, which is what lets the aliases
+ * declared up there resolve against the style's own primitives.
+ */
+
+/* ---------------------------------------------------------------- Arc ---- */
+/*
+ * Ported from Locomotive. Its spec is uncompromising and is followed: one weight, zero
+ * radius, no shadows, and no UI accent at all, so `accent` here is simply the inverted ground.
+ * The only chromatic moment in the whole style is the impact frame.
+ */
+[data-style="arc"] {
+  --font-display: var(--font-darker-grotesque), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  /* Arc has no mono. Its caps labels are the text face, which is how Locomotive sets them. */
+  --font-mono: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+
+  /* "Keep all corners square", including the pills: the shape is the style. */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-full: 0px;
+
+  /* Golden ratio from a 15px base, measured on locomotive.ca. */
+  --text-meta: 0.6875rem;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.625rem;
+  --text-2xl: 2.25rem;
+  --text-3xl: 3rem;
+  --text-4xl: 4.375rem;
+  --text-4xl--line-height: 0.95;
+  /* Locomotive's display is 110px on a desktop page. Two figures share one row here, on a
+     390px phone, so the top of the ramp is compressed exactly as Carbon's was, and 110px is
+     kept for the wide-screen figure. */
+  --text-figure: 6rem;
+  --text-figure--line-height: 0.88;
+  --text-figure-xl: 6.875rem;
+  --text-figure-xl--line-height: 0.86;
+  --tracking-figure: -0.02em;
+  --tracking-tightest: -0.02em;
+  --tracking-label: 0.1em;
+}
+
+:root[data-style="arc"],
+[data-style="arc"][data-theme="dark"] {
+  --kw-bg: #000000;
+  --kw-surface: #0b0b0b;
+  --kw-surface-2: #0b0b0b;
+  --kw-band: #ffffff;
+  --kw-band-fg: #000000;
+
+  --kw-rule: #2b2b2b;
+  --kw-rule-strong: #595959;
+
+  --kw-fg: #ffffff;
+  --kw-fg-muted: #b5b5b5;
+  --kw-fg-subtle: #838383; /* Charlie's Ash Gray, 5.32:1 on ink */
+
+  /* No accent. The "accent" is the ground inverted, so a filled control is paper on ink. */
+  --kw-accent: #ffffff;
+  --kw-accent-hover: #d9d9d9;
+  --kw-accent-soft: #1a1a1a;
+  --kw-accent-fg: #000000;
+
+  --kw-done: #ffffff;
+  --kw-done-soft: #2b2b2b;
+
+  /* The impact frame, and nothing else. Never a button, never a border. */
+  --kw-impact: #ed1c24;
+}
+
+[data-style="arc"][data-theme="light"] {
+  --kw-bg: #ffffff;
+  --kw-surface: #ffffff;
+  --kw-surface-2: #f2f2f2;
+  --kw-band: #000000;
+  --kw-band-fg: #ffffff;
+
+  --kw-rule: #d4d4d4;
+  --kw-rule-strong: #000000;
+
+  --kw-fg: #000000;
+  --kw-fg-muted: #4f4f4f;
+  --kw-fg-subtle: #6b6b6b; /* Ash itself is 3.93:1 on paper, which fails AA for a label */
+
+  --kw-accent: #000000;
+  --kw-accent-hover: #262626;
+  --kw-accent-soft: #f2f2f2;
+  --kw-accent-fg: #ffffff;
+
+  --kw-done: #000000;
+  --kw-done-soft: #e5e5e5;
+
+  --kw-impact: #ed1c24;
+}
+
+/* ---------------------------------------------------------- Sanctuary ---- */
+/*
+ * Ported from Structured, "Renaissance gallery on putty paper". Warm daylight stone: the
+ * opposite of Carbon's midnight and of Arc's hard ink. Gold is a hairline and a small mark,
+ * so where the accent token has to carry text it is taken down to a value that can.
+ */
+[data-style="sanctuary"] {
+  --font-display: var(--font-young-serif), ui-serif, Georgia, serif;
+  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+
+  /* Cut stone, not plastic: a small, even radius, and the arch does the shaping. */
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 12px;
+  --radius-3xl: 12px;
+  /* Even the capsules are cut stone here. A dot stays a dot: a radius larger than half the
+     box still renders round. */
+  --radius-full: 12px;
+
+  /* A serif needs more room per character, so the top of the ramp comes down. */
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.75rem;
+  --text-4xl: 3.5rem;
+  --text-figure: 5.5rem;
+  --text-figure--line-height: 1;
+  --text-figure-xl: 7rem;
+  --text-figure-xl--line-height: 0.98;
+  --tracking-figure: -0.01em;
+  --tracking-tightest: -0.012em;
+}
+
+:root[data-style="sanctuary"],
+[data-style="sanctuary"][data-theme="dark"] {
+  --kw-bg: #1a1a18;
+  --kw-surface: #23231f;
+  --kw-surface-2: #23231f;
+  --kw-band: #e7e5e4;
+  --kw-band-fg: #1a1a18;
+
+  --kw-rule: #38382f;
+  --kw-rule-strong: #5c5c4f;
+
+  --kw-fg: #e7e5e4;
+  --kw-fg-muted: #b6b3a8;
+  --kw-fg-subtle: #938f84;
+
+  /* Gold, lifted for night so it still carries text. */
+  --kw-accent: #c9a35c;
+  --kw-accent-hover: #d8b573;
+  --kw-accent-soft: #332b1a;
+  --kw-accent-fg: #1a1a18;
+
+  --kw-done: #e7e5e4;
+  --kw-done-soft: #38382f;
+
+  --kw-gold: #c9a35c;
+}
+
+[data-style="sanctuary"][data-theme="light"] {
+  --kw-bg: #c4c3b6;
+  --kw-surface: #e7e5e4;
+  --kw-surface-2: #dfdcd5;
+  --kw-band: #1a1a18;
+  --kw-band-fg: #e7e5e4;
+
+  --kw-rule: #a9a79a;
+  --kw-rule-strong: #595855;
+
+  --kw-fg: #1a1a18;
+  /* Measured on putty, which is the darkest ground these sit on: graphite #595855 is 4.42:1
+     and #5a5955 is 3.95:1, so both fail AA as a label. These clear it. */
+  --kw-fg-muted: #45443f;
+  --kw-fg-subtle: #4f4e48;
+
+  /* Aged gold, taken down until it clears AA as text on putty and on bone both. */
+  --kw-accent: #6b5223;
+  --kw-accent-hover: #543f1a;
+  --kw-accent-soft: #ded5bf;
+  --kw-accent-fg: #e7e5e4;
+
+  --kw-done: #1a1a18;
+  --kw-done-soft: #cfccc4;
+
+  /* The mark colour. #8a6d3b is 2.73:1 against putty, under the 3:1 a graphic needs. */
+  --kw-gold: #7a5e2a;
+}
+
+/*
+ * Two things a token cannot say.
+ *
+ * Arc's figure is carried at 600, not Locomotive's single 400: a load has to be readable at
+ * arm's length in bad light, which is the one place that rule costs more than it gives.
+ * Sanctuary's serif defaults to old-style figures, where a zero reads as a letter o, so its
+ * figures are asked for lining and tabular explicitly.
+ *
+ * Unlayered, so they beat the .font-display rule in @layer base without !important.
+ */
+[data-style="arc"] .font-display {
+  font-weight: 600;
+}
+[data-style="sanctuary"] .font-display {
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+/*
+ * One more thing a token cannot say. Tailwind compiles `rounded-full` to a literal
+ * calc(infinity * 1px) rather than to a theme variable, so the radius ramp above cannot reach
+ * the pills, and shape is the loudest thing these two styles change: Locomotive keeps every
+ * corner square, and Structured cuts stone rather than moulding plastic.
+ *
+ * :where() keeps the specificity at one attribute selector so a component can still override
+ * it, and being unlayered beats the utility itself whatever the order.
+ */
+[data-style="arc"] :where(.rounded-full) {
+  border-radius: 0;
+}
+[data-style="sanctuary"] :where(.rounded-full) {
+  border-radius: 12px;
 }

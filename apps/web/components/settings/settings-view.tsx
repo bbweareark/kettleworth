@@ -2,13 +2,21 @@
 import { BAR_NAMES, BAR_CHOICES_KG, BAR_CHOICES_LB, DEFAULT_BARS_KG, kgToLb, lbToKg, type BarKind } from "@kettleworth/core";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Download, LogOut, Moon, Sun, Trash2, Plane, Thermometer, Bandage, Clock, Baby, CircleDot } from "lucide-react";
-import type { TrainingProfile } from "@kettleworth/types";
+import { ChevronRight, Download, LogOut, Moon, Sun, Trash2, Plane, Thermometer, Bandage, Clock, Baby, CircleDot } from "lucide-react";
+import type { Style, TrainingProfile } from "@kettleworth/types";
 import { Button, Chip, ChipGroup, Field, Input, Segmented, Slider, toast } from "@kettleworth/ui";
 import { Panel } from "@/components/app/panel";
 import { Screen } from "@/components/app/screen";
 import { authClient } from "@/lib/auth-client";
 import { useClientValue } from "@/lib/use-client-value";
+
+/** Named here rather than imported from the picker so settings does not pull the whole screen in. */
+const WORLD_NAMES: Record<Style, string> = { carbon: "Carbon", arc: "Arc", sanctuary: "Sanctuary" };
+const WORLD_LINES: Record<Style, string> = {
+  carbon: "A dark room with one hard light.",
+  arc: "A chapter in a fight, where a set lands.",
+  sanctuary: "A stone hall, where the arch fills.",
+};
 
 export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { user: { name: string; email: string }; profile: TrainingProfile | null; aiSummary: string | null; providerCount: number; ai: boolean }) {
   const router = useRouter();
@@ -54,8 +62,15 @@ export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { 
             <Field key={kind} label={BAR_NAMES[kind]}><ChipGroup>{choices.map((c) => <Chip key={c} className="h-8 px-3 text-xs" selected={Math.abs(currentDisp - c) < 0.2} onClick={() => set({ barWeights: { ...(p.barWeights ?? {}), [kind]: imperial ? Math.round(lbToKg(c) * 100) / 100 : c } })}>{c === 0 ? "Not counted" : `${c} ${imperial ? "lb" : "kg"}`}</Chip>)}</ChipGroup></Field>); })}
         </div>
       </Panel>
-      <Panel title="Appearance" note="Carbon is the default: this app is used in a gym, often in poor light.">
-        <Segmented value={theme} onChange={applyTheme} options={[{ value: "dark", label: <span className="flex items-center gap-1.5"><Moon className="size-3.5" aria-hidden /> Carbon</span> }, { value: "light", label: <span className="flex items-center gap-1.5"><Sun className="size-3.5" aria-hidden /> Daylight</span> }]} label="Theme" />
+      <Panel title="Appearance" note="Night is the default: this app is used in a gym, often in poor light. The light is separate from the world, so either world can be lived in either light.">
+        <Segmented value={theme} onChange={applyTheme} options={[{ value: "dark", label: <span className="flex items-center gap-1.5"><Moon className="size-3.5" aria-hidden /> Night</span> }, { value: "light", label: <span className="flex items-center gap-1.5"><Sun className="size-3.5" aria-hidden /> Daylight</span> }]} label="Light" />
+        {/* The world is a commitment, so it is chosen on its own screen rather than toggled here. */}
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-rule pt-4">
+          <div className="min-w-0">
+            <p className="text-sm"><span className="font-medium">Your world: {WORLD_NAMES[p.style ?? "carbon"]}.</span> <span className="text-fg-muted">{WORLD_LINES[p.style ?? "carbon"]}</span></p>
+          </div>
+          <Button variant="secondary" size="sm" onClick={() => router.push("/app/style")}>See the three worlds <ChevronRight /></Button>
+        </div>
       </Panel>
       {profile && (
         <Panel title="Training profile" note={ai ? "Coach: live" : "Coach: templated on this server"}>

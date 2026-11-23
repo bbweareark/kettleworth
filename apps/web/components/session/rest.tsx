@@ -24,6 +24,7 @@ import { effortWord } from "./effort";
  * design/SECTION-MAP.md carries the row by row justification.
  */
 export function Rest({
+  label,
   seconds,
   why,
   next,
@@ -34,6 +35,8 @@ export function Rest({
   onDone,
   onSkip,
 }: {
+  /** What this world calls the gap between sets. */
+  label: string;
   seconds: number;
   /** Why this rest is this long, from the engine. */
   why?: string;
@@ -108,11 +111,11 @@ export function Rest({
       className="rounded-lg border border-volt/40 bg-surface p-4"
       role="timer"
       aria-live="off"
-      aria-label="Rest period"
+      aria-label={`${label}, between sets`}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="meta">Rest</p>
+          <p className="meta">{label}</p>
           {/* The clock is the figure. Nothing else on this screen comes near its size. */}
           <p data-clock className="font-display text-figure leading-none tracking-tightest tabular text-volt">{mm}:{ss}</p>
         </div>

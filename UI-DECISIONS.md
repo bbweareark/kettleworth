@@ -32,10 +32,17 @@ Structure, rhythm and behaviour only.
 | Hierarchy | Uniform small type | Carved by size: a `--text-figure` of 96px, one per screen |
 | Font payload | 90KB | **79KB** (three faces, latin subsets) |
 
-Uniqueness checked the way the gate checks it, resolving the worktree to the project identity:
-**no collision against the other 11 apps.** The first attempt did collide, `footer_example:
-decimals` is already used by ascent, and my own `registry.py` run had missed it because it
-read the original checkout's `choices.json` rather than the worktree's. The gate caught it.
+Uniqueness checked the way the gate checks it, resolving the worktree to the project identity.
+The first attempt collided on `footer_example: decimals`, already used by ascent, and my own
+`registry.py` run had missed it because it read the original checkout's `choices.json` rather
+than the worktree's. The gate caught it.
+
+**Correction, 23 Nov 2026.** The line that stood here claimed no collision against the other
+eleven apps. Run properly it does collide: Carbon's `navbar_type: full screen` is also
+walkwithme's and chinju-glam-night's, and `button_shape: pill` is also weareark's and
+colouring-book-maker's. Carbon stays as it is, because the owner signed it off and because the
+registry's job is to stop the portfolio sharing a look, which three near-black-and-volt
+screens do not. The registered picks are now Arc's, which pass against all fifteen.
 
 ## Accessibility, measured in both themes
 
@@ -644,3 +651,70 @@ replaced a 285KB barrel chunk with a 117KB one.
 What is left is ~730-760KB of JS on every screen, nearly all React, the Next runtime, Radix
 and motion. Cutting it further means changing the animation plumbing across every component,
 which is not worth the risk to a design that is signed off.
+
+
+---
+
+# The style system, 23 Nov 2026
+
+The owner asked for an anime-inspired surface "to inspire the people to do", and for a picker
+offering several worlds, each a genuinely different experience, locked once chosen. Carbon is
+unchanged and is one of the three. The reasoning is in `design/CONCEPT.md`, the ported values
+in `DESIGN.md`, the surface-by-surface map in `design/SECTION-MAP.md`.
+
+## Arc, the training arc
+
+| Pillar | Choice | Reference (opened this session) | What was taken |
+|---|---|---|---|
+| **DNA** | **Locomotive**, with one chromatic moment from **Charlie** | [styles.refero.design/style/131d07b0](https://styles.refero.design/style/131d07b0-f71b-4bd2-8046-f61485ed545c), live at locomotive.ca (`design/refs/dna-locomotive`); [Charlie](https://styles.refero.design/style/34aa811f-6084-484c-b4c0-f587b514e970) | Paper and ink in hard contrast, **zero radius everywhere**, hierarchy from size and white space alone, no UI accent at all, a golden-ratio type ramp from 15px. Charlie gave Ash Gray for labels and Alarm Red, used only as an event |
+| **Navbar** | Tabs | navbar.gallery, **Locomotive**'s own comma-separated run | Caps labels at 0.1em tracking, square active cell instead of a disc |
+| **Hero** | Labels scattered around a hard-edged image | supahero.io via Locomotive's own hero | Labels placed around the subject rather than stacked beneath it |
+| **CTA** | Ink block, zero radius | cta.gallery via Locomotive | A filled rectangle, paper on ink, one per viewport |
+| **Footer** | Typographic | footer.design via Locomotive | Type and hairlines, no decoration |
+| **Motion** | **The impact frame** | scrolltide.co | One event: a full-bleed Alarm Red slide for 280ms and the figure struck on the same beat. Nothing else in this portfolio hits back |
+| **Icons** | lucide line, one weight | 3dicons.co, rejected again | A 3D icon set would be the opposite of this surface |
+| **Components** | The same primitives, retokenised | 21st.dev | Nothing pasted. Shape, type and colour all arrive from tokens, which is the point of the system |
+| **Intelligence** | uupm.cc baseline only | uupm.cc | Loading and empty-state discipline, none of its taste |
+
+**Deliberate deviations.** Locomotive refuses any accent; Arc keeps one, used only as the
+impact frame, which is how Locomotive's own hero uses red and exactly how Charlie uses Alarm
+Red. Darker Grotesque is carried at 600 for the figure rather than Locomotive's single 400,
+because a load has to be readable at arm's length in bad light. And Locomotive's 110px display
+is a desktop measurement: on a 390px phone two figures share one row, so the top of the ramp
+is compressed to 96px, exactly as Carbon's was.
+
+## Sanctuary, stewardship
+
+| Pillar | Choice | Reference | What was taken |
+|---|---|---|---|
+| **DNA** | **Structured**, "Renaissance gallery on putty paper" | [styles.refero.design/style/6c0b77d3](https://styles.refero.design/style/6c0b77d3-71f9-469d-98aa-4ce1d6d76ac8) | Warm limestone ground, bone raised surfaces, vellum hairlines, graphite secondary text, a single aged gold used as a hairline and a small mark, cut-stone radius instead of capsules |
+| **Motion** | **The arch fills** | scrolltide.co | One event: a semicircular arch of wedge stones, one set per stone, each rising into place as it is set |
+| **Everything else** | As Carbon's structure, retokenised | the same references | The information architecture never changes with the world |
+
+**Chosen against walkwithme**, the owner's actual faith app: that one is dusk indigo,
+Bricolage Grotesque, Literata, an illustrative footer and a lamp on a path. Sanctuary is
+daylight stone, Young Serif, and an arch. Nothing is shared, and no crosses are used as
+decoration.
+
+## Typefaces
+
+| Style | Display | Text | Payload |
+|---|---|---|---|
+| Carbon | Antonio variable | Geist + Geist Mono | 79KB |
+| Arc | Darker Grotesque variable | Schibsted Grotesk variable | 68KB |
+| Sanctuary | Young Serif | Schibsted Grotesk | 63KB |
+
+All OFL, all latin subsets, none on the ban list, none shared with another app in this
+portfolio. All six faces are declared in the root layout because a browser never downloads an
+`@font-face` it does not render, so each style still costs only its own payload.
+
+**Not taken from any reference:** brand marks, logos, wordmarks, copy, illustration, assets or
+anybody's anime art. Structure, rhythm, proportion and behaviour only.
+
+## Measured, 23 Nov 2026
+
+Against a running server, on a Pixel 7 viewport, one account driven into a live session in
+each world: **no contrast failure and no horizontal overflow in any of the six style and light
+combinations** (minimum ratio 5.11 Carbon, 5.19 Arc, 4.88 Sanctuary, each in its own worst
+case). The fonts were confirmed to switch per style from the computed styles, not assumed. The
+impact frame was caught mid-flight and measured at `rgb(237, 28, 36)`.
