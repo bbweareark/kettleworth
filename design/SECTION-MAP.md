@@ -302,3 +302,43 @@ failure and no horizontal overflow anywhere, and no overflow at 360px either.
 
 **Not touched on purpose:** Today's composition, which the owner signed off, and the session
 player, which was rebuilt three times this week already.
+
+
+## The characters actually animate (23 Nov 2026)
+
+"I just don't want static images, I want the images to be animated."
+
+Fair, and the distinction matters: everything before this moved a still around with springs
+and auras, which is motion applied *to* a picture rather than a picture that moves. Three
+hand-drawn-look cel clips are generated from the character's own frames, so he breathes and
+gathers a red aura while he waits, shakes at the hardest point of a rep, and punches the air
+when the set lands.
+
+| Decision | Why |
+|---|---|
+| They are **panels**, not cut-outs | The clips keep the white ground they were drawn on and sit inside a hairline frame, because a bright cel panel inset into an ink page is the grammar this world imitates. Cutting them out needs alpha video, which Safari will not play without HEVC |
+| The **still is the poster and the fallback** | Reduced motion, the second cast, a slow connection or a codec refusal all land on the frame that was already there |
+| **16fps, 420px, no audio track** | 698KB became 71KB, and limited animation is what the reference era actually looked like. Three clips, 236KB in total, fetched only on the session screen in Arc |
+| `play()` is **asked for on mount** | Autoplay is a request, not a guarantee; a throttled tab loads the first frame and stops |
+
+## The rest of this pass
+
+- **The cast doubled.** Two protagonists drawn across every state, picked from the profile the
+  way the photography already is, so the figure on screen can be the member's own. Plus a
+  fourth state, sitting on the bench with a towel while the clock runs, because that is what
+  they are actually doing, and a mentor for the coach screen.
+- **Today's session stopped being a card.** It bleeds past the gutter to the full width of the
+  canvas with its title at `--text-4xl`, a hairline progress strip under it and the work as a
+  ruled table. It is now the thing that dominates the screen, which it always should have been.
+- **The week ahead** became an index, the same grammar as the library, the providers and the
+  episodes. That was the last card grid on Today.
+- **The timer sounds like the theme it is in.** Carbon reports with one clean 880Hz tone; Arc
+  lands an impact, a low body hit under a bright metal clang; Sanctuary strikes a bowl, a warm
+  fundamental with its fifth, left to decay. Synthesised, because three audio files would be
+  150KB to be wrong on a phone speaker.
+- **"World" became "theme" everywhere**, after the owner's note that nobody would understand a
+  theme was being changed: in the nav, in Settings, on the picker and in every button label.
+  Settings now shows the three themes rather than naming the current one in a sentence.
+
+**Measured:** 54 combinations of nine screens by six theme-and-light pairs, no contrast failure
+and no horizontal overflow anywhere.

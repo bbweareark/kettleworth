@@ -31,8 +31,8 @@ export function PickWorld() {
       transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
       className="border-t border-rule pt-4"
     >
-      <p className="meta">Three worlds</p>
-      <h2 className="mt-1 font-display text-2xl tracking-tightest">This app can look like someone else entirely.</h2>
+      <p className="meta">App theme</p>
+      <h2 className="mt-1 font-display text-2xl tracking-tightest">Pick how this app looks.</h2>
       <p className="measure mt-2 text-sm text-fg-muted">
         Same engine, same numbers, same plan. One of them trains you like an instrument, one like the main character of a
         fight, one like something you are looking after. Pick the one that gets you to the gym.
@@ -54,7 +54,7 @@ export function PickWorld() {
         ))}
       </div>
 
-      <Button asChild className="mt-4"><Link href="/app/style">See the three <ArrowRight /></Link></Button>
+      <Button asChild className="mt-4"><Link href="/app/style">Choose a theme <ArrowRight /></Link></Button>
     </motion.section>
   );
 }

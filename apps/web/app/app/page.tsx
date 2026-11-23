@@ -190,19 +190,22 @@ export default async function Today() {
             <Link href="/app/programme" className="meta transition-colors hover:text-fg">Programme</Link>
           </div>
           {upcoming.length ? (
-            <ul className="grid gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-2">
-              {upcoming.slice(0, 4).map((s) => (
-                <li key={s.id}>
-                  <Link href={`/app/session/${s.id}`} className="flex h-full items-center justify-between gap-3 bg-surface px-4 py-3.5 text-sm transition-colors hover:bg-bg">
-                    <span className="min-w-0">
-                      <span className="block truncate font-display text-lg">{s.name}</span>
-                      <span className="meta">{whenLabel(s.scheduledOn, todayIso).replace(/^tomorrow$/, "Tomorrow")} · {s.estimatedMinutes} min</span>
+            /* An index, the same grammar as the library and the providers: a number, the name
+               at display size, the facts on one line, a hairline between. No cells. */
+            <ol className="border-t border-rule">
+              {upcoming.slice(0, 4).map((s, i) => (
+                <li key={s.id} className="border-b border-rule">
+                  <Link href={`/app/session/${s.id}`} className="group flex items-center gap-4 py-3.5">
+                    <span className="meta w-8 shrink-0 tabular">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate font-display text-2xl leading-none tracking-tightest transition-colors group-hover:text-volt">{s.name}</span>
+                      <span className="meta mt-1.5 block">{whenLabel(s.scheduledOn, todayIso).replace(/^tomorrow$/, "Tomorrow")} · {s.estimatedMinutes} min</span>
                     </span>
-                    <ArrowUpRight className="size-4 shrink-0 text-fg-subtle" aria-hidden />
+                    <ArrowUpRight className="size-4 shrink-0 text-fg-subtle transition-colors group-hover:text-volt" aria-hidden />
                   </Link>
                 </li>
               ))}
-            </ul>
+            </ol>
           ) : (
             <p className="text-sm text-fg-muted">Generate a programme to fill your week.</p>
           )}

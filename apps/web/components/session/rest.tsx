@@ -6,6 +6,8 @@ import { Button } from "@kettleworth/ui";
 import { describePlates, describeTarget, platesPerSide, round } from "@kettleworth/core";
 import type { PlannedSet } from "@kettleworth/types";
 import { effortWord } from "./effort";
+import { restChime } from "@/lib/chime";
+import { useStyle } from "@/lib/style";
 
 /**
  * Rest: the clock, and what is next.
@@ -52,6 +54,7 @@ export function Rest({
   onSkip: () => void;
 }) {
   const reduce = useReducedMotion();
+  const style = useStyle();
   const [left, setLeft] = useState(seconds);
   const [total, setTotal] = useState(seconds);
   const endAt = useRef(0);
@@ -66,6 +69,10 @@ export function Rest({
    */
   const fire = useRef(onDone);
   useEffect(() => { fire.current = onDone; });
+  /* The same ref trick for the sound: the world is read after hydration and must not restart
+     the clock when it arrives. */
+  const sound = useRef(() => restChime(style));
+  useEffect(() => { sound.current = () => restChime(style); }, [style]);
 
   useEffect(() => {
     // `left` and `total` are not reset here. The player gives this component a fresh key for
@@ -79,7 +86,7 @@ export function Rest({
       if (l === 0 && !done.current) {
         done.current = true;
         try { navigator.vibrate?.([120, 60, 120]); } catch {}
-        chime();
+        sound.current();
         fire.current();
       }
     }, 250);
@@ -165,13 +172,3 @@ export function Rest({
   );
 }
 
-function chime() {
-  try {
-    const ctx = new AudioContext();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g); g.connect(ctx.destination);
-    o.frequency.value = 880; g.gain.value = 0.05;
-    o.start(); o.stop(ctx.currentTime + 0.18);
-  } catch {}
-}

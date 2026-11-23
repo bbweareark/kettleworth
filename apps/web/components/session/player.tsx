@@ -212,8 +212,8 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
       {/* Arc only: the screen takes the blow when a set lands, the episode is announced when
           the session opens, and the clear waits at the end of it. */}
       <ImpactFrame count={doneSets} />
-      <ArcTitleCard enabled={style === "arc"} name={firstName} episode={episode} title={session.name} rounds={totalSets} />
-      <ArcClear done={doneSets} total={totalSets} episode={episode} tonnage={tonnage} unit={units === "metric" ? "kg" : "lb"} />
+      <ArcTitleCard enabled={style === "arc"} name={firstName} episode={episode} title={session.name} rounds={totalSets} sex={sex} />
+      <ArcClear done={doneSets} total={totalSets} episode={episode} tonnage={tonnage} unit={units === "metric" ? "kg" : "lb"} sex={sex} />
       <div className="flex items-center justify-between gap-3">
         <Link href="/app" className="inline-flex items-center gap-1 text-sm text-fg-muted hover:text-fg"><ArrowLeft className="size-4" /> Today</Link>
         <div className="flex items-center gap-3 text-xs">{queued > 0 && <Badge tone="amber"><WifiOff className="size-3" /> {queued} queued</Badge>}<ElapsedClock since={session.startedAt} /><button type="button" onClick={() => setResetOpen(true)} className="inline-flex items-center gap-1 text-fg-subtle hover:text-fg" aria-label="Restart session"><RotateCcw className="size-3.5" /> Restart</button></div>
@@ -254,7 +254,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
       {rest != null ? <Rest key={rest + "-" + doneSets} label={voice.rest} seconds={rest} why={restWhy} next={nextSet} setsInExercise={cur.plannedSets.length} nextWeight={nextLoad.weight} bar={nextLoad.bar} units={units} onDone={() => setRest(null)} onSkip={() => setRest(null)} /> : null}
 
       {/* Arc only: the character having this session, reacting to the set that just landed. */}
-      <ArcCharacter done={doneSets} total={totalSets} exerciseDone={curDone} resting={rest != null} />
+      <ArcCharacter done={doneSets} total={totalSets} exerciseDone={curDone} resting={rest != null} sex={sex} />
 
       <SetConsole key={`console-${cur.exerciseId}`} inst={cur} units={units} barWeights={barWeights} onBarChange={saveBar} onLog={(set, v, confirmed) => logSet(cur, set, v, confirmed)} onReset={resetExercise} />
 

@@ -31,6 +31,7 @@ const SECONDARY = [
   { href: "/app/community", label: "Community" },
   { href: "/library", label: "Library" },
   { href: "/app/connected", label: "Connected apps" },
+  { href: "/app/style", label: "Theme" },
   { href: "/app/settings", label: "Settings" },
 ];
 

@@ -5,6 +5,7 @@ import { Button } from "@kettleworth/ui";
 import { useStyle } from "@/lib/style";
 import { arcCleared, arcOpening } from "@/lib/voice";
 import { Aura } from "@/components/style/arc-fx";
+import { castFor, stateSrc } from "@/lib/arc-art";
 
 /**
  * Arc's two full-screen moments: the title card and the clear.
@@ -48,7 +49,7 @@ function Slam({ children, delay = 0, className }: { children: React.ReactNode; d
   );
 }
 
-export function ArcTitleCard({ enabled, name, episode, title, rounds }: { enabled: boolean; name: string; episode: number; title: string; rounds: number }) {
+export function ArcTitleCard({ enabled, name, episode, title, rounds, sex }: { enabled: boolean; name: string; episode: number; title: string; rounds: number; sex?: "male" | "female" | "other" | null }) {
   const reduce = useReducedMotion();
   /*
    * Derived, not set in an effect: the card is simply open while this is Arc and nobody has
@@ -85,7 +86,7 @@ export function ArcTitleCard({ enabled, name, episode, title, rounds }: { enable
           <div className="pointer-events-none absolute -right-10 bottom-0 h-[48%] w-[72%]">
             <Aura level="charging" className="bottom-[-6%] left-[-10%] right-[-16%] top-0" />
             <motion.img
-              src="/art/arc/ready-560.webp"
+              src={stateSrc(castFor(sex), "ready")}
               alt=""
               aria-hidden
               initial={reduce ? undefined : { x: 90, y: 20, opacity: 0, scale: 1.1 }}
@@ -139,7 +140,7 @@ export function ArcTitleCard({ enabled, name, episode, title, rounds }: { enable
  * this is the moment the whole world was built for, and hurrying it would be the one mistake
  * that cannot be undone.
  */
-export function ArcClear({ done, total, episode, tonnage, unit, onClose }: { done: number; total: number; episode: number; tonnage: number; unit: string; onClose?: () => void }) {
+export function ArcClear({ done, total, episode, tonnage, unit, sex, onClose }: { done: number; total: number; episode: number; tonnage: number; unit: string; sex?: "male" | "female" | "other" | null; onClose?: () => void }) {
   const style = useStyle();
   const reduce = useReducedMotion();
   /* Derived the same way: cleared is a fact about the session, not a flag to be set. */
@@ -190,7 +191,7 @@ export function ArcClear({ done, total, episode, tonnage, unit, onClose }: { don
           <div className="pointer-events-none absolute inset-x-0 top-[5%] mx-auto h-[48%] w-[88%]">
             <Aura level="peak" className="inset-[-8%]" />
             <motion.img
-              src="/art/arc/win-560.webp"
+              src={stateSrc(castFor(sex), "win")}
               alt=""
               aria-hidden
               initial={reduce ? undefined : { scale: 1.25, y: 30, opacity: 0 }}

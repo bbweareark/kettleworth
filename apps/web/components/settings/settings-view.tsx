@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronRight, Download, LogOut, Moon, Sun, Trash2, Plane, Thermometer, Bandage, Clock, Baby, CircleDot } from "lucide-react";
 import type { Style, TrainingProfile } from "@kettleworth/types";
-import { Button, Chip, ChipGroup, Field, Input, Segmented, Slider, toast } from "@kettleworth/ui";
+import { Button, Chip, ChipGroup, Field, Input, Segmented, Slider, cn, toast } from "@kettleworth/ui";
 import { Panel } from "@/components/app/panel";
 import { Screen } from "@/components/app/screen";
 import { authClient } from "@/lib/auth-client";
@@ -62,14 +62,41 @@ export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { 
             <Field key={kind} label={BAR_NAMES[kind]}><ChipGroup>{choices.map((c) => <Chip key={c} className="h-8 px-3 text-xs" selected={Math.abs(currentDisp - c) < 0.2} onClick={() => set({ barWeights: { ...(p.barWeights ?? {}), [kind]: imperial ? Math.round(lbToKg(c) * 100) / 100 : c } })}>{c === 0 ? "Not counted" : `${c} ${imperial ? "lb" : "kg"}`}</Chip>)}</ChipGroup></Field>); })}
         </div>
       </Panel>
-      <Panel title="Appearance" note="Night is the default: this app is used in a gym, often in poor light. The light is separate from the world, so either world can be lived in either light.">
-        <Segmented value={theme} onChange={applyTheme} options={[{ value: "dark", label: <span className="flex items-center gap-1.5"><Moon className="size-3.5" aria-hidden /> Night</span> }, { value: "light", label: <span className="flex items-center gap-1.5"><Sun className="size-3.5" aria-hidden /> Daylight</span> }]} label="Light" />
-        {/* The world is a commitment, so it is chosen on its own screen rather than toggled here. */}
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-rule pt-4">
-          <div className="min-w-0">
-            <p className="text-sm"><span className="font-medium">Your world: {WORLD_NAMES[p.style ?? "carbon"]}.</span> <span className="text-fg-muted">{WORLD_LINES[p.style ?? "carbon"]}</span></p>
-          </div>
-          <Button variant="secondary" size="sm" onClick={() => router.push("/app/style")}>See the three worlds <ChevronRight /></Button>
+      <Panel title="Theme" note="Two settings: which theme the whole app wears, and whether it runs dark or light. They are independent, so any theme can run either way.">
+        {/*
+          This panel used to say "your world", which is what the design calls these, and the
+          owner's note was that nobody would understand that a theme was being changed. So it
+          says theme, it shows the three of them rather than describing them, and the current
+          one is marked on the face of the screen instead of in a sentence.
+        */}
+        <p className="meta mb-2">App theme</p>
+        <div className="flex gap-2">
+          {(["carbon", "arc", "sanctuary"] as Style[]).map((st) => {
+            const on = (p.style ?? "carbon") === st;
+            return (
+              <button
+                key={st}
+                type="button"
+                onClick={() => router.push("/app/style")}
+                aria-current={on}
+                data-style={st}
+                data-theme={st === "carbon" ? "dark" : "light"}
+                className={cn("flex-1 overflow-hidden border bg-bg p-3 text-left text-fg transition-colors", on ? "border-rule-strong" : "border-rule hover:border-rule-strong")}
+              >
+                <p className="font-display text-xl leading-none tracking-tightest">82<span className="text-2xs">.5</span></p>
+                <p className="meta mt-1 truncate">{WORLD_NAMES[st]}</p>
+                <div aria-hidden className="mt-2 h-1 bg-rule"><div className="h-full w-2/3 bg-volt" /></div>
+              </button>
+            );
+          })}
+        </div>
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-fg-muted"><span className="text-fg">{WORLD_NAMES[p.style ?? "carbon"]}</span> is on. {WORLD_LINES[p.style ?? "carbon"]}</p>
+          <Button variant="secondary" size="sm" onClick={() => router.push("/app/style")}>Change theme <ChevronRight /></Button>
+        </div>
+
+        <div className="mt-5 border-t border-rule pt-4">
+          <Segmented value={theme} onChange={applyTheme} options={[{ value: "dark", label: <span className="flex items-center gap-1.5"><Moon className="size-3.5" aria-hidden /> Dark</span> }, { value: "light", label: <span className="flex items-center gap-1.5"><Sun className="size-3.5" aria-hidden /> Light</span> }]} label="Dark or light" />
         </div>
       </Panel>
       {profile && (

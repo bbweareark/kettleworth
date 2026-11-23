@@ -61,17 +61,17 @@ export function StylePicker({ current, locked }: { current: Style; locked: boole
     const r = await fetch("/api/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ patch: { style, styleLockedAt: new Date().toISOString() } }) }).catch(() => null);
     setBusy(false);
     if (!r?.ok) return toast.error("Switched here, but it did not save to your account");
-    toast.success(`${WORLDS.find((w) => w.id === style)!.name} it is. Locked in.`);
+    toast.success(`${WORLDS.find((w) => w.id === style)!.name} theme applied.`);
     router.refresh();
   }
 
   return (
     <Screen className="mx-auto max-w-3xl">
       <div>
-        <p className="meta">Your world</p>
-        <h1 className="mt-1 font-display text-3xl tracking-tightest">Pick the app you want to open</h1>
+        <p className="meta">App theme</p>
+        <h1 className="mt-1 font-display text-3xl tracking-tightest">Choose your theme</h1>
         <p className="measure mt-2 text-sm text-fg-muted">
-          Three surfaces, the same engine underneath. The screens, the numbers and the plan are identical; what changes
+          Three themes, the same engine underneath. The screens, the numbers and the plan are identical; what changes
           is the room they happen in and the words used to say well done. Pick the one that gets you to the gym, because
           this one sticks: changing it later asks first. Each one has a night and a daylight version, and the light
           stays yours: these three are shown in the light each was drawn for.
@@ -118,7 +118,7 @@ export function StylePicker({ current, locked }: { current: Style; locked: boole
                     disabled={on || busy}
                     onClick={() => (locked && !on ? setAsk(w.id) : commit(w.id))}
                   >
-                    {on ? <><Check /> Your world</> : `Live in ${w.name}`}
+                    {on ? <><Check /> Current theme</> : `Use ${w.name}`}
                   </Button>
                 </div>
               </div>
@@ -129,12 +129,12 @@ export function StylePicker({ current, locked }: { current: Style; locked: boole
 
       <Dialog open={ask != null} onOpenChange={(o) => !o && setAsk(null)}>
         <DialogContent
-          title={`Move to ${ask ? WORLDS.find((w) => w.id === ask)!.name : ""}?`}
+          title={`Switch to the ${ask ? WORLDS.find((w) => w.id === ask)!.name : ""} theme?`}
           description="Every screen changes: the type, the colour, the way a finished set is marked and the words used to say it. Your training, history and plan are untouched."
         >
           <div className={cn("flex justify-end gap-2")}>
-            <Button variant="ghost" onClick={() => setAsk(null)}>Stay here</Button>
-            <Button loading={busy} onClick={() => ask && commit(ask)}>Move me</Button>
+            <Button variant="ghost" onClick={() => setAsk(null)}>Keep this one</Button>
+            <Button loading={busy} onClick={() => ask && commit(ask)}>Switch theme</Button>
           </div>
         </DialogContent>
       </Dialog>
