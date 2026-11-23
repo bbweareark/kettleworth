@@ -98,6 +98,7 @@ export default async function Today() {
         priority
         eyebrow={`${new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })} · ${firstName}`}
         episode={episode}
+        arch={prog ? { done: progress.completedSessions, total: prog.totalWeeks * prog.daysPerWeek } : undefined}
         label="Load lifted this week"
         value={weekLoad}
         unit={u}

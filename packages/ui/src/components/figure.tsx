@@ -53,6 +53,7 @@ export function Figure({
   /** The element the label renders as. A screen's one figure names the page, so it is its h1. */
   labelAs: Label = "p",
   labelHidden,
+  center,
 }: {
   label: string;
   /** A number counts. A string is rendered as given, for a figure that is not a quantity. */
@@ -70,6 +71,12 @@ export function Figure({
    * already names the figure somewhere else. Arc's head sets it down the left edge.
    */
   labelHidden?: boolean;
+  /**
+   * Centres the label, the figure and its unit. Only Sanctuary asks for this: its head sets
+   * the figure under a symmetrical arch, where a left-aligned number would sit off its own
+   * axis. The other two worlds are deliberately never centred.
+   */
+  center?: boolean;
 }) {
   const counted = useCount(typeof value === "number" ? value : 0, decimals);
   const shown = typeof value === "number" ? counted : value;
@@ -81,9 +88,9 @@ export function Figure({
   const empty = typeof value === "string" && !/\d/.test(value);
   const text = empty ? "text-2xl" : size === "xl" ? "text-figure-xl" : size === "sm" ? "text-4xl" : "text-figure";
   return (
-    <div className={cn("min-w-0", className)}>
+    <div className={cn("min-w-0", center && "text-center", className)}>
       <Label className={labelHidden ? "sr-only" : "meta"}>{label}</Label>
-      <p className={cn("font-display mt-1 flex items-baseline gap-2 leading-none", text, empty ? "text-fg-subtle" : accent && "text-volt")}>
+      <p className={cn("font-display mt-1 flex items-baseline gap-2 leading-none", center && "justify-center", text, empty ? "text-fg-subtle" : accent && "text-volt")}>
         <span className="tabular">{shown}</span>
         {unit ? <span className="font-mono text-base tracking-normal text-fg-subtle">{unit}</span> : null}
       </p>

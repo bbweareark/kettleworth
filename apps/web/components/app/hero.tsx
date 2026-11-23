@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Figure, cn } from "@kettleworth/ui";
 import { Unmask } from "@/components/motion/unmask";
 import { ArcHead } from "@/components/app/arc-head";
+import { SanctuaryHead } from "@/components/app/sanctuary-head";
 import { currentStyle } from "@/lib/style-server";
 
 /**
@@ -21,8 +22,10 @@ import { currentStyle } from "@/lib/style-server";
  * In Arc the head is a different composition, not a retint: a hard-edged character with the
  * labels scattered around it, which is what Locomotive's own head does. Choosing between them
  * here rather than in each page means all seven screens change world at once, and reading the
- * style on the server keeps the decision out of the first paint. Carbon and Sanctuary share
- * the photograph below, because Sanctuary's own head is the next piece of work.
+ * style on the server keeps the decision out of the first paint.
+ *
+ * Sanctuary frames instead: the same photograph set inside a drawn arch, centred, with the
+ * arch doubling as the block's progress. Three worlds, three heads, one set of props.
  */
 export async function ScreenHero({
   art,
@@ -39,6 +42,7 @@ export async function ScreenHero({
   short,
   priority,
   episode,
+  arch,
 }: {
   art: string;
   eyebrow: string;
@@ -54,9 +58,15 @@ export async function ScreenHero({
   priority?: boolean;
   /** Arc prints the episode beside the date. Ignored by the other worlds. */
   episode?: number;
+  /** Sanctuary fills its arch with these. Ignored by the other worlds. */
+  arch?: { done: number; total: number };
 }) {
-  if ((await currentStyle()) === "arc") {
+  const style = await currentStyle();
+  if (style === "arc") {
     return <ArcHead eyebrow={eyebrow} label={label} value={value} title={title} unit={unit} decimals={decimals} second={second} episode={episode} priority={priority}>{children}</ArcHead>;
+  }
+  if (style === "sanctuary") {
+    return <SanctuaryHead art={art} eyebrow={eyebrow} label={label} value={value} title={title} unit={unit} decimals={decimals} second={second} arch={arch} priority={priority}>{children}</SanctuaryHead>;
   }
   return (
     /*

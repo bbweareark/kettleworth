@@ -593,11 +593,11 @@
   /* Measured on putty, which is the darkest ground these sit on: graphite #595855 is 4.42:1
      and #5a5955 is 3.95:1, so both fail AA as a label. These clear it. */
   --kw-fg-muted: #45443f;
-  --kw-fg-subtle: #4f4e48;
+  --kw-fg-subtle: #45443e;
 
   /* Aged gold, taken down until it clears AA as text on putty and on bone both. */
-  --kw-accent: #6b5223;
-  --kw-accent-hover: #543f1a;
+  --kw-accent: #64491f; /* 4.14:1 on putty at #6b5223, which fails AA for an 11px label */
+  --kw-accent-hover: #4f3917;
   --kw-accent-soft: #ded5bf;
   --kw-accent-fg: #e7e5e4;
 
