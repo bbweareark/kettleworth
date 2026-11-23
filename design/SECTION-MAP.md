@@ -156,3 +156,35 @@ Today and Programme rather than token work, and they are the next piece.
 clearance every other screen gets from `Screen`: the console ran to the bezel on a phone and
 the floating nav pill sat on top of the restart control. Both are now the same spine as
 everywhere else.
+
+
+## Arc's screen head and episode week, as built (23 Nov 2026)
+
+**The head**, every screen, replacing the photograph-and-figure stack in Arc only. An L rather
+than a stack, which is what Locomotive's own head does
+(`design/refs/dna-locomotive/scrolled.png`): the date up and to the left with the episode
+opposite it, a hairline, a hard-edged character top right, the screen's own name set
+vertically down the left edge, the figure bottom left crossing the character on the diagonal,
+a hairline, and the wordmark with an arrow in the bottom corner. Nothing is centred and
+nothing is a card.
+
+| Element | Measurement | From |
+|---|---|---|
+| Character | 270px phone / 340px desktop, right aligned, top aligned, at most 66% of the column | Locomotive's image block, which is never full bleed |
+| Figure | `--text-figure`, bottom left, overlapping the character's lower edge | the through-line: one number, larger than anything else |
+| Vertical label | `meta`, `writing-mode: vertical-rl`, bottom left | Locomotive's caps label beside its image |
+| Rules | one above, one below, both hairline | Locomotive's own frame |
+| Speed lines | six hairlines, drawn right to left behind the character | the one drawn mark this world adds |
+
+**The episodes.** "Week ahead" becomes "The arc": every session numbered from the first one
+ever completed, the current one inverted to the band colour and carrying the only red mark on
+the screen, the rest listed as a chapter index with a hairline each and the metadata pushed
+right. No cards, which is what the four-card grid it replaces was.
+
+**Motion**, inside the two-signature budget and all of it gated by `useReducedMotion`: the
+character arrives by a hard wipe from the right rather than a fade, the speed lines draw
+themselves outward, each episode row wipes in left to right with a capped stagger, and the
+current episode's red mark scales in last. None of it moves again once it has landed.
+
+**Still not built:** Sanctuary's own head, where the figure sits inside a drawn arch. Carbon
+and Sanctuary share the photograph head until then.

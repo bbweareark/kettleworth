@@ -104,10 +104,20 @@ current one marked. Nothing else in this portfolio hits back when you press it.
 **Ground and light:** ink black and paper white in hard contrast, with one hot accent used as
 an impact colour rather than a fill. Light is a blade, not a glow: edges, speed lines, halftone.
 
-**What imagery is real here:** the same photography, treated - high-contrast, posterised, with
-the subject cut out against flat ink. Drawn marks (speed lines, impact stars, a vertical
-caps label down the left edge) are drawn in SVG, never licensed anime art and never a
-character that could be mistaken for someone else's.
+**What imagery is real here:** *(revised 23 Nov 2026, on the owner's "where is the anime
+style")* the characters themselves. Four original figures mid-effort, drawn in a 1990s
+sports-manga register, generated through Higgsfield and cut out against nothing so they can
+stand on ink or on paper. They are the room the figure stands in, never the subject: the load
+is still the largest thing on every screen.
+
+They are original characters. No existing property is referenced, named or resembled, nothing
+here is licensed anime art, and no character could be mistaken for someone else's. The drawn
+marks that go with them, the speed lines and the vertical caps label down the left edge, stay
+SVG.
+
+The line this replaces said the imagery here was treated photography and explicitly no anime
+art. That was a misreading of the brief: anime inspiration is what was asked for in the first
+place, and ink and impact with nobody in them is just Swiss typography.
 
 **Must not collide with:** walkwithme's amaterasu (whisper-weight giant type, dusk indigo,
 luminous object in the headline) or chinju-glam-night's gilt proscenium. Arc is loud where

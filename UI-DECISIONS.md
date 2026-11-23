@@ -718,3 +718,23 @@ each world: **no contrast failure and no horizontal overflow in any of the six s
 combinations** (minimum ratio 5.11 Carbon, 5.19 Arc, 4.88 Sanctuary, each in its own worst
 case). The fonts were confirmed to switch per style from the computed styles, not assumed. The
 impact frame was caught mid-flight and measured at `rgb(237, 28, 36)`.
+
+
+## Arc's characters, 23 Nov 2026
+
+The owner's note on the first cut was "where is the anime style?", and it was fair: Arc shipped
+as ink, impact and speed with nobody in it, which reads as Swiss typography rather than as a
+training arc.
+
+| Pillar | Choice | Source | What was taken |
+|---|---|---|---|
+| **Icons & imagery** | **Four original characters**, cut out, no background | generated with **Higgsfield** (`gpt_image_2_5`, then its background remover) | A 1990s sports-manga register: heavy black ink linework, flat cel shading, two-tone shadows, hard rim light. A press, a deadlift, a front squat and a face mid-effort |
+| **Hero** | Labels scattered around the hard-edged figure | Locomotive's own head | The L composition, the vertical caps label, the hairline frame and the corner arrow |
+| **Motion** | Hard wipe, drawn speed lines, wiping episode rows | scrolltide.co | Entrances that cut rather than fade, which is the grammar of a title card |
+
+**Clean room.** Every character is original. No existing property is referenced, named or
+resembled, no licensed art is used, and the prompts said so explicitly. They are the app's own
+cast, like its photography.
+
+**Weight.** The four cut-outs are 60 to 113KB each as WebP with alpha at 640 and 960 wide, one
+per screen, loaded only in Arc. Carbon and Sanctuary never fetch them.

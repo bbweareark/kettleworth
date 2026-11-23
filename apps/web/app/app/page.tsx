@@ -16,6 +16,8 @@ import { localTodayIso, localTimeZone } from "@/lib/local-date";
 import { Screen } from "@/components/app/screen";
 import { ScreenHero } from "@/components/app/hero";
 import { StickyAction } from "@/components/app/sticky-action";
+import { EpisodeWeek, type Episode } from "@/components/today/episode-week";
+import { currentStyle } from "@/lib/style-server";
 
 export const dynamic = "force-dynamic";
 
@@ -74,6 +76,18 @@ export default async function Today() {
   // The photograph: today's session when there is one, otherwise the week's own ground.
   const art = today ? sessionArt(today.name, rec.profile.sex) : state.kind === "done" ? genderedArt("progress", rec.profile.sex) : ART.programme;
 
+  /*
+   * Arc reads the block as episodes rather than as a week ahead, and prints the episode on the
+   * screen head. The number is simply how many sessions have been completed, so the one you
+   * are on is the next one. Read on the server so the head is right in the first paint.
+   */
+  const style = await currentStyle();
+  const episode = progress.completedSessions + 1;
+  const episodes: Episode[] = [
+    ...(today ? [{ id: today.id, name: today.name, when: "Today", minutes: today.estimatedMinutes, state: "now" as const }] : []),
+    ...upcoming.slice(0, today ? 3 : 4).map((s2) => ({ id: s2.id, name: s2.name, when: whenLabel(s2.scheduledOn, todayIso).replace(/^tomorrow$/, "Tomorrow"), minutes: s2.estimatedMinutes, state: "later" as const })),
+  ];
+
   const startHref = today ? `/app/session/${today.id}` : null;
   const startLabel = state.kind === "in_progress" ? "Continue" : state.kind === "catch_up" ? "Train it today" : "Start session";
 
@@ -83,6 +97,7 @@ export default async function Today() {
         art={art}
         priority
         eyebrow={`${new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })} · ${firstName}`}
+        episode={episode}
         label="Load lifted this week"
         value={weekLoad}
         unit={u}
@@ -163,6 +178,7 @@ export default async function Today() {
 
         {quests ? <QuestBoard board={quests} todayIso={todayIso} /> : null}
 
+        {style === "arc" ? <EpisodeWeek episodes={episodes} firstEpisode={episode} /> : (
         <section className="border-t border-rule pt-4">
           <div className="mb-3 flex items-baseline justify-between gap-4">
             <h2 className="font-display text-xl">Week ahead</h2>
@@ -186,6 +202,7 @@ export default async function Today() {
             <p className="text-sm text-fg-muted">Generate a programme to fill your week.</p>
           )}
         </section>
+        )}
 
         <ActivityLog initial={activities} />
 

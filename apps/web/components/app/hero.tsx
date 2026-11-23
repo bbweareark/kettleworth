@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { Figure, cn } from "@kettleworth/ui";
 import { Unmask } from "@/components/motion/unmask";
+import { ArcHead } from "@/components/app/arc-head";
+import { currentStyle } from "@/lib/style-server";
 
 /**
  * The screen head, every screen, the same shape.
@@ -15,8 +17,14 @@ import { Unmask } from "@/components/motion/unmask";
  * and the Coach, because the through-line in design/SECTION-MAP.md is that every screen
  * answers one question with one number. Nine screens that each invent their own head is how
  * the previous build ended up with no hierarchy of heat anywhere.
+ *
+ * In Arc the head is a different composition, not a retint: a hard-edged character with the
+ * labels scattered around it, which is what Locomotive's own head does. Choosing between them
+ * here rather than in each page means all seven screens change world at once, and reading the
+ * style on the server keeps the decision out of the first paint. Carbon and Sanctuary share
+ * the photograph below, because Sanctuary's own head is the next piece of work.
  */
-export function ScreenHero({
+export async function ScreenHero({
   art,
   eyebrow,
   label,
@@ -30,6 +38,7 @@ export function ScreenHero({
   children,
   short,
   priority,
+  episode,
 }: {
   art: string;
   eyebrow: string;
@@ -43,7 +52,12 @@ export function ScreenHero({
   /** A shallower crop, for screens whose content starts immediately. */
   short?: boolean;
   priority?: boolean;
+  /** Arc prints the episode beside the date. Ignored by the other worlds. */
+  episode?: number;
 }) {
+  if ((await currentStyle()) === "arc") {
+    return <ArcHead eyebrow={eyebrow} label={label} value={value} title={title} unit={unit} decimals={decimals} second={second} episode={episode} priority={priority}>{children}</ArcHead>;
+  }
   return (
     /*
       Rendered as a sibling of the content column, not inside it: the photograph spans the

@@ -52,6 +52,7 @@ export function Figure({
   children,
   /** The element the label renders as. A screen's one figure names the page, so it is its h1. */
   labelAs: Label = "p",
+  labelHidden,
 }: {
   label: string;
   /** A number counts. A string is rendered as given, for a figure that is not a quantity. */
@@ -64,6 +65,11 @@ export function Figure({
   className?: string;
   children?: React.ReactNode;
   labelAs?: "p" | "h1" | "h2";
+  /**
+   * Keeps the label for a screen reader but takes it off the face, for a composition that
+   * already names the figure somewhere else. Arc's head sets it down the left edge.
+   */
+  labelHidden?: boolean;
 }) {
   const counted = useCount(typeof value === "number" ? value : 0, decimals);
   const shown = typeof value === "number" ? counted : value;
@@ -76,7 +82,7 @@ export function Figure({
   const text = empty ? "text-2xl" : size === "xl" ? "text-figure-xl" : size === "sm" ? "text-4xl" : "text-figure";
   return (
     <div className={cn("min-w-0", className)}>
-      <Label className="meta">{label}</Label>
+      <Label className={labelHidden ? "sr-only" : "meta"}>{label}</Label>
       <p className={cn("font-display mt-1 flex items-baseline gap-2 leading-none", text, empty ? "text-fg-subtle" : accent && "text-volt")}>
         <span className="tabular">{shown}</span>
         {unit ? <span className="font-mono text-base tracking-normal text-fg-subtle">{unit}</span> : null}
