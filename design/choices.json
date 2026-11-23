@@ -1,18 +1,18 @@
 {
-  "dna": "locomotive",
-  "display_face": "darker grotesque",
+  "dna": "agence foudre",
+  "display_face": "anton",
   "text_face": "schibsted grotesk",
-  "ground": "paper white, ink black, one red slide",
+  "ground": "ink black with one hot red and a white-hot charge",
   "navbar_type": "tabs",
-  "navbar_example": "locomotive comma-separated run",
-  "hero_archetype": "labels scattered around a hard-edged portrait image",
-  "hero_example": "locomotive",
-  "cta_pattern": "ink block, zero radius, full-width commit",
+  "navbar_example": "agence foudre",
+  "hero_archetype": "ultra-black title block leaning over a charged cut-out figure",
+  "hero_example": "agence foudre",
+  "cta_pattern": "hot red block, zero radius, slammed on press",
   "cta_example": "locomotive",
   "footer_style": "typographic",
-  "footer_example": "locomotive",
-  "motion_system": "impact frame: a full-bleed red slide on commit",
+  "footer_example": "agence foudre",
+  "motion_system": "charge, burst and screen shake (scrolltide halftone mono)",
   "icon_family": "drawn svg marks, hairline boxed caps labels",
   "button_shape": "ink block, zero radius",
-  "signature_idea": "a set lands"
+  "signature_idea": "the figure charges up and the set lands"
 }

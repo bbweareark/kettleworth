@@ -1,0 +1,560 @@
+{
+  "title": "Agence social media — Agence Foudre",
+  "url": "https://www.agencefoudre.com/",
+  "fonts": [
+    [
+      "Clash Grotesk",
+      398
+    ],
+    [
+      "Beni",
+      66
+    ]
+  ],
+  "type": {
+    "h1": {
+      "text": "Agence social média",
+      "family": "Clash Grotesk",
+      "size": "20px",
+      "weight": "700",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "rgb(209, 207, 228)",
+      "transform": "none"
+    },
+    "h2": {
+      "text": "Nous électrisons vos réseaux,",
+      "family": "Beni",
+      "size": "94px",
+      "weight": "900",
+      "lineHeight": "65.8px",
+      "letterSpacing": "normal",
+      "color": "rgb(219, 60, 138)",
+      "transform": "none"
+    },
+    "h3": {
+      "text": "Yelloh! Village",
+      "family": "Beni",
+      "size": "80px",
+      "weight": "900",
+      "lineHeight": "56px",
+      "letterSpacing": "normal",
+      "color": "rgb(255, 248, 246)",
+      "transform": "none"
+    },
+    "body": {
+      "text": "Human Social Club",
+      "family": "Beni",
+      "size": "130px",
+      "weight": "900",
+      "lineHeight": "91px",
+      "letterSpacing": "normal",
+      "color": "rgb(242, 158, 189)",
+      "transform": "none"
+    },
+    "small": null,
+    "link": null
+  },
+  "palette": [
+    [
+      "border rgb(255, 248, 246)",
+      186
+    ],
+    [
+      "fg rgb(255, 248, 246)",
+      181
+    ],
+    [
+      "fg rgb(219, 60, 138)",
+      113
+    ],
+    [
+      "border rgb(219, 60, 138)",
+      108
+    ],
+    [
+      "fg rgb(0, 0, 0)",
+      73
+    ],
+    [
+      "border rgb(0, 0, 0)",
+      73
+    ],
+    [
+      "fg rgb(0, 82, 45)",
+      72
+    ],
+    [
+      "border rgb(0, 82, 45)",
+      72
+    ],
+    [
+      "bg rgb(219, 60, 138)",
+      25
+    ],
+    [
+      "fg rgb(252, 229, 223)",
+      20
+    ],
+    [
+      "border rgb(252, 229, 223)",
+      20
+    ],
+    [
+      "bg rgb(252, 229, 223)",
+      14
+    ],
+    [
+      "bg rgb(0, 82, 45)",
+      7
+    ],
+    [
+      "bg rgb(242, 158, 189)",
+      4
+    ],
+    [
+      "fg rgb(242, 158, 189)",
+      4
+    ],
+    [
+      "border rgb(242, 158, 189)",
+      4
+    ],
+    [
+      "bg rgb(255, 248, 246)",
+      4
+    ],
+    [
+      "fg rgb(209, 207, 228)",
+      1
+    ],
+    [
+      "border rgb(209, 207, 228)",
+      1
+    ],
+    [
+      "bg rgb(14, 94, 140)",
+      1
+    ]
+  ],
+  "bodyBg": "rgba(0, 0, 0, 0)",
+  "htmlBg": "rgba(0, 0, 0, 0)",
+  "sections": [
+    {
+      "top": 0,
+      "height": 900,
+      "paddingTop": "30px",
+      "paddingBottom": "30px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1920px",
+      "heading": "Agence social média",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 6
+      },
+      "imageCount": 9
+    },
+    {
+      "top": 1140,
+      "height": 680,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1920px",
+      "heading": null,
+      "layout": null,
+      "imageCount": 5
+    },
+    {
+      "top": 2000,
+      "height": 1155,
+      "paddingTop": "120px",
+      "paddingBottom": "120px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1920px",
+      "heading": "Nous électrisons vos réseaux,",
+      "layout": null,
+      "imageCount": 24
+    },
+    {
+      "top": 3155,
+      "height": 4500,
+      "paddingTop": "140px",
+      "paddingBottom": "140px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1920px",
+      "heading": "NOUS LES RENDONS, SOCIAUX",
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "30px",
+        "children": 11
+      },
+      "imageCount": 41
+    },
+    {
+      "top": 7655,
+      "height": 3600,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": null,
+      "layout": {
+        "display": "flex",
+        "columns": "none",
+        "gap": "normal",
+        "children": 5
+      },
+      "imageCount": 2
+    },
+    {
+      "top": 11395,
+      "height": 3600,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1920px",
+      "heading": "Raisonner pour mieux: résonner.",
+      "layout": null,
+      "imageCount": 3
+    },
+    {
+      "top": 15135,
+      "height": 4560,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1920px",
+      "heading": "Nous préfèrerons cet ordre. Toujours.",
+      "layout": null,
+      "imageCount": 0
+    },
+    {
+      "top": 19695,
+      "height": 3449,
+      "paddingTop": "0px",
+      "paddingBottom": "0px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "none",
+      "heading": "POURQUOI CHOISIR FOUDRE",
+      "layout": {
+        "display": "grid",
+        "columns": "322.5px 322.5px 322.5px 322.5px",
+        "gap": "30px",
+        "children": 4
+      },
+      "imageCount": 4
+    },
+    {
+      "top": 23144,
+      "height": 1076,
+      "paddingTop": "280px",
+      "paddingBottom": "280px",
+      "bg": "rgba(0, 0, 0, 0)",
+      "maxWidth": "1920px",
+      "heading": "Petites questions, grandes réponses",
+      "layout": null,
+      "imageCount": 6
+    },
+    {
+      "top": 936,
+      "height": 253,
+      "paddingTop": "0px",
+      "paddingBottom": "15px",
+      "bg": "rgb(68, 67, 37)",
+      "maxWidth": "min(100% - 144px, 390px)",
+      "heading": null,
+      "layout": null,
+      "imageCount": 1
+    }
+  ],
+  "nav": {
+    "position": "static",
+    "top": 0,
+    "height": 0,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "borderBottom": "0px none rgb(0, 0, 0)",
+    "boxShadow": "none",
+    "linkCount": 2,
+    "links": [
+      "",
+      ""
+    ],
+    "ctaCount": 2,
+    "ctaSamples": [
+      {
+        "text": "",
+        "bg": "rgb(242, 158, 189)",
+        "color": "rgb(0, 82, 45)",
+        "radius": "50%",
+        "height": 60
+      },
+      {
+        "text": "",
+        "bg": "rgb(242, 158, 189)",
+        "color": "rgb(0, 82, 45)",
+        "radius": "50%",
+        "height": 60
+      }
+    ],
+    "logoLeft": 54,
+    "maxWidth": "none",
+    "padding": "0px",
+    "linkStyle": {
+      "text": "",
+      "family": "Clash Grotesk",
+      "size": "13.3333px",
+      "weight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "color": "rgb(0, 82, 45)",
+      "transform": "none"
+    }
+  },
+  "buttons": [
+    {
+      "text": "",
+      "bg": "rgb(242, 158, 189)",
+      "color": "rgb(0, 82, 45)",
+      "border": "0px none rgb(0, 82, 45)",
+      "radius": "50%",
+      "shadow": "none",
+      "height": 60,
+      "padding": "0px",
+      "fontSize": "13.3333px",
+      "fontWeight": "400",
+      "family": "Clash Grotesk",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "Explorer",
+      "bg": "rgb(242, 158, 189)",
+      "color": "rgb(255, 248, 246)",
+      "border": "0px none rgb(255, 248, 246)",
+      "radius": "10px",
+      "shadow": "none",
+      "height": 29,
+      "padding": "20px",
+      "fontSize": "12px",
+      "fontWeight": "700",
+      "family": "Clash Grotesk",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 2
+    },
+    {
+      "text": "Voir le case",
+      "bg": "rgb(219, 60, 138)",
+      "color": "rgb(255, 248, 246)",
+      "border": "0px none rgb(255, 248, 246)",
+      "radius": "10px",
+      "shadow": "none",
+      "height": 34,
+      "padding": "12px 10px",
+      "fontSize": "12px",
+      "fontWeight": "700",
+      "family": "Clash Grotesk",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "count": 1
+    }
+  ],
+  "input": null,
+  "imagery": {
+    "count": 26,
+    "samples": [
+      {
+        "tag": "img",
+        "w": 12628,
+        "h": 11431,
+        "ratio": "1.10",
+        "radius": "0px",
+        "fit": "contain",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 445,
+        "h": 673,
+        "ratio": "0.66",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 334,
+        "h": 505,
+        "ratio": "0.66",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 334,
+        "h": 505,
+        "ratio": "0.66",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "picture",
+        "w": 313,
+        "h": 525,
+        "ratio": "0.60",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgb(14, 94, 140)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 313,
+        "h": 525,
+        "ratio": "0.60",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Yelloh! Village",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "picture",
+        "w": 494,
+        "h": 525,
+        "ratio": "0.94",
+        "radius": "0px",
+        "fit": "fill",
+        "alt": "",
+        "frameBg": "rgb(232, 120, 178)",
+        "frameShadow": "none"
+      },
+      {
+        "tag": "img",
+        "w": 494,
+        "h": 525,
+        "ratio": "0.94",
+        "radius": "0px",
+        "fit": "cover",
+        "alt": "Solty Hotels",
+        "frameBg": "rgba(0, 0, 0, 0)",
+        "frameShadow": "none"
+      }
+    ],
+    "svgIllustrations": 13,
+    "gradients": 0,
+    "blurBlobs": 0
+  },
+  "cards": {
+    "count": 11,
+    "sample": {
+      "bg": "rgb(219, 60, 138)",
+      "border": "0px none rgb(255, 248, 246)",
+      "radius": "25px",
+      "shadow": "none",
+      "padding": "60px"
+    }
+  },
+  "footer": {
+    "height": 1211,
+    "bg": "rgba(0, 0, 0, 0)",
+    "paddingTop": "0px",
+    "paddingBottom": "30px",
+    "columns": 6,
+    "columnsTemplate": "none",
+    "linkCount": 7,
+    "largestText": {
+      "text": "Racontez-nous.",
+      "size": "80px",
+      "weight": "900",
+      "family": "Beni",
+      "color": "rgb(255, 248, 246)"
+    },
+    "borderTop": "0px none rgb(0, 82, 45)"
+  },
+  "motion": {
+    "libs": [
+      "lenis",
+      "motion"
+    ],
+    "elementsWithTransition": 128,
+    "elementsWithAnimation": 8,
+    "transforms": 126,
+    "stickyElements": 20,
+    "videoCount": 1,
+    "canvasCount": 3,
+    "smoothScroll": "auto"
+  },
+  "layout": {
+    "pageHeight": 25431,
+    "containerMaxWidths": [
+      [
+        "1920px",
+        8
+      ],
+      [
+        "450px",
+        6
+      ],
+      [
+        "400px",
+        4
+      ],
+      [
+        "500px",
+        2
+      ]
+    ],
+    "radiusRamp": [
+      [
+        "10px",
+        25
+      ],
+      [
+        "20px",
+        21
+      ],
+      [
+        "25px",
+        11
+      ]
+    ],
+    "shadows": [],
+    "baseFontSize": "10px"
+  },
+  "scrolledNav": {
+    "height": 0,
+    "top": -900,
+    "bg": "rgba(0, 0, 0, 0)",
+    "backdrop": "none",
+    "boxShadow": "none",
+    "position": "static"
+  },
+  "mobileNav": {
+    "height": 0,
+    "visibleControls": [
+      "Menu",
+      "WhatsApp"
+    ],
+    "hasMenuButton": true
+  },
+  "label": "dna / agence foudre",
+  "capturedAt": "2026-11-23T19:11:58.860Z"
+}

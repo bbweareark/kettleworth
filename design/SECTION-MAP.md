@@ -224,3 +224,34 @@ fades between states in 280ms. Nothing loops, and nothing animates twice.
 The title card's `enabled` comes from the server rather than from the client style hook: it
 covers the whole screen, so deciding it after hydration would show a frame of the session
 first, which is the one thing a title card exists to prevent.
+
+
+## Arc re-founded: charge, burst, shake (23 Nov 2026)
+
+"Still the design looks very weak and amateur, the anime one especially, it is just images.
+I want the images to animate like a proper animation, like Goku charging up."
+
+The note was about the DNA, not about the pictures. Arc was ported from Locomotive, whose
+entire argument is restraint: one weight, no accent, hierarchy from white space. No amount of
+character art rescues a world built on restraint, so the DNA was replaced rather than
+decorated. Agence Foudre now, for its typographic language only.
+
+| Surface | Before | After |
+|---|---|---|
+| Display face | Darker Grotesque 600, tracking -0.02em | **Anton**, ultra-black, tracking 0, caps per surface |
+| Accent | none at all, by Locomotive's rule | **#ff2d1f**, on the live figure, the rules and the primary block, plus a charge gold that exists only inside an aura |
+| A set landing | a flat red slide for 280ms | a cut: white flash, 36 speed lines thrown from the middle, an expanding charge ring, the red field, and the screen shaking under it |
+| The character | cross fading between three stills | thrown into frame on a spring, with an energy field burning behind him: idling between sets, charging through the rest clock, white hot on the set |
+| The title card | type on a flat field | the same type leaning 6 degrees, slammed in from above, over a charging figure |
+| A button | an ink block | a hot red block that is pressed, not tapped |
+
+**Why these effects and not a particle library.** Everything is transform and opacity on the
+compositor, no filters and no layout, because this runs on a phone that has been in a gym bag
+all day. The aura is two radial fields breathing out of phase with twelve embers; the crackle
+is four SVG strokes on their own flicker clocks; the burst is one flash, one ring and
+thirty-six lines. All of it is a few dozen divs, and all of it is neutralised by the
+reduced-motion rule.
+
+**What stayed.** The information architecture, every number, every coaching line and the
+accessibility floor: no contrast failure and no horizontal overflow in Arc night, Arc
+daylight, Carbon night or Sanctuary daylight, on Today or Programme.

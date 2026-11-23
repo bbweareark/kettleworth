@@ -147,40 +147,55 @@ archivo expanded, newsreader, bespoke slab, big shoulders display, bricolage gro
 serif 4, clash display, syne, switzer, host grotesk, nippo, martian mono, prata, caprasimo,
 cormorant garamond and literata.
 
-## Arc: ported from Locomotive
+## Arc: re-founded on Agence Foudre (23 Nov 2026)
 
-DNA: **Locomotive** (https://styles.refero.design/style/131d07b0-f71b-4bd2-8046-f61485ed545c,
-live at https://locomotive.ca, captured in `design/refs/dna-locomotive/`), with the
-single chromatic moment taken from **Charlie**
-(https://styles.refero.design/style/34aa811f-6084-484c-b4c0-f587b514e970).
+The first Arc was ported from Locomotive: Swiss, whisper-weight, zero accent, hierarchy from
+white space. The owner's verdict was that it looked weak and amateur, and he was right about
+the cause rather than the execution. Locomotive is a beautiful DNA for a studio portfolio and
+the exact opposite of a power-up; a world about effort cannot be built on restraint.
 
-Locomotive's own spec is uncompromising and is followed: **one weight, 400. Zero radius. No
-shadows. No UI accent at all.** Hierarchy comes from size and white space, and colour arrives
-only in photography, or, here, in the impact frame.
+DNA now: **Agence Foudre** (https://styles.refero.design/style/c1534c74-f7b8-44de-a913-586d0f78fb08,
+live at agencefoudre.com, captured in `design/refs/dna-agence-foudre`). What is taken is its
+typographic language, not its palette: ultra-black display type at a 0.7 line-height set as
+dense blocks that own the viewport, almost no chrome, and colour used as emotional punctuation
+rather than as decoration. Foudre is magenta and forest green on cream; Arc is ink and one
+hot red.
 
 | Token | Value | Role |
 |---|---|---|
-| `--arc-paper` | `#ffffff` | the ground. Arc is a light surface; Carbon is dark |
-| `--arc-ink` | `#000000` | all type, all hairlines, the inverted ground |
-| `--arc-ash` | `#838383` | secondary labels only *(Charlie's Ash Gray)* |
-| `--arc-impact` | `#ed1c24` | **the impact frame only**, a full-bleed slide, never a button, never a border *(Charlie's Alarm Red)* |
-| radius | `0` everywhere | Locomotive: "keep all corners square" |
-| base unit | `4px`, section gap `150px` desktop / `56px` phone | Locomotive, compressed for a phone |
+| `--kw-bg` (night) | `#0a0a0a` | the ground. Not pure black: a manga page is printed, not void |
+| `--kw-fg` (night) | `#ffffff` | all type |
+| `--kw-accent` (night) | `#ff2d1f` | the energy: the live figure, rules, the primary block. 5.32:1 as text on ink, and it carries ink at 6.0:1 |
+| `--kw-accent` (day) | `#d61a0f` | the same red taken down: `#ff2d1f` is 3.72:1 on paper and fails as a label |
+| `--kw-charge` | `#ffd34d` / `#c98a00` | the white-hot core of an aura. Never text, only inside a charge |
+| `--kw-impact` | `#ff2d1f` | the burst. Flash, speed lines, ring, field |
+| radius | `0` everywhere | a panel has corners, pills included |
 
-Type scale, golden ratio (1.618) from a 15px base, as measured on locomotive.ca:
+Type: **Anton** (12KB, OFL) for display, **Schibsted Grotesk** (45KB) for language, so Arc's
+payload is **57KB**, down from 68. Foudre's minor third from a 15px base, with the top of the
+ramp compressed for a phone and its tight leading opened where two lines actually meet:
 
-| Token | Size | Weight |
+| Token | Size | Line height |
 |---|---|---|
-| `--arc-display` | 110px | 400 |
-| `--arc-heading` | 70px | 400 |
-| `--arc-sub` | 26px | 400 |
-| `--arc-body` | 15px | 400 |
+| `--text-figure` | 96px | 0.72 |
+| `--text-4xl` | 56px | 0.86 |
+| `--text-3xl` | 44px | 0.92 |
+| `--text-2xl` | 30px | 1.0 |
+| `--text-base` | 15px | 1.45 |
 
-**Deliberate deviations.** Locomotive refuses any accent; Arc keeps one, used only as a
-full-bleed event, which is how Locomotive's own hero uses red and exactly how Charlie uses
-Alarm Red. And Darker Grotesque is carried at 500/700 for the figure rather than 400, because
-a load has to be readable at arm's length in bad light, the one place the reference's
-whisper-weight rule costs more than it gives.
+Tracking is `0` at every size: an ultra-black face needs no negative tracking, the weight does
+the work. Caps are applied per surface, never globally, because a world where everything
+shouts has no emphasis left.
+
+**Effects** (`components/style/arc-fx.tsx`, keyframes in `tokens.css`). Transform and opacity
+only, no filters and no layout, so they run on the compositor:
+
+| Effect | What it does | Where |
+|---|---|---|
+| `Aura` | two radial fields breathing out of phase, embers rising, four lightning strokes flickering | behind the character: idle between sets, charging through rest, white hot on the set |
+| `Burst` | white flash, 36 speed lines thrown from the middle, an expanding charge ring, the red field | a set landing |
+| `Shake` | the screen takes the hit, 420ms, stepped | the same moment |
+| `Slam` | the title thrown in from above on a spring, under a `-6deg` lean | both full-screen cards |
 
 ## Sanctuary: ported from Structured
 

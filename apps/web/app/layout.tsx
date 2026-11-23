@@ -44,14 +44,14 @@ const geistMono = localFont({
  * @font-face it does not render, so a member on Carbon fetches 79KB and never sees Arc's or
  * Sanctuary's, which is why DESIGN.md budgets each style on its own.
  *
- * Darker Grotesque and Schibsted Grotesk are Arc (Locomotive's whisper-weight display and a
- * grotesk for language); Young Serif and Schibsted are Sanctuary. All OFL, all latin subsets.
+ * Anton and Schibsted Grotesk are Arc (an ultra-black display that can carry a title card,
+ * and a grotesk for language); Young Serif and Schibsted are Sanctuary. All OFL, latin subsets.
  */
-const darkerGrotesque = localFont({
-  src: "./fonts/darker-grotesque-variable.woff2",
-  variable: "--font-darker-grotesque",
+const anton = localFont({
+  src: "./fonts/anton.woff2",
+  variable: "--font-anton",
   display: "swap",
-  weight: "300 900",
+  weight: "400",
 });
 const schibsted = localFont({
   src: "./fonts/schibsted-grotesk-variable.woff2",
@@ -89,7 +89,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
    */
   const style = STYLES.includes(jar.get("kw-style")?.value as Style) ? (jar.get("kw-style")!.value as Style) : "carbon";
   return (
-    <html lang="en" data-theme={theme} data-style={style} suppressHydrationWarning className={`${antonio.variable} ${geist.variable} ${geistMono.variable} ${darkerGrotesque.variable} ${schibsted.variable} ${youngSerif.variable}`}>
+    <html lang="en" data-theme={theme} data-style={style} suppressHydrationWarning className={`${antonio.variable} ${geist.variable} ${geistMono.variable} ${anton.variable} ${schibsted.variable} ${youngSerif.variable}`}>
       <body className="min-h-dvh bg-bg text-fg">
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster position="top-center" toastOptions={{ className: "!bg-bg-elevated !border-rule !text-fg !shadow-pop !" }} />

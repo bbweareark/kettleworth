@@ -52,7 +52,7 @@ export function EpisodeWeek({ episodes, firstEpisode }: { episodes: Episode[]; f
                   Ep. {String(n).padStart(2, "0")}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate font-display text-2xl leading-none tracking-tightest">{e.name}</span>
+                  <span className="block truncate font-display text-2xl uppercase leading-none tracking-tightest">{e.name}</span>
                   <span className="meta mt-1 block" style={now ? { color: "inherit", opacity: 0.7 } : undefined}>
                     {e.when} · {e.minutes} min
                   </span>

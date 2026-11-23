@@ -170,6 +170,7 @@
   /* Owned by one style each, and defaulted to the accent so the utility always resolves. */
   --color-impact: var(--kw-impact, var(--kw-accent));
   --color-gold: var(--kw-gold, var(--kw-accent));
+  --color-charge: var(--kw-charge, var(--kw-accent));
 
   --shadow-card: none;
   --shadow-pop: none;
@@ -277,6 +278,7 @@
   --color-sky: var(--kw-fg-muted);
   --color-impact: var(--kw-impact, var(--kw-accent));
   --color-gold: var(--kw-gold, var(--kw-accent));
+  --color-charge: var(--kw-charge, var(--kw-accent));
 }
 
 @layer base {
@@ -422,17 +424,28 @@
 
 /* ---------------------------------------------------------------- Arc ---- */
 /*
- * Ported from Locomotive. Its spec is uncompromising and is followed: one weight, zero
- * radius, no shadows, and no UI accent at all, so `accent` here is simply the inverted ground.
- * The only chromatic moment in the whole style is the impact frame.
+ * Re-founded 23 Nov 2026. The first cut of this world was ported from Locomotive: Swiss,
+ * whisper-weight, zero accent, hierarchy from white space. The owner's verdict was that it
+ * looked weak and amateur and that the anime world was "just images", and he was right about
+ * the cause: Locomotive is a beautiful DNA for a studio portfolio and the exact opposite of a
+ * power-up. A world about effort cannot be built on restraint.
+ *
+ * Ported instead from Agence Foudre (styles.refero.design, live at agencefoudre.com,
+ * design/refs/dna-agence-foudre): ultra-black display type at 0.7 line-height set as dense
+ * typographic blocks that own the viewport, almost no chrome, and colour used as emotional
+ * punctuation rather than as decoration. Foudre's own palette is magenta and forest green on
+ * cream; what is taken is the typographic language, not the colours.
+ *
+ * The colour here is the energy: one hot red that means power, and a white-hot gold core that
+ * only ever appears inside a charge. Zero radius stays, because a manga panel has corners.
  */
 [data-style="arc"] {
-  --font-display: var(--font-darker-grotesque), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-anton), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
-  /* Arc has no mono. Its caps labels are the text face, which is how Locomotive sets them. */
+  /* Arc has no mono. Its caps labels are the text face, set tight and wide-tracked. */
   --font-mono: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
 
-  /* "Keep all corners square", including the pills: the shape is the style. */
+  /* A panel has corners. Every one of them, pills included. */
   --radius-sm: 0px;
   --radius-md: 0px;
   --radius-lg: 0px;
@@ -441,80 +454,88 @@
   --radius-3xl: 0px;
   --radius-full: 0px;
 
-  /* Golden ratio from a 15px base, measured on locomotive.ca. */
+  /*
+   * Foudre's minor third from a 15px base, with the top of the ramp compressed for a phone,
+   * and its 0.70 leading, which is what makes a display block read as architecture rather
+   * than as a big headline.
+   */
   --text-meta: 0.6875rem;
   --text-xs: 0.8125rem;
   --text-sm: 0.875rem;
   --text-base: 0.9375rem;
   --text-lg: 1.125rem;
-  --text-xl: 1.625rem;
-  --text-2xl: 2.25rem;
-  --text-3xl: 3rem;
-  --text-4xl: 4.375rem;
-  --text-4xl--line-height: 0.95;
-  /* Locomotive's display is 110px on a desktop page. Two figures share one row here, on a
-     390px phone, so the top of the ramp is compressed exactly as Carbon's was, and 110px is
-     kept for the wide-screen figure. */
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 1.05;
+  --text-2xl: 1.875rem;
+  --text-2xl--line-height: 1.0;
+  --text-3xl: 2.75rem;
+  --text-3xl--line-height: 0.92;
+  --text-4xl: 3.5rem;
+  --text-4xl--line-height: 0.86;
   --text-figure: 6rem;
-  --text-figure--line-height: 0.88;
-  --text-figure-xl: 6.875rem;
-  --text-figure-xl--line-height: 0.86;
-  --tracking-figure: -0.02em;
-  --tracking-tightest: -0.02em;
-  --tracking-label: 0.1em;
+  --text-figure--line-height: 0.72;
+  --text-figure-xl: 8.5rem;
+  --text-figure-xl--line-height: 0.7;
+  /* An ultra-black face needs no negative tracking; the weight does the work. */
+  --tracking-figure: 0em;
+  --tracking-tightest: 0em;
+  --tracking-label: 0.14em;
 }
 
 :root[data-style="arc"],
 [data-style="arc"][data-theme="dark"] {
-  --kw-bg: #000000;
-  --kw-surface: #0b0b0b;
-  --kw-surface-2: #0b0b0b;
+  --kw-bg: #0a0a0a;
+  --kw-surface: #121212;
+  --kw-surface-2: #161616;
   --kw-band: #ffffff;
-  --kw-band-fg: #000000;
+  --kw-band-fg: #0a0a0a;
 
-  --kw-rule: #2b2b2b;
-  --kw-rule-strong: #595959;
+  --kw-rule: #2a2a2a;
+  --kw-rule-strong: #585858;
 
   --kw-fg: #ffffff;
-  --kw-fg-muted: #b5b5b5;
-  --kw-fg-subtle: #838383; /* Charlie's Ash Gray, 5.32:1 on ink */
+  --kw-fg-muted: #b4b4b4;
+  --kw-fg-subtle: #8a8a8a;
 
-  /* No accent. The "accent" is the ground inverted, so a filled control is paper on ink. */
-  --kw-accent: #ffffff;
-  --kw-accent-hover: #d9d9d9;
-  --kw-accent-soft: #1a1a1a;
-  --kw-accent-fg: #000000;
+  /* The energy. 5.32:1 as text on ink, and it carries ink on a fill at 6.0:1. */
+  --kw-accent: #ff2d1f;
+  --kw-accent-hover: #ff4a3d;
+  --kw-accent-soft: #2a0d0b;
+  --kw-accent-fg: #0a0a0a;
 
   --kw-done: #ffffff;
-  --kw-done-soft: #2b2b2b;
+  --kw-done-soft: #2a2a2a;
 
-  /* The impact frame, and nothing else. Never a button, never a border. */
-  --kw-impact: #ed1c24;
+  --kw-impact: #ff2d1f;
+  /* The white-hot core of a charge. Never used as text, only inside an aura. */
+  --kw-charge: #ffd34d;
 }
 
 [data-style="arc"][data-theme="light"] {
   --kw-bg: #ffffff;
   --kw-surface: #ffffff;
-  --kw-surface-2: #f2f2f2;
-  --kw-band: #000000;
+  --kw-surface-2: #f4f4f4;
+  --kw-band: #0a0a0a;
   --kw-band-fg: #ffffff;
 
   --kw-rule: #d4d4d4;
-  --kw-rule-strong: #000000;
+  --kw-rule-strong: #0a0a0a;
 
-  --kw-fg: #000000;
+  --kw-fg: #0a0a0a;
   --kw-fg-muted: #4f4f4f;
-  --kw-fg-subtle: #6b6b6b; /* Ash itself is 3.93:1 on paper, which fails AA for a label */
+  --kw-fg-subtle: #6b6b6b;
 
-  --kw-accent: #000000;
-  --kw-accent-hover: #262626;
-  --kw-accent-soft: #f2f2f2;
+  /* Daylight needs the red taken down: #ff2d1f is 3.72:1 on paper and fails as a label. */
+  --kw-accent: #d61a0f;
+  --kw-accent-hover: #b31309;
+  --kw-accent-soft: #ffe8e6;
   --kw-accent-fg: #ffffff;
 
-  --kw-done: #000000;
+  --kw-done: #0a0a0a;
   --kw-done-soft: #e5e5e5;
 
-  --kw-impact: #ed1c24;
+  --kw-impact: #ff2d1f;
+  --kw-charge: #c98a00;
 }
 
 /* ---------------------------------------------------------- Sanctuary ---- */
@@ -661,3 +682,79 @@
   background-size: 5px 5px;
   mask-image: linear-gradient(90deg, #000 0%, #000 55%, transparent 100%);
 }
+
+/*
+ * Arc's display type, and its effects.
+ *
+ * The owner asked for the images to behave like anime rather than like pictures that fade:
+ * a charge that builds, a burst that lands, speed lines, a screen that takes the hit. Those
+ * are written here as keyframes so the looping ones run on the compositor and cost nothing,
+ * and as components in components/style/arc-fx.tsx for the one-shots.
+ *
+ * Every one of them is neutralised by the reduced-motion rule in @layer base.
+ */
+[data-style="arc"] .font-display {
+  /* Anton is already ultra-black. Caps are applied per surface, not globally: a title shouts,
+     a sentence does not, and a world where everything shouts has no emphasis left. */
+  font-feature-settings: "tnum" 1;
+}
+
+/* A title card leans into the frame. Used on the two full-screen moments only. */
+@utility lean {
+  transform: skewX(-6deg);
+}
+
+/* The hard press: Arc's buttons are slammed, not tapped. */
+[data-style="arc"] button:active:not(:disabled),
+[data-style="arc"] a[role="button"]:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+@keyframes arc-aura {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.14); opacity: 0.92; }
+}
+@keyframes arc-ember {
+  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0; }
+  14% { opacity: 1; }
+  100% { transform: translate3d(var(--dx, 0px), -130px, 0) scale(0.35); opacity: 0; }
+}
+@keyframes arc-crackle {
+  0%, 100% { opacity: 0; }
+  6%, 10% { opacity: 1; }
+  28%, 31% { opacity: 0.65; }
+  61%, 64% { opacity: 0.9; }
+}
+@keyframes arc-shake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  12% { transform: translate3d(-7px, 3px, 0); }
+  27% { transform: translate3d(6px, -5px, 0); }
+  44% { transform: translate3d(-5px, -2px, 0); }
+  61% { transform: translate3d(4px, 4px, 0); }
+  78% { transform: translate3d(-2px, 1px, 0); }
+}
+@keyframes arc-flash {
+  0% { opacity: 0; }
+  5% { opacity: 1; }
+  16% { opacity: 0.15; }
+  27% { opacity: 0.85; }
+  100% { opacity: 0; }
+}
+@keyframes arc-rays {
+  0% { transform: scale(0.15) rotate(0deg); opacity: 0; }
+  18% { opacity: 1; }
+  100% { transform: scale(2.6) rotate(8deg); opacity: 0; }
+}
+@keyframes arc-ring {
+  0% { transform: scale(0.2); opacity: 0.9; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+@utility arc-aura { animation: arc-aura 2.4s ease-in-out infinite; }
+@utility arc-aura-fast { animation: arc-aura 0.9s ease-in-out infinite; }
+@utility arc-ember { animation: arc-ember 1.9s linear infinite; }
+@utility arc-crackle { animation: arc-crackle 1.6s steps(1, end) infinite; }
+@utility arc-shake { animation: arc-shake 420ms steps(2, end) 1; }
+@utility arc-flash { animation: arc-flash 420ms linear 1 both; }
+@utility arc-rays { animation: arc-rays 520ms cubic-bezier(0.16, 1, 0.3, 1) 1 both; }
+@utility arc-ring { animation: arc-ring 620ms cubic-bezier(0.16, 1, 0.3, 1) 1 both; }

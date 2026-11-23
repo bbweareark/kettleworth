@@ -738,3 +738,27 @@ cast, like its photography.
 
 **Weight.** The four cut-outs are 60 to 113KB each as WebP with alpha at 640 and 960 wide, one
 per screen, loaded only in Arc. Carbon and Sanctuary never fetch them.
+
+
+## Arc, re-founded, 23 Nov 2026
+
+"Still the design looks very weak and amateur, the anime one especially, it is just images."
+The note was about the DNA, not the execution: Arc was ported from Locomotive, whose whole
+argument is restraint, and no amount of character art rescues a world built on restraint.
+
+| Pillar | Choice | Reference (opened this session) | What was taken |
+|---|---|---|---|
+| **DNA** | **Agence Foudre**, "magazine splash page in lipstick pink" | [styles.refero.design/style/c1534c74](https://styles.refero.design/style/c1534c74-f7b8-44de-a913-586d0f78fb08), live at agencefoudre.com (`design/refs/dna-agence-foudre`) | Ultra-black display at 0.7 leading as dense blocks that own the viewport, almost no chrome, colour as emotional punctuation. **Not** its magenta and forest green: Arc is ink and one hot red |
+| **Typeface** | **Anton** 12KB, OFL | Foudre's own stack names Druk Wide Heavy and Tungsten Bold, both commercial; Anton is the free face in that register | An ultra-black condensed display that can carry a title card at 96px on a phone |
+| **Motion** | **Halftone Mono** screen tone, plus this app's own charge, burst and shake | scrolltide.co shader library (`design/refs/motion-scrolltide-halftone`) | The dot screen. Their shader is premium, so the grid is written in CSS rather than copied |
+| **CTA** | Hot red block, zero radius, slammed on press | Foudre's circular pink buttons, squared off for this world | Colour as the whole button, no border, no shadow |
+| **Imagery** | Seven original characters, now charged rather than placed | Higgsfield | The same cast, with an energy field behind them instead of a cross fade |
+
+**What changed, concretely.** Display face Darker Grotesque 600 to **Anton**. Tracking -0.02em
+to **0**. Accent: none at all to **#ff2d1f**, plus a charge colour that only exists inside an
+aura. Figures and rules in the session now carry that red. The impact frame became a cut:
+flash, speed lines, ring, field, and the screen shaking under it. The character is thrown into
+frame on a spring instead of cross fading, and burns while he waits.
+
+**Measured:** no contrast failure and no horizontal overflow on Today or Programme in any of
+Arc night, Arc daylight, Carbon night or Sanctuary daylight. Arc's font payload is 57KB.

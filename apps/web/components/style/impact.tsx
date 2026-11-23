@@ -2,14 +2,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { useStyle } from "@/lib/style";
+import { Burst } from "@/components/style/arc-fx";
 
 /**
  * Arc's signature: a set lands.
  *
- * Completing a set is the only moment in this app that hits back. The screen takes a
- * full-bleed slide of Alarm Red for 280ms and the figure behind it is struck, which is how
- * Locomotive uses a red field and exactly how Charlie uses this colour: as an event, never as
- * a fill and never as a border.
+ * Completing a set is the only moment in this app that hits back, and a flat red slide was
+ * not enough of one. It is now a cut: a white flash, thirty-six speed lines thrown out of the
+ * middle, an expanding ring in the charge colour and the red field, with the screen itself
+ * shaking under it. The grammar is a manga impact frame, where the panel breaks rather than
+ * the picture changing.
  *
  * It renders in Arc only. Carbon marks a set with a toast and Sanctuary fills a segment of the
  * arch, so all three say "that counted" in their own language rather than sharing one.
@@ -31,13 +33,7 @@ export function ImpactFrame({ count }: { count: number }) {
   }, [count]);
 
   if (style !== "arc" || reduce || hit === 0) return null;
-  return (
-    <div
-      key={hit}
-      aria-hidden
-      className="pointer-events-none fixed inset-0 z-50 animate-impact-frame bg-impact"
-    />
-  );
+  return <Burst fire={hit} />;
 }
 
 /**

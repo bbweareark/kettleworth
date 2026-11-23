@@ -15,6 +15,7 @@ import { ImpactFrame, Struck } from "@/components/style/impact";
 import { SessionProgress } from "@/components/style/arch";
 import { ArcTitleCard, ArcClear } from "@/components/style/arc-cards";
 import { ArcCharacter } from "@/components/style/arc-character";
+import { Shake } from "@/components/style/arc-fx";
 import { voiceFor } from "@/lib/voice";
 import { Rest } from "./rest";
 import { Keypad, PlateDiagram } from "./weight-pad";
@@ -205,6 +206,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
   ];
 
   return (
+    <Shake fire={style === "arc" ? doneSets : 0}>
     <div className="mx-auto max-w-2xl space-y-4 px-4 pt-20 sm:px-6">
       <PRCelebration pr={pr} onClose={() => setPr(null)} />
       {/* Arc only: the screen takes the blow when a set lands, the episode is announced when
@@ -252,7 +254,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
       {rest != null ? <Rest key={rest + "-" + doneSets} label={voice.rest} seconds={rest} why={restWhy} next={nextSet} setsInExercise={cur.plannedSets.length} nextWeight={nextLoad.weight} bar={nextLoad.bar} units={units} onDone={() => setRest(null)} onSkip={() => setRest(null)} /> : null}
 
       {/* Arc only: the character having this session, reacting to the set that just landed. */}
-      <ArcCharacter done={doneSets} total={totalSets} exerciseDone={curDone} />
+      <ArcCharacter done={doneSets} total={totalSets} exerciseDone={curDone} resting={rest != null} />
 
       <SetConsole key={`console-${cur.exerciseId}`} inst={cur} units={units} barWeights={barWeights} onBarChange={saveBar} onLog={(set, v, confirmed) => logSet(cur, set, v, confirmed)} onReset={resetExercise} />
 
@@ -267,6 +269,7 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
       <Sheet open={swapOpen} onOpenChange={setSwapOpen}><SheetContent title="Swap exercise" description="Like-for-like alternatives that fit your equipment and injuries."><SwapList instanceId={cur.id} onPick={doSwap} /></SheetContent></Sheet>
       <Sheet open={finishOpen} onOpenChange={setFinishOpen}><SheetContent title="How did that go?" description="Thirty seconds of feedback shapes next week."><FinishForm sessionId={session.id} units={units} onDone={() => { router.push("/app"); router.refresh(); }} /></SheetContent></Sheet>
     </div>
+    </Shake>
   );
 }
 
