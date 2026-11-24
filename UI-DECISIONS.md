@@ -807,3 +807,19 @@ count as the largest thing in the band so it earns its height.
 **Measured:** no contrast failure and no horizontal overflow on the session screen at 360, 390
 and 1440 in all three worlds, open dock and collapsed. The rest clock survives Next exercise,
 asserted in `e2e/core-flow.spec.ts`.
+
+
+## The band, in all three worlds, 24 Nov 2026
+
+Arc had the band slot to itself. The rule for the other two was that neither may be Arc's
+composition recoloured, so each was built from its own world's reference, measured on the live
+site that day.
+
+| Pillar | World | Choice | Reference (opened this session) | What was taken | What was not |
+|---|---|---|---|---|---|
+| **Hero / section** | Carbon | Apple's **"Get the highlights."** rail | [apple.com/iphone-18-pro](https://www.apple.com/iphone-18-pro/) (`design/refs/dna-apple-hardware`) | Measured live: header 32px/36px at 600, plates clipped at a **28px radius**, caption **17px/600 centred, white at 92%** over the plate. The rail itself is the idea: one plate at full size with the next cut off by the right edge, and a pager under it. Our plate holds the session's photograph, the peek holds the next movement's own still, the pager is this movement's sets | Their blue, their copy, their product shots. And their portrait 400×480 plate, which cannot be a band on a phone |
+| **Hero / section** | Sanctuary | Brex's **standing band** | [brex.com](https://www.brex.com/) (`design/refs/dna-brex-concrete`) | Measured live: a full bleed band at **`rgb(243,243,247)`**, 40px above and 16px below, a centred statement, and a row of evenly spaced marks proving it. Ours states what has been kept today and the marks are three measured facts of this session. Exactly one is bronze | Their logos, obviously. And twelve marks in two rows: three facts, one row, is what a phone band holds |
+
+**Measured, both bands, after the change:** no contrast failure and no horizontal overflow at
+360, 390 and 1440 in all three worlds, with the band's own figures checked in both Sanctuary
+light (gold 6.08:1, subtle 6.35:1 on `#f3f3f7`) and Sanctuary night (6.79:1 and 5.35:1).

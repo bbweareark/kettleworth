@@ -14,8 +14,8 @@ import { EFFORT, effortWord } from "./effort";
 import { ImpactFrame, Struck } from "@/components/style/impact";
 import { SessionProgress } from "@/components/style/arch";
 import { ArcTitleCard, ArcClear } from "@/components/style/arc-cards";
-import { ArcCharacter } from "@/components/style/arc-character";
 import { CoachCallout } from "@/components/style/coach";
+import { SessionBand } from "@/components/style/session-band";
 import { Shake } from "@/components/style/arc-fx";
 import { voiceFor, praiseFor } from "@/lib/voice";
 import { Rest } from "./rest";
@@ -25,6 +25,7 @@ import { LiftHistory, fmtKg, type LiftHistoryData } from "@/components/lifts/lif
 import { dayMonth } from "@/lib/format";
 import { postResilient, flush, pending } from "@/lib/offline-queue";
 import { MuscleFigure } from "@/components/muscle-figure";
+import { sessionArt } from "@/lib/art";
 import { useClientValue } from "@/lib/use-client-value";
 
 type BarWeights = Partial<Record<BarKind, number>>;
@@ -254,8 +255,24 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
 
       {!curDone && <FormCheck key={`check-${cur.exerciseId}`} exerciseId={cur.exerciseId} name={cur.exercise.name} cards={cards} />}
 
-      {/* Arc only: the character having this session, reacting to the set that just landed. */}
-      <ArcCharacter done={doneSets} total={totalSets} exerciseDone={curDone} resting={rest != null} sex={sex} />
+      {/*
+        Where you are in this session, in the grammar of the world you train in: Arc's cut page,
+        Carbon's plinth and rail, Sanctuary's band of standing. All three carry the same facts.
+      */}
+      <SessionBand
+        done={doneSets}
+        total={totalSets}
+        exerciseDone={curDone}
+        resting={rest != null}
+        sex={sex}
+        name={cur.exercise.name}
+        setsDone={cur.loggedSets.filter((l) => l.completed).length}
+        setsInExercise={cur.plannedSets.length}
+        lifted={units === "metric" ? tonnage : kgToLb(tonnage)}
+        unit={units === "metric" ? "kg" : "lb"}
+        plate={sessionArt(session.name, sex ?? undefined)}
+        nextPlate={instances[idx + 1]?.exercise.imageUrls[0] ?? null}
+      />
 
       <SetConsole key={`console-${cur.exerciseId}`} inst={cur} units={units} barWeights={barWeights} onBarChange={saveBar} onLog={(set, v, confirmed) => logSet(cur, set, v, confirmed)} onReset={resetExercise} />
 

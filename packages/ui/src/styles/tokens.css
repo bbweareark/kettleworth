@@ -404,6 +404,12 @@
   background: linear-gradient(180deg, transparent 0%, transparent 55%, color-mix(in srgb, var(--kw-bg) 70%, transparent) 82%, var(--kw-bg) 100%);
 }
 
+/* The same scrim inverted, for a caption set at the top of a plate rather than the foot of a
+   photograph. Carbon's session plate puts it there, which is where its reference puts it. */
+@utility scrim-top {
+  background: linear-gradient(0deg, transparent 0%, transparent 55%, color-mix(in srgb, var(--kw-bg) 70%, transparent) 82%, var(--kw-bg) 100%);
+}
+
 @utility rule-dashed {
   border: 0;
   border-top: 1px solid var(--color-rule);
