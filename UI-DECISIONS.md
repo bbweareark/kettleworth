@@ -823,3 +823,36 @@ site that day.
 **Measured, both bands, after the change:** no contrast failure and no horizontal overflow at
 360, 390 and 1440 in all three worlds, with the band's own figures checked in both Sanctuary
 light (gold 6.08:1, subtle 6.35:1 on `#f3f3f7`) and Sanctuary night (6.79:1 and 5.35:1).
+
+
+## A set lands: sound and motion, in all three worlds, 24 Nov 2026
+
+The owner asked for sound and animation at the moment a set is logged, in every theme. Before
+this, only Arc answered a logged set, and the only sound in the app was the end of rest.
+
+One reference supplies the grammar for all three worlds, which is why they read as one app
+and not as three: Scrolltide's **Match Strike**. Its own description names four phases - the
+head drags across the striker, sparks fly, a flame catches, and the room warms - and each
+world takes a **different phase** of it rather than a recolour of the same one.
+
+| Pillar | World | Choice | Reference (opened this session) | What was taken | What was not |
+|---|---|---|---|---|---|
+| **Motion** | Carbon | Match Strike's **drag**, plus Relay's readout | [scrolltide.co/#c-match-strike](https://www.scrolltide.co/#c-match-strike) and [#c-relay](https://www.scrolltide.co/#c-relay) (`design/refs/motion-scrolltide-matchstrike`, `design/refs/motion-scrolltide-relay`) | The head crossing the striker and leaving nothing behind: a 1px volt head, half the row's width, 420ms on `--ease-out-quart`, under the two numbers. From Relay, the principle that a confirmation is **a groove and a count, not a flash** - the count already exists here as the coach's "N of M" | Its sparks, its shader flame, its WebGL, its warm wash. Relay's neumorphism, its sage, its soft-UI grooves. And any full-screen element: in this world an instrument reports, it does not perform |
+| **Motion** | Arc | Match Strike's **catch** | same pack | Nothing new: the existing impact frame already **is** that phase. Flash, 36 speed lines, charge ring, Alarm Red field, screen shake | — |
+| **Motion** | Sanctuary | Match Strike's **last** phase, the room warming | same pack | The aftermath rather than the strike: a bronze light 192px tall rising off the bottom edge at 30% gold, holding, and gone by 1100ms. Measured from the reference's own amber wash around the plinth after the flame takes | The match, the sparks, the flame, the glass plinth. Nothing here flashes and no number moves |
+| **Sound** | all three | Synthesised per world | No gallery. `packages/core/src/sound.ts`, tested | Carbon: a 12ms click at 2.4kHz, then 660Hz for 100ms - a mechanism registering. Arc: 150→54Hz body under an 1760→880Hz edge, 160ms - a hit. Sanctuary: 330Hz with a quiet 495Hz above, 260ms - a struck block. The last set of a movement adds **one note on top**, not a different sound | No audio files: six of them would be 100 to 300KB, need a decode and a cache, and still be wrong on a phone speaker |
+
+**The rule that shapes the sound.** A landing fires twenty to thirty times a session; rest
+ending fires about as often but has to reach someone who has put the phone down. So every
+landing is quieter and shorter than that world's rest chime, and the test asserts it rather
+than the comment claiming it. A confirmation as loud as an alarm is how an app gets muted,
+and a muted app cannot call anyone back to the bar.
+
+**One real fix underneath.** Audio was being built fresh for every sound, which on iOS means a
+context created in a timer callback - exactly where the rest chime lives - and those are
+silent. There is now one context for the session, opened on the first touch, so the rest timer
+that runs out in a pocket is heard.
+
+**Reduced motion silences the movement, not the sound.** `prefers-reduced-motion` is a
+statement about movement; taking away someone's confirmation because they are sensitive to
+animation would be the wrong reading of it.

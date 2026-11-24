@@ -11,7 +11,7 @@ import { ExerciseMedia } from "@/components/library/media";
 import { ElapsedClock } from "./timer";
 import { FormCheck, type CheckCard } from "./form-check";
 import { EFFORT, effortWord } from "./effort";
-import { ImpactFrame, Struck } from "@/components/style/impact";
+import { SetLanded, Struck } from "@/components/style/landing";
 import { SessionProgress } from "@/components/style/arch";
 import { ArcTitleCard, ArcClear } from "@/components/style/arc-cards";
 import { CoachCallout } from "@/components/style/coach";
@@ -217,9 +217,10 @@ export function SessionPlayer({ detail, units, sex, barWeights: initialBars, tod
     <Shake fire={style === "arc" ? doneSets : 0}>
     <div className="mx-auto max-w-2xl space-y-4 px-4 pt-20 sm:px-6">
       <PRCelebration pr={pr} onClose={() => setPr(null)} />
-      {/* Arc only: the screen takes the blow when a set lands, the episode is announced when
-          the session opens, and the clear waits at the end of it. */}
-      <ImpactFrame count={doneSets} />
+      {/* A set lands: every world answers, with sound and with motion. See landing.tsx. */}
+      <SetLanded fire={doneSets} last={!!landed?.exerciseDone} />
+      {/* Arc only: the episode is announced when the session opens, and the clear waits at
+          the end of it. */}
       <ArcTitleCard enabled={style === "arc"} name={firstName} episode={episode} title={session.name} rounds={totalSets} sex={sex} />
       <ArcClear done={doneSets} total={totalSets} episode={episode} tonnage={tonnage} unit={units === "metric" ? "kg" : "lb"} sex={sex} />
       <div className="flex items-center justify-between gap-3">
@@ -457,8 +458,8 @@ function SetConsole({ inst, units, barWeights, onBarChange, onLog, onReset }: { 
             is why the active one is volt - the DNA reserves the accent for the figure being
             changed.
           */}
-          {/* In Arc the figure takes the blow with the screen; in the other worlds Struck
-              renders its children and nothing else. */}
+          {/* The two numbers answer when a set lands: struck in Arc, settled under a volt
+              head in Carbon, settled under a warm line in Sanctuary. */}
           <Struck count={inst.loggedSets.filter((l) => l.completed).length} className="origin-left">
           <div ref={padRow} className="mt-2 flex scroll-mt-20 items-end justify-between gap-5">
             <button type="button" onClick={() => setPad("w")} aria-pressed={pad === "w"} className="min-w-0 text-left"

@@ -11,6 +11,34 @@ const password = "correct-horse-battery";
 test.describe.configure({ mode: "serial" });
 test.setTimeout(180_000);
 
+/*
+ * A set landing has to be heard and seen, and both are easy to break without noticing: audio
+ * fails silently by design, and a one-shot animation leaves nothing behind to assert on. So
+ * the page is instrumented before it loads - a fake AudioContext that records every tone
+ * started, and an observer that records the one-shot classes as they are added - and the
+ * session test reads both back. Installed on `document`, not `documentElement`, which does
+ * not exist yet when an init script runs.
+ */
+const landingProbe = `
+window.__tones = [];
+window.__fx = [];
+class P { setValueAtTime(v){ this.value = v; return this; } exponentialRampToValueAtTime(){ return this; } }
+class N { constructor(){ this.frequency = new P(); this.gain = new P(); } connect(){ return this; } start(){ if (this.frequency.value) window.__tones.push(this.frequency.value); } stop(){} }
+window.AudioContext = window.webkitAudioContext = class {
+  constructor(){ this.currentTime = 0; this.state = "running"; this.destination = {}; }
+  createOscillator(){ return new N(); } createGain(){ return new N(); }
+  resume(){ return Promise.resolve(); } close(){ return Promise.resolve(); }
+};
+const watch = /animate-strike-drag|animate-warm-rise|arc-flash|animate-impact-strike|animate-strike-settle/;
+const note = (el) => { const c = typeof el.className === "string" ? el.className : ""; const m = c.match(watch); if (m) window.__fx.push(m[0]); };
+new MutationObserver((rs) => {
+  for (const r of rs) {
+    if (r.type === "attributes" && r.target instanceof Element) note(r.target);
+    for (const n of r.addedNodes) if (n instanceof Element) { note(n); n.querySelectorAll("*").forEach(note); }
+  }
+}).observe(document, { subtree: true, childList: true, attributes: true, attributeFilter: ["class"] });
+`;
+
 test("landing renders and links to sign-up", async ({ page }) => {
   await page.goto("/");
   // The hero is a photograph with the block length carried beneath it as the page's figure,
@@ -27,6 +55,7 @@ test("library search works publicly", async ({ page }) => {
 });
 
 test("sign up → intake → programme → session logging", async ({ page }) => {
+  await page.addInitScript(landingProbe);
   await page.goto("/sign-up");
   await page.getByLabel("Name").fill("E2E Tester");
   await page.getByLabel("Email").fill(email);
@@ -102,6 +131,19 @@ test("sign up → intake → programme → session logging", async ({ page }) =>
 
   // The coach turns up in the corner for the set that just landed, and leaves on his own.
   await expect(page.getByText("Set logged")).toBeVisible();
+
+  /*
+   * And the set was heard and seen. This world is Carbon, so what should have happened is a
+   * click and a tone, and a volt head dragged under the two numbers while they settle. The
+   * sound is the half that fails silently, which is why it is asserted at all.
+   */
+  const landing = await page.evaluate(() => ({
+    tones: (window as never as { __tones: number[] }).__tones,
+    fx: [...new Set((window as never as { __fx: string[] }).__fx)],
+  }));
+  expect(landing.tones.length, "a set landing makes a sound").toBeGreaterThan(0);
+  expect(landing.fx, "a set landing moves").toContain("animate-strike-drag");
+
   await expect(page.getByText("Set logged")).toBeHidden({ timeout: 10_000 });
 
   /*

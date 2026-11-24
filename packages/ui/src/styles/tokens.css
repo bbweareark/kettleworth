@@ -122,10 +122,23 @@
    *
    * Arc: a set lands. The screen takes a full-bleed blow of Alarm Red and the figure is struck.
    * Sanctuary: the arch gains a segment, which rises into place rather than flashing.
+   *
+   * The three below are the rest of that same moment, ported from Scrolltide's Match Strike
+   * and Relay (see UI-DECISIONS.md). A set landing happens twenty to thirty times a session,
+   * so Carbon's half of it is under half a second and Sanctuary's never moves a number: an
+   * acknowledgement you cannot ignore on the twentieth repetition is an acknowledgement that
+   * gets the app closed.
+   *
+   * Carbon: a head drags the length of the striker and leaves nothing behind, then the figure
+   *   settles back the way a mechanism does - one small overshoot, no bounce.
+   * Sanctuary: the room warms. A low bronze light rises off the bottom edge and goes out.
    */
   --animate-impact-frame: impact-frame 280ms linear both;
   --animate-impact-strike: impact-strike 280ms var(--ease-out-quart) both;
   --animate-arch-fill: arch-fill 520ms var(--ease-out-quart) both;
+  --animate-strike-drag: strike-drag 420ms var(--ease-out-quart) 1 both;
+  --animate-strike-settle: strike-settle 360ms var(--ease-out-quart) 1 both;
+  --animate-warm-rise: warm-rise 1100ms var(--ease-out-quart) 1 both;
 
   @keyframes impact-frame {
     0% { opacity: 0; }
@@ -141,6 +154,25 @@
   @keyframes arch-fill {
     from { transform: translateY(8%); opacity: 0; }
     to { transform: none; opacity: 1; }
+  }
+  /* The head crossing the striker: it enters off the left edge and leaves past the right. */
+  @keyframes strike-drag {
+    0% { transform: translateX(-120%); opacity: 0; }
+    14% { opacity: 1; }
+    82% { opacity: 1; }
+    100% { transform: translateX(120%); opacity: 0; }
+  }
+  /* The figure taking the reading: up a hair, then down to where it was. */
+  @keyframes strike-settle {
+    0% { transform: translateY(0); }
+    30% { transform: translateY(-3px); }
+    100% { transform: translateY(0); }
+  }
+  /* The room warms, then does not stay warm. */
+  @keyframes warm-rise {
+    0% { opacity: 0; transform: translateY(14%); }
+    22% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(0); }
   }
 
   /* The reference states it outright: no shadows, no gradients. */

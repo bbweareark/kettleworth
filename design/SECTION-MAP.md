@@ -393,3 +393,22 @@ measured live on the day.
 |---|---|---|
 | **Session band** (Carbon) | Apple's **"Get the highlights."** rail, `apple.com/iphone-18-pro` (`design/refs/dna-apple-hardware`) | Measured live: section header **32px/36px at 600**, plates clipped at a **28px radius** (= this world's `--radius-xl`), caption **17px/600 centred, white at 92%** over the plate. Ported: a plinth band in `surface` with the header line left and one quiet state right; one plate at 80% of the width with the next cut off by the right edge; the caption centred at the top over a `scrim-top`; a pager of this movement's sets below, the one in hand drawn as a capsule. **Deviation:** the reference's plates are portrait at 400×480 and a band inside a session screen cannot be 480 tall, so the plate is landscape at 112px. Everything else is the reference's |
 | **Session band** (Sanctuary) | Brex's **standing band**, `brex.com` (`design/refs/dna-brex-concrete`) | Measured live: a full bleed band at **`rgb(243,243,247)`** - the exact value this world's `--kw-surface-2` already came from - **40px above, 16px below**, a centred statement, and a row of evenly spaced marks proving it. Ported: the statement is what has been kept today, set in Familjen Grotesk at `--text-2xl` with `--tracking-tightest`; the marks are three measured facts of this session, evenly spaced on the band's axis. **One is bronze and the other two are not**, which is this world's whole rule. **Deviation:** the marks are figures rather than logos, and there are three rather than twelve, because a phone band is not a logo wall |
+
+## A set lands, in all three worlds, 24 Nov 2026
+
+The owner asked for sound and animation the moment a set is logged, in every theme. Until now
+only Arc answered a logged set at all; the other two changed a number, and nothing in the app
+made a sound except the end of rest.
+
+One reference supplies the grammar for all three, which is why they read as one app rather
+than three: Scrolltide's **Match Strike**, a fireplace switch you light like a match. Its own
+description names four phases - the head drags across the striker, sparks fly, a flame catches,
+and the room warms - and each world takes a different phase rather than a recolour of the same
+one.
+
+| Surface | Replicates | Measured target |
+|---|---|---|
+| **Set landing** (Carbon) | Match Strike's **drag**, with the sparks and the flame left out (`design/refs/motion-scrolltide-matchstrike`). Readout behaviour from Scrolltide's **Relay** (`design/refs/motion-scrolltide-relay`): a groove that fills with a count under it, rather than a flash | A 1px volt head half the width of the figure row, dragging from off the left edge to off the right in **420ms** on `--ease-out-quart`, leaving nothing behind. The two numbers settle: `translateY(-3px)` at 30% back to 0 over 360ms. No full-screen element: in this world an instrument reports, it does not perform |
+| **Set landing** (Arc) | Match Strike's **catch**: the moment the flame takes. Unchanged from the existing impact frame | White flash, 36 speed lines, expanding charge ring, Alarm Red field, 280 to 620ms, with the screen shaking at `arc-shake` and the figure struck at 1.06 |
+| **Set landing** (Sanctuary) | Match Strike's **last** phase, the room warming, which in the reference is an amber wash around the object after the strike | A bronze gradient 192px tall off the bottom edge of the viewport at **30% gold** falling to nothing by 42%, rising 14% into place at 22% of the timeline and gone by 100%, over **1100ms**. Nothing flashes and no number moves. A 1px gold head drags under the figure on the same beat as Carbon's |
+| **Set landing sound** (all worlds) | No gallery: synthesised from `packages/core/src/sound.ts`, where every tone is data and the limits are asserted in tests | Carbon: a 12ms 2.4kHz click, then 660Hz for 100ms. Arc: a 150→54Hz body under an 1760→880Hz edge, 160ms. Sanctuary: 330Hz with a quiet 495Hz above it, 260ms. The last set of a movement adds one note on top rather than a different sound. **Every landing is quieter and shorter than that world's rest chime**, asserted, because it fires twenty to thirty times a session |

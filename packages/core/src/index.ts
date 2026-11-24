@@ -23,3 +23,4 @@ export * from "./load";
 export * from "./programme/autoregulate";
 export * from "./day-plan";
 export * from "./rest-history";
+export * from "./sound";
