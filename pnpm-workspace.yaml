@@ -7,4 +7,7 @@ allowBuilds:
   sharp: true
   "@tailwindcss/oxide": true
 overrides:
-  zod: "4.6.2"
+  # Pinned so every package resolves one copy. Held at or above 4.6.6, which is where
+  # GHSA zod-memory-exhaustion is fixed: below it, an oversized constrained collection can
+  # exhaust memory while being validated, and zod validates every request body this app takes.
+  zod: "4.6.7"
