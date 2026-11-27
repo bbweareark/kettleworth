@@ -180,9 +180,9 @@ test("sign up → intake → programme → session logging", async ({ page }) =>
    */
   await page.goto("/app/settings");
   const soundControl = page.getByRole("radiogroup", { name: "Sound" });
-  await expect(soundControl.getByRole("radio", { name: "On" })).toHaveAttribute("aria-checked", "true");
-  await soundControl.getByRole("radio", { name: "Off" }).click();
+  await expect(soundControl.getByRole("radio", { name: "On", exact: true })).toHaveAttribute("aria-checked", "true");
+  await soundControl.getByRole("radio", { name: "Off", exact: true }).click();
   expect(await page.evaluate(() => document.cookie)).toContain("kw-sound=off");
   await page.reload();
-  await expect(page.getByRole("radiogroup", { name: "Sound" }).getByRole("radio", { name: "Off" })).toHaveAttribute("aria-checked", "true");
+  await expect(page.getByRole("radiogroup", { name: "Sound" }).getByRole("radio", { name: "Off", exact: true })).toHaveAttribute("aria-checked", "true");
 });
