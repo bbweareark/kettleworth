@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Style } from "@kettleworth/types";
-import { landingTones, restTones, soundPeakGain, soundSeconds, SOUND_LIMITS } from "./sound";
+import { audible, landingTones, restTones, soundPeakGain, soundSeconds, SOUND_LIMITS, SOUND_MODES } from "./sound";
 
 const STYLES: Style[] = ["carbon", "arc", "sanctuary"];
 
@@ -63,5 +63,26 @@ describe("rest sounds", () => {
       expect(soundPeakGain(tones), `${style} gain`).toBeLessThanOrEqual(SOUND_LIMITS.restPeakGain);
       expect(soundSeconds(tones), `${style} length`).toBeLessThanOrEqual(SOUND_LIMITS.restSeconds);
     }
+  });
+});
+
+describe("the sound setting", () => {
+  it("lets rest through on its own, because that one is a tool", () => {
+    expect(audible("rest", "rest")).toBe(true);
+    expect(audible("rest", "landing")).toBe(false);
+  });
+
+  it("means silence when it says off", () => {
+    for (const moment of ["landing", "rest"] as const) expect(audible("off", moment)).toBe(false);
+  });
+
+  it("means everything when it says on", () => {
+    for (const moment of ["landing", "rest"] as const) expect(audible("on", moment)).toBe(true);
+  });
+
+  it("has an answer for every mode, so an unreadable cookie cannot silence the timer", () => {
+    for (const mode of SOUND_MODES) expect(typeof audible(mode, "rest")).toBe("boolean");
+    // The default is the loudest one, which is what a missing or corrupt cookie falls back to.
+    expect(SOUND_MODES[0]).toBe("on");
   });
 });

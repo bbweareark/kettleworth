@@ -16,3 +16,6 @@ packages/db/.seed-cache
 .uploads
 .vercel
 .env*
+
+# ship-ready run state (holds the threat model and contracts)
+.shipready/

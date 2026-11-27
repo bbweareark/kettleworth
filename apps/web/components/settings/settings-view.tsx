@@ -2,16 +2,24 @@
 import { BAR_NAMES, BAR_CHOICES_KG, BAR_CHOICES_LB, DEFAULT_BARS_KG, kgToLb, lbToKg, type BarKind } from "@kettleworth/core";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronRight, Download, LogOut, Moon, Sun, Trash2, Plane, Thermometer, Bandage, Clock, Baby, CircleDot } from "lucide-react";
+import { ChevronRight, Download, LogOut, Moon, Sun, Trash2, Plane, Thermometer, Bandage, Clock, Baby, CircleDot, Volume2, VolumeX } from "lucide-react";
 import type { Style, TrainingProfile } from "@kettleworth/types";
+import type { SoundMode } from "@kettleworth/core";
 import { Button, Chip, ChipGroup, Field, Input, Segmented, Slider, cn, toast } from "@kettleworth/ui";
 import { Panel } from "@/components/app/panel";
 import { Screen } from "@/components/app/screen";
 import { authClient } from "@/lib/auth-client";
+import { applySoundMode, soundMode } from "@/lib/sound-pref";
+import { sampleChime } from "@/lib/chime";
 import { useClientValue } from "@/lib/use-client-value";
 
 /** Named here rather than imported from the picker so settings does not pull the whole screen in. */
 const WORLD_NAMES: Record<Style, string> = { carbon: "Carbon", arc: "Arc", sanctuary: "Sanctuary" };
+const SOUND_LINES: Record<SoundMode, string> = {
+  on: "A set landing and the end of rest both make a sound, in this world's own voice.",
+  rest: "Only the end of rest. Your sets land in silence.",
+  off: "Nothing makes a sound. The rest timer still buzzes if your phone allows it.",
+};
 const WORLD_LINES: Record<Style, string> = {
   carbon: "A dark room with one hard light.",
   arc: "A chapter in a fight, where a set lands.",
@@ -24,9 +32,26 @@ export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { 
   const cookieTheme = useClientValue(() => (/(?:^|; )kw-theme=light/.test(document.cookie) ? "light" : "dark"), "dark" as const);
   const [chosen, setChosen] = useState<"system" | "light" | "dark" | null>(null);
   const theme = chosen ?? cookieTheme;
+  // Sound is a device setting, like the theme, so it is read from the cookie rather than the
+  // profile and it applies the moment it is pressed. On is the default and the fallback.
+  const cookieSound = useClientValue(soundMode, "on" as SoundMode);
+  const [pickedSound, setPickedSound] = useState<SoundMode | null>(null);
+  const sound = pickedSound ?? cookieSound;
   const [p, setP] = useState<Partial<TrainingProfile>>(profile ?? {});
   const [busy, setBusy] = useState<string | null>(null);
   const [confirmText, setConfirmText] = useState("");
+
+  /*
+   * Write it, then play it. The order matters: the sample goes through the same gate as every
+   * other sound, so it can only be heard once the setting that permits it is already in place.
+   * Pressing the control is itself the gesture a browser requires before it will make a noise,
+   * which is why this is the one place a preview is possible at all.
+   */
+  function applySound(next: SoundMode) {
+    setPickedSound(next);
+    applySoundMode(next);
+    if (next !== "off") sampleChime(p.style ?? "carbon", next === "rest" ? "rest" : "landing");
+  }
 
   function applyTheme(t: "system" | "light" | "dark") {
     setChosen(t);
@@ -97,6 +122,25 @@ export function SettingsView({ user, profile, aiSummary, providerCount, ai }: { 
 
         <div className="mt-5 border-t border-rule pt-4">
           <Segmented value={theme} onChange={applyTheme} options={[{ value: "dark", label: <span className="flex items-center gap-1.5"><Moon className="size-3.5" aria-hidden /> Dark</span> }, { value: "light", label: <span className="flex items-center gap-1.5"><Sun className="size-3.5" aria-hidden /> Light</span> }]} label="Dark or light" />
+        </div>
+
+        {/*
+          Two sounds, two different jobs, so this is three answers rather than a switch: the
+          end of rest is a tool and a landing is an acknowledgement, and a gym is a place
+          where you might want the first and not the second.
+        */}
+        <div className="mt-4">
+          <Segmented
+            value={sound}
+            onChange={applySound}
+            options={[
+              { value: "on", label: <span className="flex items-center gap-1.5"><Volume2 className="size-3.5" aria-hidden /> On</span> },
+              { value: "rest", label: "Rest only" },
+              { value: "off", label: <span className="flex items-center gap-1.5"><VolumeX className="size-3.5" aria-hidden /> Off</span> },
+            ]}
+            label="Sound"
+          />
+          <p className="mt-2 text-sm text-fg-muted">{SOUND_LINES[sound]}</p>
         </div>
       </Panel>
       {profile && (

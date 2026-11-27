@@ -172,4 +172,17 @@ test("sign up → intake → programme → session logging", async ({ page }) =>
   expect(await clock()).toBeLessThanOrEqual(beforeMove);
   // And it is still the dock, naming the first set of the movement now on screen.
   await expect(timer.getByText(/Next up . set 1 of/)).toBeVisible();
+
+  /*
+   * And the sound can be turned off. It is a device setting written straight to a cookie, the
+   * way the theme is, because somebody reaching for this is usually reaching for it while the
+   * app is making a noise they do not want, and a Save button is the wrong weight for that.
+   */
+  await page.goto("/app/settings");
+  const soundControl = page.getByRole("radiogroup", { name: "Sound" });
+  await expect(soundControl.getByRole("radio", { name: "On" })).toHaveAttribute("aria-checked", "true");
+  await soundControl.getByRole("radio", { name: "Off" }).click();
+  expect(await page.evaluate(() => document.cookie)).toContain("kw-sound=off");
+  await page.reload();
+  await expect(page.getByRole("radiogroup", { name: "Sound" }).getByRole("radio", { name: "Off" })).toHaveAttribute("aria-checked", "true");
 });

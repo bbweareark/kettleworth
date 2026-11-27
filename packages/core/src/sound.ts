@@ -52,6 +52,25 @@ export const SOUND_LIMITS = {
   restSeconds: 2,
 } as const;
 
+/**
+ * How much of it a person wants.
+ *
+ * Not a checkbox, because the two sounds are not the same kind of thing. The end of rest is a
+ * tool - it is the whole reason the timer exists, and it has to work with the phone face down
+ * on a bench - while a set landing is an acknowledgement. A gym is a place where you might
+ * want the one and not the other, so "rest only" is a real answer and not a compromise.
+ */
+export const SOUND_MODES = ["on", "rest", "off"] as const;
+export type SoundMode = (typeof SOUND_MODES)[number];
+export type SoundMoment = "landing" | "rest";
+
+/** Whether this moment may be heard under this setting. */
+export function audible(mode: SoundMode, moment: SoundMoment): boolean {
+  if (mode === "off") return false;
+  if (mode === "rest") return moment === "rest";
+  return true;
+}
+
 /** The sum of a tone's offset and its length: when the last of it is heard. */
 export const toneEnd = (t: Tone) => t.at + t.dur;
 
