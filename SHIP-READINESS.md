@@ -1232,3 +1232,44 @@ emergencies at today's load.
 - `ai_log` / `audit_log` into the delete cascade and the GDPR export - a schema change that
   touches the two contracts this run was told not to change
 - the two `ON DELETE NO ACTION` foreign keys that make GDPR hard delete throw
+
+---
+
+## What the independent verifier found, 27 Nov 2026
+
+The seven P0s were fixed and then handed to a separate agent that had not seen the work,
+with the diff and instructions to be hard on it. It was, and it was right. Its rulings:
+
+| Finding | Ruling | What I did about it |
+|---|---|---|
+| SEC-2 photo quota | **PASS** | — |
+| CODE-NEW1 cron fail-open | **PASS** | — |
+| SEC-7 / four criticals | **PASS** | — |
+| LEAN-NEW5 | `email` **PASS**, `force` **REGRESSION** | Fixed. The meal plan's Rebuild button still posted `force`, got the cached plan back and toasted "New week planned" - a button that reports work it did not do. It is now Refresh, and the copy says what happened. |
+| AI-2 input caps | **WEAK** | Fixed. I capped the three fields the finding named and left a bigger channel into the same prompt: `intakeTranscript` (unbounded array of unbounded strings, written by `PATCH /api/profile`) and four unbounded `z.array(z.string())` on the profile, both interpolated by `ai/tasks.ts`. All six are bounded now. |
+| AI-1 spend cap | **WEAK** | Partly. See below. |
+| AI-4 / PERF-1 / SCALE-1 / SCALE-2 cron | **WEAK** | Partly. See below. |
+
+It also caught two dead functions of mine - `capUserText` and `mayRegenerate` - shipped with
+six green tests, one set of which asserted a once-a-week rule **the product does not have**.
+That is precisely the theatre this skill exists to stop, in the fix rather than the code
+under review. Both are deleted along with the tests that described them.
+
+### Still open after the verification, and honestly so
+
+- **The AI cap fails open on the error it will actually get.** `monthlyUsage` aggregates
+  `ai_log` filtered by `(user_id, created_at)`; the only index on that table is
+  `(task, created_at)`. The lookup is wrapped in a try/catch that leaves the cap unapplied,
+  so the first statement timeout at scale removes the ceiling. The index is a migration and
+  is escalated, not smuggled in. **This is the single most important open item.**
+- **The cap is check-then-act.** Usage is counted from rows written after the call returns,
+  so N concurrent requests all read the same number. The per-account rate limiter (SEC-5)
+  is what closes that, and it is not done.
+- **The cron fan-out is still serial.** Batching stops one invocation having to finish a
+  million users, but 200 awaited AI calls still will not fit in one. `maxDuration` is now
+  set to the platform maximum, which buys room rather than solving it; the real answer is a
+  queue, and it is open.
+- **`generatedBy` on `coach_letter` records `AI_MODEL`** (the premium constant) even when
+  the letter ran on the standard tier. `ai_log` has the true model, so the bill is right and
+  the per-row provenance is wrong.
+- Six high advisories remain, all build-time transitives on no request path.

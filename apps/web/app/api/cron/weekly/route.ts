@@ -17,6 +17,15 @@ import { generateWeeklyLetter, runWeeklyAdaptation } from "@kettleworth/api";
  * whole fan-out. A missing secret now closes the door rather than removing it, which also means the chained
  * call below cannot run without one.
  */
+/*
+ * A batch is 200 users and each one is an AI call awaited in turn, so the invocation needs a
+ * budget far larger than a page render's. This is the platform maximum on the current plan;
+ * it is still not enough for 200 serial top-tier calls, which is why CRON_BATCH exists and
+ * why the real answer - a queue, so the calls are not serial at all - is in the record as
+ * open rather than claimed as fixed here.
+ */
+export const maxDuration = 800;
+
 const OFF = new Set(["off", "0", "false", "no"]);
 const flag = (name: string, dflt = true) => { const v = process.env[name]?.trim().toLowerCase(); return v == null || v === "" ? dflt : !OFF.has(v); };
 const num = (name: string, dflt: number) => { const v = Number(process.env[name]); return process.env[name] && Number.isFinite(v) && v >= 0 ? v : dflt; };

@@ -16,21 +16,15 @@
 /**
  * The longest free-text field we will ever hand to a model.
  *
+ * Used as the `.max()` on every route schema that feeds a prompt. It is a constant rather
+ * than a truncating helper on purpose: a request that is too big should be refused at the
+ * edge with a 400 somebody can see, not silently cut in half and billed for the half.
+ *
  * 2,000 characters is not arbitrary: it is the cap `TrainingProfile.notes` already carries,
  * so it is the size this product has already decided a person's own words can be. The intake
  * UI sends a sentence or two, so a real answer never meets this.
  */
 export const MAX_USER_TEXT = 2000;
-
-/**
- * Cut a user-supplied string to something a prompt can afford.
- *
- * Truncates rather than rejects. This runs on an answer somebody typed during intake, and
- * losing the tail of an overlong answer is a far better outcome than losing the answer.
- */
-export function capUserText(s: string, max = MAX_USER_TEXT): string {
-  return s.length <= max ? s : s.slice(0, max);
-}
 
 /**
  * Is this request allowed to run the weekly job?
@@ -47,25 +41,6 @@ export function capUserText(s: string, max = MAX_USER_TEXT): string {
 export function cronAuthorised(secret: string | undefined, header: string | null): boolean {
   if (!secret) return false;
   return header === `Bearer ${secret}`;
-}
-
-/** A week, in milliseconds. */
-const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
-
-/**
- * May this user force a paid document to be regenerated?
- *
- * `force` exists so somebody who has just logged a session can ask for a letter that knows
- * about it. It was reachable from the client with no bound at all, which turned the one
- * piece of idempotency the paid AI tasks had into a suggestion: the same account could ask
- * for the same letter a thousand times and be billed a thousand times.
- *
- * The flag survives, because the reason for it is real. What it costs is now once a week,
- * which is the cadence the document itself has.
- */
-export function mayRegenerate(lastGeneratedAt: Date | null | undefined, now: Date = new Date()): boolean {
-  if (!lastGeneratedAt) return true;
-  return now.getTime() - lastGeneratedAt.getTime() >= WEEK_MS;
 }
 
 /**

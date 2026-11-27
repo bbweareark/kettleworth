@@ -43,7 +43,7 @@ export function CoachView({ letters, history, ai, name }: { letters: Letter[]; h
   }
   async function generate() {
     setGen(true);
-    const r = await fetch("/api/coach/letters/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ force: true }) });
+    const r = await fetch("/api/coach/letters/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
     setGen(false);
     if (!r.ok) return toast.error("Couldn't write the letter");
     router.refresh(); toast.success("This week's letter is ready");

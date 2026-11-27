@@ -19,10 +19,16 @@ export function MealPlanView({ initial, recipes, targets }: { initial: { weekSta
   const [busy, setBusy] = useState(false);
   const items = useMemo(() => state.plan.items.filter((i) => i.day === day).sort((a, b) => SLOT_ORDER.indexOf(a.slot) - SLOT_ORDER.indexOf(b.slot)), [state, day]);
   const tot = state.plan.dailyTotals[day]!;
-  async function regenerate() { setBusy(true); const r = await fetch("/api/nutrition/mealplan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ weekStartsOn: state.weekStartsOn, force: true }) }); setBusy(false); if (!r.ok) return toast.error("Couldn't rebuild"); setState(await r.json()); toast.success("New week planned"); }
+  /*
+   * The plan is built once a week. This used to send `force: true`, which rebuilt it on
+   * demand and billed a generation every press; that is gone, so the button now fetches the
+   * plan this week already has. The copy says that rather than claiming a new week was
+   * planned, because a button that reports work it did not do is worse than no button.
+   */
+  async function refresh() { setBusy(true); const r = await fetch("/api/nutrition/mealplan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ weekStartsOn: state.weekStartsOn }) }); setBusy(false); if (!r.ok) return toast.error("Couldn't load the plan"); setState(await r.json()); toast.success("Your plan for this week"); }
   return (
     <Card><CardContent className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-display text-lg">This week&apos;s meals</h2><p className="text-xs text-fg-subtle">Week of {dayMonth(state.weekStartsOn)} · est. £{state.plan.estimatedWeeklyCost.toFixed(2)} groceries</p></div><div className="flex gap-2"><Button variant="secondary" size="sm" onClick={() => setGrocery(true)}><ShoppingBasket /> Grocery list</Button><Button variant="ghost" size="sm" onClick={regenerate} loading={busy}><RefreshCw /> Rebuild</Button></div></div>
+      <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-display text-lg">This week&apos;s meals</h2><p className="text-xs text-fg-subtle">Week of {dayMonth(state.weekStartsOn)} · est. £{state.plan.estimatedWeeklyCost.toFixed(2)} groceries</p></div><div className="flex gap-2"><Button variant="secondary" size="sm" onClick={() => setGrocery(true)}><ShoppingBasket /> Grocery list</Button><Button variant="ghost" size="sm" onClick={refresh} loading={busy}><RefreshCw /> Refresh</Button></div></div>
       {state.coachNote ? <details className="text-sm text-fg-muted"><summary className="cursor-pointer text-xs uppercase tracking-label text-fg-subtle">Coach note</summary><p className="mt-2">{state.coachNote}</p></details> : null}
       <ChipGroup role="tablist">{DAYS.map((d, i) => <Chip key={d} role="tab" aria-selected={day === i} selected={day === i} onClick={() => setDay(i)} className="h-8 px-3 text-xs">{d}</Chip>)}</ChipGroup>
       <div className="grid gap-3 sm:grid-cols-4"><MacroBar label="kcal" value={tot.calories} target={targets.calories} /><MacroBar label="protein" value={tot.proteinG} target={targets.proteinG} unit="g" /><MacroBar label="carbs" value={tot.carbsG} target={targets.carbsG} unit="g" /><MacroBar label="fat" value={tot.fatG} target={targets.fatG} unit="g" /></div>

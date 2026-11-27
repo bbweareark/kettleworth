@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { capUserText, cronAuthorised, mayRegenerate, photoQuotaCheck, MAX_USER_TEXT, PHOTO_QUOTA } from "./limits";
+import { cronAuthorised, photoQuotaCheck, MAX_USER_TEXT, PHOTO_QUOTA } from "./limits";
 
 /*
  * Each of these is red against the code as it was. They are written as the attack rather
@@ -24,38 +24,10 @@ describe("cron authorisation", () => {
   });
 });
 
-describe("user text going into a prompt", () => {
-  it("cuts anything past the cap", () => {
-    const huge = "x".repeat(50_000);
-    expect(capUserText(huge).length).toBe(MAX_USER_TEXT);
-  });
-
-  it("leaves a real answer exactly as it was typed", () => {
-    const typed = "My left knee aches on the way down, not the way up.";
-    expect(capUserText(typed)).toBe(typed);
-  });
-
-  it("caps at the size the profile already allows for a person's own words", () => {
+describe("the cap on user text going into a prompt", () => {
+  it("is the size the profile already allows for a person's own words", () => {
+    // Load-bearing: the route schemas import this constant as their .max().
     expect(MAX_USER_TEXT).toBe(2000);
-  });
-});
-
-describe("regenerating a paid document", () => {
-  const now = new Date("2026-11-27T10:00:00Z");
-
-  it("allows the first generation", () => {
-    expect(mayRegenerate(null, now)).toBe(true);
-    expect(mayRegenerate(undefined, now)).toBe(true);
-  });
-
-  it("refuses a second one in the same week, which is what force used to buy", () => {
-    expect(mayRegenerate(new Date("2026-11-27T09:59:00Z"), now)).toBe(false);
-    expect(mayRegenerate(new Date("2026-11-22T10:00:00Z"), now)).toBe(false);
-  });
-
-  it("allows one a week, which is the cadence of the document itself", () => {
-    expect(mayRegenerate(new Date("2026-11-20T10:00:00Z"), now)).toBe(true);
-    expect(mayRegenerate(new Date("2026-11-20T09:59:00Z"), now)).toBe(true);
   });
 });
 

@@ -117,13 +117,13 @@ export const TrainingProfile = z.object({
   environment: Environment.default("gym"),
   equipment: z.array(Equipment).default([]),
   lovedExerciseIds: z.array(z.string()).default([]),
-  hatedExerciseIds: z.array(z.string()).default([]),
+  hatedExerciseIds: z.array(z.string().max(64)).max(200).default([]),
   styles: z.array(TrainingStyle).default([]),
   vibe: z.string().max(200).optional(),
   /** steady = same exercises all block; balanced = anchors fixed, accessories rotate each mesocycle; high = accessories rotate every 2 weeks and main-lift variations change per block */
   varietyPreference: z.enum(["steady", "balanced", "high"]).default("balanced"),
   /** Muscles the user (or the body-photo analysis, once confirmed) wants prioritised. Muscle ids from the exercise taxonomy. */
-  priorityMuscles: z.array(z.string()).default([]),
+  priorityMuscles: z.array(z.string().max(64)).max(40).default([]),
   /** Rituals: the moments the app shows up. Times are local HH:MM; days are 0 (Mon) to 6 (Sun). */
   rituals: z.object({
     wakeTime: z.string().regex(/^\d{2}:\d{2}$/).optional(),
@@ -141,12 +141,12 @@ export const TrainingProfile = z.object({
   /** Bar weights in kg, set once. Defaults: 20 kg barbell (45 lb imperial), 10 kg EZ bar, 25 kg trap bar, Smith machine not counted. */
   barWeights: z.object({ barbell: z.number().min(0).max(40).optional(), ez_bar: z.number().min(0).max(30).optional(), trap_bar: z.number().min(0).max(45).optional(), smith_machine: z.number().min(0).max(40).optional() }).optional(),
   injuries: z.array(Injury).default([]),
-  medicalFlags: z.array(z.string()).default([]),
+  medicalFlags: z.array(z.string().max(200)).max(50).default([]),
   sleepHours: z.number().min(3).max(12).optional(),
   stressLevel: z.number().int().min(1).max(5).optional(),
   dietType: DietType.default("omnivore"),
   allergens: z.array(Allergen).default([]),
-  dislikedFoods: z.array(z.string()).default([]),
+  dislikedFoods: z.array(z.string().max(80)).max(200).default([]),
   cookingMinutes: z.number().int().min(5).max(120).default(30),
   budgetTier: BudgetTier.default("medium"),
   knownLifts: z
