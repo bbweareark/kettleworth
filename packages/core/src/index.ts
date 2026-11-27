@@ -24,3 +24,4 @@ export * from "./programme/autoregulate";
 export * from "./day-plan";
 export * from "./rest-history";
 export * from "./sound";
+export * from "./limits";

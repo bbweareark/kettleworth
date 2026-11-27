@@ -3,6 +3,7 @@ import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { db, progressPhoto, auditLog, type BodyAnalysis } from "@kettleworth/db";
+import { photoQuotaCheck } from "@kettleworth/core";
 import { AI_MODEL, aiAvailable } from "../ai/client";
 import { analyseBodyPhotos } from "../ai/tasks";
 import { getProfile, upsertProfile } from "./profile";
@@ -14,9 +15,32 @@ const inDb = () => process.env.PHOTO_STORAGE === "db" || (!!process.env.VERCEL &
 const MAX_BYTES = 8 * 1024 * 1024;
 const TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
+/**
+ * What this account has already stored. One aggregate query rather than reading the rows,
+ * because the rows are the photographs.
+ */
+export async function photoUsage(userId: string): Promise<{ count: number; bytes: number }> {
+  const [r] = await db()
+    .select({ count: sql<number>`count(*)::int`, bytes: sql<number>`coalesce(sum(${progressPhoto.bytes}), 0)::bigint` })
+    .from(progressPhoto)
+    .where(eq(progressPhoto.userId, userId));
+  return { count: Number(r?.count ?? 0), bytes: Number(r?.bytes ?? 0) };
+}
+
+/**
+ * Save one progress photograph.
+ *
+ * The per-file ceiling was here all along; the per-account one was not, and on Vercel these
+ * bytes go into the primary Postgres, so "unbounded per account" meant one free signup could
+ * write until the database everybody shares ran out of room. The quota is checked here
+ * rather than at the handler so the analyse and apply paths inherit it too - a limit that
+ * only exists at one call site is a limit the next call site walks around.
+ */
 export async function savePhoto(userId: string, file: { bytes: Buffer; contentType: string; pose: string; takenOn?: string }) {
   if (!TYPES.has(file.contentType)) throw new Error("Use a JPEG, PNG or WebP image");
   if (file.bytes.length > MAX_BYTES) throw new Error("Image is over 8 MB");
+  const quota = photoQuotaCheck(await photoUsage(userId), file.bytes.length);
+  if (!quota.ok) throw new Error(quota.reason);
   const id = randomUUID();
   const ext = file.contentType === "image/png" ? "png" : file.contentType === "image/webp" ? "webp" : "jpg";
   const key = `${userId}/${id}.${ext}`;

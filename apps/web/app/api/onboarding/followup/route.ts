@@ -1,9 +1,21 @@
 import { z } from "zod";
+import { MAX_USER_TEXT } from "@kettleworth/core";
 import { getProfile, intakeFollowUp, extractFromAnswer, upsertProfile, aiAvailable } from "@kettleworth/api";
 import { route } from "@/lib/api";
 
-/** After a stage: ask the AI whether one follow-up question is worth asking. Returns null when AI is off or nothing to ask. */
-export const POST = route(z.object({ stage: z.string(), answer: z.string().optional(), question: z.string().optional() }), async ({ userId, body }) => {
+/**
+ * After a stage: ask the engine whether one follow-up question is worth asking. Returns null
+ * when the engine is off or there is nothing to ask.
+ *
+ * All three fields are interpolated straight into a prompt we pay for, and all three were
+ * unbounded `z.string()`. One request could carry a megabyte of text and buy six figures of
+ * input tokens, and it needed no more than a signed-up account to send. `stage` is one of a
+ * known set and is now exactly that - `intake.tsx:72` only ever asks for a follow-up after
+ * these four - and the two free-text fields take the same 2,000 characters the profile
+ * already allows for a person's own words, which no real intake answer reaches.
+ */
+const STAGES = ["goals", "injuries", "environment", "diet"] as const;
+export const POST = route(z.object({ stage: z.enum(STAGES), answer: z.string().max(MAX_USER_TEXT).optional(), question: z.string().max(MAX_USER_TEXT).optional() }), async ({ userId, body }) => {
   const rec = await getProfile(userId);
   if (!rec) return { question: null };
   if (body.answer && body.question) {
